@@ -1,0 +1,6 @@
+{
+    "workbench.editorAssociations": {
+        "*.pdf": "pdf.preview",
+        "*.PDF": "pdf.preview"
+    }
+}

@@ -1,0 +1,20 @@
+\usepackage{xurl}
+\usepackage{fvextra}
+
+% xurl's default is break-anywhere (letters included). Restrict to path punctuation.
+% Zero muskip so TeX can still break at those chars without stretching
+% "financeMD / damodaran" or "ValIntroSpr25 . md" in justified text.
+\makeatletter
+\def\UrlBreaks{\do\/\do\_\do\-\do\.}
+\def\UrlBigBreaks{\do\/}
+\Urlmuskip=0mu
+\@ifundefined{LTleft}{}{\setlength{\LTleft}{0pt}}
+\makeatother
+
+\fvset{breaklines=true,breakanywhere=false,breakafter={/._-}}
+\emergencystretch=3em
+\RecustomVerbatimEnvironment{verbatim}{Verbatim}{breaklines=true,breakanywhere=false,breakafter={/._-},fontsize=\small}
+
+% Helvetica Neue ligates "ff"; names like fcffsimpleginzu must stay letter-for-letter.
+\setmainfont{Helvetica Neue}[Ligatures=NoCommon]
+\setmonofont{Menlo}[Ligatures=NoCommon]

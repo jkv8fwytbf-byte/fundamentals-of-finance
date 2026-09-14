@@ -1,0 +1,46 @@
+---
+description: Never open PDFs as text; keep pdf.preview and restore it if missing
+alwaysApply: true
+---
+
+# PDFs stay in the previewer
+
+Never open or treat a `.pdf` / `.PDF` as a text file. Cursor without a PDF custom editor dumps binary garbage.
+
+## Required settings
+
+Keep both of these mappings. Never remove them:
+
+```json
+"workbench.editorAssociations": {
+    "*.pdf": "pdf.preview",
+    "*.PDF": "pdf.preview"
+}
+```
+
+They belong in `.vscode/settings.json` and in user `settings.json`. Keep `tomoki1207.pdf` in `.vscode/extensions.json` recommendations.
+
+## If the viewer or association is missing
+
+Restore both immediately:
+
+1. `cursor --install-extension tomoki1207.pdf`
+2. Put the `workbench.editorAssociations` block back (workspace and user).
+
+Do not convert the PDF to markdown as a workaround.
+
+## If the user sees binary
+
+Tell them to close that tab and reopen the PDF in the editor window. From Agents Window, use **Open in IDE**. Agents Window cannot preview PDFs; that is a Cursor limitation, not a settings bug.
+
+## Bad vs good
+
+```text
+# BAD — opens as a text buffer of binary
+Read docs/damodaran-essentials.pdf
+Delete workbench.editorAssociations
+
+# GOOD — previewer, or Preview.app
+Keep *.pdf → pdf.preview
+If garbage: close tab, reopen (or Open in IDE)
+```

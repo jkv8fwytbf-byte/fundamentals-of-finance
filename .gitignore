@@ -1,0 +1,4 @@
+.DS_Store
+docs/_build/*.err
+docs/_build/t.pdf
+docs/_build/t.md
