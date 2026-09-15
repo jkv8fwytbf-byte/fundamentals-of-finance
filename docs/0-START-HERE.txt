@@ -1,6 +1,6 @@
-COLORFUL READING EDITIONS (dev2)
+COLORFUL READING EDITIONS
 
-Open ../output/pdf/ for all five numbered reading editions.
+Open output/pdf/ (next to this docs/ folder) for all five numbered reading editions.
 Start with 1-read-this-first.pdf, then follow its reading map.
 Blue = READ FIRST; teal = KEY IDEA; orange = WATCH OUT; purple = OPTIONAL - FIRST PASS.
 Yellow highlights mark short phrases worth remembering.
@@ -18,3 +18,6 @@ READ IN THIS ORDER. Nothing to install, nothing to buy, no accounts yet.
 Figma: a website for drawing diagrams. I drew 5 pictures of the system there so you
 can learn it later. The same pictures are already printed inside PDF 1. You do not
 have to open Figma now.
+
+Claude Code: the briefing is CLAUDE.md at the top of this folder. Live state is
+HANDOFF.md. Markdown under docs/ is the source; these PDFs are the reading copies.

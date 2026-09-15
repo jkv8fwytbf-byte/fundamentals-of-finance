@@ -1,6 +1,6 @@
 # Reading editions
 
-Build all five editions from this worktree:
+Build all five editions from the repo folder:
 
 ```sh
 ./docs/_build/build.sh reading
