@@ -295,7 +295,7 @@ committed `.env.example` lists the names with empty values.
 
 # 11. Setting up Cursor for this repo
 
-1. Settings → General → **Privacy Mode: on**. Your code is then not used for training, and
+1. Settings, then General, then **Privacy Mode: on**. Your code is then not used for training, and
    Cursor's zero-data-retention agreements with the model providers apply.
 2. Open the repo folder. The file `.cursor/mcp.json` (shipped with the repo) registers the
    system's tools. **MCP** stands for Model Context Protocol: a standard plug that lets an AI tool

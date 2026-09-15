@@ -1,0 +1,12 @@
+---
+description: Read AGENTS.md then HANDOFF.md; this repo is local and private; all agents share the files on disk
+alwaysApply: true
+---
+
+# Shared briefing
+
+This folder is local and private. There is no GitHub for this repo. Cursor, Claude Code, and Codex all work from the same files on disk.
+
+Read `AGENTS.md` at the repo root first, then immediately read `HANDOFF.md`. Follow `AGENTS.md`. Do not invent a remote. Do not duplicate those instructions here.
+
+Markdown under `docs/` is the source of truth. Never open PDFs as text (see the pdf-preview rule).
