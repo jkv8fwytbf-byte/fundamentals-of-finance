@@ -6,7 +6,7 @@ A DCF (discounted cash flow) valuation is a way of putting a number on a busines
 
 We follow one company through every station: Almarai, a Saudi food company, valued on 2026-02-01. It is the example that ships inside the workbook. Its answer, 7.187840270062114 per share against a share price of 72.28, is the golden test for your calculator. The calculator must reproduce that number to six decimals before it is trusted with anything else. All Almarai figures below are in millions of Saudi riyals, except the share count and the per-share numbers.
 
-Source: /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md (2026-09); /Users/siddharth/Downloads/financeMD/damodaran/pc/fcffsimpleginzu.md (valuation date 2026-02-01)
+Source: docs/plan.md (2026-09); /Users/siddharth/Downloads/financeMD/damodaran/pc/fcffsimpleginzu.md (valuation date 2026-02-01)
 
 ## The grid you are filling in
 
@@ -214,7 +214,7 @@ The Diagnostics sheet puts your forecast beside history and industry data, then 
 
 Why it matters for the calculator: the sheet has no hard validations, only dropdowns and text. The plan turns these checks into real errors and warnings, so the calculator should compute every number above.
 
-Source: fcffsimpleginzu.md, "Diagnostics" (2026-02-01); bkdrkpfng.txt, section 4; /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md, milestone 2 (2026-09)
+Source: fcffsimpleginzu.md, "Diagnostics" (2026-02-01); bkdrkpfng.txt, section 4; docs/plan.md, milestone 2 (2026-09)
 
 ## Simple ginzu versus full ginzu
 

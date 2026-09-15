@@ -22,7 +22,7 @@ Below, "the Report" means that same file, compiled 2026-09-14. Nothing past mile
 
 **What the app will do.** It will use his 192-country table, but never silently. Every run will store a country-risk vintage id, meaning the dated snapshot of his data it used. For India the January 2026 vintage reads Moody's Baa3, default spread 1.87%, CRP 2.85%, total ERP 7.08%. The July 2026 vintage reads 1.75%, 2.72% and 6.92%. The rupee risk-free rate will be the 10-year G-sec (Indian government bond) yield minus India's default spread, so sovereign risk is not counted twice.
 
-Source: the Report, Part 3.1 and Part 4 row 10 (2026-09-14); /Users/siddharth/Downloads/financeMD/damodaran/blog/2026/07/country-risk-drivers-measures-and.md (2026-07-15); /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bafb6h9rb.txt (2026-09-14); /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md, section 10.1 (2026-09-14)
+Source: the Report, Part 3.1 and Part 4 row 10 (2026-09-14); /Users/siddharth/Downloads/financeMD/damodaran/blog/2026/07/country-risk-drivers-measures-and.md (2026-07-15); /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bafb6h9rb.txt (2026-09-14); docs/plan.md, section 10.1 (2026-09-14)
 
 ## 3.2 Pablo Fernandez (IESE): there is no "the" risk premium, and beta is noise
 
@@ -50,7 +50,7 @@ Source: the Report, Part 3.2 (2026-09-14); /Users/siddharth/.claude/projects/-Us
 
 **What the app will do.** It will show the cost of capital as a labeled convention with its parts visible, checked against his plausibility bands from Data Update 5 for 2026, with a Monte Carlo range (the spread of results from re-running the model many times with inputs drawn at random) beside the point value.
 
-Source: the Report, Part 3.3 (2026-09-14); /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md, section 10.5 (2026-09-14)
+Source: the Report, Part 3.3 (2026-09-14); docs/plan.md, section 10.5 (2026-09-14)
 
 ## 3.4 Terminal value dominance and input sensitivity: his own published ranges
 
@@ -85,7 +85,7 @@ Source: the Report, Part 3.4 and Part 6 item 5 (2026-09-14); /Users/siddharth/Do
 
 **What the app will do.** Every memo will compute the reverse DCF first: keep margin and cost of capital fixed, solve for the year-10 revenue the price implies, convert it to an implied market share, and run that share through the 3P test from Chapter C1.
 
-Source: the Report, Part 3.5 and Part 6 item 1 (2026-09-14); /Users/siddharth/Downloads/financeMD/damodaran/blog/2021/11/teslas-trillion-dollar-moment-valuation.md (2021-11); /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md, section 10.5 (2026-09-14)
+Source: the Report, Part 3.5 and Part 6 item 1 (2026-09-14); /Users/siddharth/Downloads/financeMD/damodaran/blog/2021/11/teslas-trillion-dollar-moment-valuation.md (2021-11); docs/plan.md, section 10.5 (2026-09-14)
 
 ## 3.6 Marcos López de Prado: discretionary valuation is not science
 
@@ -99,7 +99,7 @@ Source: the Report, Part 3.5 and Part 6 item 1 (2026-09-14); /Users/siddharth/Do
 
 **What the app will do.** The Almarai golden test at 1e-6 makes the implementation falsifiable even though the forecast is not. Every screen will carry the banner "The engine is tested (Almarai 1e-6). The forecast is not." Every run will be stored with its inputs, an input hash and three vintage ids. From M4 an accuracy scoreboard will record the realized price at 90, 180 and 365 days, and compute bias and variance by sector, region and vintage. That is the record of trials he asks for.
 
-Source: the Report, Part 3.6 and Part 6 item 2 (2026-09-14); /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md, sections 5 (M4) and 10.1 (2026-09-14)
+Source: the Report, Part 3.6 and Part 6 item 2 (2026-09-14); docs/plan.md, sections 5 (M4) and 10.1 (2026-09-14)
 
 ## 3.7 Cliff Asness and AQR: cheapness works, except when it does not for a decade
 
@@ -111,7 +111,7 @@ Source: the Report, Part 3.6 and Part 6 item 2 (2026-09-14); /Users/siddharth/.c
 
 **What the app will do.** The scoreboard will measure at fixed horizons, so "eventually" gets a date. A test will reject any output containing advice words.
 
-Source: the Report, Part 3.7 (2026-09-14); /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md, section 10.1 (2026-09-14)
+Source: the Report, Part 3.7 (2026-09-14); docs/plan.md, section 10.1 (2026-09-14)
 
 ## 3.8 Cathie Wood and ARK versus Damodaran on Tesla
 
@@ -139,7 +139,7 @@ Source: the Report, Part 3.8 (2026-09-14); /Users/siddharth/Downloads/financeMD/
 
 **What the app will do.** A second, opposing memo per company will be mandatory. The memo table will carry a `story_kind` field with values base and opposing. The plan calls this the "Gurley field".
 
-Source: the Report, Parts 3.9 and 2.5 (2026-09-14); /Users/siddharth/Downloads/financeMD/damodaran/blog/2014/07/possible-plausible-and-probable-big.md (2014-07-16); /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md, sections 1 and 10.3 (2026-09-14)
+Source: the Report, Parts 3.9 and 2.5 (2026-09-14); /Users/siddharth/Downloads/financeMD/damodaran/blog/2014/07/possible-plausible-and-probable-big.md (2014-07-16); docs/plan.md, sections 1 and 10.3 (2026-09-14)
 
 ## 3.10 Nassim Taleb: the distributions are wrong
 
@@ -194,7 +194,7 @@ These arguments are live as of September 2026. The Report drew them from the web
 
 **What the app will do.** The market-regime panel will be descriptive only. Like him, it will refuse a point scenario and print his own market-timing caveats on the panel.
 
-Source: the Report, Part 3.13 (2026-09-14); /Users/siddharth/Downloads/financeMD/damodaran/blog/2026/08/ais-bar-mitzvah-moment-from-hype-hope.md (2026-08-20); /Users/siddharth/Downloads/financeMD/damodaran/blog/2026/08/the-situational-awareness-blow-up.md (2026-08-10); /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md, section 10.7 (2026-09-14)
+Source: the Report, Part 3.13 (2026-09-14); /Users/siddharth/Downloads/financeMD/damodaran/blog/2026/08/ais-bar-mitzvah-moment-from-hype-hope.md (2026-08-20); /Users/siddharth/Downloads/financeMD/damodaran/blog/2026/08/the-situational-awareness-blow-up.md (2026-08-10); docs/plan.md, section 10.7 (2026-09-14)
 
 ## What he got right, in one list
 
@@ -227,4 +227,4 @@ Source: the Report, Parts 3.1 to 3.11 (2026-09-14)
 | Premia drift | Three vintage ids on every run | M2 |
 | Convergence bias | Labeled, selectable convergence and sales-to-capital sources | M4 |
 
-Source: the Report, Part 6 (2026-09-14); /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md, sections 5 and 10 (2026-09-14)
+Source: the Report, Part 6 (2026-09-14); docs/plan.md, sections 5 and 10 (2026-09-14)

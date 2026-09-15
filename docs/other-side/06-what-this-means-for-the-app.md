@@ -2,7 +2,7 @@
 
 Chapters 1 to 5 collected the case against the method your system copies. This chapter turns that case into rules for the build. Each rule names the critique it answers. Think of the critiques as crash reports and the rules as the seat belts fitted afterwards. Nothing beyond the documents is built yet, so every rule says "will".
 
-Sources. "Report" means /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bkm2kob5x.txt (compiled 2026-09-14). "Plan" means /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md. "Document A" means /Users/siddharth/Valuation/docs/read-this-first.md. "blog/" means /Users/siddharth/Downloads/financeMD/damodaran/blog/.
+Sources. "Report" means /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bkm2kob5x.txt (compiled 2026-09-14). "Plan" means docs/plan.md. "Document A" means /Users/siddharth/Valuation/docs/read-this-first.md. "blog/" means /Users/siddharth/Downloads/financeMD/damodaran/blog/.
 
 Source: Report, Part 6 (2026-09-14).
 

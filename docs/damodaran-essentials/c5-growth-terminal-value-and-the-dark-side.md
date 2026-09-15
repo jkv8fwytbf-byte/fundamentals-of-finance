@@ -109,7 +109,7 @@ The plan requires every memo to name the company's uncertainty type and pull the
 | Complex holding structures | Consolidated statements mix parent and holdings; cross holdings are opaque | Value the parent alone, then each holding, then add and subtract | Non-operating assets and minority interests as separate, cited rows |
 | Emerging market | Country risk, currency and inflation shifts, governance, nationalization, more cross holdings | Add a country risk premium scaled from default spreads; strip the sovereign spread from the local risk-free rate | Country-risk vintage id on every run; INR risk-free equals the 10-year Indian government bond (G-sec) yield minus India's default spread |
 
-Source: /Users/siddharth/Downloads/financeMD/valpacket1spr25.md, slides 292 to 321 and 339 (Spring 2025); /Users/siddharth/Downloads/financeMD/damodaran/pdfiles/CLC/slides/Ch13.md; bafb6h9rb.txt (India rows); /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md, memo section
+Source: /Users/siddharth/Downloads/financeMD/valpacket1spr25.md, slides 292 to 321 and 339 (Spring 2025); /Users/siddharth/Downloads/financeMD/damodaran/pdfiles/CLC/slides/Ch13.md; bafb6h9rb.txt (India rows); docs/plan.md, memo section
 
 For India, the January 2026 vintage carries a default spread of 1.87% and a country risk premium of 2.85% on top of the mature premium of 4.23%. That is the concrete form "emerging market" takes in the numbers.
 

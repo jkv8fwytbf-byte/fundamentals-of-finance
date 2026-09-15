@@ -22,22 +22,22 @@ Source: /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-77
 
 GitHub Actions is also where the correctness rules live. The golden test runs there. A PR that moves the Almarai value per share off 7.187840270062114 must go red, and red means it cannot merge. The same Actions robot runs the nightly jobs (pull new filings, re-value the watchlist, check for a new risk-premium file).
 
-Source: /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bkm2kob5x.txt, section 2 (2026-09-14); /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md, section 10.6 (2026-09-14)
+Source: /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bkm2kob5x.txt, section 2 (2026-09-14); docs/plan.md, section 10.6 (2026-09-14)
 
-Cost: the repo is private, inside a free GitHub organization you own. A private repo on the free plan gets 2,000 Linux minutes of Actions per month, then $0.006 per minute, with a $25 spending cap set in the plan. Public repos get unlimited minutes, but this repo stays private.
+Cost: the repo is public on GitHub account `jkv8fwytbf-byte`. Public repos get standard Actions runners free. Keep a $25 spending cap anyway. A GitHub organization is optional later if you want Blacksmith runners.
 
-Source: /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bkm2kob5x.txt, section 0 (2026-09-14); /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md, sections 2 and 5 M2 (2026-09-14)
+Source: /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bkm2kob5x.txt, section 0 (2026-09-14); docs/plan.md, sections 2 and 5 M2 (2026-09-14)
 
 ## How it is used in this project
 
-- The repo is named `valuation`. It is created in M2 inside your organization, then handed to you. Your GitHub account is `jkv8fwytbf-byte`.
+- The repo is named `valuation`. It is public. Your GitHub account is `jkv8fwytbf-byte`.
 - Week 1 security, before any code: turn on two-factor authentication (2FA, a second code from an app at login) and save the recovery codes offline. Turn on secret scanning and push protection, so GitHub physically refuses a commit that contains an API key. Use fine-grained personal access tokens, one per purpose, scoped to one repo, with an expiry.
 - `main` is protected. Every change goes: branch, commits, PR, CI green, explain-back (rule 3), merge with squash. Squash means the branch's many commits become one commit on `main`, so the history reads like a diary.
 - CI on every PR runs a type check, a linter (a style checker), and vitest (the test runner). The golden test is one of those tests. The fixture file holding the expected numbers is protected in CI, so an agent cannot edit the answer key.
 - Nightly jobs are Actions too: `ingest-edgar`, `value-watchlist`, `watch-erp-crp`, `rag-eval`, `news-headlines`, `realised-prices`. Each writes a heartbeat row, and a staleness alarm fires after 36 hours of silence. Schedules run off the hour (for example 03:17, not 03:00), because GitHub drops many jobs scheduled exactly on the hour. A cron schedule is the line in the Actions file that says when a job runs.
 - Nothing licensed ever enters git. `.gitignore` (a list of files git must ignore) covers `.env*` files, caches, and raw data dumps. Keys live in three places only: the local `.env` file, GitHub Actions secrets, and the hosting provider's environment settings.
 
-Source: /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md, sections 5 (M1, M2) and 10.6 (2026-09-14); /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bkm2kob5x.txt, sections 1, 2 and 15 (2026-09-14)
+Source: docs/plan.md, sections 5 (M1, M2) and 10.6 (2026-09-14); /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bkm2kob5x.txt, sections 1, 2 and 15 (2026-09-14)
 
 ### The six gh commands
 
@@ -140,7 +140,7 @@ git log --oneline --graph
 
 Read the graph. That picture, two lines joining, is what a merge is. Write in the attempts file (chapter 0) what you guessed a branch was and what you now think it is.
 
-Source: /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md, section 5 M3 (2026-09-14). The commands are standard git; Pro Git chapter 3.2 covers the same drill.
+Source: docs/plan.md, section 5 M3 (2026-09-14). The commands are standard git; Pro Git chapter 3.2 covers the same drill.
 
 ## Done when
 

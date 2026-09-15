@@ -1,6 +1,6 @@
 ---
 title: "Read This First"
-subtitle: "Your private, outsourced Damodaran valuation system, explained in plain words"
+subtitle: "A public, outsourced Damodaran valuation system, explained in plain words"
 author: "Prepared for Siddharth"
 ---
 
@@ -35,8 +35,8 @@ drag boxes around, add notes. They are yours.
 # 1. What we are building, in one page
 
 You used to value one company at a time in Damodaran's spreadsheet. You want a machine that does
-that for many companies, in India and the United States, with his lectures on tap, private to you,
-and with nothing running on your Mac except an editor. It has seven parts.
+that for many companies, in India and the United States, with his lectures on tap, as a public
+repo anyone can read, and with nothing running on your Mac except an editor. It has seven parts.
 
 1. **A calculator.** A program that takes a company's numbers (revenue, operating income, debt,
    cash, shares) plus Damodaran's reference tables (industry betas, country risk premiums, the
@@ -65,7 +65,7 @@ and with nothing running on your Mac except an editor. It has seven parts.
    watchlist, check whether Damodaran posted a new risk-premium file, pull licensed news
    headlines, and write everything to the database. Once a night is the right pace. Nothing here
    is intraday.
-6. **A private dashboard (Hex).** A hosted notebook over the same database shows watchlist
+6. **A personal dashboard (Hex).** A hosted notebook over the same database shows watchlist
    diversification by sector and country, value-versus-price distributions, Monte Carlo ranges,
    an accuracy scoreboard (how past valuations did against later prices) and a descriptive "is
    the market on the rails" panel built from Damodaran's own implied risk-premium series. As your
@@ -84,14 +84,14 @@ contractors. Here is each contractor, what it does in one line, and why it was c
 
 | Contractor | Job | In one line | Why this one |
 |---|---|---|---|
-| **GitHub** | Holds the code; runs the robots | A private folder in the cloud with a history of every change, plus computers you can rent by the minute to run scheduled jobs | Where the code has to live anyway; 2,000 free minutes a month on a private repo |
+| **GitHub** | Holds the code; runs the robots | A public folder in the cloud with a history of every change, plus computers that run scheduled jobs | Where the code has to live anyway; public repos get standard runners free |
 | **Neon** | The database | Managed Postgres that switches itself off when idle, with a copy of your whole database per change request | Idle costs nothing; branches make experiments safe |
 | **Pinecone** | The librarian's index | Stores the 60,000 passage vectors and finds the nearest ones to a question | Free at this size; purpose-built |
 | **Voyage** | Turns text into vectors, reranks results | The model that understands "sales to capital" and "reinvestment efficiency" are neighbours | 200 million free tokens; embeds each passage aware of its neighbours, which rescues the unpunctuated transcripts |
-| **OpenRouter** | One door to hundreds of AI models | One key, one bill; you swap a model by changing a name | Only router that can guarantee your prompts are not retained |
+| **OpenRouter** | One door to hundreds of AI models | One key, one bill; you swap a model by changing a name | Pin a model by name; logging stays off |
 | **Cloudflare R2** | Raw files | The bucket that holds the spreadsheets, zips and OCR output, each named by its fingerprint (hash) | 10 GB free, no charge to read files back |
 | **Langfuse** | Logs of every model call | Which model, which prompt, what it cost, what it returned | Free tier includes evaluations; open source |
-| **Hex** | The dashboard | SQL and Python notebooks over Neon that turn into private dashboards | The only tool in budget with real Python and product-grade charts |
+| **Hex** | The dashboard | SQL and Python notebooks over Neon that turn into a personal dashboard of your watchlist | The only tool in budget with real Python and product-grade charts |
 | **Mistral** | OCR, one-off | Turns three image-only lecture decks into text | Best independent score, about a dollar for the job |
 | **EODHD** | Indian statements (from milestone 4) | Income statements, balance sheets and cash flows for NSE and BSE companies | Only vendor with documented long-history India data |
 | **Cursor** | Your editor and agent | A VS Code with an AI that plans, edits and shows you every change as a diff | Already paid; safest for a beginner |
@@ -136,8 +136,9 @@ Every stored fact records where it came from and one of seven licence classes:
 | `proprietary_personal` | your Bloomberg reading notes | **no** | never |
 | `link_only` | books, paid newsletters | **no** (we store the link) | link only |
 
-A database rule refuses the last three from the index. That rule is what lets you go public later
-without an audit: "can I show this?" becomes a query.
+A database rule refuses the last three from the index. The code is already public. This rule
+keeps licensed facts out of the librarian and off any page a stranger can see: "can I show this?"
+becomes a query.
 
 ## 3.4 The India rules
 
@@ -167,12 +168,13 @@ This confused you, so here it is slowly.
 
 **Place 1: while you write code.** That is Cursor. Cursor includes its own pool of models in the
 subscription you already pay. You do not touch that. You do not paste any API key into Cursor:
-doing so is unofficial, switches off half its features, and voids Cursor's promise that your code
-is not retained.
+doing so is unofficial, switches off half its features, and puts the key into logs. Cursor
+Privacy Mode is not a secrecy guarantee. Prompts leave your machine. This repo is public.
 
 **Place 2: inside the product, when it runs.** Our own code calls a model to write memos, answer
 questions from the librarian, and clean transcripts. Those calls go through OpenRouter with
-zero-data-retention routing on and prompt logging off. Here the open-weight models go, because
+prompt logging off. Zero-data-retention routing is optional hygiene for licensed filings, not a
+claim that the project is secret. Here the open-weight models go, because
 this is where the volume and the cost are, and because a model pinned to an exact checkpoint keeps
 a 2026 valuation reproducible in 2029.
 
@@ -276,16 +278,16 @@ at one cannot be used to find the others. Turn on two-factor authentication ever
 
 | # | Vendor | Plan | Cost per month | What you will copy, and where it goes | Notes |
 |---|---|---|---|---|---|
-| 1 | GitHub, plus a free **organisation** | Free | $0 | A fine-grained token scoped to one repo, 90-day expiry: `GITHUB_TOKEN` | Enable 2FA first and store recovery codes offline. The organisation is what keeps faster CI runners available later; personal accounts cannot use them. |
-| 2 | Cursor (you have it) | Pro | $20 | Nothing | Settings: Privacy Mode **on**. Never paste an API key into Cursor. |
-| 3 | OpenRouter | pay as you go | $30–70 | `OPENROUTER_API_KEY` | Buy $20 of credit. Settings: monthly limit **$75**, prompt logging **off**, zero-data-retention routing **on**. |
+| 1 | GitHub, public repo `valuation` | Free | $0 | A fine-grained token scoped to one repo, 90-day expiry: `GITHUB_TOKEN` | Enable 2FA first and store recovery codes offline. A GitHub organisation is optional later for faster runners. |
+| 2 | Cursor (you have it) | Pro | $20 | Nothing | Never paste an API key into Cursor. Privacy Mode is optional and is not a secrecy guarantee. |
+| 3 | OpenRouter | pay as you go | $30–70 | `OPENROUTER_API_KEY` | Buy $20 of credit. Settings: monthly limit **$75**, prompt logging **off**. |
 | 4 | Neon | Free, later Launch | $0, then $10–20 | `DATABASE_URL` (the "pooled" one), `DATABASE_URL_UNPOOLED` | Sign up with email and password, not only "continue with GitHub". |
 | 5 | Pinecone | Starter | $0 | `PINECONE_API_KEY` | One index, 1024 dimensions, cosine, region `us-east-1`. |
 | 6 | Voyage | Free | $0 | `VOYAGE_API_KEY` | Set a billing alert before the 200 million free tokens run out. |
 | 7 | Cloudflare | Free (R2) | $0 | `R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET` | Use a hardware key or an authenticator app; scope the token to one bucket. |
 | 8 | Langfuse | Hobby | $0 | `LANGFUSE_PUBLIC_KEY`, `LANGFUSE_SECRET_KEY`, `LANGFUSE_BASEURL` | |
 | 9 | Mistral | pay as you go | about $2 once | `MISTRAL_API_KEY` | Used once for OCR through the batch endpoint. |
-| 10 | Hex | Community | $0, later $36 | The Neon connection is configured inside Hex (use the pooled host, SSL on) | Private workspace. |
+| 10 | Hex | Community | $0, later $36 | The Neon connection is configured inside Hex (use the pooled host, SSL on) | Personal workspace for your watchlist, not a public site. |
 | 11 | EODHD (milestone 4) | Fundamentals | $60 | `EODHD_API_TOKEN` | Test 20 NSE tickers on the free tier first; read the redistribution clause. |
 | 12 | Optional later: INDmoney's INDstocks API, Kite Connect, Parallel search, Braintrust | | $0 / ₹500 / about $18 / $0 | | Broker tokens expire daily. |
 
@@ -295,9 +297,9 @@ committed `.env.example` lists the names with empty values.
 
 # 11. Setting up Cursor for this repo
 
-1. Settings → General → **Privacy Mode: on**. Your code is then not used for training, and
-   Cursor's zero-data-retention agreements with the model providers apply.
-2. Open the repo folder. The file `.cursor/mcp.json` (shipped with the repo) registers the
+1. Open the public repo folder. Do not treat Cursor Privacy Mode as a secrecy guarantee.
+   Prompts leave your machine. Never paste an API key into Cursor.
+2. The file `.cursor/mcp.json` (shipped with the repo) registers the
    system's tools. **MCP** stands for Model Context Protocol: a standard plug that lets an AI tool
    call other programs. You will see the tools listed in the agent panel: `value_company`,
    `write_memo`, `review_memo`, `get_industry_stats`, `search_corpus`, `report`.
@@ -320,7 +322,7 @@ committed `.env.example` lists the names with empty values.
 | OpenRouter (the product's own model calls) | $30–70 | Spend limit $75 |
 | EODHD (from milestone 4) | $60 | Personal-use licence |
 | Hex | $0, later $36 | When you want a published dashboard with daily refresh |
-| GitHub private-repo minutes | $0–25 | 2,000 free minutes, then $0.006 a minute; spending cap $25 |
+| GitHub Actions | $0 | Public repo: standard runners are free. Keep a $25 spending cap anyway. |
 | Neon | $0, later $10–20 | Free until 0.5 GB |
 | Pinecone | $0, later $20 | Free tier holds the whole corpus |
 | Voyage, Langfuse, Cloudflare R2 | $0 | Free at this size |
@@ -350,7 +352,7 @@ committed `.env.example` lists the names with empty values.
 
 1. You read this document and "Damodaran, the important parts".
 2. You create the accounts in part 10 and set up Cursor as in part 11. Three evenings.
-3. When you say go, I build the foundation in your private repo: calculator with the golden test,
+3. When you say go, I build the foundation in the public repo: calculator with the golden test,
    database, librarian, memo writer, tools, robots, first dashboard, and a walkthrough that explains
    every file.
 4. You work in Cursor, one guide chapter and one small change at a time. I am on call.
@@ -388,4 +390,5 @@ committed `.env.example` lists the names with empty values.
 - **Reverse DCF.** Solving the valuation backwards: what growth or margin does today's price require?
 - **Sub-agent.** A helper AI session spawned by another to do a sub-task in its own context.
 - **Vintage.** Which dated snapshot of Damodaran's tables a number came from.
-- **Zero data retention.** A provider's promise not to store your prompts and outputs.
+- **Zero data retention.** A provider's promise not to store your prompts and outputs. Optional
+  on OpenRouter; not a claim that this project is secret.

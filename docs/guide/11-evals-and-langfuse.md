@@ -22,7 +22,7 @@ Source: /Users/siddharth/Valuation/docs/read-this-first.md, section 3.1 (2026-09
 
 The timing is set by the plan. In M2 the librarian ships with an "exam-based eval set". In M4 the plan adds Langfuse tracing of every model call, error analysis on 100 real memos and answers, and a nightly eval issue. Nothing beyond M0 exists today, so everything below is "will".
 
-Source: /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md, section 5, M2 item 5 and M4 item 3 (2026-09-14)
+Source: docs/plan.md, section 5, M2 item 5 and M4 item 3 (2026-09-14)
 
 The cost is zero at this size. Langfuse's Hobby tier is free: 50,000 units a month, 30-day data access, 2 users, unlimited projects, no card. Datasets and evaluations are included on every tier, including the free one. That is why the research picked it.
 
@@ -48,7 +48,7 @@ Why report-only? Because the judge is itself a model and can be wrong. A red gen
 
 One refusal check is deliberately not a judge. The rule that no report, memo or chat answer may contain the advice words (listed in read-this-first, rule 3.6) is a plain text scan. It is deterministic, so it lives with the golden tests and does block merges.
 
-Source: /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md, section 10.1 "No advice" (2026-09-14)
+Source: docs/plan.md, section 10.1 "No advice" (2026-09-14)
 
 ### The judge never equals the generator
 
@@ -73,7 +73,7 @@ Source: /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-77
 
 Failure modes to expect here, based on the system's rules: a claim with no citation; a cited passage that does not contain the claim; two vintages mixed in one answer; an India industry row with fewer than 10 firms and no fallback note; an invented number where the corpus has none.
 
-Source: /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md, section 10.1 (2026-09-14)
+Source: docs/plan.md, section 10.1 (2026-09-14)
 
 ### What Langfuse logs
 
@@ -114,7 +114,7 @@ The two suites above grade the system against your rubric. The scoreboard grades
 
 The page carries one banner: "The engine is tested (Almarai 1e-6). The forecast is not." Chapter 12 shows how Hex draws it from Neon.
 
-Source: /Users/siddharth/Valuation/docs/read-this-first.md, section 6; /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md, section 5, M4 item 4 (2026-09-14)
+Source: /Users/siddharth/Valuation/docs/read-this-first.md, section 6; docs/plan.md, section 5, M4 item 4 (2026-09-14)
 
 Why log now and score later? Because Damodaran's own step five is "Keep the feedback loop open", and he admits the three hardest words are "I was wrong". A scoreboard makes those words a table instead of a feeling. His data also shows that no risk-premium method forecasts next year's return well, so one month of results is noise. The first scored horizon appears 90 days after the first stored valuation. The scoreboard shows estimates and their errors, never a recommendation.
 

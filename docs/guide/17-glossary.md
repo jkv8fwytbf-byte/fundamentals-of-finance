@@ -87,7 +87,7 @@ Source: /Users/siddharth/Valuation/docs/read-this-first.md sections 2, 3.4, 4 an
 - **Vector index.** The store that holds embeddings and finds the nearest ones to a question. Pinecone will hold about 60,000 passage vectors here.
 - **Vintage.** Which dated snapshot of Damodaran's tables a number came from. Every run stores three vintage ids: market, country risk and industry.
 - **WACC.** Weighted average cost of capital: the cost of equity and the after-tax cost of debt, weighted by market values. It is the rate that discounts FCFF.
-- **Zero data retention.** A provider's promise not to store your prompts and outputs. It is a required setting on OpenRouter.
+- **Zero data retention.** A provider's promise not to store your prompts and outputs. Optional on OpenRouter. Not a claim that this project is secret.
 
 Source: /Users/siddharth/Valuation/docs/damodaran-essentials/c3-the-dcf-chain.md, stations 4, 6 and 7; /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bkdrkpfng.txt, synthetic rating and terminal cost of capital notes; /Users/siddharth/Valuation/docs/read-this-first.md sections 2, 3.2, 4.1, 6, 10 and 15; /Users/siddharth/Downloads/financeMD/damodaran/New_Home_Page/definitions.md, row "Cost of Capital"; bj0fbejiq.txt CHECK 3 section 4 (2026-09-14)
 

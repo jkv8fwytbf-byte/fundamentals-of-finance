@@ -179,7 +179,7 @@ Source: bkdrkpfng.txt sections 2.6 and 3.4; /Users/siddharth/Downloads/financeMD
 
 Negative operating income sends coverage below every band and returns a D rating. The sheet warns not to use that as a going-concern cost of debt and suggests BB instead. Missing interest expense is the opposite trap. The formula sets coverage to one million when interest is zero, which awards Aaa. That is harmless for a company with no debt, because debt then has no weight. It is wrong for a company with debt that did not break out interest in the filing. The plan lists "interest missing" as an audit field, so the engine will record the gap instead of quietly rewarding it.
 
-Source: bkdrkpfng.txt section 3.4; /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md section 10.2 (2026-09)
+Source: bkdrkpfng.txt section 3.4; docs/plan.md section 10.2 (2026-09)
 
 Why it matters for the calculator: the rating module is three banded tables plus a country lookup, and the 2026 spreads run from 0.40% at Aaa to 19% at D.
 

@@ -27,7 +27,7 @@ Money is the second reason. The whole system has a $200 per month ceiling. The c
 
 Source: bj0fbejiq.txt, CHECK 2, "Secrets hygiene for this build"; read-this-first.md section 12.
 
-Privacy is the third. Open-weight models run through OpenRouter with ZDR so that no prompt lingers anywhere. A key pasted into a chat window, or into Cursor's BYOK box, quietly breaks that promise. Cursor's own help page says "Cursor's Zero Data Retention policy does not apply when you use your own API keys."
+Privacy Mode is not the third. This repo is public. Prompts leave the machine. The hygiene that still matters is keys: a key pasted into a chat window, or into Cursor's BYOK box, lands in logs. Cursor's own help page says "Cursor's Zero Data Retention policy does not apply when you use your own API keys." That is a reason not to paste keys, not a reason to treat the project as secret.
 
 Source: btzaixzyh.txt, CHECK 1, "BYOK and OpenRouter", quoting https://cursor.com/help/models-and-usage/api-keys (2026-09-14).
 
@@ -57,7 +57,7 @@ A few rows need one more sentence.
 
 Source: bj0fbejiq.txt, CHECK 2, accounts checklist row 2; read-this-first.md section 10.
 
-**Push protection on a private repo.** The learning note says secret scanning is free on public repos. Whether the toggle appears on a private repo inside a free organization is a thing to verify in the repo's Code security settings when the repo is handed over in M2. If it is missing, gitleaks in a pre-commit hook does the same job on your machine. That is why the plan has both.
+**Push protection on a public repo.** Secret scanning and push protection are free on public repos. Turn them on in the repo's Code security settings. gitleaks in a pre-commit hook does the same job on your machine. That is why the plan has both.
 
 Source: bkm2kob5x.txt, section 15; plan section 5, M1.
 
@@ -65,11 +65,11 @@ Source: bkm2kob5x.txt, section 15; plan section 5, M1.
 
 Source: bkm2kob5x.txt, section 15.
 
-**Cline is the allowed exception.** The plan lets you give Cline your OpenRouter key inside Cline's own settings. Cline sends prompts straight to OpenRouter under OpenRouter's terms, with logging off and ZDR routing on. Cursor's own model settings never see the key.
+**Cline is the allowed exception.** The plan lets you give Cline your OpenRouter key inside Cline's own settings. Cline sends prompts straight to OpenRouter under OpenRouter's terms, with logging off. Cursor's own model settings never see the key.
 
 Source: plan section 5, M1 step 5; read-this-first.md section 11; btzaixzyh.txt, CHECK 1.
 
-**The agent's blast radius.** Never give an AI agent a key with write access to anything you cannot restore. Neon branching is the undo button. Create a branch before any schema change the agent proposes. The private repo inside a free organization (Chapter 3) helps here too. It gives you one page to check who and what has access.
+**The agent's blast radius.** Never give an AI agent a key with write access to anything you cannot restore. Neon branching is the undo button. Create a branch before any schema change the agent proposes. GitHub's access page shows who and what has access.
 
 Source: bj0fbejiq.txt, CHECK 2, "Secrets hygiene for this build"; read-this-first.md section 10.
 
@@ -84,7 +84,7 @@ Chapter 1 lists the first three under "Security, week 1". They are repeated so t
 | About secret scanning, https://docs.github.com/en/code-security/secret-scanning/introduction/about-secret-scanning | Docs | 0.5 | What push protection catches and what it does not |
 | gitleaks, https://github.com/gitleaks/gitleaks | Tool readme | 1 | Install, scan the repo once, wire the pre-commit hook |
 | github/gitignore, https://github.com/github/gitignore | Template file | 0.5 | Start from `Node.gitignore`; add `.env*`, `*.xlsx` caches, and any raw licensed data dumps |
-| Cursor, bring your own API key, https://cursor.com/help/models-and-usage/api-keys | Help page | 0.25 | Read the one sentence that says ZDR does not apply with BYOK, then never do it |
+| Cursor, bring your own API key, https://cursor.com/help/models-and-usage/api-keys | Help page | 0.25 | Read the sentence that BYOK is unofficial, then never paste a key |
 
 About 3.25 hours in total. The learning path budgets about 4 hours and $0 for this set.
 
@@ -108,7 +108,7 @@ Source: bkm2kob5x.txt, section 15; bj0fbejiq.txt, CHECK 2, row 1.
 - GitHub asks you for a code at sign-in, and you can name the offline place where the recovery codes sit.
 - Every vendor account in Document A, section 10, has 2FA on and its own email alias.
 - The repo has `.env*` in `.gitignore`, a committed `.env.example`, and push protection on, or gitleaks in a pre-commit hook if the toggle is not offered.
-- OpenRouter shows a $75 monthly limit, prompt logging off, and ZDR routing on. GitHub shows a $25 Actions spending cap. Voyage has a billing alert.
+- OpenRouter shows a $75 monthly limit and prompt logging off. GitHub shows a $25 Actions spending cap. Voyage has a billing alert.
 - You have rotated the OpenRouter key once on purpose, and the nightly job still ran afterward.
 - Two calendar reminders exist, 90 days out, for the GitHub token and the OpenRouter key.
 - You can explain to someone else why a key never goes into a chat or into Cursor's BYOK box.

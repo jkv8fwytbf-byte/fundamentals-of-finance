@@ -66,7 +66,7 @@ Source: Report, Part 2 (2026-09-14).
 
 A note on language. This folder reports what he and his critics did with their own money as history. It never recommends any action. Your system has the same rule, and a test scans every output for recommendation language. When a critic's published estimate is quoted, it is quoted as a historical fact about that critic.
 
-Source: /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md, section 10.1, "No advice" (2026-09-14).
+Source: docs/plan.md, section 10.1, "No advice" (2026-09-14).
 
 ## Terms you will meet
 

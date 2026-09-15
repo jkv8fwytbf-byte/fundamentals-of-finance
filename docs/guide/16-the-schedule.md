@@ -6,7 +6,7 @@ A schedule is a promise about order, not about speed. It says what you read, wat
 
 The weeks are grouped into milestones. A milestone is a bundle of work with a named owner and a "done when" line. This project has five: M0 (documents, already delivered), M1 (your accounts and Cursor), M2 (the foundation, built for you), M3 (you take the wheel) and M4 (India, accuracy, ranges, the market panel). A sixth, M5, exists in the plan only if other people ever use the system, and is out of scope here. The milestone map board draws them as a road.
 
-Source: /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md section 5 (2026-09-14); https://www.figma.com/board/LXcGUT7C2ArsRkwsUvRBWt
+Source: docs/plan.md section 5 (2026-09-14); https://www.figma.com/board/LXcGUT7C2ArsRkwsUvRBWt
 
 ## Why this tool now (for this project)
 
@@ -35,7 +35,7 @@ Source: bkm2kob5x.txt, "12-week evening schedule"; plan section 4; guide chapter
 | Week | Milestone | Guide chapters | Damodaran (chapter 15) | Accounts to open | Do in Cursor | You can stop here if |
 |---|---|---|---|---|---|---|
 | 0 (now) | M0 | Preface, 0, 2 | Nothing yet | None | Nothing; read A and C | Always. This is the default until you say go. |
-| 1 | M1 (you) and M2 (built for you) | 1, 3, 14 | Accounting sessions 1 to 5 | Evening 1: GitHub 2FA and organization, Cursor Privacy Mode, OpenRouter ($20 credit, $75 limit, logging off, zero-data-retention routing on). Evening 2: Neon, Pinecone, Voyage, Cloudflare. Evening 3: Langfuse, Mistral, Hex, then `.cursor/mcp.json` | Day-one exercise: ask why terminal cost of capital = risk-free + mature ERP, then find the `Mature Market ERP +` label yourself | every key is in place and Cursor's agent lists the valuation tools |
+| 1 | M1 (you) and M2 (built for you) | 1, 3, 14 | Accounting sessions 1 to 5 | Evening 1: GitHub 2FA, OpenRouter ($20 credit, $75 limit, logging off). Evening 2: Neon, Pinecone, Voyage, Cloudflare. Evening 3: Langfuse, Mistral, Hex, then `.cursor/mcp.json` | Day-one exercise: ask why terminal cost of capital = risk-free + mature ERP, then find the `Mature Market ERP +` label yourself | every key is in place and Cursor's agent lists the valuation tools |
 | 2 | M3 | 4, then read `docs/walkthrough.md` | Valuation online 1 to 4 | None | Create and resolve a merge conflict; break the golden test and watch CI go red, then fix it | you are content to read memos and never edit code |
 | 3 | M3 | 5, 6 | Valuation online 5 to 8 | None | Add a company to the watchlist; try to store a number without a vintage and watch Neon refuse; re-index one blog year | the watchlist has the names you care about |
 | 4 | M3 done | 7, 8 | Corporate Finance online 4 to 11 | None | Review and edit a memo; add a diagnostic warning in TypeScript | five PRs are merged, 20 names have approved memos, and you can explain every `AGENTS.md` rule aloud. A US-only system now works. |
@@ -72,7 +72,7 @@ Source: bkm2kob5x.txt, "Checkpoints that must be true"; bkdrkpfng.txt (golden va
 
 - Damodaran's self-paced class index, https://pages.stern.nyu.edu/~adamodar/New_Home_Page/onlineclass.htm. Web page, 15 minutes to bookmark. Free. It is the master list behind chapter 15's session numbers.
 - The milestone map board, https://www.figma.com/board/LXcGUT7C2ArsRkwsUvRBWt. FigJam board, 20 minutes. Free. It is this chapter as a picture; the PNG is at /Users/siddharth/Valuation/docs/diagrams/png/milestone-map.png.
-- The plan, /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md, sections 0, 4 and 5. Markdown, 30 minutes. It is the contract this chapter is derived from.
+- The plan, `docs/plan.md`, sections 0, 4 and 5. Markdown, 30 minutes. It is the contract this chapter is derived from.
 - Document A, /Users/siddharth/Valuation/docs/read-this-first.md, sections 10 and 14. Markdown, 20 minutes. Section 10 is the click-by-click order for week 1's accounts.
 - GitHub's two-factor authentication page, https://docs.github.com/en/authentication/securing-your-account-with-two-factor-authentication-2fa/about-two-factor-authentication. Web page, 20 minutes. Free. The first task of week 1, evening 1.
 

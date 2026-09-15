@@ -23,7 +23,7 @@ Here are the words you will meet, each with the librarian's version.
 | Citation | Document id, page and position stored with every chunk. | The stamp on the back of every card. |
 | Context window | The most tokens a model can read in one call. | How much fits on the desk. |
 
-Source: /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bj0fbejiq.txt, CHECK 3 section 6; /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md, section 10.4 (2026-09-14)
+Source: /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bj0fbejiq.txt, CHECK 3 section 6; docs/plan.md, section 10.4 (2026-09-14)
 
 Why a second pass? Nearest in meaning is not always most useful. So the system over-fetches, say the top 50, and lets the reranker read each one properly. Keeping 5 to 8 is the 2026 default. Why hybrid? Embeddings are fuzzy about exact names. In our corpus, 101 files say "sales to capital", 97 say "sales/capital" and 4 say "sales-to-capital". Meaning-based search treats all three as one idea, which is good. But a ticker, a rating like "Baa3" or a file name like "fcffsimpleginzu" must match letter for letter. Keyword search does that.
 
@@ -63,7 +63,7 @@ Nothing below is built yet. Milestone 2 will build it, and this section describe
 
 The corpus goes in by tiers, best answers per token first. Tier 1 is the blog posts. Tier 2 is the book, the lecture packets with speaker notes, and the exams. Tier 3 is the dataset rows rewritten as sentences. Tier 4 is the transcripts, after a punctuation pass. Milestone 2 will index tiers 1 and 3 first and prove the pipeline on those. Transcripts come last because YouTube's machine-made captions have no punctuation, are all lowercase, and carry 10 to 20 percent classroom chatter. Cleaning 18 million transcript tokens with GLM-5.3-Flash in batch mode, a slower queue at half price, is priced at about $11.25.
 
-Source: /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md, sections 5 (M2) and 10.4; bfxevcj1s.txt, section 2(f); bcy86uopa.txt, section 7 row (b) (2026-09-14)
+Source: docs/plan.md, sections 5 (M2) and 10.4; bfxevcj1s.txt, section 2(f); bcy86uopa.txt, section 7 row (b) (2026-09-14)
 
 ### Cleaning before indexing
 
@@ -81,13 +81,13 @@ Source: /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-77
 
 Chunking follows the shape of each source. A blog post is split on its sub-headings, never across posts, with the title and date prepended to every chunk. A slide deck keeps one slide and its speaker notes together, because the `### Notes:` block under a slide is where he explains why. Exams join a question with its solution. Transcripts become 60 to 90 seconds of speech, about 800 tokens, with 20 percent overlap. Every chunk carries metadata: `source_url`, `title`, `date`, `doc_type`, `license_class`, `vintage`, `asr`, `region` and `company`. Two labels do the most work. `author` is Damodaran only for his own words, so a filing or press clipping can never be quoted as his view. `year` lets the reranker prefer a 2026 packet over a 2025 one.
 
-Source: /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bfxevcj1s.txt, section 6; /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md, section 10.4; /Users/siddharth/Downloads/financeMD/damodaran/pptfiles/val3E/valpacket2spr25.md (2026-09-14)
+Source: /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bfxevcj1s.txt, section 6; docs/plan.md, section 10.4; /Users/siddharth/Downloads/financeMD/damodaran/pptfiles/val3E/valpacket2spr25.md (2026-09-14)
 
 ### The license fence
 
 Every chunk has a license class, and the index admits four of the seven. `public_domain` (SEC filings), `damodaran_public` (his posts and datasets), `open_access` (RBI yields, arXiv, SSRN author copies) and `asr_youtube` (auto-captions, marked as approximate wording) go in. `licensed_personal` (EODHD, a broker's API), `proprietary_personal` (your Bloomberg notes) and `link_only` (books, paid newsletters) stay out. The fence is a database rule on the `chunk_manifest` table in Neon, a CHECK constraint that refuses a row with a forbidden class. It is not a habit you must remember. Think of an allergen label on every ingredient rather than on the finished cake. Because the label is on each chunk, "can I show this answer to someone else?" becomes a query, not an audit.
 
-Source: /Users/siddharth/Valuation/docs/read-this-first.md, section 3.3; /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md, sections 10.1 and 10.3; bj0fbejiq.txt, CHECK 3 section 7 (2026-09-14)
+Source: /Users/siddharth/Valuation/docs/read-this-first.md, section 3.3; docs/plan.md, sections 10.1 and 10.3; bj0fbejiq.txt, CHECK 3 section 7 (2026-09-14)
 
 ### Pinecone's role, Voyage's role, and what is free
 
@@ -108,23 +108,23 @@ Source: /Users/siddharth/Valuation/docs/read-this-first.md, sections 10 and 12; 
 5. Send the 8 chunks, a system prompt and the question to GLM-5.3 through OpenRouter. The answer must cite chunk ids. An uncited claim is rejected.
 6. Log the call in Langfuse, the tracing and evals tool covered in the evals chapter. About 40 of his exam questions, with solutions, are held out as the test paper, and Kimi K3 grades the answers as judge.
 
-Source: /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bcy86uopa.txt, section 6; bfxevcj1s.txt, section 5 item 10; /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md, sections 10.4 and 10.5 (2026-09-14)
+Source: /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bcy86uopa.txt, section 6; bfxevcj1s.txt, section 5 item 10; docs/plan.md, sections 10.4 and 10.5 (2026-09-14)
 
 ### The rule: retrieval finds the paragraph; the database holds the number
 
 This is the one rule to carry out of the chapter. RAG is for narrative and reasoning: why he treats country risk the way he does, what "sales to capital" means, how a story becomes a driver. The database in Neon is the system of record for anything the calculator multiplies. System of record means the one place where a fact is the truth, and everything else is a copy. A figure never travels from a retrieved chunk into a valuation directly. It is first written to a Postgres row with its source, license class and vintage, and the memo writer's numbers go to `valuation_inputs`, never parsed from prose. "What is the India default spread today?" is routed to the database tool, not the index. Tables retrieve badly as text, and the database will hold the July 2026 value of 1.75% once Milestone 2 seeds it.
 
-Source: /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bj0fbejiq.txt, CHECK 3 sections 6 and 7; bfxevcj1s.txt, section 6 retrieval notes; /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md, section 10.5; bafb6h9rb.txt, India rows (2026-09-14)
+Source: /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bj0fbejiq.txt, CHECK 3 sections 6 and 7; bfxevcj1s.txt, section 6 retrieval notes; docs/plan.md, section 10.5; bafb6h9rb.txt, India rows (2026-09-14)
 
 A concrete example. The July 2026 country-risk post says that "country risk exposure comes less from where the company is incorporated and more from where it operates". That is a paragraph the librarian should find when you ask how to treat a Siemens factory in India. The 1.75% default spread that goes with it is a number, and it will live in the `country_risk` table with a vintage id.
 
-Source: /Users/siddharth/Downloads/financeMD/damodaran/blog/2026/07/country-risk-drivers-measures-and.md, line 172 (2026-07-15); /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md, section 10.3
+Source: /Users/siddharth/Downloads/financeMD/damodaran/blog/2026/07/country-risk-drivers-measures-and.md, line 172 (2026-07-15); docs/plan.md, section 10.3
 
 ### Why Pinecone, and not vectors inside Neon
 
 One research report argued for `pgvector`, a Postgres extension that keeps vectors in the same database as the fundamentals. At 60,000 vectors, it said, we are about 200 times below the point where a dedicated vector database pays for itself, and SQL joins against the fundamentals tables come free. The plan chose Pinecone anyway: it was your preference, it is free at this size, and hybrid sparse-plus-dense search comes built in. The retriever sits behind one interface, so pgvector on Neon remains the fallback if two systems ever feel like a burden.
 
-Source: /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/b31x0pyot.txt, section 6; /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md, section 7 (2026-09-14)
+Source: /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/b31x0pyot.txt, section 6; docs/plan.md, section 7 (2026-09-14)
 
 ## Learn it
 

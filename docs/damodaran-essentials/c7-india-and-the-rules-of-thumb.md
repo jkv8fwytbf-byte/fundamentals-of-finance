@@ -35,7 +35,7 @@ Source: /Users/siddharth/Downloads/financeMD/damodaran/pdfiles/country/val2dayIn
 
 Why it matters for the calculator: from milestone 4 the RBI 10-year G-sec yield will be hand-entered monthly as a `market` vintage row, and the engine will subtract the India default spread from the `country risk` vintage. Two vintages, one number, both ids stored on the run.
 
-Source: /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md, M4 (2026-09)
+Source: docs/plan.md, M4 (2026-09)
 
 ## Step 3: the equity risk premium, mature plus country
 
@@ -127,7 +127,7 @@ Source: /Users/siddharth/Downloads/financeMD/damodaran/blog/2021/10/the-indian-s
 
 Why these matter for the calculator: they are the template for an Indian run. A story in five drivers, a rupee risk-free rate by subtraction, a country-loaded ERP, an explicit failure probability, and a range around the point. They also show why the accuracy scoreboard will store the estimate, the price and the vintages on the day, so later revisions are honest about what changed.
 
-Source: /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md, M4 (2026-09)
+Source: docs/plan.md, M4 (2026-09)
 
 ### The 2025 India seminar themes
 

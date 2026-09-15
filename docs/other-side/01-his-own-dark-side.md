@@ -41,7 +41,7 @@ When a company is young, losing money, or in trouble, he does not switch tools. 
 
 In the app: the memo writer will never refuse a company. It will name the uncertainty type and pull the matching Dark Side passages before proposing any input.
 
-Source: Report, Part 1, bullet 1 (2026-09-14); blog/2014/06/a-disruptive-cab-ride-to-riches-uber.md (2014-06-09); plan, /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md, item 4.
+Source: Report, Part 1, bullet 1 (2026-09-14); blog/2014/06/a-disruptive-cab-ride-to-riches-uber.md (2014-06-09); plan, docs/plan.md, item 4.
 
 ### 2. The risk-free rate is not risk-free
 

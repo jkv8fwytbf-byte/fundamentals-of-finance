@@ -22,13 +22,13 @@ Source: /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-77
 
 ### The two places a model is used
 
-This confused you before, so slowly. **Place 1 is while you write code.** That is Cursor, on the models Cursor includes in the $20 subscription you already pay. You never paste an API key into Cursor. Doing so is unofficial, switches off features like Tab, and voids Cursor's zero-data-retention promise. Privacy Mode stays on.
+This confused you before, so slowly. **Place 1 is while you write code.** That is Cursor, on the models Cursor includes in the $20 subscription you already pay. You never paste an API key into Cursor. Doing so is unofficial, switches off features like Tab, and puts the key in logs. Cursor Privacy Mode is not a secrecy guarantee. This repo is public.
 
 Source: /Users/siddharth/Valuation/docs/read-this-first.md, sections 4 and 11 (2026-09-14); /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/btzaixzyh.txt, CHECK 1
 
 **Place 2 is inside the product when it runs at night.** Our own code, started by GitHub Actions (Chapter 3), calls a model to write memos, answer librarian questions, and clean transcripts. Those calls go through OpenRouter. That is where the volume and the cost live, so that is where the cheap open-weight models go. **Open-weight** means the model's weights are downloadable and hosted by many companies, so no single vendor can switch you off, and a pinned checkpoint keeps a 2026 valuation reproducible in 2029.
 
-Source: /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md, sections 2a and 2b (2026-09-14)
+Source: docs/plan.md, sections 2a and 2b (2026-09-14)
 
 The price of that choice is capability. On the AA Intelligence Index v4.3 (released 2026-09-07) the frontier models score 53 and the best open-weight model, GLM-5.3, scores 45. The gap sits in long autonomous coding tasks, not in the "read a filing and extract" work that fills a valuation pipeline. Open-weight models cost 7 to 40 times less per token, so for Place 2 the trade is worth it.
 
@@ -48,11 +48,11 @@ You will create the account in milestone 1 (Document A, section 10). Buy $20 of 
 |---|---|---|
 | Monthly spend limit | $75 | The budget line for OpenRouter is $30 to $70 a month, inside the $200 ceiling |
 | Prompt logging | Off | Logging is opt-in, and turning it on hands OpenRouter broad rights over your prompts |
-| Zero-data-retention routing | On | Only companies that promise not to store your prompts may serve your requests |
+| Zero-data-retention routing | Optional | Hygiene for runtime prompts that may include licensed filings. Not a claim that the project is secret |
 
 Source: /Users/siddharth/Valuation/docs/read-this-first.md, sections 10 and 12
 
-**Zero data retention** (ZDR) means the company that ran your request deletes the prompt and the answer once the answer is sent. OpenRouter is the only router in the vendor scorecard that can enforce ZDR per request, which is the feature that makes "everything private" possible through a router. The research also notes that enabling prompt logging "grants OpenRouter an irrevocable right to commercial use" of the logged text. That is why logging stays off.
+**Zero data retention** (ZDR) means the company that ran your request deletes the prompt and the answer once the answer is sent. OpenRouter can enforce ZDR per request. That is optional hygiene. It does not make "everything private". The research also notes that enabling prompt logging "grants OpenRouter an irrevocable right to commercial use" of the logged text. That is why logging stays off.
 
 Source: /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bj0fbejiq.txt, Role 4
 
@@ -64,13 +64,13 @@ Source: bcy86uopa.txt, section 4
 
 ### Why not OpenRouter's web-search plugin
 
-OpenRouter offers a plugin that lets a model search the web mid-answer. We do not use it. The ZDR guarantee covers inference routing only. The plugin runs under a third party's retention rules, so any prompt that touches it leaves the private zone. If the project ever needs web search for the news layer, it will use a separate vendor, chosen from the AA Search Index, described below.
+OpenRouter offers a plugin that lets a model search the web mid-answer. We do not use it. The plugin runs under a third party's retention rules. If the project ever needs web search for the news layer, it will use a separate vendor, chosen from the AA Search Index, described below.
 
 Source: bj0fbejiq.txt, Role 4 and the accounts checklist
 
 ### The model picks, and why each
 
-The runtime will pin four model ids in one file, with the AA index version next to them. Prices will be re-checked monthly. A swap will be one line. All four are open-weight and all go through OpenRouter with ZDR on.
+The runtime will pin four model ids in one file, with the AA index version next to them. Prices will be re-checked monthly. A swap will be one line. All four are open-weight and all go through OpenRouter.
 
 | Job | OpenRouter id | Price per million tokens, in / out | Why this one |
 |---|---|---|---|
@@ -86,9 +86,9 @@ To make the prices concrete: a typical librarian answer sends about 8,000 tokens
 
 Source: /Users/siddharth/Valuation/docs/read-this-first.md, section 4.1; bcy86uopa.txt, section 9
 
-One caution on licenses. The model-selection report lists GLM-5.3 under a bespoke permissive license that is explicitly not MIT, and DeepSeek V4.1 Flash under plain MIT. The plan describes GLM-5.3-Flash as plain MIT, while the report lists it as bespoke permissive. For a private project neither wording matters. If the system ever becomes public, read each model card yourself before deciding.
+One caution on licenses. The model-selection report lists GLM-5.3 under a bespoke permissive license that is explicitly not MIT, and DeepSeek V4.1 Flash under plain MIT. The plan describes GLM-5.3-Flash as plain MIT, while the report lists it as bespoke permissive. The repo is public, so read each model card yourself before deciding.
 
-Source: bcy86uopa.txt, section 1a; /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md, section 2a
+Source: bcy86uopa.txt, section 1a; docs/plan.md, section 2a
 
 ### Reading the Artificial Analysis pages
 
@@ -165,7 +165,7 @@ Source: bcy86uopa.txt, section 7
 
 - You can say, in one sentence each, what OpenRouter is and what Artificial Analysis is.
 - You can explain why Cursor never sees an OpenRouter key, and where the open-weight models actually run.
-- Your OpenRouter account has a $75 monthly limit, logging off, and ZDR routing on, and you can say why each.
+- Your OpenRouter account has a $75 monthly limit and logging off, and you can say why each.
 - You can name the four pinned model ids and give one number that justifies each.
 - You can list the five traps without looking, and say which one the bulk job guards against.
 - Your decisions log holds the five-line note from the exercise, with a cost per task in it.

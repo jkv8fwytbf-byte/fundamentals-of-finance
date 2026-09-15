@@ -1,4 +1,4 @@
-# Chapter 12. Hex: a private dashboard over Neon
+# Chapter 12. Hex: a dashboard over Neon
 
 ## What it is (plain words and an analogy)
 
@@ -12,9 +12,9 @@ Source: /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-77
 
 ## Why this tool now (for this project)
 
-The plan lists seven parts of the system. Part 6 is "a private dashboard (you look, you do not print)", a hosted notebook over the same database that shows diversification, value-versus-price distributions, Monte Carlo ranges, the accuracy scoreboard and the market panel. Hex was picked because it is the only tool within budget that combines five things in one surface: SQL straight against Neon, real Python for Monte Carlo and bias and variance, product-grade chart cells with input widgets, private single-user sharing, and a built-in AI agent.
+The plan lists seven parts of the system. Part 6 is "a personal dashboard (you look, you do not print)", a hosted notebook over the same database that shows diversification, value-versus-price distributions, Monte Carlo ranges, the accuracy scoreboard and the market panel. Hex was picked because it is the only tool within budget that combines five things in one surface: SQL straight against Neon, real Python for Monte Carlo and bias and variance, product-grade chart cells with input widgets, a personal workspace (not a public website), and a built-in AI agent.
 
-Source: /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md, sections 1 and 7 (2026-09-14).
+Source: docs/plan.md, sections 1 and 7 (2026-09-14).
 
 Hex has two plans that concern you. The comparison below copies the report.
 

@@ -1,10 +1,12 @@
 READ IN THIS ORDER. Nothing to install, nothing to buy, no accounts yet.
+This repo is public. Keys stay out of git. The plan is docs/plan.md.
 
 1-read-this-first.pdf       tonight, 40 minutes. what we are building, in plain words.
 2-damodaran-essentials.pdf  one chapter per evening, 7 evenings. the finance refresher.
                             -> then come back and say "go" (or "page X confused me").
 3-the-other-side.pdf        later. the people who disagree with Damodaran.
 4-the-guide.pdf             later, while building. the tools manual. chapter 13 = Figma.
+5-the-plan-explained.pdf    after PDF 1. the plan, section by section, with my comment on each.
 
 Figma: a website for drawing diagrams. I drew 5 pictures of the system there so you
 can learn it later. The same pictures are already printed inside PDF 1. You do not

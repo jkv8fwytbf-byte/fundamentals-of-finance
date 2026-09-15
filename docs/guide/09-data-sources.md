@@ -41,7 +41,7 @@ Source: /Users/siddharth/Valuation/docs/read-this-first.md, section 7 (2026-09-1
 | FRED | US Treasury yields, credit spreads | daily | CSV or JSON | free | `open_access` |
 | Bloomberg | reading only | n/a | web, email | your own subscription | `proprietary_personal` |
 
-Source: /Users/siddharth/Valuation/docs/read-this-first.md, sections 3.3, 10 and 12; /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md, section 7 (2026-09-14)
+Source: /Users/siddharth/Valuation/docs/read-this-first.md, sections 3.3, 10 and 12; docs/plan.md, section 7 (2026-09-14)
 
 ### SEC EDGAR
 
@@ -69,7 +69,7 @@ Source: /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-77
 
 Missing interest expense. The workbook turns interest expense into a synthetic credit rating through the coverage ratio, operating income divided by interest expense. If interest expense is zero the sheet sets coverage to 1,000,000, which reads as a perfect rating. Apple's `InterestExpense` tag exists in `companyfacts`, but its last value covers the year ending 2023-09-30 (3,933 million dollars) and nothing after. So a naive loader sees "missing" and writes zero, and the model rewards Apple with a top rating by accident. The plan's fix is a visible `interest_missing` flag on the `ltm_financials` row, never a silent zero.
 
-Source: https://data.sec.gov/api/xbrl/companyfacts/CIK0000320193.json (fetched 2026-09-14); bkdrkpfng.txt, section 3.4; /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md, sections M2 and 10.3 (2026-09-14)
+Source: https://data.sec.gov/api/xbrl/companyfacts/CIK0000320193.json (fetched 2026-09-14); bkdrkpfng.txt, section 3.4; docs/plan.md, sections M2 and 10.3 (2026-09-14)
 
 ### Damodaran's datasets
 

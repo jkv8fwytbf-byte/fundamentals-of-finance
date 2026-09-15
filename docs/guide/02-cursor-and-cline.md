@@ -16,7 +16,7 @@ Source: btzaixzyh.txt, CHECK 1, section 2, Cline (2026-09-14)
 
 - You already pay for Cursor Pro at $20 a month. The plan says: do not add a second paid harness. A harness is the program that wraps a model with tools and a screen.
 - You are a beginner building a system you will not fully understand on day one. Reviewing each change as a diff, and reading a plan in English before code is written, is the difference between learning and copying.
-- Privacy is a stated requirement. With Privacy Mode on, Cursor holds zero-data-retention agreements with all its model providers.
+- The repo is public. Cursor Privacy Mode is not a secrecy guarantee. Prompts and relevant files leave your machine. Do not paste API keys into Cursor.
 - The budget ceiling is $200 a month, and the Cursor line is fixed at $20. Every other dollar is better spent on the system's own model calls.
 
 Source: btzaixzyh.txt, CHECK 1, "RECOMMENDATION for you specifically" (2026-09-14); read-this-first.md sections 11 and 12 (2026-09-14)
@@ -44,13 +44,13 @@ The ladder is Hobby (free), Start (India only, ₹649 a month), Pro ($20, about 
 
 Source: btzaixzyh.txt, CHECK 1, plans table and recommendation point 4 (2026-09-14)
 
-### Privacy Mode, and why no API key ever goes into Cursor
+### Why no API key ever goes into Cursor
 
-Privacy Mode is a setting under Settings, then General. With it on, your code is never used for training, and Cursor's zero-data-retention agreements apply. Zero data retention (ZDR) means the model provider deletes your prompt and files after answering instead of storing them. Privacy Mode is on by default only for Enterprise accounts. Individuals must switch it on themselves. Do this before you open the repo for the first time.
+Cursor Privacy Mode is a setting under Settings, then General. Cursor's help pages say that with it on, your code is not used for training and that zero-data-retention agreements with model providers apply. Zero data retention (ZDR) means a provider claims to delete the prompt and files after answering. That is a vendor claim. It is not a secrecy architecture for this project. Prompts still leave your machine. Cloud agents still clone the repo. This repo is public. Privacy Mode is optional. Do not treat it as a lock on the work.
 
-Source: btzaixzyh.txt, CHECK 1, "Privacy / ZDR" (2026-09-14); read-this-first.md section 11, step 1 (2026-09-14)
+Cursor lets you paste your own provider key, called BYOK, "bring your own key". Do not. The BYOK help page says Cursor's Zero Data Retention policy does not apply when you use your own keys. Three more things break: Tab completion never uses your key, Auto and Composer may not route through it, and OpenRouter is not officially supported at all. The practical failure is simpler: a key pasted into settings or a chat lands in logs. So the rule is: your OpenRouter key goes into the repo's `.env` file, into GitHub secrets, and into Cline's own settings. It never goes into Cursor's settings.
 
-Cursor lets you paste your own provider key, called BYOK, "bring your own key". Do not. The BYOK help page says, in Cursor's own words, that its Zero Data Retention policy does not apply when you use your own keys. Three more things break: Tab completion never uses your key, Auto and Composer may not route through it, and OpenRouter is not officially supported at all. Routing open-weight models into Cursor would also waste the pools you already pay for. So the rule is simple: your OpenRouter key goes into the repo's `.env` file, into GitHub secrets, and into Cline's own settings. It never goes into Cursor's settings.
+Source: btzaixzyh.txt, CHECK 1, "BYOK and OpenRouter" (2026-09-14); read-this-first.md section 11 (2026-09-15)
 
 Source: btzaixzyh.txt, CHECK 1, "BYOK and OpenRouter" and "Is open-weight via OpenRouter still meaningful inside Cursor" (2026-09-14); read-this-first.md section 10 (2026-09-14)
 
@@ -96,7 +96,7 @@ Source: btzaixzyh.txt, CHECK 1, "How it pairs with GitHub Actions" (2026-09-14);
 
 ### Cline, the free bench
 
-Cline is licensed Apache 2.0, had about 1.5 million VS Code Marketplace installs by April 2026, and costs $0 as a tool. You install it from the Extensions panel inside Cursor, because Cursor runs VS Code extensions. In Cline's provider settings you pick OpenRouter and paste your OpenRouter key. That key lives in Cline, and Cline talks to OpenRouter under the settings you set there in M1: monthly limit $75, prompt logging off, zero-data-retention routing on.
+Cline is licensed Apache 2.0, had about 1.5 million VS Code Marketplace installs by April 2026, and costs $0 as a tool. You install it from the Extensions panel inside Cursor, because Cursor runs VS Code extensions. In Cline's provider settings you pick OpenRouter and paste your OpenRouter key. That key lives in Cline, and Cline talks to OpenRouter under the settings you set there in M1: monthly limit $75, prompt logging off.
 
 Source: btzaixzyh.txt, CHECK 1, section 2, Cline (2026-09-14); read-this-first.md section 10, row 3 (2026-09-14)
 
@@ -122,7 +122,7 @@ Hours are my estimates unless a source is named. All free.
 |---|---|---|---|
 | Cursor docs, Agent modes: https://cursor.com/docs/agent/modes | Web page | 0.5 | Plan mode versus Agent mode, the one control you use daily |
 | Cursor docs, Models and pricing: https://cursor.com/docs/models-and-pricing | Web page | 0.5 | Read the two pools yourself, and find the Auto setting |
-| Cursor privacy page: https://cursor.com/docs/enterprise/privacy-and-data-governance and the BYOK page: https://cursor.com/help/models-and-usage/api-keys | Web pages | 0.5 | Confirm the ZDR promise and the sentence that BYOK voids it |
+| Cursor BYOK page: https://cursor.com/help/models-and-usage/api-keys | Web page | 0.25 | The sentence that BYOK is unofficial; do not paste keys |
 | Cursor docs, MCP: https://cursor.com/docs/context/mcp, plus the MCP intro: https://modelcontextprotocol.io/docs/getting-started/intro | Web pages | 1 (MCP intro about 0.5 per the learning path) | Understand `.cursor/mcp.json` before the repo ships it |
 | Cursor docs, Rules page (cursor.com/docs, search "Rules"; verify the exact URL) | Web page | 0.5 | How `.cursor/rules/` is read on every request |
 | Cline docs, Plan and Act: https://docs.cline.bot/features/plan-and-act | Web page | 0.5 | The per-mode model split, and what Plan cannot do |
@@ -132,12 +132,11 @@ Source: URLs from btzaixzyh.txt, CHECK 1, Sources list (verified 2026-09-14); MC
 
 ## 10-minute exercise
 
-You can do this today, before the repo exists.
+You can do this today, before the code exists.
 
-1. Open Cursor. Settings, then General, then Privacy Mode: on. Two minutes.
-2. Open the folder `~/Valuation/docs`. Open the agent panel. Press Shift+Tab until the mode reads Plan. Ask: "Plan a change that adds a one-line glossary entry for the word hunk to read-this-first.md, section 15. Do not make the change." Read the plan. Note which file it says it would touch. Four minutes.
-3. Press Shift+Tab to Agent mode. Ask for the same one-line change. When the diff appears, read the red and green lines, then reject the hunk. Open the Source Control panel and confirm no file is modified. Three minutes.
-4. Add one line to your decisions log from chapter 0 saying what Plan mode showed you. One minute.
+1. Open Cursor. Open the folder `~/Valuation/docs`. Open the agent panel. Press Shift+Tab until the mode reads Plan. Ask: "Plan a change that adds a one-line glossary entry for the word hunk to read-this-first.md, section 15. Do not make the change." Read the plan. Note which file it says it would touch. Four minutes.
+2. Press Shift+Tab to Agent mode. Ask for the same one-line change. When the diff appears, read the red and green lines, then reject the hunk. Open the Source Control panel and confirm no file is modified. Three minutes.
+3. Add one line to your decisions log from chapter 0 saying what Plan mode showed you. One minute.
 
 In M1, when your OpenRouter key exists, add the second half: install Cline from the Extensions panel, choose OpenRouter as provider, paste the key, and set GLM-5.3 for Plan and GLM-5.3-Flash for Act.
 
@@ -145,9 +144,9 @@ Source: plan, M1 steps 4 and 5 (2026-09-14)
 
 ## Done when
 
-- Privacy Mode shows as on, and you checked it yourself.
 - You can switch modes with Shift+Tab and explain in one sentence what Plan mode cannot do.
 - You have rejected a hunk and seen the file unchanged in Source Control.
 - You can say where an API key goes (`.env`, GitHub secrets, Cline's provider setting) and where it never goes (Cursor's settings).
 - You can say why the nightly pipeline runs on GitHub Actions and not on Cursor Automations.
+- You can say, in one sentence, that Cursor Privacy Mode is not a secrecy guarantee and that this repo is public.
 - After M2: the agent panel lists the six tools from `.cursor/mcp.json`, and Cline runs with different models for Plan and Act.

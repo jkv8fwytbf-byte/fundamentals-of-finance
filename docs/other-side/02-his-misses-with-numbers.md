@@ -181,4 +181,4 @@ Source: /Users/siddharth/Downloads/financeMD/damodaran/blog/2019/09/insights-on-
 
 Your engine inherits the first two weaknesses. From M1 onward it will store every value with its date and its vintage ids, so that you can grade it later the way he grades himself. Chapter 6 turns that into design rules.
 
-Source: /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bkm2kob5x.txt, Parts 2 and 6 (2026-09-14); /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md (2026-09-14)
+Source: /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bkm2kob5x.txt, Parts 2 and 6 (2026-09-14); docs/plan.md (2026-09-14)

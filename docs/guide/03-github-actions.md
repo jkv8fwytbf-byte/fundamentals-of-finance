@@ -16,9 +16,9 @@ There are two reasons, and both come from the plan.
 
 First, the golden test lives here. Damodaran's spreadsheet ships with a worked example, Almarai, whose value per share is 7.187840270062114. Our calculator must reproduce that number to 1e-6, which means to six decimal places. CI turns that rule from a promise into a gate. A pull request that moves the number goes red and cannot merge.
 
-Source: /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md, sections 1 and 10.1 (2026-09-14); bkm2kob5x.txt, learning path section 2.
+Source: docs/plan.md, sections 1 and 10.1 (2026-09-14); bkm2kob5x.txt, learning path section 2.
 
-Second, it is the free scheduler. Vercel, which hosts web pages, allows its Hobby plan only one cron run per day, fired at any minute inside the stated hour. A cron is a timer that starts a job on a fixed calendar. GitHub Actions has a `schedule` trigger with no such daily cap. A private repo on the Free plan gets 2,000 Linux minutes per month. So every nightly robot in this system will run on Actions and will write its results to the Neon database. Vercel only serves pages.
+Second, it is the free scheduler. Vercel, which hosts web pages, allows its Hobby plan only one cron run per day, fired at any minute inside the stated hour. A cron is a timer that starts a job on a fixed calendar. GitHub Actions has a `schedule` trigger with no such daily cap. This repo is public, so standard Linux runners are free. Every nightly robot in this system will run on Actions and will write its results to the Neon database. Vercel only serves pages.
 
 Source: bkm2kob5x.txt, learning path sections 0 and 5 (2026-09-14); bo0hrclp7.txt, section 1.4 (Vercel cron docs, last updated 2026-07-15).
 
@@ -91,36 +91,24 @@ These are the things that make a nightly job silently skip a day. Read them twic
 - **The 5-minute floor.** The shortest allowed interval is 5 minutes. You will never need that. Nightly is the cadence here.
 - **The 6-hour cap.** A job's default `timeout-minutes` is 360, which is six hours. A hung API call sits there for six hours at $0.006 per minute, which is about $2.16 in silence. Set a real timeout on every job.
 - **Minute rounding.** GitHub rounds each job up to the whole minute. Fifty jobs of 20 seconds cost 50 minutes, not 17. For fan-out work, loop inside one job instead of spreading it across a matrix of many jobs (a matrix is an Actions feature that clones one job once per input value, each clone billed separately).
-- **The 60-day sleep.** In a public repo, a scheduled workflow is switched off after 60 days with no new commits. The docs say this is public-only. Community reports disagree. Treat a private repo as probably safe, and use the heartbeat below rather than trusting either side.
+- **The 60-day sleep.** In a public repo, a scheduled workflow is switched off after 60 days with no new commits. Use the heartbeat below rather than trusting a silent cron.
 - **The spending cap.** Set a hard Actions spending limit of $25 in the organization's billing settings before the first scheduled workflow exists. A retry loop in an ingest job is the realistic way to burn money.
 
 Source: bj0fbejiq.txt, CHECK 1 part 2, sections 2.3 and 2.7 (fetched 2026-09-14), citing https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows; plan sections 5 (M2) and 9.
 
-### Private-repo minutes and prices
+### Public-repo minutes
 
-Public repos get standard runners free. Private repos get an included pool, then pay per minute.
+Public repos get standard runners free. Private-repo minute pools do not apply here. Keep a $25 Actions spending cap anyway, in case a job is moved onto a paid runner later.
 
-| Plan | Price | Included minutes per month | Artifact storage | Cache storage |
-|---|---|---|---|---|
-| Free (personal or organization) | $0 | 2,000 | 500 MB | 10 GB |
-| Pro | $4 per month | 3,000 | 1 GB | 10 GB |
-| Team | $4 per user per month | 3,000 | 2 GB | 10 GB |
+Cost math for this project: the plan budgets $0 for CI on the public repo. The $25 cap is belt and suspenders.
 
-Per-minute rates on standard runners, after the price cut of January 1, 2026: Linux 2-core x64 (`ubuntu-latest`) is $0.006, Linux 2-core arm64 is $0.005, Windows 2-core is $0.010, and macOS is $0.062. A Linux 1-core rate of $0.002 is listed, but the report could not confirm a usable label for it. Stay on Linux x64 and none of the Windows or macOS questions matter. Larger runners (4 cores and up) never draw on your included minutes; you pay from the first minute.
+Source: bj0fbejiq.txt, CHECK 1 part 2, section 2.1 (fetched 2026-09-14); plan section 6 (2026-09-15).
 
-Source: bj0fbejiq.txt, CHECK 1 part 2, section 2.1 and "Open items" (fetched 2026-09-14), citing https://docs.github.com/en/billing/concepts/product-billing/github-actions.
+### Blacksmith, optional later
 
-Cost math for this project, all on Linux x64: at 3,000 minutes a month, GitHub Free costs $6 and GitHub Pro costs $4. At 6,000 minutes, Free costs $24 and Pro costs $22. Pro pays for itself above about 2,667 minutes a month. The plan budgets $0 to $25 a month for CI.
+An organization on GitHub is a shared account that owns repositories. This repo does not need one for privacy. A vendor called Blacksmith sells faster runners, but only to GitHub organizations, not personal repos. Create an organization later only if you want those runners.
 
-Source: bj0fbejiq.txt, section 2.6; plan section 6 (2026-09-14).
-
-### The organization trick and Blacksmith
-
-An organization on GitHub is a shared account that owns repositories. A free organization gets the same 2,000 private minutes as a personal account. The plan puts the private repo inside an organization you own from day one. The reason is a vendor called Blacksmith.
-
-Blacksmith sells drop-in replacement runners on faster bare-metal machines. You change one line, `runs-on: ubuntu-latest` becomes `runs-on: blacksmith-2vcpu-ubuntu-2404`, and nothing else. They claim about twice the speed. They give 3,000 free minutes a month per organization, then charge $0.004 a minute for Ubuntu x64 and $0.0025 for ARM. But their docs say, verbatim, "Blacksmith is limited to GitHub organizations and not available for personal repositories." Moving a repo into an organization after you have wired up secrets is painful. Creating the organization first is free and takes two minutes.
-
-When to switch: only once usage is consistently over about 3,000 minutes a month. Start on GitHub's own runners on the Free plan. Watch actual usage for three or four weeks in the billing page. If you would rather have zero extra vendors, GitHub Pro at $4 a month is a completely defensible choice, with a worst case of $22 a month at 6,000 minutes.
+Blacksmith: you change `runs-on: ubuntu-latest` to `runs-on: blacksmith-2vcpu-ubuntu-2404`. They claim about twice the speed. They give 3,000 free minutes a month per organization, then charge $0.004 a minute for Ubuntu x64. Start on GitHub's own runners.
 
 Source: bj0fbejiq.txt, sections 2.4, 2.6 and 2.7 (Blacksmith pricing and quickstart fetched 2026-09-14); plan sections 2 and 5 (M2).
 

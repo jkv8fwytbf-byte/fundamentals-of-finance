@@ -20,7 +20,7 @@ This project's whole value is being right about numbers that other people may on
 
 The approved plan lists "dependence on the AI tool" as a named risk. Its mitigations are the rules below: attempt-then-ask, own the tests, one no-AI evening a week, and a decisions log.
 
-Source: /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md, section 9 (2026-09-14)
+Source: docs/plan.md, section 9 (2026-09-14)
 
 ## How it is used in this project
 
@@ -29,7 +29,7 @@ Source: /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md, s
 - M3 also asks you to track your ratio of lines written to lines accepted (rule 8 below).
 - The day-one exercise in M1 is the pattern for everything after it: ask the tool, then find the answer yourself in the workbook, then compare.
 
-Source: /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md, sections 4 and 5 (M1, M3) (2026-09-14)
+Source: docs/plan.md, sections 4 and 5 (M1, M3) (2026-09-14)
 
 ## The ten operational rules, each with a 5-minute exercise
 
@@ -47,7 +47,7 @@ Five-minute exercise: create `~/Valuation/scratch/attempts.md`. Write today's da
 
 A test is a small program that checks a bigger program and reports pass or fail. Never let the tool write both the check and the code that satisfies it. The golden number for the Almarai example, 7.187840270062114 value per share, is the model. The expected values are extracted from the workbook by a script, and the fixture file (the file of expected answers the test compares against) is protected in CI (continuous integration, the automatic check that runs on every pull request; chapter 1) so an agent can never "fix" the test instead of the code. If the tool proposes changing a test, that is a design conversation, not an edit.
 
-Source: /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md, sections 1 and 10.1 (2026-09-14)
+Source: docs/plan.md, sections 1 and 10.1 (2026-09-14)
 
 Five-minute exercise: open `/Users/siddharth/Downloads/financeMD/damodaran/pc/fcffsimpleginzu.md` and search for "Estimated value /share". Write the number you find in your attempts file, with the line number. That is the first invariant you own.
 
@@ -77,7 +77,7 @@ A decisions log is a folder of short notes, one per decision. The format is `doc
 
 Five-minute exercise: create `~/Valuation/docs/decisions/001-daily-tool-is-cursor.md`. Write: decided (Cursor as the daily tool), rejected (pi, a second paid tool), why (already paid, shows diffs, has a plan mode). The reasons are in plan section 2.
 
-Source: /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md, section 2 (2026-09-14)
+Source: docs/plan.md, section 2 (2026-09-14)
 
 ### Rule 7. Spend the tool on mechanical work, spend yourself on judgment
 
@@ -132,7 +132,7 @@ This is the day-one exercise from the plan, with rule 1 added.
 3. Open the workbook markdown yourself and find the cell label `Mature Market ERP +` and the note "riskfree rate + 4.5%".
 4. Write three lines: what you guessed, what the tool said, what the workbook says. Note any place the tool was more confident than the workbook.
 
-Source: /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md, section 5, M1 step 6 (2026-09-14); /Users/siddharth/Downloads/financeMD/damodaran/pc/fcffsimpleginzu.md, lines 48 and 608
+Source: docs/plan.md, section 5, M1 step 6 (2026-09-14); /Users/siddharth/Downloads/financeMD/damodaran/pc/fcffsimpleginzu.md, lines 48 and 608
 
 ## Done when
 

@@ -67,7 +67,7 @@ The plan lists about twenty tables. Do not memorize them. Notice the pattern: so
 
 In `fact`, the columns `source_url`, `license_class`, `filed`, `accession` and `vintage_id` are all NOT NULL. In `valuation_run`, the three vintage ids are NOT NULL. Raw files are not stored in Postgres; they sit in a private bucket, named by their hash.
 
-Source: /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md, section 10.3 (2026-09-14)
+Source: docs/plan.md, section 10.3 (2026-09-14)
 
 ### Vintage: why every run stores three ids
 
@@ -89,7 +89,7 @@ Source: /Users/siddharth/Valuation/docs/read-this-first.md, section 3.2 (2026-09
 
 Rights attach to facts, not to files. Document A, section 3.3, lists the seven classes. Note the spelling: Document A writes "licence", and the column is named `license_class`; they are the same thing. The classes are `public_domain`, `damodaran_public`, `open_access`, `asr_youtube`, `licensed_personal`, `proprietary_personal` and `link_only`. A CHECK on the column allows only those seven strings. A second rule, on `chunk_manifest`, refuses the last three from the search index.
 
-Source: /Users/siddharth/Valuation/docs/read-this-first.md, section 3.3 (2026-09-14); /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md, sections 10.1 and 10.3 (2026-09-14)
+Source: /Users/siddharth/Valuation/docs/read-this-first.md, section 3.3 (2026-09-14); docs/plan.md, sections 10.1 and 10.3 (2026-09-14)
 
 The Bloomberg example shows why. Your bloomberg.com subscription is a reading product. Its terms say the service "may not be used to construct a database of any kind" (Bloomberg.com Terms of Service, section 3). So when you read an article, the system stores only the link, the headline, the date and your own one-sentence note, in `narrative_note`, with `license_class = 'proprietary_personal'`. Books and paid newsletters get `link_only`, meaning the row holds a link and nothing else. Both classes are refused by the index rule, so they never reach the librarian. The research report's analogy: allergen labels belong on every ingredient, not on the finished cake. One unlabeled Bloomberg number in `fact` would make the whole table unshareable, because you could no longer prove which rows were clean.
 
