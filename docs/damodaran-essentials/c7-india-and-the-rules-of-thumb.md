@@ -14,17 +14,17 @@ Source: /Users/siddharth/Downloads/financeMD/damodaran/blog/2021/07/the-zomato-i
 
 A currency is a unit of measurement, like meters or kilograms. It is not a source of risk. You can value an Indian company in rupees (INR) or in US dollars (USD). Both are correct if you are consistent, meaning every input is in the same currency: revenues, debt, cash, the risk-free rate, the growth rate, the share price, and the share count. The workbook has only two per-share cells, the price and the number of shares. Everything else is in whole-company currency units. The sheet warns explicitly about mixing millions with a raw share count. Indian filings add a second trap. They report in crore or lakh, and one crore equals ten million (a definition, not a corpus number). Convert once, at the door, and never again.
 
-Source: /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bkdrkpfng.txt, sections 6 and 7 (2026-09)
+Source: /Users/siddharth/Desktop/Valuation/docs/sources/bkdrkpfng.txt, sections 6 and 7 (2026-09)
 
 The currency choice also sets the terminal growth rate. The workbook's default is that growth in perpetuity equals the risk-free rate. In INR, that means the INR risk-free rate. Do not import a 2.5% dollar growth number into a rupee model. Do not import a 7% rupee growth number into a dollar model. The packet's rule for nominal cash flows is that "the growth rate should be nominal in the currency in which the valuation is denominated". For the calculator, this will become a single field, `currency`, stamped on every run, and a test will check that the growth cap uses the same currency's risk-free rate.
 
-Source: /Users/siddharth/Downloads/financeMD/valpacket1spr25.md, slide 202 (Spring 2025); /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bkdrkpfng.txt, section 1.6 (2026-09)
+Source: /Users/siddharth/Downloads/financeMD/valpacket1spr25.md, slide 202 (Spring 2025); /Users/siddharth/Desktop/Valuation/docs/sources/bkdrkpfng.txt, section 1.6 (2026-09)
 
 ## Step 2: the INR risk-free rate
 
 A risk-free rate is the return on an investment with no chance of default. A government bond only qualifies if the government is close to default-free. India is rated Baa3 by Moody's, which is not that. So the 10-year Indian government bond yield, the G-sec yield, contains a default spread. A default spread is the extra yield lenders charge for the chance of not being repaid. His fix is subtraction: INR risk-free rate equals the 10-year G-sec yield minus India's default spread. The reason is double counting. The cost of debt already adds the country default spread. If the risk-free rate also carried it, sovereign risk would be counted twice.
 
-Source: /Users/siddharth/Downloads/financeMD/damodaran/pdfiles/country/val2dayIndia2025.md, slide 29 (2025); /Users/siddharth/Valuation/docs/read-this-first.md, section 3.4 (2026-09)
+Source: /Users/siddharth/Downloads/financeMD/damodaran/pdfiles/country/val2dayIndia2025.md, slide 29 (2025); /Users/siddharth/Desktop/Valuation/docs/read-this-first.md, section 3.4 (2026-09)
 
 His own India examples, all from the same seminar slide:
 
@@ -39,7 +39,7 @@ Source: /Users/siddharth/Downloads/financeMD/damodaran/pdfiles/country/val2dayIn
 
 Why it matters for the calculator: from milestone 4 the RBI 10-year G-sec yield will be hand-entered monthly as a `market` vintage row, and the engine will subtract the India default spread from the `country risk` vintage. Two vintages, one number, both ids stored on the run.
 
-Source: /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md, M4 (2026-09)
+Source: /Users/siddharth/Desktop/Valuation/docs/plan.md, M4 (2026-09)
 
 ## Step 3: the equity risk premium, mature plus country
 
@@ -56,11 +56,11 @@ The two 2026 vintages the calculator will store:
 
 The older seminar illustration uses the same logic with rounder numbers: a 2% default spread times 21 over 14, the Sensex volatility over Indian bond volatility, gives a 3% CRP.
 
-Source: /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bafb6h9rb.txt, section 1 (2026-09); /Users/siddharth/Downloads/financeMD/damodaran/pdfiles/country/val2dayIndia2025.md, slide 45 (2025)
+Source: /Users/siddharth/Desktop/Valuation/docs/sources/bafb6h9rb.txt, section 1 (2026-09); /Users/siddharth/Downloads/financeMD/damodaran/pdfiles/country/val2dayIndia2025.md, slide 45 (2025)
 
 One refinement matters for Indian names. Country risk comes from where a company operates, not where it is incorporated. His seminar pairs Tata Motors, with 91.37% of 2009 revenues in India, against TCS, with 7.62%. The workbook offers three ERP choices: country of incorporation, operating countries weighted by revenue, or operating regions weighted by revenue. Why it matters for the calculator: default to country of incorporation, but store revenue weights when the filing gives them, so an IT exporter is not charged full India risk.
 
-Source: /Users/siddharth/Downloads/financeMD/damodaran/pdfiles/country/val2dayIndia2025.md, slide 52 (2025); /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bkdrkpfng.txt, section 2.6 (2026-09)
+Source: /Users/siddharth/Downloads/financeMD/damodaran/pdfiles/country/val2dayIndia2025.md, slide 52 (2025); /Users/siddharth/Desktop/Valuation/docs/sources/bkdrkpfng.txt, section 2.6 (2026-09)
 
 ## Step 4: the tax rate
 
@@ -74,7 +74,7 @@ The workbook needs two tax rates. The effective rate is what the company actuall
 
 The country table inside the workbook shows 30% for India. That column is never read by any formula. It is information, not an input. Why it matters for the calculator: `marginal_tax_rate` will be a typed field with those three options, never copied from the country table.
 
-Source: /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bkdrkpfng.txt, sections 3.2 and 6 (2026-09)
+Source: /Users/siddharth/Desktop/Valuation/docs/sources/bkdrkpfng.txt, sections 3.2 and 6 (2026-09)
 
 ## Step 5: industry averages and the fallback
 
@@ -95,7 +95,7 @@ The workbook ships two peer tables, US and Global, each with 94 industries. Ther
 
 Why it matters for the calculator: the rule is India first, then emerging markets, then Global, switching whenever the row has fewer than 10 firms. The tier actually used will be written on every run as `industry_tier_used`, so a memo can say "peer margins are global, because only five Indian airlines exist".
 
-Source: /Users/siddharth/Downloads/financeMD/damodaran/pc/datasets/betaIndia.md (2026-01-05); /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bafb6h9rb.txt, sections 2 and 3 (2026-09); /Users/siddharth/Valuation/docs/read-this-first.md, section 3.4 (2026-09)
+Source: /Users/siddharth/Downloads/financeMD/damodaran/pc/datasets/betaIndia.md (2026-01-05); /Users/siddharth/Desktop/Valuation/docs/sources/bafb6h9rb.txt, sections 2 and 3 (2026-09); /Users/siddharth/Desktop/Valuation/docs/read-this-first.md, section 3.4 (2026-09)
 
 ## Step 6: dollar-based averages and the inflation differential
 
@@ -105,7 +105,7 @@ Source: /Users/siddharth/Downloads/financeMD/damodaran/pc/fcffsimpleginzu.md, In
 
 The workbook handles the cost of capital itself. Its industry-average and distribution approaches add the difference between your risk-free rate and 4.58%, the dollar risk-free rate of that vintage. The emerging-market distribution it offers is 7.63% at the first quartile, 8.95% at the median and 10.69% at the third quartile, all in dollars before that adjustment. His India file shows the full conversion for the whole market: 8.28% in dollars becomes 10.92% in rupees, using 5% expected INR inflation and 2.5% expected US inflation. The arithmetic is one plus the dollar rate, times one plus INR inflation, divided by one plus US inflation, minus one. Why it matters for the calculator: growth averages pulled from a dollar table will get the same treatment before they touch an INR run, and the rule will be logged. Margins pass through untouched.
 
-Source: /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bkdrkpfng.txt, sections 2.6 and 6 (2026-09); /Users/siddharth/Downloads/financeMD/damodaran/pc/datasets/waccIndia.md (2026-01-05)
+Source: /Users/siddharth/Desktop/Valuation/docs/sources/bkdrkpfng.txt, sections 2.6 and 6 (2026-09); /Users/siddharth/Downloads/financeMD/damodaran/pc/datasets/waccIndia.md (2026-01-05)
 
 ## His Indian cases, as published estimates
 
@@ -131,7 +131,7 @@ Source: /Users/siddharth/Downloads/financeMD/damodaran/blog/2021/10/the-indian-s
 
 Why these matter for the calculator: they are the template for an Indian run. A story in five drivers, a rupee risk-free rate by subtraction, a country-loaded ERP, an explicit failure probability, and a range around the point. They also show why the accuracy scoreboard will store the estimate, the price and the vintages on the day, so later revisions are honest about what changed.
 
-Source: /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md, M4 (2026-09)
+Source: /Users/siddharth/Desktop/Valuation/docs/plan.md, M4 (2026-09)
 
 ### The 2025 India seminar themes
 
@@ -161,7 +161,7 @@ Each rule below is his, with where it comes from and what it becomes in the calc
 | A big market is not a premium. The size is already inside growth and margin. The danger with big-market companies is an estimate that is too high, not too low. | Zomato 2021 post, "Big market delusion" | No premium fields exist. Market size enters only through revenue. |
 | Your own scoreboard must record misses as loudly as hits. | Zomato 2022 post | The accuracy scoreboard will store every estimate against later prices. |
 
-Source: /Users/siddharth/Downloads/financeMD/valpacket1spr25.md (Spring 2025); /Users/siddharth/Downloads/financeMD/damodaran/pdfiles/country/val2dayIndia2025.md (2025); /Users/siddharth/Downloads/financeMD/damodaran/blog/2026/02/data-update-5-for-2026-risk-and-hurdle.md (2026-02-05); /Users/siddharth/Downloads/financeMD/damodaran/blog/2021/07/the-zomato-ipo-bet-on-big-markets-and.md (2021-07-22); /Users/siddharth/Downloads/financeMD/damodaran/blog/2022/07/a-zomato-2022-update-value-pricing-and.md (2022-07-27); /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bkdrkpfng.txt (2026-09)
+Source: /Users/siddharth/Downloads/financeMD/valpacket1spr25.md (Spring 2025); /Users/siddharth/Downloads/financeMD/damodaran/pdfiles/country/val2dayIndia2025.md (2025); /Users/siddharth/Downloads/financeMD/damodaran/blog/2026/02/data-update-5-for-2026-risk-and-hurdle.md (2026-02-05); /Users/siddharth/Downloads/financeMD/damodaran/blog/2021/07/the-zomato-ipo-bet-on-big-markets-and.md (2021-07-22); /Users/siddharth/Downloads/financeMD/damodaran/blog/2022/07/a-zomato-2022-update-value-pricing-and.md (2022-07-27); /Users/siddharth/Desktop/Valuation/docs/sources/bkdrkpfng.txt (2026-09)
 
 ## Where this comes from
 
@@ -173,8 +173,8 @@ Source: /Users/siddharth/Downloads/financeMD/valpacket1spr25.md (Spring 2025); /
 - /Users/siddharth/Downloads/financeMD/damodaran/blog/2026/02/data-update-5-for-2026-risk-and-hurdle.md, the cost-of-capital distribution and the 14% test.
 - /Users/siddharth/Downloads/financeMD/valpacket1spr25.md, slides 202 and 203, the growth cap and the risk-free rate as nominal growth.
 - /Users/siddharth/Downloads/financeMD/damodaran/pc/datasets/betaIndia.md and waccIndia.md, the India peer files, firm counts, and the rupee conversion.
-- /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bkdrkpfng.txt, section 6, the cell-by-cell edit list for an Indian run.
-- /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bafb6h9rb.txt, the dataset catalog with the India rows and vintages.
+- /Users/siddharth/Desktop/Valuation/docs/sources/bkdrkpfng.txt, section 6, the cell-by-cell edit list for an Indian run.
+- /Users/siddharth/Desktop/Valuation/docs/sources/bafb6h9rb.txt, the dataset catalog with the India rows and vintages.
 
 ## Three things to remember
 

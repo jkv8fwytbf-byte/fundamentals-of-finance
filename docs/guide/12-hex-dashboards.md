@@ -12,13 +12,13 @@ Think of a kitchen with a serving hatch. The notebook is the kitchen, where you 
 
 Three kinds of cell matter here. A SQL cell asks the database a question in SQL, the standard language for talking to databases. Its answer arrives as a dataframe, which is a table held in Python memory, like one tab of a spreadsheet. A Python cell can then do arithmetic on that table. A chart cell draws a table as a bar, line, scatter or histogram without any code. An input widget is a dropdown or slider on the page that feeds a value into the cells below it.
 
-Source: /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/btzaixzyh.txt, CHECK 2 comparison table and "Why Hex" list (September 2026).
+Source: /Users/siddharth/Desktop/Valuation/docs/sources/btzaixzyh.txt, CHECK 2 comparison table and "Why Hex" list (September 2026).
 
 ## Why this tool now (for this project)
 
 The plan lists seven parts of the system. Part 6 is "a private dashboard (you look, you do not print)", a hosted notebook over the same database that shows diversification, value-versus-price distributions, Monte Carlo ranges, the accuracy scoreboard and the market panel. Hex was picked because it is the only tool within budget that combines five things in one surface: SQL straight against Neon, real Python for Monte Carlo and bias and variance, product-grade chart cells with input widgets, private single-user sharing, and a built-in AI agent.
 
-Source: /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md, sections 1 and 7 (2026-09-14).
+Source: /Users/siddharth/Desktop/Valuation/docs/plan.md, sections 1 and 7 (2026-09-14).
 
 Hex has two plans that concern you. The comparison below copies the report.
 
@@ -29,7 +29,7 @@ Hex has two plans that concern you. The comparison below copies the report.
 
 The plan and Document A budget the same line: Hex costs $0 now and $36 later, when you want a published dashboard with a daily refresh. The honest costs of Hex are lock-in (the notebook lives in Hex, not in git), small compute on Community, and embedding into a web app being an Enterprise feature.
 
-Source: btzaixzyh.txt CHECK 2 comparison table and "honest costs" paragraph; /Users/siddharth/Valuation/docs/read-this-first.md section 12 (2026-09-14).
+Source: btzaixzyh.txt CHECK 2 comparison table and "honest costs" paragraph; /Users/siddharth/Desktop/Valuation/docs/read-this-first.md section 12 (2026-09-14).
 
 ## How it is used in this project
 

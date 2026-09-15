@@ -26,13 +26,13 @@ Source: general product knowledge of Figma, which the local reports do not cover
 
 The approved plan puts the FigJam diagrams inside milestone zero (M0), next to the four documents. M0 is the "explain everything" milestone, and nothing past it is built yet. The five boards are pictures of the system you will build later. If you can redraw a board in your own words, you understand that part of the system. That is why the plan makes editing the architecture board your first exercise.
 
-Source: /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md, M0 deliverables and the "Figma, concretely" note (2026-09-14)
+Source: /Users/siddharth/Desktop/Valuation/docs/plan.md, M0 deliverables and the "Figma, concretely" note (2026-09-14)
 
 ## How it is used in this project
 
 ### The five boards
 
-Each board below is live in your Figma account. A copy of each also sits as a PNG image in /Users/siddharth/Valuation/docs/diagrams/png/. A PNG is a plain picture file. It opens anywhere, but you cannot move its boxes.
+Each board below is live in your Figma account. A copy of each also sits as a PNG image in /Users/siddharth/Desktop/Valuation/docs/diagrams/png/. A PNG is a plain picture file. It opens anywhere, but you cannot move its boxes.
 
 - System architecture, https://www.figma.com/board/DtFTvDZeSQpuKLM5tavDUT. The seven parts of the system and how they talk to each other. PNG: architecture.png.
 - Nightly data flow, https://www.figma.com/board/6LSfZZfWAnbQVY0twr7OMw. What the GitHub Actions robot does each night, from checking for new filings to writing a heartbeat row. PNG: nightly-data-flow.png.
@@ -40,7 +40,7 @@ Each board below is live in your Figma account. A copy of each also sits as a PN
 - The memo pipeline, https://www.figma.com/board/LGcrXp6yT3fh4O2IV3mEY8. How a company story becomes numbers and then a written memo. PNG: memo-pipeline.png.
 - The milestone map, https://www.figma.com/board/LXcGUT7C2ArsRkwsUvRBWt. The order of work from M0 onward. PNG: milestone-map.png.
 
-Source: /Users/siddharth/Valuation/docs/read-this-first.md, the board table and sections 1, 7, 8, 9 and 14 (2026-09-14); directory listing of docs/diagrams/png/ (2026-09-14)
+Source: /Users/siddharth/Desktop/Valuation/docs/read-this-first.md, the board table and sections 1, 7, 8, 9 and 14 (2026-09-14); directory listing of docs/diagrams/png/ (2026-09-14)
 
 ### The Figma connector in the Claude app
 
@@ -61,13 +61,13 @@ What to keep in mind:
 - Your seat says View. Creating the boards still worked, so they exist. If a board ever opens read-only, the plan mentions a one-click seat upgrade. Check the budget in read-this-first section 12 before paying for anything.
 - Boards live in Figma's cloud, not on your Mac. Keep API keys, passwords and account numbers off every board. Chapter 14 covers security hygiene.
 
-Source: /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md, "Figma, concretely" and section 8 (2026-09-14); Figma connector whoami call and its tool list in this session (2026-09-14)
+Source: /Users/siddharth/Desktop/Valuation/docs/plan.md, "Figma, concretely" and section 8 (2026-09-14); Figma connector whoami call and its tool list in this session (2026-09-14)
 
 ### When to draw a screen
 
 Only when you are about to build one. The plan places screens at v3, and M0 has no screens at all. Until then, every drawing you make is a FigJam board, not a Figma design. Drawing screens early is like choosing curtains before the walls are up.
 
-Source: /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md, section 8, Figma bullet (2026-09-14)
+Source: /Users/siddharth/Desktop/Valuation/docs/plan.md, section 8, Figma bullet (2026-09-14)
 
 ## Learn it (a two-hour starter path)
 
@@ -84,7 +84,7 @@ All of these are free. The minutes are my estimates, not figures from a source. 
 
 Steps 1 to 6 total about two hours. Add the 10-minute exercise below and you are done for the evening.
 
-Source: /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md, M0 deliverable 4, "a two-hour starter path (Figma's own free tutorials, then editing the architecture board)" (2026-09-14); web knowledge for the site addresses
+Source: /Users/siddharth/Desktop/Valuation/docs/plan.md, M0 deliverable 4, "a two-hour starter path (Figma's own free tutorials, then editing the architecture board)" (2026-09-14); web knowledge for the site addresses
 
 ## 10-minute exercise
 
@@ -103,7 +103,7 @@ Do this on the architecture board. Work on your own copy so the original stays a
 
 If the copy will not save, or the board opens read-only, stop. Note what the screen says and raise it in your next session. Do not upgrade the seat on the spot.
 
-Source: /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md, "the first exercise is on the architecture board" (2026-09-14)
+Source: /Users/siddharth/Desktop/Valuation/docs/plan.md, "the first exercise is on the architecture board" (2026-09-14)
 
 ## Done when
 

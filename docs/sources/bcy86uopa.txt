@@ -1,0 +1,876 @@
+
+
+#################### RESEARCH 1 (chars 25065) ####################
+# MODEL SELECTION: Artificial Analysis → OpenRouter → Pinecone
+**Compiled 2026-09-14. All prices USD per 1M tokens unless stated. No files were created.**
+
+---
+
+## 0. Method + data provenance
+
+| Source | What I took from it | Retrieval |
+|---|---|---|
+| [artificialanalysis.ai/models/open-source](https://artificialanalysis.ai/models/open-source) | Open-weights Intelligence Index + speed + context | WebFetch, 2026-09-14 |
+| [AA Intelligence Index v4.3 announcement](https://artificialanalysis.ai/articles/artificial-analysis-intelligence-index-v4-3) | **Version v4.3, released 2026-09-07**, eval weights | WebFetch |
+| [AA Coding Agents leaderboard](https://artificialanalysis.ai/agents/coding-agents) + [BenchLM mirror](https://benchlm.ai/benchmarks/aacodingagents) | **Coding Agent Index v1.5**, snapshot **2026-09-11** | WebFetch |
+| [AA-Omniscience](https://artificialanalysis.ai/evaluations/omniscience) | Hallucination / calibration | WebFetch + search |
+| `https://openrouter.ai/api/v1/models` | **445 models, exact per-token prices, context, tool support** — pulled as JSON via curl | 2026-09-14 |
+| [Pinecone pricing](https://www.pinecone.io/pricing/) / [docs.pinecone.io/models](https://docs.pinecone.io/models/overview) | Hosted embed + rerank models, plan tiers | WebFetch |
+| [docs.voyageai.com/docs/pricing](https://docs.voyageai.com/docs/pricing) | Voyage embed/rerank prices | WebFetch |
+
+**Important caveat carried through this whole report:** AA's price column is a *blended 3:1 price on the model creator's own first-party API*. OpenRouter's price is the *aggregator's* price for a specific routed provider. They disagree — AA shows GLM-5.3 at $0.9 blended; OpenRouter lists `z-ai/glm-5.3` at $1.40 in / $4.40 out (blended 3:1 = $2.15), and `z-ai/glm-5.3:batch` at $0.70/$2.20 (blended $1.08). **Every cost number below uses the OpenRouter figure, because that is what you will actually be billed.**
+
+---
+
+## 1. AA Intelligence Index v4.3 — released 2026-09-07
+
+**Composition (10 evals, 4 categories):**
+
+| Category | Weight | Evals |
+|---|---|---|
+| Agents | 30% | AA-Briefcase (15%), GDPval-AA v2 (10%), AutomationBench-AA (5%) |
+| Coding | 20% | Terminal-Bench v4.0 (10%), SciCode (10%) |
+| General | 30% | AA-Omniscience Accuracy (10%), AA-Omniscience Non-hallucination (5%), GDP.pdf (10%), AA-LCR v1.1 (5%) |
+| Scientific reasoning | 20% | Humanity's Last Exam (10%), CritPt (10%) |
+
+### 1a. Top OPEN-WEIGHT models, v4.3
+
+AA speed/context from the open-source page; price/ctx from the live OpenRouter API; license from vendor reporting.
+
+| # | Model | Creator | AA II v4.3 | OR $/1M in | OR $/1M out | OR cache-read | AA out tok/s | OR context | License |
+|---|---|---|---|---|---|---|---|---|---|
+| 1 | **GLM-5.3 (max)** | Z.ai | **45** | 1.40 | 4.40 | 0.26 | 72 | 1,310,720 | Bespoke permissive (**not MIT**) |
+| 2 | **Kimi K3 (max)** | Moonshot | **44** | 2.6481 | 13.2827 | 0.3026 | 37 | 1,048,576 | Modified MIT (attribution >100M MAU) |
+| 3 | **GLM-5.3-Flash** | Z.ai | **42** | 0.15 | 0.50 | 0.03 | 107 | 1,310,720 | Bespoke permissive |
+| 4 | **Qwen3.8 2.4T A95B** | Alibaba | **40** | 2.00 | 6.00 | 0.25 | 40 | 1,048,576 | Apache-2.0 family |
+| 4= | **DeepSeek V4.1 Flash** | DeepSeek | **40** | 0.15 | 0.60 | 0.003 | 214 | 1,048,576 | MIT |
+| 6 | DeepSeek V4 Pro 0813 | DeepSeek | 36 | 0.9834 | 2.9502 | 0.0328 | 78 | 1,048,576 | MIT |
+| 7 | Qwen3.8 27B | Alibaba | 34 | 0.214 | 2.55 | 0.15 | 43 | 1,000,000 | Apache-2.0 |
+| 8 | K2 Horizon 375B A23B | MBZUAI | 31 | *not on OR* | — | — | — | 524k (AA) | Open weights |
+| 9 | MiniMax-M3 | MiniMax | 30 | 0.30 | 1.20 | 0.06 | 109 | 1,048,576 | Open weights |
+| 10 | Inkling | Thinking Machines | 26 | 1.00 | 4.05 | 0.17 | 89 | 1,048,576 | Open weights |
+| 11 | Nemotron 3 Ultra 550B | NVIDIA | 23 | 0.60 | 2.40 | 0.12 | 203 | 262,144 | NVIDIA Open Model |
+| 12 | Muse Glimmer 30B | Meta | 18 | 0.35 | 1.50 | 0.04 | 90 | 131,072 | Meta open weights |
+| 14 | gpt-oss-120b | OpenAI | 12 | **0.037** | **0.17** | — | 225 | 131,072 | Apache-2.0 |
+
+Every one of these reports `tools: true` and `reasoning: true` on OpenRouter. `structured_outputs: true` on all except Inkling and Ling-3.0-Flash.
+
+### 1b. Top PROPRIETARY, for comparison
+
+| Model | AA II v4.3 | OR $/1M in | OR $/1M out | cache-read | OR context |
+|---|---|---|---|---|---|
+| Claude Fable 5.1 | **53** | 10.00 | 50.00 | 0.25 | 1,000,000 |
+| GPT-6 Astra | **53** | 10.00 | 50.00 | 1.00 | 1,050,000 |
+| Claude Opus 5 | 51 | 5.00 | 25.00 | 0.50 | 1,000,000 |
+| Claude Fable 5 | 50 | 10.00 | 50.00 | 1.00 | 1,000,000 |
+| Muse Spark 1.3 | 48 | 1.25 | 4.25 | 0.15 | 1,048,576 |
+| GPT-5.6 Sol | 47 | 2.00 | 10.00 | 0.20 | 1,050,000 |
+
+**The gap:** best open weight (45) is **8 points / 15% relative** behind the frontier (53), but **7.1x cheaper on input and 11.4x cheaper on output**. AA's own framing: leading open-weights sit 9 points behind Fable 5.1 and GPT-6 Astra.
+
+---
+
+## 2. AA Coding Agent Index v1.5 — snapshot 2026-09-11
+
+Composite of DeepSWE v1.1 + Terminal-Bench 4.0 + SWE-Atlas-QnA, equal weights. **This is the metric that matters for the pi harness.**
+
+| Rank | Harness – Model | Index | Open weight? |
+|---|---|---|---|
+| 1 | Claude Code – Fable 5.1 (max, fallback) | 62.2% | no |
+| 2 | Codex – GPT-6 Astra (max) | 61.6% | no |
+| 3 | Claude Code – Opus 5 (max) | 59.7% | no |
+| 4 | Codex – GPT-5.6 Sol (max) | 54.6% | no |
+| 5 | Muse Code – Muse Spark 1.3 (max) | 54.3% | no |
+| **6** | **Opencode – GLM-5.3** | **53.6%** | **YES ← best open weight** |
+| **7** | **Kimi Code CLI – Kimi K3** | **51.9%** | **YES** |
+| 10 | Claude Code – Qwen3.8 Max | 43.3% | YES |
+| 11 | Codex – DeepSeek V4 Pro 0813 (max) | 43.1% | YES |
+| 13 | Codex – DeepSeek V4 Flash 0731 (max) | 38.7% | YES |
+
+**GLM-5.3 in an open harness scores 53.6% vs Claude Code/Fable's 62.2% — 86% of frontier capability at ~1/7 the price.** That is the honest trade you are accepting.
+
+---
+
+## 3. AA-Omniscience (hallucination / calibration) — the RAG-critical metric
+
+Index range −100..+100; rewards correct answers, penalises confident wrong answers, no penalty for abstaining. 6,000 questions, 42 topics, 6 domains ([arXiv 2511.13029](https://artificialanalysis.ai/evaluations/omniscience)).
+
+| Model | Omniscience Index | Accuracy | Hallucination rate |
+|---|---|---|---|
+| GPT-6 Astra (high) | **44** | — | — |
+| Claude Fable 5.1 | 43 | 65–67% | — |
+| Claude Opus 5 | 37 | 61% | — |
+| **Kimi K3** | **+18 to 20** ← best open weight | 46% | **51%** |
+| **GLM-5.3** | **14** | 34% | **30%** |
+| GLM-5.2 | 4 | 24% | 26% |
+| MiniMax-M3 | — | — | **18.4%** ← 3rd-lowest on public board |
+| **DeepSeek V4 Pro** | — | — | **94% ← DISQUALIFY** |
+
+As of 2026-08-27 the board had 167 models; **only 46 have a positive Index — 121 are more likely to give a confident wrong answer than a right one.**
+
+**Read this correctly:** AA-Omniscience is *closed-book*. In RAG the facts come from your retrieved chunks, so raw recall matters less. What *does* transfer is **calibration and willingness to abstain** — exactly the behaviour you need when a user asks "what's Damodaran's India ERP for 2019?" and the retriever missed it. DeepSeek V4 Pro's 94% hallucination rate is a calibration failure, not a knowledge failure, and it disqualifies the model from your answer path regardless of its II=36.
+
+---
+
+## 4. OpenRouter: availability, free variants, rate limits
+
+**Verified live from the API: 445 models. OpenRouter has ZERO embedding or reranking models — confirmed by filtering all 445 on output modality and on `embed`/`rerank` in the ID. You cannot outsource embeddings to OpenRouter. This forces a second vendor (Pinecone or Voyage) for §5.**
+
+### Free `:free` variants among relevant models
+
+| Free variant | Context | Note |
+|---|---|---|
+| `thinkingmachines/inkling:free` | 1,048,576 | AA II 26 |
+| `thinkingmachines/inkling-small:free` | 1,048,576 | — |
+| `nvidia/nemotron-3-ultra-550b-a55b:free` | 1,000,000 | AA II 23 |
+| `nvidia/nemotron-3.5-lightning:free` | 1,000,000 | — |
+| `nvidia/nemotron-3-super-120b-a12b:free` | 262,144 | — |
+| `inclusionai/ling-3.0-flash-vl:free` | 262,144 | — |
+
+**No free variant exists for GLM-5.3, GLM-5.3-Flash, Kimi K3, Qwen3.8, DeepSeek V4.x, MiniMax-M3, or gpt-oss-120b.**
+
+### Rate limits & fees
+- `:free` models: **20 req/min always**. **50 req/day** if you have never bought credits; **1,000 req/day** once you have bought ≥$10 lifetime.
+- Paid models: no platform-level request cap.
+- **Credit purchase fee: 5.5% via Stripe ($0.80 minimum), 5% via USDC.** No markup on inference itself — you pay provider list price.
+- BYOK: first 1,000,000 BYOK requests/month free of platform fee; PAYG includes $25,000/mo of list-price inference before the 5% BYOK fee bites. Irrelevant at your scale.
+
+**Free tier is unusable for your bulk job.** 1,000 req/day × 30 days = 30,000 requests/month. Punctuating 1,477 transcripts + tagging 60k chunks needs ~60k+ requests. You will pay. The good news is §6 shows it costs about the same as one pizza.
+
+### Batch variants (50% off, worth knowing)
+`z-ai/glm-5.3:batch` $0.70/$2.20 · `z-ai/glm-5.3-flash:batch` $0.075/$0.25 · `deepseek/deepseek-v4-pro-0813:batch` $0.66/$1.98 · `meta/muse-glimmer-30b:batch` $0.175/$0.75. Batch context is capped lower (1,048,576 vs 1,310,720).
+
+---
+
+## 5. Embeddings + reranking with nothing running locally
+
+### 5a. Pinecone integrated inference (one API call, one vendor)
+
+| Model | Type | Dimensions | Max input tokens | Price |
+|---|---|---|---|---|
+| **llama-text-embed-v2** | dense | **1024 default; 2048 / 768 / 512 / 384 selectable** | 2,048 | $0.16/M tokens |
+| multilingual-e5-large | dense | 1024 fixed | **507 ← too short for 800-token chunks** | $0.08/M tokens |
+| pinecone-sparse-english-v0 | sparse | n/a (sparse) | 512 default, 2,048 max | $0.08/M tokens |
+| cohere-rerank-4-fast | rerank | — | **8,192** | $2.00 / 1k requests |
+| bge-reranker-v2-m3 | rerank | — | 1,024 | $2.00 / 1k requests |
+| cohere-rerank-3.5 | rerank | — | 4,096 | **DEPRECATED** |
+| pinecone-rerank-v0 | rerank | — | — | **No longer on the current hosted-models list** — treat as legacy; do not build on it |
+
+**Pinecone plan tiers:**
+
+| Plan | Cost | Storage | Write units | Read units | Embed tokens | Rerank |
+|---|---|---|---|---|---|---|
+| Starter | **$0** | 2 GB | 2M/mo | 1M/mo | **5M/mo** | 500/mo (bge only) |
+| Builder | $20/mo flat | 10 GB | 5M/mo | 2M/mo | 10M/mo | 1,000/mo |
+| Standard | $50/mo min | $0.33/GB/mo | $4–4.50/M | $16–18/M | $0.08–0.16/M | $2/1k |
+| Enterprise | $500/mo min | $0.33/GB/mo | $6–6.75/M | $24–27/M | — | $2/1k |
+
+### 5b. Hosted alternatives
+
+| Provider | Model | Price/1M tok | Free allowance | Notes |
+|---|---|---|---|---|
+| **Voyage** | voyage-4-lite | **$0.02** | **200M tokens** | cheapest credible |
+| Voyage | voyage-4 | $0.06 | 200M | |
+| **Voyage** | **voyage-context-4** | **$0.12** | **200M** | contextualised chunk embeddings |
+| Voyage | voyage-code-4 | $0.12 | 200M | |
+| Voyage | voyage-3.5 / 3-large / context-3 | $0.06 / $0.18 / $0.18 | none | legacy |
+| **Voyage** | **rerank-3** | **$0.05** | **200M** | |
+| Voyage | rerank-3-lite | $0.02 | 200M | |
+| OpenAI | text-embedding-3-large | $0.13 ($0.065 batch) | none | |
+| Cohere | embed-v4 | $0.12 text / $0.47 image | none | no batch discount |
+| **OpenRouter** | — | **none exist** | — | verified across 445 models |
+
+### 5c. Index-build arithmetic for your 30M-token / 60k-chunk corpus
+
+| Option | One-time build cost | Monthly |
+|---|---|---|
+| Pinecone llama-text-embed-v2 | 30M × $0.16 = **$4.80** | but Starter caps at 5M tok/mo → needs 6 months, or Builder ($20) → 3 months, or Standard ($50) → 1 month |
+| Voyage voyage-context-4 | 30M × $0.12 = $3.60 → **$0 (under 200M free)** | $0 |
+| Voyage voyage-4-lite | 30M × $0.02 = $0.60 → **$0 free** | $0 |
+| OpenAI 3-large | $3.90 | — |
+
+**Storage:** 60,000 chunks × 1024 dims × 4 bytes = **245 MB** raw vectors. With metadata (source, license_class, vintage, url, doc_type) call it 400–600 MB. **Fits inside Pinecone Starter's free 2 GB.** 60k upserts is 3% of Starter's 2M free write units. A top_k=50 query costs single-digit read units; 1M free RU/month covers thousands of questions.
+
+### 5d. RECOMMENDED RETRIEVAL STACK — $0/month
+
+> **Embedding: `voyage-context-4`** (1 vendor call, $0.12/M, 200M free tokens → build is free, 32k input so an 800-token chunk is never truncated, and it embeds each chunk *aware of its neighbours* — which is exactly the fix for unpunctuated ASR transcript chunks and mid-thread blog paragraphs that are meaningless standalone).
+>
+> **Sparse companion: `pinecone-sparse-english-v0`** ($0.08/M) in a hybrid index. Non-negotiable for this corpus: dense embeddings are bad at exact-token recall of "sales-to-capital ratio", "Almarai", "Baa3", "fcffsimpleginzu", ticker symbols and specific years. Hybrid dense+sparse is the difference between finding the 2019 India ERP and hallucinating it.
+>
+> **Reranker: Voyage `rerank-3`** ($0.05/M, 200M free). At 50 candidates × 800 tokens = 40k tokens/query → **$0.002/query**, and free until you have run ~5,000 queries. Pinecone's `cohere-rerank-4-fast` is the same $0.002/request but Starter only includes 500 rerank calls/month and only for bge.
+>
+> **Vector DB: Pinecone Starter (free)**, upserting your own vectors. Upgrade to Builder ($20) only when storage exceeds 2 GB or read units exceed 1M/mo.
+>
+> **Why not Pinecone integrated inference?** It is one fewer vendor and genuinely simpler for a beginner — but `llama-text-embed-v2` caps at 2,048 input tokens, and the 5M tok/mo Starter cap makes a 30M-token build take six months. If you want the single-vendor simplicity, budget one month of Standard ($50 + $4.80 usage) to do the build, then drop back. **The Voyage path costs $0 and gives a better model. Take it.**
+>
+> **Do not use `multilingual-e5-large`** — its 507-token input limit silently truncates your 800-token chunks. That is a correctness bug wearing a price tag.
+
+---
+
+## 6. IS RAG WORTH IT? — the arithmetic
+
+**Largest context windows purchasable today (verified live on OpenRouter):**
+
+| Model | Context | $/1M in |
+|---|---|---|
+| **x-ai/grok-4.20** | **2,000,000** | 1.25 |
+| z-ai/glm-5.3 / glm-5.3-flash | 1,310,720 | 1.40 / 0.15 |
+| deepseek-v4-flash-0731 | 1,310,720 | 0.06 |
+| openai/gpt-6-astra | 1,050,000 | 10.00 |
+| anthropic/claude-fable-5.1, opus-5 | 1,000,000 | 10.00 / 5.00 |
+
+**Your corpus is 30,000,000 tokens. The largest window on earth is 2,000,000. The corpus is 15x larger than the biggest context window that exists. Long-context is not an option — it is arithmetically impossible in a single call.**
+
+### Cost per question, three strategies
+
+Assumptions: RAG = 8 chunks × 800 tok + 1,500 tok system prompt + 100 tok question = **8,000 input**, 700 output.
+
+| Strategy | Input tokens | Model | Cost / question |
+|---|---|---|---|
+| **RAG, 8 chunks** | 8,000 | GLM-5.3-Flash | 8,000×$0.15/M + 700×$0.50/M = **$0.00155** |
+| RAG, 8 chunks | 8,000 | GLM-5.3 | $0.0112 + $0.0031 = **$0.0143** |
+| RAG, 8 chunks | 8,000 | Claude Fable 5.1 | $0.080 + $0.035 = **$0.115** |
+| **Stuff 200k (one lecture packet)** | 200,000 | GLM-5.3-Flash | $0.030 + $0.00035 = **$0.0304** (cached re-read: $0.0060) |
+| Stuff 200k | 200,000 | GLM-5.3 | $0.280 + $0.0031 = **$0.283** (cached: $0.055) |
+| Stuff 200k | 200,000 | Claude Fable 5.1 | $2.000 + $0.035 = **$2.035** (cached: $0.085) |
+| **Stuff whole corpus (15 calls + synthesis)** | 30,000,000 | GLM-5.3-Flash | **$4.50** (cached: $0.90) |
+| Stuff whole corpus | 30,000,000 | Grok 4.20 @ 2M ctx | **$37.50** |
+| Stuff whole corpus | 30,000,000 | Claude Fable 5.1 | **$300.00** |
+
+### The ratios
+
+- **200k-stuff vs 8-chunk RAG, same model: 19.6x more expensive** ($0.0304 / $0.00155)
+- **Full-corpus vs RAG: 3,750x the tokens ≈ 2,900x the cost** ($4.50 / $0.00155)
+- **One full-corpus question on Claude Fable 5.1 ($300) costs 62x more than building your entire Pinecone index forever ($4.80 on Pinecone, $0 on Voyage).**
+
+### VERDICT: RAG pays for itself on question #1.
+
+The index build is **$0–4.80 one-time**. A single naive full-corpus question is **$4.50–$300**. Break-even is *literally the first question*.
+
+### When long-context beats RAG — and you should use both
+
+| Situation | Use | Why |
+|---|---|---|
+| "Summarise the 2026 valuation lecture packet" (single 150k-token doc) | **Long context** | Retrieval fragments an argument that only makes sense whole. $0.03 on GLM-5.3-Flash. |
+| "Walk me through the cost-of-capital worksheet end to end" (one xlsx sheet) | **Long context** | Ditto. |
+| "Reconcile chapter 4 of the 2023 book against the 2019 lecture" (2 docs, 300k) | **Long context** | Cross-document reasoning inside one window. |
+| "What is Damodaran's India ERP and when did he change it?" | **RAG** | Needle across 609 posts × 14 years. |
+| "Show every time he discussed synthetic ratings" | **RAG** | 1,477 transcripts; needles are everywhere. |
+| "Cite him on terminal growth ≤ risk-free rate" | **RAG + rerank** | You need the *citation*, not a summary. |
+| Anything spanning >2M tokens | **RAG only** | Physically impossible otherwise. |
+
+**Where long context cannot help you at all:**
+1. **Citations.** You need `source`, `license_class` and `vintage` on every fact. A 2M-token stuff returns a paragraph with no verifiable pointer. RAG returns chunk IDs you can render as footnotes. This is a hard requirement from your non-negotiables, and it alone decides the question.
+2. **Latency.** Prefilling 200k tokens takes seconds; 8k is instant. Your Ask-Damodaran chat tab has to feel like a chat.
+3. **Vintage stamping.** RAG lets you filter `WHERE vintage = '2026-01'` *before* the model sees anything. Long-context makes the model do date arithmetic on conflicting snapshots — which is precisely how you'd end up mixing the 3.95%, 4.58% and 4.75% risk-free rates in one answer.
+4. **Scalability (your question #7).** RAG cost is **O(1) in corpus size** — 8 chunks whether the corpus is 30M or 300M tokens. Long-context is **O(n)**. Adding EODHD filings, 10-Ks and future blog years multiplies a long-context bill and changes nothing about a RAG bill. *That* is the scaling answer for your UI.
+
+**Architecture: hybrid router.** Classify the question first. Single-document → fetch the whole doc, stuff it (cheap on GLM-5.3-Flash at $0.15/M). Corpus-wide → hybrid retrieve 50 → rerank → top 8 → answer with citations. Same model behind both; only the retrieval path differs.
+
+---
+
+## 7. Bulk job cost: punctuating 18M transcript tokens + tagging 60k chunks
+
+Punctuation is a rewrite: output ≈ 1.1× input, so 18M in → **19.8M out**. Tagging: 60k chunks × 600 tok in + 150 tok out = **36M in / 9M out**.
+
+| Model | Punctuate 18M | Tag 60k chunks | **Total** | AA II |
+|---|---|---|---|---|
+| `inclusionai/ling-3.0-flash` ($0.021/$0.063) | $1.63 | $1.32 | **$2.95** | low |
+| `deepseek/deepseek-v4-flash-latest` ($0.0352/$0.1056) | $2.73 | $2.22 | **$4.95** | — |
+| `openai/gpt-oss-120b` ($0.037/$0.17) | $4.03 | $2.86 | **$6.89** | 12 |
+| `deepseek/deepseek-v4-flash-0731` ($0.06/$0.12) | $3.46 | $3.24 | **$6.70** | — |
+| **`z-ai/glm-5.3-flash:batch` ($0.075/$0.25)** | **$6.30** | **$4.95** | **$11.25** | **42** |
+| `z-ai/glm-5.3-flash` ($0.15/$0.50) | $12.60 | $9.90 | $22.50 | 42 |
+| `minimax/minimax-m3` ($0.30/$1.20) | $29.16 | $21.60 | $50.76 | 30 |
+
+**CRITICAL GOTCHA:** every model in the table has `reasoning: true`. If you leave reasoning on, thinking tokens bill at the *output* rate and can 3–10x these numbers. **Set `reasoning: {exclude: true}` or `effort: "none"` for the bulk pass.**
+
+---
+
+## 8. Monthly OpenRouter spend for pi-driven coding, 2–3 h/evening
+
+Model: 25 agent turns/hour, ~40k input tokens/turn (context accumulates), 2.5k output/turn, **70% prompt-cache hit rate** (pi re-sends a growing prefix, so caching is the single biggest lever).
+
+Per hour on **GLM-5.3**: fresh 0.3M × $1.40 = $0.420 · cached 0.7M × $0.26 = $0.182 · output 62.5k × $4.40 = $0.275 → **$0.877/hour**.
+
+| Scenario | $/hour | 55 h/month (2.5 h × 22 evenings) |
+|---|---|---|
+| GLM-5.3, **no caching** | $1.675 | **$92** |
+| GLM-5.3, 70% cache hit | $0.877 | **$48** |
+| **Mixed: Flash for 75% of turns, GLM-5.3 for planning/hard bugs** | ~$0.29 | **~$16** |
+| GLM-5.3-Flash only | $0.097 | **$5.30** |
+| Claude Fable 5.1 equivalent (for scale) | ~$6.30 | **~$347** |
+
+### Full monthly OpenRouter bill
+
+| Line | Month 1 | Steady state |
+|---|---|---|
+| pi coding driver (mixed Flash/GLM-5.3) | $16 | $16 |
+| RAG answers, 1,000 questions/mo @ GLM-5.3-Flash | $1.55 | $1.55 |
+| Judge: 2 runs × 200 cases @ Kimi K3 ($0.0298/eval) | $11.92 | $11.92 |
+| Bulk punctuate + tag (one-time, GLM-5.3-Flash batch) | $11.25 | $0 |
+| Subtotal | $40.72 | $29.47 |
+| **+5.5% Stripe credit fee** | **$42.96** | **$31.09** |
+
+**Plan for $35–50/month on OpenRouter.** Worst case (all GLM-5.3, no caching, heavy evenings) is **$100/month** — so set an OpenRouter spend limit at $75 on day one.
+
+**Total stack: EODHD $60 + OpenRouter ~$35 + Pinecone $0 + Vercel Hobby $0 + Neon free tier $0 = ~$95/month.** Inside your $60–100 envelope, with zero headroom — which is why the $0 retrieval stack in §5d matters.
+
+---
+
+## 9. FINAL PICKS
+
+| Role | Pick | OpenRouter ID | Price in/out | Why — with the number |
+|---|---|---|---|---|
+| **(a) pi coding/agent driver** | **GLM-5.3** | `z-ai/glm-5.3` | **$1.40 / $4.40**, cache $0.26 | **#1 open weight on AA II v4.3 (45)** and **#1 open weight on Coding Agent Index v1.5 at 53.6%** (Opencode harness, rank 6 overall, 86% of Claude Code/Fable 5.1's 62.2%). 1,310,720 ctx, 943,717 max output, `tools`+`reasoning`+`structured_outputs` all true. 5.4x cache discount. Bespoke permissive licence — **read it before commercialising; it is not MIT.** |
+| **(a-cheap) daily driver** | **GLM-5.3-Flash** | `z-ai/glm-5.3-flash` | **$0.15 / $0.50**, cache $0.03 | AA II **42** — third-best open weight in the world — at **9.3x less than GLM-5.3**. 107 tok/s, same 1,310,720 ctx. Route 75% of pi turns here; escalate to GLM-5.3 on planning and hard bugs. Drops your bill from $48 to $16/month. |
+| **(a-alt) if pi routing breaks** | DeepSeek V4.1 Flash | `deepseek/deepseek-v4.1-flash` | $0.15 / $0.60 | AA II 40, **214 tok/s (fastest in class)**, MIT — the cleanest licence in the table. Cache read $0.003 = 50x discount. |
+| **(b) cheap bulk** | **GLM-5.3-Flash batch** | `z-ai/glm-5.3-flash:batch` | **$0.075 / $0.25** | **$11.25 total** for 18M tokens of punctuation + 60k chunk tags. AA II 42 means finance jargon ("sales-to-capital", "Baa3", "CRP") survives the ASR rewrite — the $2.95 Ling-3.0-Flash option will mangle it, and re-running is more expensive than doing it right. **Disable reasoning.** |
+| **(c) RAG answer generation** | **GLM-5.3-Flash** (default) / **GLM-5.3** (hard) | `z-ai/glm-5.3-flash` | $0.15 / $0.50 | **$0.00155/question.** GLM-5.3 family has the **lowest hallucination rate among strong open weights (30%)** vs Kimi K3's 51%. **Explicitly reject DeepSeek V4 Pro: 94% hallucination rate** despite AA II 36 — a calibration failure, fatal for a citation-bearing valuation app. 1.31M ctx also serves the long-context branch of the hybrid router in §6. |
+| **(d) judge / eval** | **Kimi K3** | `moonshotai/kimi-k3` | $2.6481 / $13.2827 | **Best open-weight AA-Omniscience Index (+18 to 20)** — best calibrated open-weight judge available, and only 46 of 167 models score positive at all. **$0.0298/eval; a 200-case suite = $5.96/run.** Judge must differ from generator: GLM generates, Kimi judges. Never self-judge. |
+| **(d-alt) cheap judge** | GLM-5.3 | `z-ai/glm-5.3` | $1.40 / $4.40 | $0.0151/eval, 200-case suite = $3.02. Use for the Almarai-style deterministic checks; reserve Kimi K3 for prose/citation grading. |
+| **Embedding** | **voyage-context-4** | Voyage API | **$0.12/M, 200M free** | 30M-token build = **$0**. Contextualised chunk embeddings — the direct fix for unpunctuated ASR chunks. 32k input, never truncates. |
+| **Sparse** | **pinecone-sparse-english-v0** | Pinecone | $0.08/M | Exact-token recall for tickers, "Almarai", "Baa3", years. Hybrid is mandatory for this corpus. |
+| **Reranker** | **Voyage rerank-3** | Voyage API | **$0.05/M, 200M free** | 50→8 rerank = **$0.002/query**, free for ~5,000 queries. Beats Pinecone's Starter cap of 500 rerank calls/month. |
+| **Vector DB** | **Pinecone Starter** | — | **$0** | 245 MB of vectors in a 2 GB free tier; 60k upserts = 3% of free write units. |
+| **Never use** | multilingual-e5-large; DeepSeek V4 Pro for answers; `:free` variants for bulk; cohere-rerank-3.5; pinecone-rerank-v0 | — | — | 507-token truncation / 94% hallucination / 50-1,000 req-day cap / deprecated / delisted. |
+
+### Three operational rules that save the most money
+1. **Turn on prompt caching in pi.** GLM-5.3 cache read is $0.26 vs $1.40 — a **5.4x** discount that halves your coding bill ($92 → $48/month).
+2. **Turn OFF reasoning for bulk.** Thinking tokens bill at output rate; leaving it on can 10x the $11.25 bulk job.
+3. **Use `:batch` for anything not interactive.** Flat 50% off across GLM, DeepSeek and Muse.
+
+KEY FACTS:
+ - AA Intelligence Index v4.3 released 2026-09-07; weights: Agents 30% (AA-Briefcase 15, GDPval-AA v2 10, AutomationBench-AA 5), Coding 20% (Terminal-Bench v4.0 10, SciCode 10), General 30% (AA-Omniscience Accuracy 10, Non-hallucination 5, GDP.pdf 10, AA-LCR v1.1 5), Scientific Reasoning 20% (HLE 10, CritPt 10)
+ - Top open-weight AA II v4.3: GLM-5.3 (max) 45, Kimi K3 (max) 44, GLM-5.3-Flash 42, Qwen3.8 2.4T A95B 40, DeepSeek V4.1 Flash 40, DeepSeek V4 Pro 0813 36, Qwen3.8 27B 34, K2 Horizon 31, MiniMax-M3 30, Inkling 26, Nemotron 3 Ultra 23, Muse Glimmer 18, gpt-oss-120b 12
+ - Top proprietary AA II v4.3: Claude Fable 5.1 = 53, GPT-6 Astra = 53, Claude Opus 5 = 51, Claude Fable 5 = 50, Muse Spark 1.3 = 48, GPT-5.6 Sol = 47. Best open weight sits 8 points (15% relative) behind
+ - OpenRouter live API (pulled 2026-09-14, 445 models): z-ai/glm-5.3 $1.40/$4.40 cache $0.26 ctx 1,310,720; z-ai/glm-5.3-flash $0.15/$0.50 cache $0.03 ctx 1,310,720; moonshotai/kimi-k3 $2.6481/$13.2827 ctx 1,048,576; deepseek/deepseek-v4.1-flash $0.15/$0.60 cache $0.003; qwen/qwen3.8-2.4t-a95b $2.00/$6.00; deepseek/deepseek-v4-pro-0813 $0.9834/$2.9502; minimax/minimax-m3 $0.30/$1.20; nvidia/nemotron-3-ultra-550b-a55b $0.60/$2.40; openai/gpt-oss-120b $0.037/$0.17
+ - OpenRouter :batch variants are exactly 50% off: glm-5.3:batch $0.70/$2.20, glm-5.3-flash:batch $0.075/$0.25, deepseek-v4-pro-0813:batch $0.66/$1.98
+ - All 13 candidate open-weight models report tools=true and reasoning=true on OpenRouter; structured_outputs=true on all except Inkling and Ling-3.0-Flash
+ - OpenRouter has ZERO embedding and ZERO reranking models across all 445 entries (verified by filtering output modality and ID substrings) - embeddings must come from Pinecone, Voyage, OpenAI or Cohere
+ - No free (:free) variant exists for GLM-5.3, GLM-5.3-Flash, Kimi K3, Qwen3.8, DeepSeek V4.x, MiniMax-M3 or gpt-oss-120b. Free variants that do exist: inkling:free, inkling-small:free, nemotron-3-ultra:free, nemotron-3.5-lightning:free, nemotron-3-super-120b:free, ling-3.0-flash-vl:free
+ - OpenRouter :free rate limits: 20 req/min always; 50 req/day with zero lifetime credits, 1,000 req/day once >=$10 lifetime purchased. Credit purchase fee 5.5% via Stripe ($0.80 min) or 5% via USDC. No markup on inference itself
+ - AA Coding Agent Index v1.5, snapshot 2026-09-11 (DeepSWE v1.1 + Terminal-Bench 4.0 + SWE-Atlas-QnA, equal weight): Claude Code-Fable 5.1 62.2%, Codex-GPT-6 Astra 61.6%, Claude Code-Opus 5 59.7%, Codex-GPT-5.6 Sol 54.6%, Muse Code-Muse Spark 1.3 54.3%, Opencode-GLM-5.3 53.6% (best open weight), Kimi Code CLI-Kimi K3 51.9%
+ - AA-Omniscience (6,000 questions, 42 topics, index -100..100): GPT-6 Astra (high) 44, Claude Fable 5.1 43 (65-67% accuracy), Claude Opus 5 37. Open weights: Kimi K3 +18 to 20 (46% accuracy, 51% hallucination), GLM-5.3 14 (34% accuracy, 30% hallucination), GLM-5.2 4. DeepSeek V4 Pro has a 94% hallucination rate. MiniMax-M3 at 18.4% hallucination. Only 46 of 167 models score a positive Index
+ - Licenses: GLM-5.3 = bespoke permissive, explicitly NOT MIT; Kimi K3 = Modified MIT (attribution clause effectively irrelevant below 100M MAU); DeepSeek V4 Pro / V4.1 Flash = plain MIT; Qwen3.8 = Apache-2.0 family; gpt-oss-120b = Apache-2.0; Nemotron 3 Ultra = NVIDIA Open Model License
+ - Pinecone hosted models: llama-text-embed-v2 dense, 1024 default dims (2048/768/512/384 selectable), 2,048 max input tokens, $0.16/M; multilingual-e5-large dense 1024 dims but only 507 max input tokens, $0.08/M; pinecone-sparse-english-v0 sparse, 512 default/2,048 max tokens, $0.08/M. Rerankers: cohere-rerank-4-fast 8,192 tokens $2/1k requests; bge-reranker-v2-m3 1,024 tokens $2/1k; cohere-rerank-3.5 DEPRECATED; pinecone-rerank-v0 no longer on the current hosted list
+ - Pinecone plans: Starter free (2 GB, 2M write units, 1M read units, 5M embed tokens/mo, 500 bge rerank/mo); Builder $20/mo flat (10 GB, 5M WU, 2M RU, 10M embed tokens); Standard $50/mo min ($0.33/GB/mo, $4-4.50/M WU, $16-18/M RU, $0.08-0.16/M embed, $2/1k rerank); Enterprise $500/mo min
+ - Voyage pricing with 200M free tokens on v4-generation models: voyage-4-lite $0.02/M, voyage-4 $0.06/M, voyage-context-4 $0.12/M, voyage-code-4 $0.12/M, rerank-3 $0.05/M, rerank-3-lite $0.02/M. Legacy (no free tokens): voyage-3.5 $0.06, voyage-3-large $0.18, voyage-context-3 $0.18, rerank-2.5 $0.05. OpenAI text-embedding-3-large $0.13/M ($0.065 batch). Cohere embed-v4 $0.12/M text, $0.47/M image, no batch discount
+ - Largest context windows on OpenRouter today: x-ai/grok-4.20 at 2,000,000 tokens ($1.25/$2.50); GLM-5.3 / GLM-5.3-Flash / DeepSeek V4 Flash 0731 at 1,310,720; GPT-6 Astra 1,050,000; Claude Fable 5.1 and Opus 5 at 1,000,000. The 30M-token corpus is 15x larger than the biggest window that exists
+ - RAG arithmetic: 8-chunk RAG question (8,000 in / 700 out) costs $0.00155 on GLM-5.3-Flash, $0.0143 on GLM-5.3, $0.115 on Claude Fable 5.1. Stuffing 200k tokens costs $0.0304 / $0.283 / $2.035 respectively - 19.6x more expensive than RAG on the same model. Stuffing the full 30M corpus costs $4.50 (GLM-5.3-Flash), $37.50 (Grok 4.20), $300 (Fable 5.1) - about 2,900x a RAG call
+ - Index build economics: 30M tokens at Pinecone llama-text-embed-v2 = $4.80 one-time; at Voyage voyage-context-4 = $3.60 but $0 under the 200M free allowance; OpenAI 3-large = $3.90. 60,000 chunks x 1024 dims x 4 bytes = 245 MB raw, fits Pinecone Starter's free 2 GB. RAG breaks even on question #1
+ - Bulk job (18M transcript tokens punctuated, output ~1.1x = 19.8M; plus 60k chunks tagged at 600 in/150 out = 36M/9M): Ling-3.0-Flash $2.95 total, DeepSeek V4 Flash latest $4.95, gpt-oss-120b $6.89, DeepSeek V4 Flash 0731 $6.70, GLM-5.3-Flash batch $11.25, GLM-5.3-Flash standard $22.50, MiniMax-M3 $50.76. Reasoning must be disabled or thinking tokens bill at output rate
+ - pi coding spend (25 turns/h, 40k in / 2.5k out per turn, 55 h/month): GLM-5.3 with no caching $1.675/h = $92/mo; GLM-5.3 with 70% cache hit $0.877/h = $48/mo; mixed Flash-75%/GLM-5.3-25% ~$16/mo; GLM-5.3-Flash only $5.30/mo; Claude Fable 5.1 equivalent ~$347/mo
+ - Total monthly OpenRouter estimate: $42.96 month 1 (incl. one-time bulk and 5.5% Stripe fee), $31.09 steady state. Full stack = EODHD $60 + OpenRouter ~$35 + Pinecone $0 + Vercel Hobby $0 + Neon free = ~$95/month
+ - pi (badlogic/pi-mono, now also earendil-works/pi) has full openRouterRouting support in models.json including fallbacks, provider sorting, max price, quantizations, ZDR and throughput/latency constraints; custom providers configurable in ~/.pi/agent/models.json. Known open issues: #3931 missing latest OpenRouter models, #3384 pi-web misroutes custom-provider models through OpenRouter
+ - AA's published price column is a blended 3:1 price on the creator's first-party API and disagrees with OpenRouter: AA shows GLM-5.3 at $0.9 blended vs OpenRouter's $1.40/$4.40 (blended $2.15). All costs in this report use OpenRouter figures
+
+
+#################### RESEARCH 2 (chars 39975) ####################
+« PI HARNESS — VERIFIED REPORT (fetched 2026-09-14) »
+
+## 0. Identity, versions, provenance
+
+- Canonical repo is now **`earendil-works/pi`** (the `badlogic/pi-mono` URLs 301-redirect there; raw.githubusercontent.com/badlogic/pi-mono still serves files). Repo metadata via `gh api repos/earendil-works/pi`: description "AI agent toolkit: unified LLM API, agent loop, TUI, coding agent CLI", **104,792 stars**, license **MIT**, default branch `main`, **last push 2026-09-13T21:26:54Z** (i.e. daily-active).
+- npm package: **`@earendil-works/pi-coding-agent`**, **v0.85.1**, MIT, `engines.node >= 22.19.0` (your node 26 is fine), unpacked 21.9 MB / 1,056 files, repo field `git+https://github.com/earendil-works/pi.git`, directory `packages/coding-agent`. Source: https://registry.npmjs.org/@earendil-works/pi-coding-agent/latest
+- The old `@mariozechner/pi-coding-agent` name still appears in search results — **it is the legacy scope; do not install it.** Author is Mario Zechner (badlogic, libGDX), now under Earendil Inc.
+- Monorepo packages: `@earendil-works/pi-coding-agent` (CLI), `pi-agent-core` (agent loop/state), `pi-ai` (unified multi-provider LLM API), `pi-tui` (differential-render TUI), `chord` (app composition), `pi-telemetry`.
+
+## 1. Install command
+
+```bash
+# recommended for you (npm already present, avoids piping curl to sh)
+npm install -g --ignore-scripts @earendil-works/pi-coding-agent
+
+# alternatives documented on pi.dev
+curl -fsSL https://pi.dev/install.sh | sh
+powershell -c "irm https://pi.dev/install.ps1 | iex"
+pnpm add -g --ignore-scripts @earendil-works/pi-coding-agent
+bun  add -g --ignore-scripts @earendil-works/pi-coding-agent
+```
+`--ignore-scripts` is in the official docs (supply-chain hardening: the repo pins direct deps with `save-exact=true` and ships a shrinkwrap). Then run `pi` inside a project directory. (pi.dev; docs/quickstart.md; docs/index.md)
+
+## 2. Config file locations
+
+**Global (user) config dir: `~/.pi/agent/`** — overridable with env `PI_CODING_AGENT_DIR`.
+
+| Path | Contents |
+|---|---|
+| `~/.pi/agent/settings.json` | global settings |
+| `~/.pi/agent/auth.json` | OAuth tokens + stored API keys (written by `/login`) |
+| `~/.pi/agent/models.json` | custom providers/models + pricing |
+| `~/.pi/agent/sessions/` | session JSONL, organised by cwd |
+| `~/.pi/agent/extensions/*.ts` and `*/index.ts` | auto-discovered extensions |
+| `~/.pi/agent/skills/` (also `~/.agents/skills/`) | skills |
+| `~/.pi/agent/prompts/*.md` | prompt templates |
+| `~/.pi/agent/themes/*.json` | themes |
+| `~/.pi/agent/agents/*.md` | sub-agent definitions (subagent extension convention) |
+| `~/.pi/agent/AGENTS.md` | global instructions |
+| `~/.pi/agent/SYSTEM.md` / `APPEND_SYSTEM.md` | global system-prompt replace/append |
+| `~/.pi/agent/trust.json` | project-trust decisions (closest-parent match) |
+| `~/.pi/agent/npm/`, `~/.pi/agent/git/<host>/<path>` | installed packages |
+
+**Project-level: `.pi/`** in the repo root — `.pi/settings.json`, `.pi/extensions/`, `.pi/skills/`, `.pi/prompts/`, `.pi/themes/`, `.pi/agents/`, `.pi/SYSTEM.md`, `.pi/sandbox.json`, `.pi/npm/`, `.pi/git/`.
+
+**Precedence:** CLI flags > `.pi/settings.json` (project) > `~/.pi/agent/settings.json` (global); nested objects merge recursively. Project resources require **project trust** (see §11). A bare `.pi` directory does *not* itself trigger the trust prompt. (docs/settings.md, docs/security.md)
+
+## 3. OpenRouter as provider — exact wiring
+
+- **Env var: `OPENROUTER_API_KEY`.** `export OPENROUTER_API_KEY=...; pi`
+- Or OAuth: `/login openrouter` → "Sign in with OpenRouter" → PKCE flow, mints a user-controlled key billed from your OpenRouter credits, stored in `~/.pi/agent/auth.json`. On headless/SSH you can paste the final redirect URL or the auth code into the prompt.
+- **Credential resolution order:** `--api-key` flag → `auth.json` → `OPENROUTER_API_KEY` env → custom provider key in `models.json`.
+- Provider is **built in**, not custom. Source `packages/ai/src/providers/openrouter.ts`: `id: "openrouter"`, `baseUrl: "https://openrouter.ai/api/v1"`, two APIs supported — `anthropic-messages` **and** `openai-completions` — and a **bundled model catalog** `OPENROUTER_MODELS` auto-generated from `packages/ai/src/providers/data/openrouter.json` (regenerated by `npm run generate-models` per release). So open-weight OpenRouter models appear in `/model` with pricing already attached; you do not have to hand-write them.
+- Select: `pi --provider openrouter --model <model-id>`, or in-session `/model` (Ctrl+L). **Ctrl+S inside the `/model` picker saves it as the startup default.** Persist in settings:
+```json
+{ "defaultProvider": "openrouter", "defaultModel": "<openrouter-model-id>", "defaultThinkingLevel": "medium" }
+```
+- `Ctrl+P` cycles a short-list; define it with `enabledModels` (settings) / `--models <patterns>` / `/scoped-models`.
+- **Per-model cost:** `~/.pi/agent/models.json` accepts per-million-token pricing and tiers:
+```json
+{ "providers": { "openrouter": { "baseUrl": "https://openrouter.ai/api/v1", "api": "openai-completions", "models": [
+  { "id": "some/model", "cost": { "input": 5, "output": 30, "cacheRead": 0.5, "cacheWrite": 6.25 },
+    "tiers": [ { "inputTokensAbove": 272000, "input": 10, "output": 45 } ] } ] } } }
+```
+`models.json` is **re-read every time you open `/model`** — live edits, no restart. (docs/providers.md, docs/models.md)
+
+## 4. Skills
+
+- Format: a directory containing **`SKILL.md`** (required) plus optional `scripts/`, `references/`, `assets/`.
+- **YAML frontmatter:** `name` (required, ≤64 chars, lowercase alphanumeric + hyphens), `description` (required, ≤1024 chars — this is what the model sees always), `license` (optional), `compatibility` (optional).
+- **Discovery:** `~/.pi/agent/skills/`, `~/.agents/skills/`, `.pi/skills/`, `.agents/skills/` (ancestor dirs too), package `skills/` dirs, `skills` array in settings, `--skill <path>` (repeatable). Disable with `--no-skills`.
+- **Progressive disclosure:** "only descriptions are always in context, full instructions load on-demand." Explicit trigger: **`/skill:<name>` [args]** (controlled by `enableSkillCommands`).
+- Caveat from a Sept-2026 review: auto-discovered skills silently inflate context — 48 skills measured at +9,400 tokens of descriptions. Keep the skill count small. (docs/skills.md; heyuan110 review 2026-09-06)
+
+## 5. Extensions — TypeScript API surface
+
+Entry shape:
+```typescript
+import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
+export default function (pi: ExtensionAPI) { /* register */ }   // sync or async
+```
+Discovered from `~/.pi/agent/extensions/*.ts`, `~/.pi/agent/extensions/*/index.ts`, `.pi/extensions/*.ts`, `.pi/extensions/*/index.ts`; or listed in settings `extensions: []` / `-e, --extension <source>`. TypeScript runs directly (no build step); an extension can have its own `package.json` + deps (`examples/extensions/with-deps/`).
+
+**Registration:**
+- `pi.registerTool({ name, label, description, promptSnippet, promptGuidelines, parameters /* TypeBox */, execute(toolCallId, params, signal, onUpdate, ctx), renderCall(), renderResult() })`
+- `pi.registerCommand("name", { description, handler(args, ctx), getArgumentCompletions(prefix) })`
+- `pi.registerShortcut("ctrl+shift+p", { description, handler })`
+- `pi.registerFlag("my-flag", { description, type, default })`
+- `pi.registerProvider(name, config)` / `pi.unregisterProvider(name)` — config has `baseUrl, apiKey, api, models, oauth, refreshModels`
+- `pi.registerMessageRenderer / registerEntryRenderer / registerMarkdownTransformer`
+
+**Events** (`pi.on(event, handler)`): lifecycle `session_start`, `session_shutdown`, `project_trust`, `resources_discover`; agent `before_agent_start`, `agent_start/end`, `agent_settled`, `turn_start/end`; messages `message_start/update/end`; tools `tool_call`, `tool_execution_start`, `tool_result`, `tool_execution_end`, `user_bash`; `input` (intercept/transform user text); `model_select`, `thinking_level_select`; provider `before_provider_headers`, `before_provider_request`, `after_provider_response`, `context`; `ui_prompt_start/end`; session `session_before_switch/fork`, `session_info_changed`; compaction `session_before_compact`, `session_compact`, `session_compact_failed`.
+
+**ctx:** `ctx.ui` (`select, confirm, input, editor, custom, notify, setStatus, setWidget, setTitle, setEditorText`), `ctx.mode` (`"tui"|"rpc"|"json"|"print"`), `ctx.hasUI`, `ctx.cwd`, `ctx.isProjectTrusted()`, `ctx.sessionManager`, `ctx.modelRegistry`, `ctx.model`, `ctx.thinkingLevel`, `ctx.scopedModels`, `ctx.signal`, `ctx.isIdle()`, `ctx.abort()`, `ctx.shutdown()`, `ctx.compact()`, `ctx.getSystemPrompt()`, `ctx.getContextUsage()`. Command handlers additionally get `waitForIdle, newSession, fork, switchSession, navigateTree, reload, getSystemPromptOptions`.
+
+**Session/tool control:** `pi.sendMessage`, `pi.sendUserMessage`, `pi.appendEntry(customType, data)` (persisted, not LLM-visible), `pi.setSessionName`, `pi.setLabel`, `pi.getActiveTools/getAllTools/setActiveTools`, `pi.setModel`, `pi.get/setThinkingLevel` (`off|minimal|low|medium|high|xhigh|max`), `pi.exec`, `pi.events`, `pi.getCommands`, `pi.getFlag`.
+
+**TUI imports:** `import { Box, Text, Container } from "@earendil-works/pi-tui"`, `Type` from `typebox`, `StringEnum` from `@earendil-works/pi-ai`, `keyHint/keyText` from the coding-agent package.
+
+⚠️ Docs state plainly: **"Extensions run with full system permissions; only install from trusted sources."**
+
+The repo ships **~60 example extensions** in `packages/coding-agent/examples/extensions/` — the decision-relevant ones for you: `permission-gate.ts` (confirm before dangerous bash), `protected-paths.ts` (block writes to `.env`, `.git/`, `node_modules/`), `sandbox/` (OS-level sandbox, see §11), `plan-mode/` (Claude-Code-style read-only plan mode), `subagent/`, `todo.ts`, `git-checkpoint.ts`, `auto-commit-on-exit.ts`, `dirty-repo-guard.ts`, `claude-rules.ts` (reads `.claude/rules/`), `custom-footer.ts`, `trigger-compact.ts`, `structured-output.ts` (final tool returning `terminate: true` — useful for CI), `mac-system-theme.ts`, `notify.ts`.
+
+## 6. Prompt templates
+
+Markdown files, optional frontmatter `description` and `argument-hint`; filename becomes the slash command (`review.md` → `/review`). Substitution: `$1 $2`, `$@` / `$ARGUMENTS`, `${1:-default}`, `${@:N}`, `${@:N:L}`. Locations: `~/.pi/agent/prompts/*.md`, `.pi/prompts/*.md` (needs trust), package `prompts/`, settings `prompts: []`, `--prompt-template <path>`; `--no-prompt-templates` disables. Difference from skills: templates are **prompt text that expands into your editor**; skills are **on-demand capability packages with a description always in context**.
+
+## 7. Themes
+
+JSON with `$schema`, required unique `name`, `vars` (reusable colors), and `colors` with **all 53 required tokens**. Values: hex, xterm 256 index, var reference, or empty string = terminal default. Built-ins: `dark`, `light` (plus `light/dark` auto-follow of terminal appearance). Locations mirror the others (`~/.pi/agent/themes/*.json`, `.pi/themes/*.json`, packages, settings `theme`, `pi --use-theme light`, `--no-themes`).
+
+## 8. `pi install` sources
+
+```bash
+pi install npm:@scope/pkg@1.2.3      # npm
+pi install npm:pkg
+pi install git:github.com/user/repo@v1
+pi install https://github.com/user/repo@v1
+pi install /absolute/path            # or ./relative/path
+pi install -l npm:pkg                # -l = project-local → writes .pi/settings.json
+pi remove npm:@foo/bar
+pi list
+pi update --extensions               # updates packages, reconciles git refs
+```
+Targets: `~/.pi/agent/npm/`, `~/.pi/agent/git/<host>/<path>` (user) or `.pi/npm/`, `.pi/git/...` (project). A package declares resources in `package.json`:
+```json
+{ "pi": { "extensions": ["./extensions"], "skills": ["./skills"], "prompts": ["./prompts"], "themes": ["./themes"] } }
+```
+Convention dirs (`extensions/ skills/ prompts/ themes/`) auto-discover when no manifest. Packages can bundle extensions + skills + prompt templates + themes. Browse at **https://pi.dev/packages**.
+
+## 9. Sub-agents / parallel agents — extension-only, but mature
+
+Core pi ships **no** sub-agents. Options, all real and downloaded:
+- **`pi install npm:pi-subagents`** — v0.67.0, published 2026-09-10, **428.8K monthly downloads**, MIT, author nicopreme (nicobailon). Built-in agents: scout, researcher, worker, reviewer, oracle, delegate. Foreground children stream inside the parent session; background children run in a detached runner process and can be checked later. Supports `mcp:server-name` in agent frontmatter to grant direct MCP tools.
+- **`@tintinweb/pi-subagents`** — Claude-Code-style sub-agents + workflow orchestration, parallel background agents with queuing, live widget, fleet view, mid-run steering.
+- **`@d3ara1n/pi-subagent`**, **mjakl/pi-subagent** — lighter role-based variants.
+- **Official example** `examples/extensions/subagent/`: each subagent is a **separate `pi` process** with isolated context; agents are `.md` files in `~/.pi/agent/agents/` or `.pi/agents/`; ships `scout.md`, `planner.md`, `reviewer.md`, `worker.md` and workflow prompt templates `implement.md` (scout→planner→worker), `scout-and-plan.md`, `implement-and-review.md`. Tracks turns/tokens/cost per agent; Ctrl+C propagates.
+
+## 10. Sessions — persistence, branching, sharing
+
+- Auto-saved **JSONL** in `~/.pi/agent/sessions/`, bucketed by cwd, **tree-structured** (not linear). Override with `--session-dir` > `PI_CODING_AGENT_SESSION_DIR` > `sessionDir` setting.
+- `pi -c` continue last · `pi -r` resume picker · `pi --session <path|id>` · `pi --fork <path|id>` · `pi --name "..."` · `pi --no-session` (ephemeral).
+- In-session: `/session` (file, ID, messages, tokens, **cost**), `/name`, `/resume`, `/tree` (arrow-key navigation of branches, Ctrl+O filter; selecting a user message puts it back in the editor), `/fork`, `/clone`, `/new`, `/export [file]` (HTML or JSONL), `/import <file>`, **`/share` → uploads as a private GitHub gist with a shareable HTML link** (base URL configurable via `PI_SHARE_VIEWER_URL`).
+- Bash/powershell tools receive `PI_SESSION_ID`, `PI_SESSION_FILE`, `PI_PROVIDER`, `PI_MODEL`, `PI_REASONING_LEVEL` in env — useful for stamping vintage/provenance from inside tool scripts.
+
+## 11. MCP — NOT native; via extension
+
+pi.dev lists MCP among **deliberate omissions** ("Pi intentionally excludes: MCP integration, sub-agents, permission popups, plan mode, built-in to-dos, and background bash"). There is an open tracking issue `earendil-works/pi#563` "feat(coding-agent): Add MCP extension example".
+
+**The de-facto answer: `pi install npm:pi-mcp-adapter`** (nicobailon/pi-mcp-adapter). It auto-detects standard MCP config files — `~/.config/mcp/mcp.json` (global) and `.mcp.json` (project):
+```json
+{ "mcpServers": { "chrome-devtools": { "command": "npx", "args": ["-y", "chrome-devtools-mcp@1.6.0"] } } }
+```
+Design: instead of injecting every MCP tool schema up-front (10k+ tokens), it exposes **one proxy tool (~200 tokens)** and discovers tools on demand. Status: heavily used — one Sept-2026 review cites **197,718 weekly downloads** and a 13,700→~200 token reduction. Sub-agents can request direct MCP tools via `mcp:server-name` frontmatter. Bright Data published a "Using Bright Data's Web MCP with Pi Agent" walkthrough, so third-party MCP servers are known to work through it.
+
+## 12. Permission / sandbox on macOS without Docker
+
+Official position (docs/security.md): **"Pi does not include a built-in sandbox."** Built-in tools read/write/edit files and run shell commands with the permissions of the `pi` process. No permission popups. Prompt injection from repo files/build output is called "expected local-agent risk" that pi cannot prevent. The only built-in gate is **project trust** — whether project-local `.pi/settings.json`, `.pi/extensions|skills|prompts|themes`, SYSTEM.md files and ancestor `.agents/skills` are loaded. Decisions stored in `~/.pi/agent/trust.json`; `defaultProjectTrust: "ask"|"always"|"never"`; flags `-a/--approve`, `-na/--no-approve`; `/trust` to save.
+
+docs/containerization.md recommends Gondolin (QEMU micro-VM, needs Node ≥23.6 + QEMU), plain Docker, NVIDIA OpenShell, or Docker Sandboxes — **it says nothing about macOS/seatbelt.**
+
+**But the repo ships the macOS answer as an example extension:** `examples/extensions/sandbox/` depends on `@anthropic-ai/sandbox-runtime@0.0.26` and its header states: *"Uses @anthropic-ai/sandbox-runtime to enforce filesystem and network restrictions on bash commands at the OS level (**sandbox-exec on macOS**, bubblewrap on Linux)."* It overrides the built-in `bash` tool. Config merges `~/.pi/agent/extensions/sandbox.json` (global) and `<cwd>/.pi/sandbox.json` (project):
+```json
+{ "enabled": true,
+  "network":    { "allowedDomains": ["github.com", "*.github.com"], "deniedDomains": [] },
+  "filesystem": { "denyRead": ["~/.ssh", "~/.aws"], "allowWrite": [".", "/tmp"], "denyWrite": [".env"] } }
+```
+Defaults already deny-read `~/.ssh ~/.aws ~/.gnupg`, deny-write `.env .env.* *.pem *.key`, allow-write `.` and `/tmp`, and allow-list npm/pypi/github domains. Usage: `pi -e ./sandbox`, `--no-sandbox` to disable, `/sandbox` to inspect. Setup = copy the dir to `~/.pi/agent/extensions/` and `npm install` inside it. **Linux needs bubblewrap/socat/ripgrep; macOS needs none of that.** This is the no-Docker macOS story.
+
+**Beginner recommendation:** install three layers — `sandbox/` (OS-level, macOS-native), `permission-gate.ts` (confirm before `rm -rf`, `sudo`, …), `protected-paths.ts` (block writes to `.env`, `.git/`, `node_modules/`). Optionally `dirty-repo-guard.ts` + `git-checkpoint.ts` so every turn is recoverable. Community alternatives exist (`@gotgenes/pi-permission-system`, `cc-safety-net`, `@trim21/personal-pi-extensions` with bwrap) but the in-repo examples are the ones maintained alongside the core.
+
+## 13. AGENTS.md / CLAUDE.md project instructions
+
+Loaded and concatenated at startup, in this order: `~/.pi/agent/AGENTS.md` (global) → each parent directory ascending → current directory. **`CLAUDE.md` is accepted as an alternative filename.** If a directory contains `AGENTS.override.md`, pi loads that *instead of* the standard files for that directory. System-prompt control: `.pi/SYSTEM.md` (project replacement) > `~/.pi/agent/SYSTEM.md` (global replacement); `APPEND_SYSTEM.md` appends rather than replaces. Disable everything with `--no-context-files` / `-nc`. Also `examples/extensions/claude-rules.ts` scans a `.claude/rules/` folder — so an existing Claude-Code repo layout is largely portable.
+
+## 14. Context management
+
+- **Auto-compaction** trigger: `contextTokens > contextWindow - reserveTokens`, checked after tool results are appended and before the next assistant response. Walks backward to keep `keepRecentTokens`, LLM-summarises the cut region (folding in any prior summary), appends a summary entry plus `firstKeptEntryId`, and rebuilds context as summary + recent messages.
+- Defaults: `reserveTokens: 16384`, `keepRecentTokens: 20000`, `compaction.enabled: true`, plus `compaction.modelOverrides` per model. Same block available in project `.pi/settings.json`.
+- Manual: **`/compact [instructions]`**. Programmatic: `ctx.compact()`; events `session_before_compact`, `session_compact`, `session_compact_failed`; examples `custom-compaction.ts`, `trigger-compact.ts` (fires at >100k tokens).
+- **There is no `/clear`.** The equivalents are **`/new`** (fresh conversation), `/fork` / `/clone`, and `--no-session`. `branchSummary.reserveTokens` (16384) governs summarisation when you jump branches in `/tree`.
+
+## 15. Cost transparency
+
+- The **TUI footer shows token/cache usage, cost (USD), context usage, and current model, live.**
+- **`/session`** prints session file, ID, message count, tokens and **cost**; totals include assistant responses, tool-reported usage, and summary generation.
+- Pricing comes from the bundled per-provider catalogs (`cost.input/output/cacheRead/cacheWrite` per million tokens, plus `tiers`) and anything you add in `models.json`. OpenRouter models arrive with pricing from the generated `data/openrouter.json`.
+- **There is no `/usage` command** — cost is footer + `/session` + (in CI) the action's `cost` output. A Sept-2026 review flags "uneven cost visibility between modes" as a real gap: the footer is TUI-only, so in `-p`/`--mode json` you must read usage out of the event stream yourself. `showCacheMissNotices` surfaces cache diagnostics. `PI_CACHE_RETENTION=long` enables extended provider prompt caching.
+
+## 16. Headless / CI — YES, three ways
+
+1. **Print mode:** `pi -p "prompt"` (alias `--print`). Pipes work: `cat file.md | pi -p "summarize this"`.
+2. **JSON event stream:** `pi --mode json "prompt"` — one JSON object per line; starts with a session header (version, id, timestamp, cwd), then events. `message_update` records are **delta-only** (fields `contentIndex`, `delta`, cumulative `usage`) to keep the stream linear-sized. Filter with jq:
+   `pi --mode json "List files" 2>/dev/null | jq -c 'select(.type == "message_end")'`
+   Also `--mode rpc` (stdin/stdout JSONL) for driving pi from a non-Node process, and the SDK (`createAgentSession` + `SessionManager.inMemory()` + `session.subscribe`) for embedding.
+3. **A published GitHub Action exists: `shaftoe/pi-coding-agent-action@v2`** (v2.28.0 on the Marketplace as "pi GitHub Action"; works on GitHub, Codeberg and self-hosted Forgejo). Inputs: `github_token` (required), `provider` (required), `model` (required), `token` (provider API key), `prompt`, `pr_number`. **Outputs: `response`, `success`, `cost` (USD), `duration_seconds`, `share_url`.** It bundles pi SDK 0.85.1 plus GitHub tools for PR review, diffs, CI status, thread retrieval, and loads your skills/extensions/AGENTS.md as the CLI would.
+```yaml
+on: { issue_comment: { types: [created] } }
+jobs:
+  pi-agent:
+    if: startsWith(github.event.comment.body, '/pi ')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-node@v6
+      - uses: shaftoe/pi-coding-agent-action@v2
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          provider: openrouter
+          model: <openrouter-model-id>
+          token: ${{ secrets.OPENROUTER_API_KEY }}
+```
+Non-interactive trust: `-a/--approve` or `-na/--no-approve`; without a flag, non-interactive runs fall back to `defaultProjectTrust`. **In CI you must pass `--approve` (or set `defaultProjectTrust`) or project `.pi/` resources are silently ignored.** Use `PI_OFFLINE` / `PI_SKIP_VERSION_CHECK` to kill startup network chatter in runners.
+
+## 17. Known rough edges reported in 2026
+
+- **"Day one feels sparse to the point of feeling broken"** until you install extensions; the DIY assembly burden is the #1 bounce reason ("it doesn't finish the job the way Claude Code or OpenCode do"). Monorepo/package customisation model feels heavier than single-binary competitors. (vibecodinghub / mejba / adipod round-ups, 2026)
+- **Stdin pipe handling can hang ~180 s without redirection** (use `< /dev/null` in scripts). (heyuan110, 2026-09-06)
+- **Auto-discovered skills silently inflate context** — 48 skills = +9,400 tokens.
+- **~449 MB on-disk footprint and unrequested binary downloads (`fd`, `ripgrep`)** on first run; npm tarball itself is 21.9 MB.
+- **XDG non-compliance on Linux** (`~/.pi` not `~/.config/pi`) — a live community complaint; irrelevant to you on macOS.
+- **Repetitive provider-configuration warning spam**; **uneven cost visibility between modes**.
+- **Extension guards are advisory, not a security boundary** — a 40-line `tool_call` guard was circumvented by a motivated model reframing the request. Only the OS sandbox is a real boundary.
+- **No observability/dashboard layer and no permission layer by design** ("primitives, not features"); containers/sandbox are the intended boundary.
+- Measured vs OpenCode on a 30-task set: **pi 21/30 (70%) at $1.64 vs OpenCode 19/30 (63%) at $2.25, pi slower at the median (363 s vs 281 s)**. Vs Claude Code on a small invoice project: pi baseline context **1,358 tokens vs Claude Code 31,012** (~20x), and per-task cost $0.10/$0.11/$0.31 (pi) vs $0.61/$0.77/$1.16 (Claude Code), same functional outcomes, speed roughly a wash.
+- Armin Ronacher (2026-01-31) praises the short system prompt, four tools (read/write/edit/bash), extension-driven persistent state, and the session tree; his structural criticism of MCP generally is that tools must be loaded at session start, which is exactly the gap `pi-mcp-adapter` closes.
+- A production-focused fork, **oh-my-pi**, exists (adds LSP, DAP, hashline edits) if you later want more batteries.
+
+---
+
+# « PI SETUP FOR THE VALUATION REPO »
+
+Assumes fresh repo `jkv8fwytbf-byte/valuation` (TypeScript/Next.js on Vercel, Neon, Pinecone, OpenRouter), macOS arm64, node 26, no Docker.
+
+## A. One-time machine setup
+```bash
+npm install -g --ignore-scripts @earendil-works/pi-coding-agent
+export OPENROUTER_API_KEY=...        # put in ~/.zshrc; never commit
+pi                                    # first run
+# in-session: /model → pick an OpenRouter model → Ctrl+S to save as default
+```
+Then the sandbox (the macOS no-Docker boundary):
+```bash
+# copy examples/extensions/sandbox/ from the pi repo to ~/.pi/agent/extensions/sandbox/
+# then: (cd ~/.pi/agent/extensions/sandbox && npm install)
+```
+Global `~/.pi/agent/settings.json`:
+```json
+{
+  "defaultProvider": "openrouter",
+  "defaultModel": "<chosen-openrouter-model-id>",
+  "defaultThinkingLevel": "medium",
+  "defaultProjectTrust": "ask",
+  "theme": "light/dark",
+  "compaction": { "enabled": true, "reserveTokens": 16384, "keepRecentTokens": 20000 },
+  "extensions": [
+    "~/.pi/agent/extensions/sandbox",
+    "~/.pi/agent/extensions/permission-gate.ts",
+    "~/.pi/agent/extensions/protected-paths.ts"
+  ]
+}
+```
+Optional packages: `pi install npm:pi-subagents` and `pi install npm:pi-mcp-adapter` (only if/when you add an MCP server such as Neon's or Pinecone's).
+
+## B. Files to create in the repo
+
+```
+valuation/
+├── AGENTS.md                       # project instructions (pi + Claude Code + Codex all read this)
+├── .pi/
+│   ├── settings.json               # project overrides, packages, tool allow-list
+│   ├── sandbox.json                # network/fs policy for this repo
+│   ├── SYSTEM.md                   # OPTIONAL: only if you want to replace the base system prompt
+│   ├── skills/
+│   │   ├── damodaran-valuation/SKILL.md   (+ references/, scripts/)
+│   │   ├── india-data-rules/SKILL.md
+│   │   └── rag-corpus/SKILL.md
+│   ├── prompts/
+│   │   ├── ship.md                 # /ship  → branch, implement, test, PR
+│   │   ├── golden.md               # /golden → run the Almarai 1e-6 test and report
+│   │   └── vintage.md              # /vintage → re-stamp a dataset vintage
+│   ├── extensions/
+│   │   └── value-company/index.ts  # the value_company tool (see D)
+│   └── agents/                     # if using pi-subagents
+│       ├── valuation-reviewer.md
+│       └── data-scout.md
+└── .mcp.json                       # only if pi-mcp-adapter is installed
+```
+
+`.pi/settings.json`:
+```json
+{
+  "defaultTools": ["read", "edit", "write", "bash", "grep", "find", "ls"],
+  "extensions": ["./.pi/extensions/value-company"],
+  "packages": ["npm:pi-subagents"],
+  "enableSkillCommands": true,
+  "compaction": { "keepRecentTokens": 24000 }
+}
+```
+`.pi/sandbox.json` (tight — no market-data egress from the agent's shell; the app fetches data, not the agent):
+```json
+{
+  "enabled": true,
+  "network": {
+    "allowedDomains": ["registry.npmjs.org", "*.npmjs.org", "github.com", "*.github.com", "api.github.com", "raw.githubusercontent.com"],
+    "deniedDomains": []
+  },
+  "filesystem": {
+    "denyRead": ["~/.ssh", "~/.aws", "~/.gnupg", "~/.pi/agent/auth.json"],
+    "allowWrite": [".", "/tmp"],
+    "denyWrite": [".env", ".env.*", "*.pem", "*.key", "tests/golden/**"]
+  }
+}
+```
+(`denyWrite` on `tests/golden/**` is the cheap insurance against the agent "fixing" the Almarai expectation instead of the code.)
+
+`AGENTS.md` — the non-negotiables, short enough to always be in context:
+```markdown
+# Valuation — agent instructions
+## Commands
+- `npm run check`   type-check + lint
+- `npm test`        unit tests
+- `npm run test:golden`  Almarai golden case (MUST pass at 1e-6)
+## Hard rules (never violate, never "fix" by changing the expectation)
+1. Golden test: Almarai value/share must equal 7.187840270062114 within 1e-6; price 72.28.
+2. Every computed number carries a `vintage` (the rf/ERP/CRP snapshot id it was built from).
+   One 2026 snapshot has three rf (3.95/4.58/4.75%) and three ERP (4.20/4.23/4.46%) — never mix.
+3. Every ingested fact carries `source` and `license_class`. No fact without both.
+4. Terminal WACC = risk_free + mature_ERP. Reinvestment = ΔRevenue / sales_to_capital, 1-year lag.
+5. India: averages come from betaIndia/marginIndia/capexIndia/waccIndia; if an India industry has
+   <10 firms, fall back India → emerging → Global at the 10-firm threshold. Jan-2026 India:
+   Baa3, default spread 1.87%, ERP 7.08%, CRP 2.85%.
+6. Never emit buy/sell/hold language or personalised investment advice. Research output only.
+7. System of record is Neon (Postgres) + Pinecone. Never introduce CSV or SQLite as a source of truth.
+8. No scraping screener.in or Tickertape. yfinance is personal-use only. EODHD is the licensed feed.
+## Style
+- TypeScript strict. No `any` in valuation math. Money as explicit typed units.
+- Ask before adding a dependency.
+```
+
+## C. The `damodaran-valuation` skill
+
+`.pi/skills/damodaran-valuation/SKILL.md`:
+```markdown
+---
+name: damodaran-valuation
+description: Run or modify the FCFF DCF engine ported from fcffsimpleginzu.xlsx. Use when computing intrinsic value, cost of capital, synthetic ratings, terminal value, reinvestment, country risk premia, or when touching anything under src/valuation/. Includes the Almarai golden case and the India fallback rules.
+license: proprietary
+compatibility: node>=22, requires DATABASE_URL for industry tables
+---
+
+# Damodaran FCFF valuation engine
+
+## Model shape (reverse-engineered from fcffsimpleginzu.xlsx)
+- Explicit forecast → terminal value. Terminal WACC = risk_free + mature_ERP (NOT the year-1 WACC).
+- Reinvestment_t = (Revenue_t − Revenue_{t−1}) / sales_to_capital, applied with a ONE-YEAR LAG.
+- Cost of capital worksheet supports 4 approaches; the default is <approach>. Record which one ran.
+- Cost of debt from a SYNTHETIC RATING derived from interest coverage (EBIT / interest expense).
+  Apple has no InterestExpense line in EDGAR companyfacts — handle the missing-line branch.
+- Equity risk premium / country risk premium from the 192-country table, keyed by vintage.
+
+## Reference files (read on demand, do not preload)
+- references/formula-map.md      cell → function mapping
+- references/industry-tables.md  US + Global, 94 industries × 27 columns
+- references/india-rules.md      betaIndia/marginIndia/capexIndia/waccIndia + <10-firm fallback
+- scripts/run-golden.ts          runs the Almarai case and prints the diff
+
+## Invariants — CHECK BEFORE YOU COMMIT
+1. `npm run test:golden` → Almarai value/share 7.187840270062114 (|Δ| ≤ 1e-6). If it fails, YOU broke the
+   engine. Fix the code. Never edit tests/golden/.
+2. Every output row has `vintage_id`. Never blend rf/ERP across vintages inside one run.
+3. Every input fact has `source` and `license_class`.
+4. LTM from EDGAR = latest 10-K − prior-year interim + current interim. Never sum four raw 10-Qs.
+5. India industry with n_firms < 10 → emerging aggregate → Global. Log which tier was used.
+6. No buy/sell/hold language anywhere in output, comments, or UI copy.
+
+## How to add a driver
+1. Add to the typed inputs in src/valuation/inputs.ts
+2. Thread through src/valuation/fcff.ts
+3. Add a unit test with a hand-computed expectation
+4. Re-run the golden case
+```
+Invoke with `/skill:damodaran-valuation`, or let the description pull it in when you mention valuation math. Keep `references/*` out of the frontmatter so they load only when read — that is the whole point of progressive disclosure.
+
+## D. Extension idea: `value_company` tool hitting the deployed API
+
+`.pi/extensions/value-company/index.ts`:
+```typescript
+import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
+import { Type } from "typebox";
+
+export default function (pi: ExtensionAPI) {
+  pi.registerTool({
+    name: "value_company",
+    label: "Value company",
+    description: "Run the deployed FCFF valuation API for a ticker and return value/share, WACC, terminal assumptions, and the vintage stamp.",
+    promptSnippet: "value_company(ticker, market, vintage?) → intrinsic value from the deployed engine",
+    promptGuidelines: [
+      "Use value_company instead of re-implementing DCF math in a scratch script.",
+      "Always report the returned vintage_id and license_class alongside the number.",
+      "Never convert the output into a buy/sell recommendation."
+    ],
+    parameters: Type.Object({
+      ticker: Type.String(),
+      market: Type.Union([Type.Literal("US"), Type.Literal("IN")]),
+      vintage: Type.Optional(Type.String({ description: "vintage id; omit for latest" })),
+      scenario: Type.Optional(Type.String())
+    }),
+    async execute(_id, params, signal) {
+      const base = process.env.VALUATION_API_URL ?? "https://valuation.vercel.app";
+      const res = await fetch(`${base}/api/value`, {
+        method: "POST",
+        headers: { "content-type": "application/json", authorization: `Bearer ${process.env.VALUATION_API_TOKEN}` },
+        body: JSON.stringify(params),
+        signal
+      });
+      if (!res.ok) return { content: [{ type: "text", text: `API ${res.status}: ${await res.text()}` }], details: {} };
+      const d = await res.json();
+      return {
+        content: [{ type: "text", text:
+          `${d.ticker} (${d.market})\nvalue/share ${d.valuePerShare}\nprice ${d.price}\nWACC ${d.wacc} → terminal ${d.terminalWacc}\nrating ${d.syntheticRating}\nvintage ${d.vintageId}  sources ${d.sources.length}  license ${d.licenseClass}` }],
+        details: d
+      };
+    }
+  });
+}
+```
+Why an extension and not an MCP server: it is 40 lines, zero extra process, zero extra token overhead, and it lives in the repo next to the API it calls. Add `pi-mcp-adapter` only when you want *third-party* servers (Neon, Pinecone, browser) — and note the sandbox's `allowedDomains` must then include those hosts.
+
+Second extension worth adding early: a `tool_call` listener that **refuses any write under `tests/golden/`** and any diff that changes the string `7.187840270062114`. Belt on top of `denyWrite`.
+
+## E. Daily workflow
+
+```bash
+# 1. PLAN (read-only)   — pi -e plan-mode, or just ask; then have it write the plan into the session
+cd ~/code/valuation && pi --name "india-crp-fallback"
+> /skill:damodaran-valuation
+> Read src/valuation/india.ts and propose how to implement the <10-firm fallback. Do not edit yet.
+
+# 2. BRANCH
+> !git switch -c feat/india-firm-count-fallback      # inline bash with `!`
+
+# 3. LET PI WORK — steer with Enter (mid-run), queue follow-ups with Alt+Enter, Escape to abort
+#    Ctrl+L to swap to a cheaper OpenRouter model for mechanical edits, back for reasoning
+#    /compact when the footer shows context filling; /tree + /fork to try a second approach
+
+# 4. TESTS (pi runs them; you verify)
+> Run `npm run check && npm test && npm run test:golden` and fix failures. Do not touch tests/golden/.
+
+# 5. PR
+> !git add -A && git commit -m "feat(india): firm-count fallback India→emerging→Global"
+> !git push -u origin HEAD && gh pr create --fill
+
+# 6. ARCHIVE / SHARE
+> /session      # tokens + cost for the task
+> /share        # private gist link if you want a record of the reasoning
+```
+Then the CI half: `shaftoe/pi-coding-agent-action@v2` on `pull_request` runs a reviewer pass with `provider: openrouter`, and a `/pi <instruction>` issue-comment trigger for one-off fixes. Gate the merge on `npm run test:golden` as an ordinary GitHub Actions job — **do not let the agent be the golden-test authority.**
+
+Escalations: `pi install npm:pi-subagents` once tasks fan out (e.g. "run scout on the EDGAR adapter and reviewer on the CRP table in parallel"); a `/vintage` prompt template for the recurring rf/ERP re-stamp chore; `.pi/prompts/ship.md` to compress steps 2–5 into one `/ship <branch> <goal>`.
+
+---
+
+# « 6-LINE COMPARISON — only where it changes a decision »
+
+1. **Sandbox on macOS without Docker:** Claude Code ships permission prompts + its own sandbox by default; pi ships none and you must install `examples/extensions/sandbox` (`@anthropic-ai/sandbox-runtime` → `sandbox-exec`) plus `permission-gate.ts`; OpenCode sits between. → Decision: budget one setup evening for pi's safety layer, or you are running an agent unsandboxed on a machine with your OpenRouter key in the environment.
+2. **Model freedom:** pi has OpenRouter as a first-class built-in provider (OAuth + bundled priced catalog + mid-session `/model`); Claude Code is Anthropic-first and does not do arbitrary open-weight models; OpenCode is also provider-agnostic. → Decision: your "OpenRouter + open-weight, artificialanalysis-driven" constraint eliminates Claude Code as the harness and leaves pi vs OpenCode.
+3. **Context/token economics:** measured baseline context pi 1,358 tokens vs Claude Code 31,012 (~20x), per-task cost ~5x cheaper on a small project; vs OpenCode pi scored 21/30 at $1.64 vs 19/30 at $2.25 but was slower (363 s vs 281 s median). → Decision: pi is the cheapest per task, which matters at your $60–100/mo ceiling; accept slower wall-clock.
+4. **MCP:** Claude Code and OpenCode support MCP natively; pi does not and needs `pi-mcp-adapter` — which is arguably better (one ~200-token proxy tool vs 10k+ of schemas) but is a third-party package. → Decision: fine for you, since your only near-term MCP needs are Neon/Pinecone and both are optional.
+5. **Time-to-first-success:** pi day-one "feels sparse to the point of feeling broken"; Claude Code and OpenCode work out of the box. → Decision: as a beginner, do the setup in §B *before* your first real task, or you will conclude pi is broken when it is merely empty.
+6. **Extensibility / owning the harness:** only pi lets you register tools, intercept `tool_call`, rewrite the system prompt, and branch the session tree from ~40 lines of TypeScript, with an SDK and RPC mode for embedding in the Next.js app later. → Decision: this is the actual reason to pick pi, and it is also how `value_company`, the golden-test guard, and the vintage-stamp enforcement get built.
+
+**Sources**
+- https://pi.dev/ · https://pi.dev/packages · https://pi.dev/packages/pi-subagents
+- https://github.com/earendil-works/pi (repo meta via `gh api`, 2026-09-14)
+- docs: https://raw.githubusercontent.com/badlogic/pi-mono/main/packages/coding-agent/docs/{index,quickstart,usage,providers,models,settings,skills,extensions,prompt-templates,themes,packages,sessions,compaction,security,containerization,environment-variables,json,sdk}.md
+- examples: `packages/coding-agent/examples/extensions/README.md`, `.../sandbox/index.ts`, `.../sandbox/package.json`, `.../subagent/README.md`
+- https://registry.npmjs.org/@earendil-works/pi-coding-agent/latest (v0.85.1)
+- https://github.com/nicobailon/pi-mcp-adapter · https://github.com/earendil-works/pi/issues/563 · https://github.com/tintinweb/pi-subagents · https://github.com/mjakl/pi-subagent
+- https://github.com/marketplace/actions/pi-github-action (`shaftoe/pi-coding-agent-action@v2`, v2.28.0)
+- https://lucumr.pocoo.org/2026/1/31/pi/ (Armin Ronacher, 2026-01-31)
+- https://www.heyuan110.com/posts/ai/2026-09-06-pi-coding-agent-review/ (2026-09-06)
+- https://explainx.ai/blog/pi-minimal-agent-harness-mario-zechner-guide-2026 (2026-06-19)
+- https://brightdata.com/blog/ai/pi-agent-with-web-mcp · https://composio.dev/content/pi-agent-vs-codex · https://vibecodinghub.org/tools/pi-coding-agent
+
+KEY FACTS:
+ - Canonical repo moved from badlogic/pi-mono to earendil-works/pi (MIT, 104,792 stars, last push 2026-09-13); npm package is @earendil-works/pi-coding-agent v0.85.1, node >=22.19.0. The legacy @mariozechner/pi-coding-agent scope should NOT be installed.
+ - Install: `npm install -g --ignore-scripts @earendil-works/pi-coding-agent` (or `curl -fsSL https://pi.dev/install.sh | sh`). --ignore-scripts is the documented default for supply-chain reasons.
+ - Config dirs: global `~/.pi/agent/` (settings.json, auth.json, models.json, sessions/, extensions/, skills/, prompts/, themes/, agents/, AGENTS.md, SYSTEM.md, trust.json, npm/, git/) overridable via PI_CODING_AGENT_DIR; project-level `.pi/` mirrors all of it. Precedence: CLI flags > .pi/settings.json > ~/.pi/agent/settings.json, nested objects merge recursively.
+ - OpenRouter is a BUILT-IN provider: env var OPENROUTER_API_KEY, baseUrl https://openrouter.ai/api/v1, supports both anthropic-messages and openai-completions APIs, ships a generated priced model catalog (packages/ai/src/providers/data/openrouter.json). OAuth via `/login openrouter` (PKCE, paste-code fallback for headless). Credential order: --api-key > auth.json > env > models.json.
+ - Model switching: `/model` or Ctrl+L; Ctrl+S in the picker saves the startup default; Ctrl+P cycles a scoped list (`enabledModels` / `--models` / `/scoped-models`). models.json is re-read on every `/model` open, with cost.input/output/cacheRead/cacheWrite per million tokens plus tiered pricing.
+ - Skills = directory with SKILL.md; frontmatter name (required, <=64 chars) + description (required, <=1024 chars) + optional license, compatibility; optional scripts/, references/, assets/. Progressive disclosure: only descriptions stay in context; full body loads on demand. Explicit trigger `/skill:<name>`. Discovered from ~/.pi/agent/skills, ~/.agents/skills, .pi/skills, .agents/skills, packages, --skill.
+ - Extensions = TypeScript default-export factory taking ExtensionAPI. Surface: registerTool (TypeBox params, execute, renderCall/renderResult), registerCommand, registerShortcut, registerFlag, registerProvider, message/entry/markdown renderers; ~40 events including tool_call, input, before_provider_request, session_before_compact; ctx.ui (select/confirm/input/editor/custom/notify/setStatus/setWidget); full session control (fork, newSession, navigateTree, compact). Discovered from ~/.pi/agent/extensions/*.ts|*/index.ts and .pi/extensions/. Extensions run with full system permissions.
+ - Prompt templates = Markdown with optional `description` and `argument-hint` frontmatter, filename becomes /command, substitution $1 $@ $ARGUMENTS ${1:-default} ${@:N:L}. Themes = JSON with required unique `name`, `vars`, and all 53 color tokens; built-ins dark and light plus `light/dark` terminal-following.
+ - `pi install` sources: npm:<pkg>[@ver], git:github.com/user/repo@ref, https://github.com/..., and local absolute/relative paths; -l writes to project .pi/settings.json. Also pi remove / pi list / pi update --extensions. Package manifest uses a `pi` key in package.json listing extensions/skills/prompts/themes.
+ - Sub-agents are NOT built in. Main option: `pi install npm:pi-subagents` (v0.67.0, published 2026-09-10, ~428.8K monthly downloads, MIT, author nicopreme) with scout/researcher/worker/reviewer/oracle/delegate, foreground streaming + detached background runners, and mcp:server-name frontmatter. Alternatives: @tintinweb/pi-subagents, @d3ara1n/pi-subagent, mjakl/pi-subagent. Official example examples/extensions/subagent/ spawns a separate pi process per agent with .md agent definitions in ~/.pi/agent/agents or .pi/agents.
+ - Sessions: tree-structured JSONL auto-saved to ~/.pi/agent/sessions/ bucketed by cwd. Flags -c continue, -r resume, --session, --fork, --name, --no-session. Commands /session /name /resume /tree /fork /clone /new /export (HTML or JSONL) /import /share (uploads a private GitHub gist with shareable HTML link).
+ - MCP is NOT native — pi.dev lists it among deliberate omissions; tracking issue earendil-works/pi#563. De-facto solution: `pi install npm:pi-mcp-adapter` (nicobailon), auto-detects ~/.config/mcp/mcp.json and .mcp.json, exposes ONE ~200-token proxy tool instead of 10k+ tokens of schemas; a Sept-2026 review cites 197,718 weekly downloads.
+ - No built-in sandbox and no permission popups: docs/security.md says built-in tools run with the pi process's permissions and prompt injection is 'expected local-agent risk'. Only built-in gate is project trust (trust.json, defaultProjectTrust ask/always/never, -a/--approve, -na/--no-approve, /trust).
+ - macOS-without-Docker sandbox answer is examples/extensions/sandbox/: depends on @anthropic-ai/sandbox-runtime@0.0.26 and uses sandbox-exec on macOS (bubblewrap on Linux), overriding the built-in bash tool. Config merges ~/.pi/agent/extensions/sandbox.json and <cwd>/.pi/sandbox.json with network.allowedDomains/deniedDomains and filesystem.denyRead/allowWrite/denyWrite. Defaults deny-read ~/.ssh ~/.aws ~/.gnupg and deny-write .env/*.pem/*.key. Usage: pi -e ./sandbox, --no-sandbox, /sandbox. docs/containerization.md itself covers only Gondolin (QEMU micro-VM, node>=23.6), Docker, and NVIDIA OpenShell and never mentions macOS.
+ - Context files: ~/.pi/agent/AGENTS.md then every parent dir then cwd; CLAUDE.md accepted as an alternative filename; AGENTS.override.md replaces standard files for that dir; .pi/SYSTEM.md > ~/.pi/agent/SYSTEM.md replace the system prompt while APPEND_SYSTEM.md appends; --no-context-files/-nc disables. examples/extensions/claude-rules.ts reads .claude/rules/.
+ - Compaction: auto-triggers when contextTokens > contextWindow - reserveTokens (default 16384), keeps keepRecentTokens (default 20000), LLM-summarises the cut region and rebuilds context as summary + recent. Manual /compact [instructions]. THERE IS NO /clear — the equivalents are /new, /fork, /clone, --no-session.
+ - Cost transparency: TUI footer shows live token/cache usage, USD cost, context usage and model; /session prints messages/tokens/cost. There is NO /usage command, and a Sept-2026 review flags uneven cost visibility across modes (footer is TUI-only; in -p and --mode json you must parse usage from the event stream).
+ - Headless/CI: YES. `pi -p "prompt"` (print), `pi --mode json "prompt"` (line-delimited JSON events, message_update deltas are delta-only with cumulative usage), `pi --mode rpc` (stdin/stdout JSONL), plus the SDK (createAgentSession + SessionManager.inMemory + session.subscribe). A published GitHub Action exists: shaftoe/pi-coding-agent-action@v2 (v2.28.0), inputs github_token/provider/model/token/prompt/pr_number, outputs response/success/cost/duration_seconds/share_url, bundles pi SDK 0.85.1. In non-interactive runs you must pass --approve or set defaultProjectTrust or project .pi/ resources are ignored.
+ - 2026 rough edges: sparse/'feels broken' day one until extensions are installed; stdin pipes can hang ~180s without redirection; auto-discovered skills inflate context (48 skills = +9,400 tokens); ~449MB disk footprint with unrequested fd/ripgrep downloads; XDG non-compliance on Linux; repetitive provider warning spam; tool_call guard extensions are advisory and were circumvented by a model reframing a request; no observability or permission layer by design.
+ - Measured comparisons: pi baseline context 1,358 tokens vs Claude Code 31,012 (~20x) with per-task cost $0.10/$0.11/$0.31 vs $0.61/$0.77/$1.16 and identical outcomes; vs OpenCode pi scored 21/30 at $1.64 vs 19/30 at $2.25 but was slower at the median (363s vs 281s).
+ - Repo ships ~60 example extensions including permission-gate.ts, protected-paths.ts, plan-mode/, subagent/, sandbox/, todo.ts, git-checkpoint.ts, auto-commit-on-exit.ts, dirty-repo-guard.ts, claude-rules.ts, trigger-compact.ts, structured-output.ts (terminate:true, useful for CI), custom-footer.ts, mac-system-theme.ts.
+ - Useful env vars: PI_CODING_AGENT_DIR, PI_CODING_AGENT_SESSION_DIR, PI_PACKAGE_DIR, PI_OFFLINE, PI_SKIP_VERSION_CHECK, PI_TELEMETRY, PI_CACHE_RETENTION=long, PI_SHARE_VIEWER_URL. Bash tool calls receive PI_SESSION_ID, PI_SESSION_FILE, PI_PROVIDER, PI_MODEL, PI_REASONING_LEVEL — usable for stamping provenance from inside tool scripts.

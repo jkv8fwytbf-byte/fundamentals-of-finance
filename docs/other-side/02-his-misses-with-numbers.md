@@ -6,7 +6,7 @@
 
 This chapter lists the times Damodaran published a value and the market went the other way. Every number comes from his own posts, as gathered in the critics research report. The chapter ends with two cases he got right, because a list of defeats alone would be propaganda. Chapter 4 covers who bet against him and what they won. This chapter covers only his numbers and [his own words]{.reading-highlight}.
 
-Source: /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bkm2kob5x.txt, Part 2 introduction and Part 4 honourable mention (2026-09-14)
+Source: /Users/siddharth/Desktop/Valuation/docs/sources/bkm2kob5x.txt, Part 2 introduction and Part 4 honourable mention (2026-09-14)
 
 ## How to read the tables
 
@@ -21,7 +21,7 @@ A few terms first.
 
 The tables also record his own trades. Those are historical facts about one man's account, and he reports them himself. They are not guidance for yours.
 
-Source: /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bkm2kob5x.txt, Part 2 (2026-09-14)
+Source: /Users/siddharth/Desktop/Valuation/docs/sources/bkm2kob5x.txt, Part 2 (2026-09-14)
 
 ## Tesla, 2013 to 2023
 
@@ -44,7 +44,7 @@ Tesla is the longest record. He valued it about a dozen times in ten years. The 
 
 Split adjustment. Tesla split 5-for-1 in Aug 2020 and 3-for-1 in Aug 2022, which is 15-for-1 in total. He states it himself. His 2019 purchase at $180 is $12 in today's shares. The Nov 2021 peak near $1,200 is about $410 in today's shares.
 
-Source: /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bkm2kob5x.txt, Part 2.1 (2026-09-14)
+Source: /Users/siddharth/Desktop/Valuation/docs/sources/bkm2kob5x.txt, Part 2.1 (2026-09-14)
 
 His own words moved over time. On 3 Jun 2019 he wrote that his 2013 number "undershot the mark", because he saw the market as luxury cars and underestimated the Fremont plant. On 6 Feb 2020, one week after selling at $640, he wrote: "You may not believe me, but I don't" have regrets. On 26 Jan 2023 he wrote: "I clearly timed my sale wrong". On 1 Nov 2023 he wrote: "I profited mightily on that investment, but I sold too soon". The 2014 post also shows how fragile the number was. Setting sales-to-capital, the dollars of revenue the company earns for every dollar it invests, to 10 moved his value from about $110 to $302 per share. His comment was "Magical, right?"
 
@@ -60,7 +60,7 @@ Source: /Users/siddharth/Downloads/financeMD/damodaran/blog/2019/06/teslas-trava
 
 Split adjustment. Nvidia split 10-for-1 in Jun 2024, so his $240 is about $24 in today's shares. That is why the mocking tweets about a "$24" call are technically fair. On every date from 2023 to 2025 he called the stock overvalued. On every date the price was higher a year later. He never called it a short. A short is a bet that a price will fall. He sold slices of a position he already owned, and said so.
 
-Source: /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bkm2kob5x.txt, Part 2.2 (2026-09-14)
+Source: /Users/siddharth/Desktop/Valuation/docs/sources/bkm2kob5x.txt, Part 2.2 (2026-09-14)
 
 His words are relaxed about it. He bought in 2018, when "AI was not even a speck in my imagination", and added that "being lucky often beats being smart" (23 Jun 2023). On 5 Sep 2024 he wrote that the gap was "far smaller than the divergence that I noted last year". His closing line that day: "I am at peace with the decision made in the summer of 2023 to shed half my Nvidia shares". And: "I am going to count that as a win and move on!"
 
@@ -77,7 +77,7 @@ Source: /Users/siddharth/Downloads/financeMD/damodaran/blog/2023/06/ais-winners-
 
 Split adjustment. Amazon split 20-for-1 in Jun 2022, so his 2018 value of $1,019 is about $51 in today's shares. The stock has traded at multiples of that since. In 2018 he also changed method. He split the company into Retail and Media, AWS, and Prime as a subscriber model, then added the parts. That is a sum of the parts valuation. It is an admission that one single DCF could not hold the story (a DCF, discounted cash flow model, adds up the cash a business will produce and discounts it to today). In the same post, a Prime fee rise from $99 to $119 added about $100 per share to his value. One fee change, one hundred dollars. That is the sensitivity critique in a single line.
 
-Source: /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bkm2kob5x.txt, Part 2.3 (2026-09-14)
+Source: /Users/siddharth/Desktop/Valuation/docs/sources/bkm2kob5x.txt, Part 2.3 (2026-09-14)
 
 His words on 26 Apr 2018: "I have not been able to justify buying the stock at any time in the last five years, as it rose from $250/share to $1500". He then told readers not to take his word for it.
 
@@ -98,7 +98,7 @@ Two words first. A short is a bet that a price will fall; you borrow shares, sel
 
 Split adjustment. Apple split 4-for-1 in Aug 2020, so his $175 purchase is $43.75 in today's shares. Apple is a mixed case. He was underwater for months in 2013. Then he was right: Apple compounded for a decade. The misses are the Einhorn concession and the 2018 round trip. His words on 3 Dec 2018: the trade left him with "a serious case of investing whiplash".
 
-Source: /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bkm2kob5x.txt, Part 2.4 (2026-09-14); /Users/siddharth/Downloads/financeMD/damodaran/blog/2018/12/investing-whiplash-looking-for-closure.md (2018-12-03)
+Source: /Users/siddharth/Desktop/Valuation/docs/sources/bkm2kob5x.txt, Part 2.4 (2026-09-14); /Users/siddharth/Downloads/financeMD/damodaran/blog/2018/12/investing-whiplash-looking-for-closure.md (2018-12-03)
 
 ## Uber, 2014 and 2019
 
@@ -116,7 +116,7 @@ This is the canonical public defeat. It is also the best example of losing well.
 
 The report's scoring: Gurley was right on direction by an order of magnitude. His level of $148bn, as a 2014 value, is roughly where the company got twelve years later. Damodaran's own words on 16 Jul 2014: "If you had to pick one right now, I think Mr. Gurley's has the advantage over mine for at least three reasons". He emailed Gurley first to say he loved the post. He then used it as a teaching case.
 
-Source: /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bkm2kob5x.txt, Part 2.5 (2026-09-14); /Users/siddharth/Downloads/financeMD/damodaran/blog/2014/07/possible-plausible-and-probable-big.md (2014-07-16)
+Source: /Users/siddharth/Desktop/Valuation/docs/sources/bkm2kob5x.txt, Part 2.5 (2026-09-14); /Users/siddharth/Downloads/financeMD/damodaran/blog/2014/07/possible-plausible-and-probable-big.md (2014-07-16)
 
 ## Facebook, 2012
 
@@ -129,7 +129,7 @@ Source: /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-77
 
 He was right for 15 months and wrong for a decade. The shape matches Amazon and Tesla: correct on the near-term overpricing, wrong on the long run.
 
-Source: /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bkm2kob5x.txt, Part 2.6 (2026-09-14); /Users/siddharth/Downloads/financeMD/damodaran/blog/2013/07/facebook-hits-ipo-price-mood-swings-in.md (2013-07-31)
+Source: /Users/siddharth/Desktop/Valuation/docs/sources/bkm2kob5x.txt, Part 2.6 (2026-09-14); /Users/siddharth/Downloads/financeMD/damodaran/blog/2013/07/facebook-hits-ipo-price-mood-swings-in.md (2013-07-31)
 
 ## Zomato and Paytm, 2021 to 2022
 
@@ -146,7 +146,7 @@ This pair is the most useful India case for your system. The model failed in bot
 
 On Zomato, the asset he marked down for became most of the value. On Paytm, a sell-side analyst with a simpler model was closer by a factor of about three, for three straight years. He volunteered the Paytm miss himself on 27 Jul 2022: "it behooves me to let you know that I also valued Paytm at close to ₹2000 per share, and the stock is currently trading at ₹713." The report notes no public retraction on Zomato in the local corpus yet.
 
-Source: /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bkm2kob5x.txt, Part 2.7 and Part 4 row 6 (2026-09-14); /Users/siddharth/Downloads/financeMD/damodaran/blog/2022/07/a-zomato-2022-update-value-pricing-and.md (2022-07-27)
+Source: /Users/siddharth/Desktop/Valuation/docs/sources/bkm2kob5x.txt, Part 2.7 and Part 4 row 6 (2026-09-14); /Users/siddharth/Downloads/financeMD/damodaran/blog/2022/07/a-zomato-2022-update-value-pricing-and.md (2022-07-27)
 
 ## Bitcoin and gold: a framework, not a call
 
@@ -161,7 +161,7 @@ There is no value column here, because he never gave one. That is the point.
 
 His words on 24 Oct 2017: "bitcoin is not an asset, but a currency, and as such, you cannot value it or invest in it." He added that you can only price it and trade it. He distanced himself from Jamie Dimon's fraud claim. Fair scoring, per the report: the classification has not been falsified. The investment implication people drew from it cost them a 20x, since bitcoin rose by more than an order of magnitude. Both things are true.
 
-Source: /Users/siddharth/Downloads/financeMD/damodaran/blog/2017/10/the-bitcoin-boom-asset-currency.md (2017-10-24); /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bkm2kob5x.txt, Part 2.8 (2026-09-14)
+Source: /Users/siddharth/Downloads/financeMD/damodaran/blog/2017/10/the-bitcoin-boom-asset-currency.md (2017-10-24); /Users/siddharth/Desktop/Valuation/docs/sources/bkm2kob5x.txt, Part 2.8 (2026-09-14)
 
 ## What he got right
 
@@ -186,5 +186,5 @@ Source: /Users/siddharth/Downloads/financeMD/damodaran/blog/2019/09/insights-on-
 
 Your engine inherits the first two weaknesses. From M1 onward it will store every value with its date and its vintage ids, so that you can grade it later the way he grades himself. Chapter 6 turns that into design rules.
 
-Source: /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bkm2kob5x.txt, Parts 2 and 6 (2026-09-14); /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md (2026-09-14)
+Source: /Users/siddharth/Desktop/Valuation/docs/sources/bkm2kob5x.txt, Parts 2 and 6 (2026-09-14); /Users/siddharth/Desktop/Valuation/docs/plan.md (2026-09-14)
 :::

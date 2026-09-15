@@ -12,7 +12,7 @@
 - Document B, the teaching guide, with a Figma chapter and a two-hour starter path (plan section S). Delivered as 4-the-guide.pdf.
 - Document D, the critics reader (plan section S). Delivered as 3-the-other-side.pdf.
 
-All of it sits in the `docs/` folder inside `~/Valuation/` on this Mac (plan section S). One note on Figma. The Figma connector, a link that lets me act inside Figma for you, is signed in as you on the starter plan with a "View" seat, the most basic license (plan section S). The five boards exist, and their PNG images, plain picture files, are also inside 1-read-this-first.pdf. So opening Figma is optional for now.
+All of it sits in the `docs/` folder inside `~/Desktop/Valuation/` on this Mac (plan section S). One note on Figma. The Figma connector, a link that lets me act inside Figma for you, is signed in as you on the starter plan with a "View" seat, the most basic license (plan section S). The five boards exist, and their PNG images, plain picture files, are also inside 1-read-this-first.pdf. So opening Figma is optional for now.
 
 > **Comment**
 > **What it means for you:** Nothing on your Mac has changed except a folder of documents. You can read at your own pace, and the rest of the plan waits.

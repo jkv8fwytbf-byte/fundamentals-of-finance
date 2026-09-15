@@ -6,7 +6,7 @@
 
 Damodaran wrote a whole book about where his own method breaks. It is called The Dark Side of Valuation. This chapter turns it into ten claims. Each claim gets one sentence, a plain explanation, and a note on where it will show up in your app. Source names follow Chapter 0. "Report" is the critics research file. "Preface" is the local copy of his third-edition preface. "Survey" is the corpus survey. "Schema" is the model schema report for the fcffsimpleginzu workbook.
 
-Source: Report, Part 1 (2026-09-14); /Users/siddharth/Valuation/docs/other-side/00-read-me-first.md.
+Source: Report, Part 1 (2026-09-14); /Users/siddharth/Desktop/Valuation/docs/other-side/00-read-me-first.md.
 
 ## The book in one paragraph
 
@@ -45,7 +45,7 @@ When a company is young, losing money, or in trouble, he does not switch tools. 
 
 In the app: the memo writer will never refuse a company. It will name the uncertainty type and pull the matching Dark Side passages before proposing any input.
 
-Source: Report, Part 1, bullet 1 (2026-09-14); blog/2014/06/a-disruptive-cab-ride-to-riches-uber.md (2014-06-09); plan, /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md, item 4.
+Source: Report, Part 1, bullet 1 (2026-09-14); blog/2014/06/a-disruptive-cab-ride-to-riches-uber.md (2014-06-09); plan, /Users/siddharth/Desktop/Valuation/docs/plan.md, item 4.
 
 ### 2. The risk-free rate is not risk-free
 
@@ -117,7 +117,7 @@ His test is possible, then plausible, then probable. A claim that cannot get pas
 
 In the app: only probable claims may set a base-case input. Plausible claims set a scenario. Possible claims are recorded at zero. A second, opposing memo per company will be mandatory.
 
-Source: Report, Part 1, bullet 10 (2026-09-14); plan, item 4; /Users/siddharth/Valuation/docs/damodaran-essentials/c1-why-value-story-and-the-3p-test.md.
+Source: Report, Part 1, bullet 10 (2026-09-14); plan, item 4; /Users/siddharth/Desktop/Valuation/docs/damodaran-essentials/c1-why-value-story-and-the-3p-test.md.
 
 ## The hard company types, and where the app will meet them
 
@@ -140,7 +140,7 @@ Source: Preface chapter outline; Schema, sections 2.6, 3.4 and 6; plan, item 4 (
 
 Three things deserve credit. First, he wrote the gaming critique in claim 9 against himself, with his own numbers. Second, he publishes his failure probabilities, so anyone can check them years later, as Chapter 2 does. Third, claim 3 was tested live in 2020, when he republished the implied ERP through the crash instead of freezing it. Chapter 4 lists that series among his wins.
 
-Source: Report, Parts 1, 2.1 and 4 (2026-09-14); /Users/siddharth/Valuation/docs/other-side/04-twelve-episodes.md.
+Source: Report, Parts 1, 2.1 and 4 (2026-09-14); /Users/siddharth/Desktop/Valuation/docs/other-side/04-twelve-episodes.md.
 
 ## Three things to remember
 

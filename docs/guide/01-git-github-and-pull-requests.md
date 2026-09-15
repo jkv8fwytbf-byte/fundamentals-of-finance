@@ -22,15 +22,15 @@ The analogy: a family recipe book. `main` is the printed book on the shelf. A br
 
 Every week of the twelve-week plan ends with a merged PR that CI passed. That is the unit of progress. If you cannot make a branch, open a PR, and read a diff, you cannot do rule 5 from chapter 0.
 
-Source: /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bkm2kob5x.txt, "12-week evening schedule" (2026-09-14)
+Source: /Users/siddharth/Desktop/Valuation/docs/sources/bkm2kob5x.txt, "12-week evening schedule" (2026-09-14)
 
 GitHub Actions is also where the correctness rules live. The golden test runs there. A PR that moves the Almarai value per share off 7.187840270062114 must go red, and red means it cannot merge. The same Actions robot runs the nightly jobs (pull new filings, re-value the watchlist, check for a new risk-premium file).
 
-Source: /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bkm2kob5x.txt, section 2 (2026-09-14); /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md, section 10.6 (2026-09-14)
+Source: /Users/siddharth/Desktop/Valuation/docs/sources/bkm2kob5x.txt, section 2 (2026-09-14); /Users/siddharth/Desktop/Valuation/docs/plan.md, section 10.6 (2026-09-14)
 
 Cost: the repo is private, inside a free GitHub organization you own. A private repo on the free plan gets 2,000 Linux minutes of Actions per month, then $0.006 per minute, with a $25 spending cap set in the plan. Public repos get unlimited minutes, but this repo stays private.
 
-Source: /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bkm2kob5x.txt, section 0 (2026-09-14); /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md, sections 2 and 5 M2 (2026-09-14)
+Source: /Users/siddharth/Desktop/Valuation/docs/sources/bkm2kob5x.txt, section 0 (2026-09-14); /Users/siddharth/Desktop/Valuation/docs/plan.md, sections 2 and 5 M2 (2026-09-14)
 
 ## How it is used in this project
 
@@ -41,7 +41,7 @@ Source: /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-77
 - Nightly jobs are Actions too: `ingest-edgar`, `value-watchlist`, `watch-erp-crp`, `rag-eval`, `news-headlines`, `realised-prices`. Each writes a heartbeat row, and a staleness alarm fires after 36 hours of silence. Schedules run off the hour (for example 03:17, not 03:00), because GitHub drops many jobs scheduled exactly on the hour. A cron schedule is the line in the Actions file that says when a job runs.
 - Nothing licensed ever enters git. `.gitignore` (a list of files git must ignore) covers `.env*` files, caches, and raw data dumps. Keys live in three places only: the local `.env` file, GitHub Actions secrets, and the hosting provider's environment settings.
 
-Source: /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md, sections 5 (M1, M2) and 10.6 (2026-09-14); /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bkm2kob5x.txt, sections 1, 2 and 15 (2026-09-14)
+Source: /Users/siddharth/Desktop/Valuation/docs/plan.md, sections 5 (M1, M2) and 10.6 (2026-09-14); /Users/siddharth/Desktop/Valuation/docs/sources/bkm2kob5x.txt, sections 1, 2 and 15 (2026-09-14)
 
 ### The six gh commands
 
@@ -56,7 +56,7 @@ Learn exactly these six and stop. Cursor's agent runs `gh` from the terminal, so
 | `gh pr merge --squash --delete-branch` | Merges the PR as one commit and deletes the branch. Only works when checks are green and protection allows it. |
 | `gh run watch` | Watches an Actions run live in the terminal, line by line, until it finishes. |
 
-Source: /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bkm2kob5x.txt, section 1 (2026-09-14). The one-line descriptions are mine, from using the tool; the manual at https://cli.github.com/manual/ is the reference.
+Source: /Users/siddharth/Desktop/Valuation/docs/sources/bkm2kob5x.txt, section 1 (2026-09-14). The one-line descriptions are mine, from using the tool; the manual at https://cli.github.com/manual/ is the reference.
 
 ### The daily loop, as commands
 
@@ -114,7 +114,7 @@ Why: this is where the golden test and the nightly robots live.
 
 Total: about 8 hours for git, GitHub and `gh`, about 5 hours for Actions, and about 4 hours for the security set.
 
-Source: /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bkm2kob5x.txt, sections 1, 2 and 15 (2026-09-14)
+Source: /Users/siddharth/Desktop/Valuation/docs/sources/bkm2kob5x.txt, sections 1, 2 and 15 (2026-09-14)
 
 ## 10-minute exercise
 
@@ -125,7 +125,7 @@ Source: /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-77
 Create and resolve a merge conflict on a throwaway repo. No AI tool. This is the first item on the M3 exercise list, done early on scratch files so the real repo is safe.
 
 ```
-mkdir -p ~/Valuation/scratch/conflict-drill && cd ~/Valuation/scratch/conflict-drill
+mkdir -p ~/Desktop/Valuation/scratch/conflict-drill && cd ~/Desktop/Valuation/scratch/conflict-drill
 git init
 echo "growth = 0.05" > inputs.txt
 git add inputs.txt && git commit -m "Start"
@@ -148,7 +148,7 @@ git log --oneline --graph
 
 Read the graph. That picture, two lines joining, is what a merge is. Write in the attempts file (chapter 0) what you guessed a branch was and what you now think it is.
 
-Source: /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md, section 5 M3 (2026-09-14). The commands are standard git; Pro Git chapter 3.2 covers the same drill.
+Source: /Users/siddharth/Desktop/Valuation/docs/plan.md, section 5 M3 (2026-09-14). The commands are standard git; Pro Git chapter 3.2 covers the same drill.
 
 ## Done when
 

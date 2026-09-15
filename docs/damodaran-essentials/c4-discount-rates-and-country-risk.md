@@ -47,13 +47,13 @@ Source: /Users/siddharth/Downloads/financeMD/damodaran/pc/implprem/ERPSept26.md,
 
 The 2026 files hold three US risk-free rates: 3.95%, 4.58% and 4.75%. Each belongs to a different dated table, called a vintage. The workbook hard-codes 4.58% inside two formulas on the cost-of-capital sheet. That is why every run in our system will store three vintage ids: the market file, the country-risk file and the industry file.
 
-Source: /Users/siddharth/Valuation/docs/read-this-first.md section 3.2 (2026-09); bkdrkpfng.txt section 7, note 3; bafb6h9rb.txt
+Source: /Users/siddharth/Desktop/Valuation/docs/read-this-first.md section 3.2 (2026-09); bkdrkpfng.txt section 7, note 3; bafb6h9rb.txt
 
 ### The India rule and a cross-check
 
 For an Indian company valued in rupees, the risk-free rate is the 10-year government bond yield minus India's default spread. Otherwise sovereign risk is counted twice, because the cost of debt adds that spread back later. When you distrust the bond yield, take the dollar risk-free rate and add the expected inflation gap. His February 2026 post uses IMF forecasts of 2.24% for the US and 4.00% for India, a gap of 1.76%. If the two routes disagree by a lot, an input is stale.
 
-Source: /Users/siddharth/Valuation/docs/read-this-first.md section 3.4 (2026-09); /Users/siddharth/Downloads/financeMD/damodaran/blog/2026/02/data-update-5-for-2026-risk-and-hurdle.md (2026-02)
+Source: /Users/siddharth/Desktop/Valuation/docs/read-this-first.md section 3.4 (2026-09); /Users/siddharth/Downloads/financeMD/damodaran/blog/2026/02/data-update-5-for-2026-risk-and-hurdle.md (2026-02)
 
 Why it matters for the calculator: the risk-free rate is an input with a currency and a vintage attached, never a bare number, and the India module subtracts the default spread before anything else runs.
 
@@ -167,7 +167,7 @@ Source: bkdrkpfng.txt section 2.6; /Users/siddharth/Downloads/financeMD/damodara
 
 His industry betas average each firm's 2-year and 5-year weekly regression betas, with the 2-year beta weighted two thirds. The workbook ships only US and Global tables of 94 industries each. India has its own table over the same 94 industries, built from 5,170 companies, but it is thin in places. Software (System and Application) has 82 firms and a cash-corrected unlevered beta of 0.91. Air Transport has 5 firms. Utility (General) has none. When an Indian industry has fewer than 10 firms, true for 27 of the 94, the engine will use the emerging-markets table, then Global, and print which one it used.
 
-Source: /Users/siddharth/Downloads/financeMD/damodaran/pc/datasets/betaIndia.md (2026-01-05); bafb6h9rb.txt sections 3 and 4; /Users/siddharth/Valuation/docs/read-this-first.md section 3.4 (2026-09)
+Source: /Users/siddharth/Downloads/financeMD/damodaran/pc/datasets/betaIndia.md (2026-01-05); bafb6h9rb.txt sections 3 and 4; /Users/siddharth/Desktop/Valuation/docs/read-this-first.md section 3.4 (2026-09)
 
 Why it matters for the calculator: beta will come from a lookup keyed on industry name and vintage, relevered with the company's own market debt-to-equity, and the output will state the tier that supplied it.
 
@@ -187,7 +187,7 @@ Source: bkdrkpfng.txt sections 2.6 and 3.4; /Users/siddharth/Downloads/financeMD
 
 Negative operating income sends coverage below every band and returns a D rating. The sheet warns not to use that as a going-concern cost of debt and suggests BB instead. Missing interest expense is the opposite trap. The formula sets coverage to one million when interest is zero, which awards Aaa. That is harmless for a company with no debt, because debt then has no weight. It is wrong for a company with debt that did not break out interest in the filing. The plan lists "interest missing" as an audit field, so the engine will record the gap instead of quietly rewarding it.
 
-Source: bkdrkpfng.txt section 3.4; /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md section 10.2 (2026-09)
+Source: bkdrkpfng.txt section 3.4; /Users/siddharth/Desktop/Valuation/docs/plan.md section 10.2 (2026-09)
 
 Why it matters for the calculator: the rating module is three banded tables plus a country lookup, and the 2026 spreads run from 0.40% at Aaa to 19% at D.
 

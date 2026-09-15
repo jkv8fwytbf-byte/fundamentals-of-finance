@@ -24,4 +24,4 @@ This is document 5 of the five I promised you. The first four were delivered und
 2. Which 10 to 20 US companies go on the first watchlist, the list of companies the system values and re-values. I will need the first names during M2, days 3 to 7 after go, and 20 names by the end of M3, weeks 2 to 4 (plan section 5).
 3. Yes or no to opening the free accounts in plan section 7: GitHub, OpenRouter, Neon, Pinecone, Voyage, Cloudflare, Langfuse and Hex. Mistral and EODHD, two paid services, come later (plan section 6). This happens in M1, three evenings, only after go (plan section 5).
 
-**Where the full plan lives.** The complete text is on your Mac at `/Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md`. This document restates it in shorter sentences. When the two differ, the plan file is the source.
+**Where the full plan lives.** The complete text is on your Mac at `/Users/siddharth/Desktop/Valuation/docs/plan.md`. This document restates it in shorter sentences. When the two differ, the plan file is the source.

@@ -1,0 +1,483 @@
+
+
+#################### CHECK 1 (chars 27787) ####################
+TASK A — HARNESS COMPARISON, September 2026
+*(All prices verified against vendor pages on 2026-09-14. Three of your premises turned out to be wrong — flagged with ⚠️ below.)*
+
+---
+
+## 1) Cursor
+
+### Plans and prices (Sept 2026)
+
+Cursor's marketing page ([cursor.com/pricing](https://cursor.com/pricing)) now collapses to four columns — **Hobby (free) / Individual ($20) / Teams ($40 per user) / Enterprise (custom)** — but the billing docs ([cursor.com/help/account-and-billing/pricing](https://cursor.com/help/account-and-billing/pricing)) still list the full ladder:
+
+| Plan | Price | Included third-party model usage |
+|---|---|---|
+| Hobby | Free | "Limited" Agent/Chat/Tab on Auto only |
+| Start (India only) | ₹649/mo | Cursor Models pool only |
+| **Pro** | **$20/mo** | **~$20 of API-priced usage** |
+| Pro+ | $60/mo | ~$70 of API-priced usage |
+| Ultra | $200/mo | ~$400 of API-priced usage |
+| Teams Standard | $40/user/mo ($32 annual) | — |
+| Teams Premium | $120/user/mo ($96 annual) | 5× Standard usage at 3× cost |
+| Enterprise | Custom | Pooled usage, SCIM, audit logs |
+
+Teams pricing was restructured in the [June 2026 post](https://cursor.com/blog/teams-pricing-june-2026) (effective for existing customers from 1 July 2026). The included-usage figures ($20/$70/$400) are reported consistently by third-party trackers ([lowcode.agency, Sept 2026](https://www.lowcode.agency/blog/cursor-ai-pricing); [omidsaffari.com](https://omidsaffari.com/blog/cursor-pricing)) but Cursor's own docs deliberately no longer print them in a table.
+
+### ⚠️ "Requests" no longer exist
+
+The 500-requests/month model died in June 2025 ([cursor.com/blog/new-tier](https://cursor.com/blog/new-tier)). Since then it is **token-based billing against two separate monthly pools** ([cursor.com/docs/models-and-pricing](https://cursor.com/docs/models-and-pricing)):
+
+1. **Cursor Models pool** — Grok 4.6, Grok 4.5 (jointly trained by Cursor and SpaceXAI), Composer 2.5. Very generous allowance; this is the pool that effectively doesn't run out.
+2. **Other Models pool** — Anthropic (Opus/Sonnet/Haiku/Fable), OpenAI GPT-5 series + GPT-5 Codex, Google Gemini 2.5→3.8 Flash, Meta, Moonshot, Z.ai. **Charged at the model's raw API price per million tokens.** This is the pool that empties. Teams/Enterprise pay a **+$0.25/M token surcharge** on third-party models.
+
+**Auto mode** has three settings — Cost, Balance, Intelligence — and bills at the list price of whichever model it routes to.
+
+Practical read for you: on Pro at $20, you get unlimited-ish Composer 2.5/Grok plus roughly $20 of Claude/GPT tokens. Heavy agent use on frontier models will exhaust that in days, and then you're on overage.
+
+### BYOK and OpenRouter
+
+Official BYOK providers ([cursor.com/help/models-and-usage/api-keys](https://cursor.com/help/models-and-usage/api-keys)): **OpenAI, Anthropic, Google, Azure OpenAI, AWS Bedrock**. Bedrock additionally supports IAM-role-based config ([docs](https://cursor.com/docs/customizing/aws-bedrock)).
+
+**OpenRouter is not officially supported**, but works via the "Override OpenAI Base URL" setting. Per [OpenRouter's own Cursor cookbook](https://openrouter.ai/docs/cookbook/coding-agents/cursor-integration): paste your `sk-or-...` key into the OpenAI API Key field, enable the base-URL override, and set it to **`https://openrouter.ai/api/v1/cursor`** — the `/cursor` suffix is mandatory; the plain `/api/v1` endpoint breaks tool calls. Then add models manually (e.g. `~anthropic/claude-opus-latest`, `deepseek/deepseek-v4-flash`).
+
+**What BYOK/base-URL override disables — this is the important part:**
+- **Tab completion never uses your key.** It always runs on Cursor's in-house models.
+- **Auto and Composer 2/2.5 modes may not route through your key** (OpenRouter docs say so explicitly).
+- There is **no Anthropic base-URL override** — only OpenAI. Long-standing open feature request ([forum](https://forum.cursor.com/t/missing-anthropic-base-url-override-in-cursor-byok/158805)).
+- 🔴 **"Cursor's Zero Data Retention policy does not apply when you use your own API keys."** Direct quote from the BYOK help page. Data handling reverts to your chosen provider's terms. For a *private* valuation system this matters more than the cost saving.
+
+### MCP
+
+Config at `.cursor/mcp.json` (project) or `~/.cursor/mcp.json` (global) ([docs](https://cursor.com/docs/context/mcp)). Three server types: CLI (`command`/`args`/`env`), remote HTTP/SSE (`url`/`headers`), and OAuth (`auth` object with client ID/secret/scopes). Transports: **stdio, SSE, Streamable HTTP**. **One-click install** exists via the Cursor Marketplace for official plugins, plus `cursor.directory` "Add to Cursor" buttons with OAuth. No documented tool-count cap.
+
+### Agent mode / Plan mode
+
+Switch with the mode picker or **Shift+Tab** ([docs](https://cursor.com/docs/agent/modes)). Plan Mode: agent asks clarifying questions → reads codebase → produces a written implementation plan → you edit it in chat or as a markdown file → click to hand off to Agent for execution. Recommended for multi-file work and architectural decisions; skip it for small edits. **This is exactly the right workflow for a beginner building a system they don't fully understand yet** — you review the plan in plain English before any code is written.
+
+### Cloud / Background Agents
+
+[cursor.com/docs/cloud-agents](https://cursor.com/docs/cloud-agents): isolated cloud VMs with full dev environments, no local machine needed.
+- **GitHub & Bitbucket:** comment `@cursor` on a PR or issue → clones repo, works on a branch, pushes back for review.
+- **Slack:** `@cursor` in a channel, with progress notifications.
+- **Web/mobile:** cursor.com/agents, Cursor iOS app, "Cloud" option in desktop, plus Linear and Azure DevOps triggers.
+- **MCP servers work inside cloud agents** — so your Neon/Pinecone MCP tools are available to them.
+- Unlimited parallelism; you set a spend limit. Billed at **standard API pricing for the selected model**, drawing from your usage pool.
+
+Recent additions: **Origin** (Cursor's own git hosting with GitHub sync, 17 Aug 2026), **self-hosted machines** (2 Sep 2026, incl. AWS Lambda/Vercel), and **Cursor Projects** (10 Sep 2026) where a coordinator agent plans and delegates to parallel subagents without writing code itself ([changelog](https://cursor.com/changelog)).
+
+### BugBot
+
+[cursor.com/docs/bugbot](https://cursor.com/docs/bugbot). Reviews PR diffs on GitHub/GitLab/Bitbucket/Azure DevOps, leaves inline comments with fix suggestions, reads existing PR comments to avoid duplicates, and can spawn a Cloud Agent to apply the fix. Auto mode runs on every PR update; manual via `cursor review` or `bugbot run`. Effort levels: Low / Default / High / Smart.
+
+**Pricing: the $40/seat/month subscription was killed** — since ~8 June 2026 it is pure usage-based billing ([cursor.com/blog/may-2026-bugbot-changes](https://cursor.com/blog/may-2026-bugbot-changes)). Individuals: draws from included usage, then on-demand spend. Teams: entirely on-demand spend. Third-party estimate: **~$1.00–1.50 per run**, and **the billing unit is a run, not a PR** — it re-reviews the full diff on every push, so an iterative branch bills several times ([getoptimal.ai](https://getoptimal.ai/blog/cursor-bugbot-pricing)).
+
+### Privacy / ZDR
+
+[cursor.com/docs/enterprise/privacy-and-data-governance](https://cursor.com/docs/enterprise/privacy-and-data-governance) and [cursor.com/security](https://cursor.com/security): with Privacy Mode on, code is never used for training, and Cursor holds **zero-data-retention agreements with all model providers**. Certifications: **SOC 2 Type II, ISO/IEC 27001:2022, ISO/IEC 42001:2023, AIUC-1, GDPR/DPA**. Privacy Mode is **on by default only for Enterprise**; individuals must enable it. CMEK and data residency are Enterprise-only. Again: **ZDR evaporates if you BYOK.**
+
+### Terminal, git panel, diff review
+
+Cursor is a VS Code fork, so you inherit the integrated terminal, the Source Control panel, and side-by-side diffs unchanged. Agent edits land as a reviewable diff you accept/reject per hunk before commit. For a beginner this is the single biggest advantage over terminal-only tools: **you can see what changed before it's yours.**
+
+### ⚠️ Scheduled jobs — Cursor DOES have them
+
+Your premise ("whether it can run scheduled jobs (no?)") is out of date. **Cursor Automations** shipped 5 March 2026 ([blog](https://cursor.com/blog/automations), [docs](https://cursor.com/docs/cloud-agent/automations), [changelog 03-05-26](https://cursor.com/changelog/03-05-26)), improved 18 June 2026.
+
+- **Triggers:** recurring intervals or **custom cron expressions**; GitHub (PRs, pushes, labels, CI completion, reviews, workflow runs); GitLab/Bitbucket; Slack (messages, emoji reactions); **generic webhooks**; Linear; Sentry; PagerDuty.
+- Configured via the Agents Window, cursor.com/automations, or the `/automate` skill.
+- Each run spins a cloud sandbox, uses your configured MCPs and models, verifies its own output, and has a **memory tool** that persists learning across runs.
+- For cron/Slack triggers it can run **without a repository** at all — e.g. "every two hours, read data and post results."
+- **Billed as cloud-agent usage** against your pool.
+
+### How it pairs with GitHub Actions
+
+Separately from Automations, there is **Cursor CLI (`cursor-agent`)** which runs headless in CI ([docs](https://cursor.com/docs/cli/github-actions), [headless docs](https://cursor.com/docs/cli/headless)). Install via curl, authenticate with `CURSOR_API_KEY` stored as a repo secret, run with `-p/--print` for non-interactive output. You choose full autonomy (agent does its own git ops) or restricted autonomy (agent only edits files; deterministic workflow steps do the commit/push), with JSON permission rules. Service accounts for CI billing are **Enterprise-only**.
+
+**Bottom line for your architecture:** Cursor Automations and Cursor CLI both bill through Cursor. For your nightly valuation refresh jobs, plain GitHub Actions cron calling OpenRouter directly is cheaper and keeps the data pipeline independent of your editor vendor. Use Cursor Automations for *repo hygiene* (PR triage, dependency bumps, "summarize what changed"), not for *running the valuation pipeline*.
+
+---
+
+## 2) Cline (VS Code extension)
+
+- **Open source: yes, Apache License 2.0** ([cline/cline LICENSE](https://github.com/cline/cline/blob/main/LICENSE)), copyright Cline Bot Inc. ~1.5M VS Code Marketplace installs by April 2026, 59k+ GitHub stars.
+- **BYOK is the default and is free.** Anthropic, OpenAI, Google, **OpenRouter**, AWS Bedrock, Google Vertex, Azure, plus local runtimes (Ollama/LM Studio). You pay providers directly; the extension takes nothing ([cline.bot/pricing](https://cline.bot/pricing)).
+- **Hosted option exists** — the "Cline (usage-billing)" provider gives one sign-in, built-in billing, and **free model options**, pay-as-you-go with no subscription. There is no separate "Cline Cloud" product page; team features live under **Enterprise (custom pricing)**: JetBrains extension, SSO, SLA, centralized billing, RBAC, auth logs.
+- **MCP Marketplace:** first-class, with **one-click install** — Cline autonomously clones, builds and configures the server. Submissions via [github.com/cline/mcp-marketplace](https://github.com/cline/mcp-marketplace); newer curated catalog at [github.com/cline/marketplace](https://github.com/cline/marketplace).
+- **Plan / Act:** Plan mode can read the codebase, search and discuss but **cannot write files or run commands**; Act mode executes. Conversation history carries across the switch. Critically, **you can assign different models per mode** — Settings → "Use different models for Plan and Act" ([docs](https://docs.cline.bot/features/plan-and-act)). This is the single most cost-effective trick available: expensive reasoning model for Plan, cheap open-weight model for Act.
+- **CLI:** `npm i -g cline` — interactive terminal chat plus fully headless mode for CI/CD and scripting.
+- **Cost:** $0 for the tool. Typical BYOK spend cited at $5–50/month for individuals, $100+ for heavy users.
+
+---
+
+## 3) Kilo Code (now "Kilo")
+
+- **Lineage:** forked from **Roo Code**, which itself forked from **Cline** — it merges features from both (multiple specialist modes, full prompt transparency). Open source.
+- **⚠️ Acquired by Anaconda in July 2026** ([kilo.ai](https://kilo.ai/)). This materially changes the maturity/risk picture: it is now inside an established Python-tooling company rather than a solo-funded fork. Domain migrated `kilocode.ai` → `kilo.ai` (308 redirect).
+- **Surfaces:** VS Code, JetBrains (IntelliJ, PyCharm, WebStorm), CLI, and cloud agents.
+- **Kilo Gateway:** **500+ models** (the "400+" figure is stale), **zero inference markup** — billed at exact provider rates, verified against provider bills. Auto-routing has three settings: **Efficient** (session-aware), **Frontier** (latest paid models), **Free** (best available free models).
+- **Pricing** ([kilo.ai/pricing](https://kilo.ai/pricing)): platform free for individuals; **Teams $15/user/month**; Enterprise custom. **Kilo Pass** subscriptions: Starter $19/mo (up to $26.60 in credits), Pro $49/mo (up to $68.60), Expert $199/mo (up to $278.60) — up to 50% bonus credits, +50% bonus on annual. **5% processing fee on credit purchases**; cloud compute billed separately per-second. New users get **$20 bonus credits on first top-up**.
+- **BYOK:** free, no markup — Anthropic, OpenAI, Google, Azure, AWS Bedrock, others.
+- **MCP:** supported. **Modes:** Code, Architect, Debug, Orchestrator, plus custom.
+- **Risk:** youngest of the three, fastest-moving, and now subject to an acquirer's roadmap. Feature velocity is high; API stability is lower than Cline's.
+
+---
+
+## 4) pi (pi.dev) — one paragraph
+
+Pi is a **minimal terminal-only agent harness** (TUI), **MIT-licensed**, built by Mario Zechner at Earendil Inc. with community contributors ([pi.dev](https://pi.dev/)). Philosophy is "primitives, not features": the core ships four tools — read, write, edit, bash — and everything else is an extension. It supports **15+ providers** (Anthropic, OpenAI, Google, Azure, Bedrock, Mistral, Groq, Cerebras, xAI, Hugging Face…) and **arbitrary custom providers via `models.json`**, so OpenRouter is a first-class citizen in practice — there's a dedicated [`pi-freerouter` package](https://pi.dev/packages/pi-freerouter) that routes every request through OpenRouter's **free `:free` model tier**, plus community extensions for live OpenRouter spend overlays and free-only model sync. Extensions are TypeScript files dropped into `~/.pi/agent/extensions/` that can register tools, intercept commands, add slash commands and rewrite the system prompt; sub-agents, MCP, plan mode and permission gates are all **extensions, not built-ins**. It deliberately ships **no permission popups** — you're expected to sandbox it in a container or write your own gate. Also runs in print/JSON, RPC and embedded-SDK modes. **Do not make this your first tool.**
+
+---
+
+## 5) Claude Code and OpenAI Codex — one line each
+
+- **Claude Code:** terminal-first interactive agent, $20/$100/$200 consumer tiers sharing one usage pool with Claude web/desktop/mobile; the **GitHub Action** lets you `@claude` a PR or issue to analyze, implement and push commits ([docs.anthropic.com/en/docs/claude-code/github-actions](https://docs.anthropic.com/en/docs/claude-code/github-actions)) — but since ~15 June 2026, Agent SDK / `claude -p` / GitHub Actions usage bills from a **separate credit pool at full API rates**, not your subscription.
+- **OpenAI Codex:** fully autonomous **cloud** agent — takes a task, clones your GitHub repo into a sandbox, edits across files, runs tests and **opens a PR**; $20/$100 (added 9 Apr 2026)/$200 tiers with a credit rate card for Business/Enterprise ([developers.openai.com/codex/pricing](https://developers.openai.com/codex/pricing), [developers.openai.com/codex/cloud](https://developers.openai.com/codex/cloud)); real-world spend commonly lands at $100–200/developer/month.
+
+---
+
+## Comparison table
+
+| | **Cursor** | **Cline** | **Kilo** | **pi** | **Claude Code** | **Codex** |
+|---|---|---|---|---|---|---|
+| **GUI vs terminal** | Full IDE (VS Code fork) + CLI + web + iOS | VS Code / JetBrains panel + CLI | VS Code / JetBrains + CLI + cloud | Terminal only (TUI) | Terminal + IDE plugins | Cloud/web + CLI + IDE |
+| **Beginner friendliness** | ★★★★★ diff review, Plan mode, one UI | ★★★★☆ needs key setup + cost awareness | ★★★☆☆ many modes, fast-moving | ★☆☆☆☆ assembly required | ★★★☆☆ | ★★★☆☆ |
+| **Model freedom (open-weight via OpenRouter)** | ⚠️ Unofficial only; `/api/v1/cursor` hack; Tab+Auto+Composer stay on Cursor models; **kills ZDR** | ★★★★★ native OpenRouter, free-tier models, per-mode model split | ★★★★★ 500+ models, 0% markup, "Free" auto-route | ★★★★★ native, incl. free-tier router | ✗ Anthropic only | ✗ OpenAI only |
+| **MCP** | ✅ `.cursor/mcp.json`, stdio/SSE/HTTP, one-click marketplace + cursor.directory | ✅ MCP Marketplace with autonomous one-click install | ✅ | ⚠️ via extension | ✅ | ✅ |
+| **Cloud/background agents on GitHub** | ✅ best-in-class: `@cursor` on PR/issue, Slack, web, iOS, Linear, Origin hosting, self-hosted machines | ✗ (headless CLI in your own CI) | ✅ cloud agents | ✗ | ⚠️ via GitHub Action | ✅ core product |
+| **Scheduled jobs / cron** | ✅ **Automations** (cron + GitHub/Slack/webhook/Linear/Sentry/PagerDuty) | ✗ use GitHub Actions | ⚠️ limited | ✗ | ✗ use GH Actions | ⚠️ |
+| **PR review** | ✅ BugBot, ~$1.00–1.50/run, usage-billed, can auto-fix | ✗ | ✗ | ✗ | ✅ via Action | ✅ |
+| **Privacy** | ✅ Privacy Mode + ZDR with all providers; SOC 2 Type II, ISO 27001/42001 — **but ZDR void with BYOK** | ✅ client-side; your key, your provider's terms; can run fully local | ✅ same model | ✅ fully local, MIT | Anthropic ZDR available | OpenAI terms |
+| **Price given you already pay Cursor Pro** | **$0 marginal** (+overage past ~$20 of frontier tokens) | **$0** tool cost + OpenRouter spend | **$0** tool cost + gateway/BYOK spend (5% fee on credits) | **$0** + OpenRouter spend (can be $0 on free tier) | +$20–200/mo | +$20–200/mo |
+| **Extensibility** | Rules, skills, hooks, MCP, custom modes, marketplace | MCP marketplace, rules, Apache-2.0 fork-able | Custom modes, MCP, Apache-family fork-able | Unlimited (TS extensions) but DIY | Skills, hooks, MCP, SDK | AGENTS.md, MCP |
+
+---
+
+## RECOMMENDATION for you specifically
+
+**Daily driver: Cursor Pro ($20, already paid). Do not add a second paid harness.**
+
+Reasons that are specific to your situation, not generic:
+
+1. **You are a beginner building a system you will not fully understand on day one.** The per-hunk diff review, the Source Control panel, and Plan mode (Shift+Tab → read the English plan → approve → execute) are the difference between learning and cargo-culting. Terminal agents (pi, Claude Code) hide this.
+2. **Your architecture is a scheduled pipeline, and Cursor now covers the whole loop.** Automations (cron + webhook triggers, MCP access, memory across runs) plus Cloud Agents on GitHub plus BugBot plus `cursor-agent` in GitHub Actions means one vendor covers authoring, review, and orchestration. That is worth more to you than model-shopping.
+3. **Privacy is a stated requirement and Cursor's default path is the private one.** Privacy Mode + ZDR with all providers + SOC 2 Type II / ISO 27001 / ISO 42001. Turn Privacy Mode ON in settings on day one (it is only default-on for Enterprise).
+4. **Budget maths.** $200/mo total. Cursor Pro $20 + Neon (~$19 Launch) + Pinecone (~$25 Standard) ≈ $64, leaving ~$135/mo of OpenRouter tokens for the *pipeline itself*. Spending another $60 on Pro+ or $19 on Kilo Pass buys you nothing your actual bottleneck needs — your bottleneck is pipeline token spend and your own learning rate, not editor capability.
+
+**Second tool (free, install it, use it sparingly): Cline.**
+Not as a competing editor — as your **OpenRouter bench**. It lives in the same VS Code window, costs $0 (Apache-2.0), speaks OpenRouter natively, and its **per-mode model split** (expensive model for Plan, cheap open-weight for Act) is the cleanest place to *empirically test* which model your valuation pipeline should call in production. You will be writing TypeScript that calls OpenRouter from GitHub Actions; Cline lets you feel what GLM-5.3 or Kimi K3 actually does on your code before you hard-code a model ID into a workflow. Kilo is a reasonable substitute if you prefer its mode system or want the $20 first-top-up credit, but Cline's Apache-2.0 licence, larger install base and stabler API make it the safer second tool. **Skip pi entirely for now** — no permission gates, everything is an extension you'd have to write, and you have a valuation system to build.
+
+**Is "open-weight models via OpenRouter" still meaningful inside Cursor? Essentially no.**
+Three reasons: (a) you'd be paying $20/mo for included pools and then routing around them — pure waste; (b) Tab completion, Auto mode and Composer 2.5 stay on Cursor's models regardless, so you get a hybrid you can't reason about; (c) **BYOK voids Cursor's ZDR**, which directly contradicts your "private" requirement. The `https://openrouter.ai/api/v1/cursor` endpoint works, but it's an unofficial path Cursor can break in any release.
+
+**The correct split:** open-weight models belong in your **runtime**, not your **editor**. Your valuation system's own LLM calls — filing summarisation, narrative-to-number extraction, Pinecone retrieval reranking, comps commentary — should hit OpenRouter directly from TypeScript in GitHub Actions, where GLM-5.3-Flash at **$0.075/$0.25 per M tokens** is ~40× cheaper than a frontier model and you control the prompts. Cursor stays on its included Composer/Grok pool for authoring the code. Cline is where you benchmark candidates for the runtime.
+
+---
+
+## What is the point of open-weight models — 6 honest lines
+
+1. **Cost:** GLM-5.3-Flash on OpenRouter is $0.075/$0.25 per M tokens vs $1.25/$4.25 for Muse Spark 1.3 — a 17–40× spread that decides whether your nightly re-valuation of 500 tickers costs $3/month or $120/month.
+2. **Privacy:** open weights are the only way to get *provable* non-retention — you can run them on your own hardware or a rented GPU where no third party ever sees a filing, a prompt, or your valuation logic; every hosted API, including via OpenRouter, is a trust relationship.
+3. **Control/self-hosting:** you can pin an exact checkpoint forever, so your DCF outputs stay reproducible across years — closed models get silently deprecated and retired, which quietly invalidates backtests.
+4. **Licence:** it varies and it matters — **GLM-5.3-Flash (320B total / 18B active) shipped 26 Aug 2026 under plain MIT**, while **full GLM-5.3 (753B) shipped 28 Aug 2026 under a custom licence** adding a security review for model-as-a-service operators above $10B revenue; **Kimi K3's weights opened July 2026 under a revenue-tiered licence**. For a private personal project all three are fine; read before commercialising.
+5. **The capability gap is real but narrower than the price gap:** on **Artificial Analysis Intelligence Index v4.3 (published 7 Sept 2026)** the frontier is **Claude Fable 5.1 = 53** and **GPT-6 Astra = 53**, with **Claude Opus 5 = 51**; best open weights is **GLM-5.3 (max) = 45**, then **Kimi K3 (max) = 44** and **GLM-5.3-Flash = 42** — an **8-point absolute / ~15% relative** gap, concentrated in long-horizon agentic tasks (Terminal-Bench v4.0, AutomationBench-AA), not in the summarise-and-extract work that dominates a valuation pipeline.
+6. **⚠️ Correction to your brief:** **Muse Spark 1.3 is not an open-weight model** — it is Meta's proprietary, API-served model released 3 Sept 2026 at $1.25/$4.25 per M tokens (with a $0.10/$0.20 "Contributor tier" that trades data rights for price); its **48 is the "max" reasoning config still in limited partner preview pending safety testing**, while the publicly available **xhigh config scores 45**. Meta has only open-weighted the separate 30B **Muse Glimmer** (Apache 2.0, Aug 2026). So the honest framing is: for your pipeline, GLM-5.3-Flash at 42 for ~$0.10/M blended is the workhorse, GLM-5.3 at 45 is the open-weight ceiling, and you reach for a frontier model only for the final narrative synthesis.
+
+---
+
+### Sources
+- [Cursor · Pricing](https://cursor.com/pricing) · [Pricing and plans (help)](https://cursor.com/help/account-and-billing/pricing) · [Models & Pricing](https://cursor.com/docs/models-and-pricing) · [Updates to Ultra and Pro (16 Jun 2025)](https://cursor.com/blog/new-tier) · [Improvements to Teams Pricing (Jun 2026)](https://cursor.com/blog/teams-pricing-june-2026)
+- [Bring your own API key](https://cursor.com/help/models-and-usage/api-keys) · [AWS Bedrock](https://cursor.com/docs/customizing/aws-bedrock) · [Missing Anthropic base URL override (forum)](https://forum.cursor.com/t/missing-anthropic-base-url-override-in-cursor-byok/158805) · [OpenRouter → Cursor integration](https://openrouter.ai/docs/cookbook/coding-agents/cursor-integration)
+- [Cursor MCP docs](https://cursor.com/docs/context/mcp) · [Agent modes / Plan mode](https://cursor.com/docs/agent/modes) · [Cloud Agents](https://cursor.com/docs/cloud-agents) · [Automations docs](https://cursor.com/docs/cloud-agent/automations) · [Build agents that run automatically](https://cursor.com/blog/automations) · [Changelog 03-05-26](https://cursor.com/changelog/03-05-26) · [Changelog](https://cursor.com/changelog)
+- [Bugbot docs](https://cursor.com/docs/bugbot) · [Updates to Bugbot (May/Jun 2026)](https://cursor.com/blog/may-2026-bugbot-changes) · [Bugbot cost analysis](https://getoptimal.ai/blog/cursor-bugbot-pricing)
+- [Privacy and Data Governance](https://cursor.com/docs/enterprise/privacy-and-data-governance) · [Cursor Security](https://cursor.com/security) · [Cursor CLI in GitHub Actions](https://cursor.com/docs/cli/github-actions) · [Headless CLI](https://cursor.com/docs/cli/headless)
+- [Cline pricing](https://cline.bot/pricing) · [Cline docs](https://docs.cline.bot/) · [Plan & Act](https://docs.cline.bot/features/plan-and-act) · [Cline Apache-2.0 LICENSE](https://github.com/cline/cline/blob/main/LICENSE) · [cline/mcp-marketplace](https://github.com/cline/mcp-marketplace) · [cline/marketplace](https://github.com/cline/marketplace)
+- [Kilo](https://kilo.ai/) · [Kilo pricing](https://kilo.ai/pricing) · [Kilo Code reviews](https://kilo.ai/articles/kilo-code-reviews)
+- [pi.dev](https://pi.dev/) · [pi-freerouter package](https://pi.dev/packages/pi-freerouter) · [Awesome Pi extensions](https://awesome-pi.site/extensions/)
+- [Artificial Analysis Intelligence Index v4.3 (7 Sept 2026)](https://artificialanalysis.ai/articles/artificial-analysis-intelligence-index-v4-3) · [Index leaderboard](https://artificialanalysis.ai/evaluations/artificial-analysis-intelligence-index) · [Muse Spark 1.3 (max)](https://artificialanalysis.ai/models/muse-spark-1-3) · [Muse Spark 1.3 (xhigh)](https://artificialanalysis.ai/models/muse-spark-1-3-xhigh) · [VentureBeat on Muse Spark 1.3](https://venturebeat.com/technology/meta-says-muse-spark-1-3-has-frontier-performance-but-its-best-results-come-from-a-model-developers-cant-broadly-use-yet) · [GLM 5.3 on OpenRouter](https://openrouter.ai/z-ai/glm-5.3) · [GLM 5.3 Flash on OpenRouter](https://openrouter.ai/z-ai/glm-5.3-flash) · [GLM-5.3 open weights licences](https://www.modemguides.com/blogs/ai-news/glm-5-3-open-weights-security-findings)
+- [Claude Code GitHub Actions](https://docs.anthropic.com/en/docs/claude-code/github-actions) · [Codex pricing](https://developers.openai.com/codex/pricing) · [Codex cloud](https://developers.openai.com/codex/cloud)
+
+KEY FACTS:
+ - Cursor plans (Sept 2026): Hobby free, Start India Rs649/mo, Pro $20/mo (~$20 included third-party model usage), Pro+ $60/mo (~$70 included), Ultra $200/mo (~$400 included), Teams Standard $40/user/mo ($32 annual), Teams Premium $120/user/mo ($96 annual), Enterprise custom. Source: cursor.com/pricing and cursor.com/help/account-and-billing/pricing.
+ - Cursor no longer uses 'requests' — since June 2025 it is token-based billing against two monthly pools: a generous Cursor Models pool (Grok 4.6, Grok 4.5, Composer 2.5) and an Other Models pool charged at raw API prices (Anthropic, OpenAI, Google, Meta, Moonshot, Z.ai). Teams/Enterprise pay a +$0.25/M token surcharge on third-party models. Auto mode has Cost/Balance/Intelligence settings.
+ - Cursor BYOK officially supports OpenAI, Anthropic, Google, Azure OpenAI and AWS Bedrock. OpenRouter is unofficial: enable 'Override OpenAI Base URL' and use https://openrouter.ai/api/v1/cursor (the /cursor suffix is mandatory; plain /api/v1 breaks tool calls). There is no Anthropic base-URL override.
+ - CRITICAL PRIVACY CAVEAT: 'Cursor's Zero Data Retention policy does not apply when you use your own API keys.' Tab completion always uses Cursor's built-in models regardless of BYOK, and Auto/Composer 2 modes may not route through your key.
+ - Cursor MCP: .cursor/mcp.json (project) or ~/.cursor/mcp.json (global); supports stdio, SSE and Streamable HTTP; CLI, remote-URL and OAuth server types; one-click install via Cursor Marketplace and cursor.directory 'Add to Cursor'.
+ - Cursor Plan Mode (Shift+Tab to switch): gathers info, asks clarifying questions, writes a reviewable implementation plan editable in chat or markdown, then hands off to Agent mode for execution.
+ - Cursor Cloud Agents run in isolated cloud VMs; triggered by @cursor on GitHub/Bitbucket PRs and issues, via Slack, cursor.com/agents, the Cursor iOS app, Linear and Azure DevOps. They support MCP servers, run unlimited in parallel, and bill at standard API pricing for the selected model with user-set spend limits.
+ - USER PREMISE CORRECTED: Cursor DOES run scheduled jobs. Cursor Automations shipped 5 March 2026 with cron expressions plus GitHub, GitLab, Bitbucket, Slack, generic webhook, Linear, Sentry and PagerDuty triggers; runs spin cloud sandboxes with MCP access and a persistent memory tool, and bill as cloud-agent usage. Cron/Slack triggers can run with no repository attached.
+ - Cursor BugBot dropped its $40/seat/month subscription around 8 June 2026 and is now pure usage-based billing; the billing unit is a RUN not a PR (it re-reviews the full diff on every push), estimated ~$1.00-1.50 per run. Effort levels: Low/Default/High/Smart. Can spawn a Cloud Agent to auto-fix.
+ - Cursor security posture: Privacy Mode means code is never trained on, plus zero-data-retention agreements with all model providers; certifications include SOC 2 Type II, ISO/IEC 27001:2022, ISO/IEC 42001:2023, AIUC-1 and GDPR/DPA. Privacy Mode is default-ON only for Enterprise — individuals must enable it manually.
+ - Cursor CLI (cursor-agent) runs headless in GitHub Actions using a CURSOR_API_KEY repo secret, with -p/--print mode and JSON permission rules; supports full autonomy or restricted (file-edits-only) autonomy. Service accounts for CI billing are Enterprise-only.
+ - Recent Cursor releases: Origin native code hosting with GitHub sync (17 Aug 2026), self-hosted machines incl. AWS Lambda/Vercel (2 Sep 2026), Cursor Projects with a non-coding coordinator agent delegating to parallel subagents (10 Sep 2026).
+ - Cline is Apache-2.0 open source (Cline Bot Inc.), ~1.5M VS Code Marketplace installs by April 2026, 59k+ GitHub stars. BYOK is free and includes OpenRouter, Anthropic, OpenAI, Google, Bedrock, Vertex, Azure and local runtimes. Optional hosted 'Cline (usage-billing)' provider offers one sign-in, built-in billing and free model options; team features only via custom-priced Enterprise. CLI via 'npm i -g cline'.
+ - Cline Plan/Act: Plan mode can read and search but cannot write files or run commands; Act mode executes; history carries over; and Settings has 'Use different models for Plan and Act' so you can pair an expensive reasoning model with a cheap execution model. MCP Marketplace supports one-click install where Cline autonomously clones, builds and configures the server.
+ - Kilo (formerly Kilo Code, kilocode.ai now 308-redirects to kilo.ai) forked from Roo Code which forked from Cline. ACQUIRED BY ANACONDA in July 2026. Runs in VS Code, JetBrains, CLI and cloud. Kilo Gateway offers 500+ models at zero markup (the '400+' figure is stale) with Efficient/Frontier/Free auto-routing.
+ - Kilo pricing: free and open source for individuals; Teams $15/user/month; Enterprise custom. Kilo Pass subscriptions: Starter $19/mo (up to $26.60 credits), Pro $49/mo (up to $68.60), Expert $199/mo (up to $278.60). 5% processing fee on credit purchases, cloud compute billed separately per-second, $20 bonus credits on first top-up. BYOK free with no markup.
+ - pi (pi.dev) is an MIT-licensed terminal-only TUI agent harness by Mario Zechner / Earendil Inc. Core ships only read, write, edit and bash; everything else (sub-agents, MCP, plan mode, permission gates) is a TypeScript extension in ~/.pi/agent/extensions/. Supports 15+ providers plus custom providers via models.json; the pi-freerouter package routes everything through OpenRouter's free :free tier. Deliberately has NO built-in permission popups — sandbox it yourself.
+ - Claude Code: $20/$100/$200 tiers sharing one pool with Claude web/desktop/mobile; GitHub Action lets you @claude a PR or issue; since ~15 June 2026 Agent SDK, 'claude -p' and GitHub Actions usage bills from a separate credit pool at full API rates rather than the subscription.
+ - OpenAI Codex: autonomous cloud agent that clones a GitHub repo into a sandbox, edits across files, runs tests and opens a PR; $20/$100 (added 9 Apr 2026)/$200 tiers plus a Business/Enterprise credit rate card; real-world spend commonly $100-200 per developer per month.
+ - Artificial Analysis Intelligence Index v4.3 published 7 September 2026 (10 evals incl. AA-Briefcase, GDPval-AA v2, AutomationBench-AA, Terminal-Bench v4.0, SciCode, HLE, GDP.pdf, CritPt, AA-Omniscience, AA-LCR v1.1). Scores: Claude Fable 5.1 = 53, GPT-6 Astra = 53, Claude Opus 5 = 51, Muse Spark 1.3 (max) = 48, GLM-5.3 (max) = 45, Muse Spark 1.3 (xhigh) = 45, Kimi K3 (max) = 44, GLM-5.3-Flash = 42. Frontier-to-open-weights gap is 8 points absolute / ~15% relative.
+ - USER PREMISE CORRECTED: Muse Spark 1.3 is NOT open-weight — it is Meta's proprietary API-served model released 3 Sept 2026 at $1.25/$4.25 per M tokens (plus a $0.10/$0.20 Contributor tier trading data rights for price). Its 48 score comes from a 'max' reasoning config still in limited partner preview pending safety testing; the publicly shipping xhigh config scores 45. Meta's open-weight release is the separate 30B Muse Glimmer under Apache 2.0 (Aug 2026).
+ - Open-weight licences differ: full GLM-5.3 (753B) shipped 28 Aug 2026 under a custom licence requiring security review for model-as-a-service operators above $10B revenue; GLM-5.3-Flash (320B total / 18B active, natively multimodal) shipped 26 Aug 2026 under plain MIT; Kimi K3's weights opened July 2026 under a revenue-tiered licence.
+ - OpenRouter pricing: GLM-5.3 at $0.92 in / $3.137 out per M tokens; GLM-5.3-Flash at $0.075 in / $0.25 out per M tokens (a 50% promo across OpenRouter, Z.ai and AIHubMix ended 9 Sept 2026).
+ - RECOMMENDATION: Cursor Pro ($20, already paid) as daily driver — diff review, Plan mode, Automations, Cloud Agents, BugBot and ZDR-by-default cover the whole loop. Cline (free, Apache-2.0) as the free second tool and OpenRouter benchmarking bench, exploiting its per-mode model split. Skip pi for now; Kilo is an acceptable Cline substitute. Do NOT buy a second paid harness.
+ - Open-weight-via-OpenRouter is NOT meaningfully useful inside Cursor: you'd waste the included pools you already paid for, Tab/Auto/Composer stay on Cursor models anyway, the endpoint is an unofficial hack Cursor can break, and BYOK voids ZDR. Open-weight models belong in the RUNTIME (TypeScript calling OpenRouter from GitHub Actions), not the editor.
+ - Budget maths for this user: $200/mo cap. Cursor Pro $20 + Neon ~$19 Launch + Pinecone ~$25 Standard = ~$64, leaving ~$135/mo for OpenRouter pipeline tokens. For nightly valuation refreshes, plain GitHub Actions cron calling OpenRouter directly is cheaper than Cursor Automations and keeps the pipeline independent of the editor vendor; reserve Cursor Automations for repo hygiene (PR triage, dependency bumps, change summaries).
+
+
+#################### CHECK 2 (chars 18627) ####################
+## TASK B — Seeing the data: hosted notebook/dashboard layer over Neon Postgres (Sept 2026)
+
+### Verdict first
+
+**Recommendation: Hex.** Start on **Community (free)** today; upgrade to **Professional ($36/editor/month)** the moment you want a published, code-hidden app and a daily scheduled refresh. It is the only tool on your list that gives you, in one surface: SQL straight against Neon, real Python (numpy/scipy/sklearn) for Monte Carlo and bias/variance, no-code chart cells good enough to look like a product, input widgets (a sector/country dropdown driving your diversification view), private-by-default sharing for a single user, and a built-in AI agent — which matters a lot when you are one semester into a BS and do not want to be overwhelmed. $36 of your $200 budget, leaving room for OpenRouter + Neon + Pinecone. ([hex.tech/pricing](https://hex.tech/pricing/))
+
+**Free fallback if you want $0:** Grafana Cloud Free (live dashboard over Neon, 3 users) + molab or Codespaces for the Python experiments. **"Own it" path if you'd rather write code than click:** Evidence OSS in your existing repo, built by GitHub Actions, deployed to Cloudflare Pages, gated by Cloudflare Access — also $0, but SQL-only.
+
+---
+
+### Comparison table
+
+| Tool | Free tier | Paid entry | Neon/Postgres | Python + SQL | Scheduled refresh | Private / single-user | Chart quality | Built-in AI | Embeddable later |
+|---|---|---|---|---|---|---|---|---|---|
+| **Hex** | Community: free, unlimited users, 5 projects, small compute, 7-day history, project-level connections, **no published apps** | **Professional $36/editor/mo**; Team $75; Enterprise custom | Native Postgres connector, SSL + SSH; workspace-level connections on Pro+ | **Yes, both first-class** (SQL cells return dataframes) | Pro: **1 schedule/project, daily max**; Team: cron + up to 12 hourly runs + alerts | Yes, private workspace; viewers/restricted editing | **Excellent** (chart cells, input params, app builder) | Yes (Hex Magic / agent; trial even on free) | **Enterprise only** (embedded-analytics add-on) |
+| **Deepnote** | Free forever: 3 editors, **5 projects**, unlimited Basic machines (2 vCPU/5 GB), unlimited viewers, 7-day history, 10 AI completions/mo, apps & dashboards | **Team $39/editor/mo** annual ($49 monthly) | Native PostgreSQL integration with SSL & SSH; may need IP allowlist | **Yes, both** (SQL blocks → dataframes) | **Team only** ("scheduled notebooks"); not on Free | Yes, private projects | Good (chart blocks), below Hex | Yes ($39 AI credits/mo on Team) | White-label embed = Enterprise |
+| **Evidence** | **OSS self-host is free** (Docker / Netlify / Cloudflare Pages / Vercel) | Evidence Cloud **Team $2,500/mo**, Enterprise custom, 30-day trial — **no free cloud tier** | Postgres direct connector via `connection.yaml` + `${ENV}` vars | **SQL only** (SQL + Markdown + Svelte). No Python | Build-time SQL → static site; refresh = rerun the build (**GitHub Actions cron**) | Docker basic auth (`EVIDENCE_BASIC_USER/PASSWORD`) or Cloudflare Access (free ≤50 users) | **Very good**, clean and opinionated | Cloud only (Analytics Agent, 20k credits) | **Yes — it's your own static site** |
+| **Observable** | Notebooks Free: public **and private** notebooks, AI assist, DB/file/API access | **Notebooks Pro $22/editor/mo** + $10/viewer; Teams ≈$90/user/mo with 10-user min (**≈$900/mo**) for Canvases | Database connectors incl. Postgres | JS-first; Python via Framework data loaders, not in notebooks | Pro: scheduled notebook runs | Yes, private notebooks on free tier | **Best-in-class** (Plot/D3) | "AI Assist" / canvas AI queries | **Framework is free OSS** → deploy & embed anywhere; Pro removes embed watermark |
+| **Grafana Cloud** | **Free forever**: 3 active users, 10k series, 50 GB logs/traces/profiles, 14-day retention, no card | Pro: **$19/mo platform fee** + usage ($6.50/1k series, ~$8/extra active user) | PostgreSQL is a core data source; TLS supported; Neon has an official Grafana Cloud guide (OTEL metrics need Neon Scale) | **SQL only**. No Python | Yes — live queries + dashboard auto-refresh + alerting | Yes (3 users on free) | Great for time series; **weak for distributions/histograms** | Grafana Assistant (paid) | Yes (iframe / public dashboards / snapshots) |
+| **Metabase Cloud** | **None** (OSS self-host is free, but you run it) | **Starter $100/mo** (5 users, $6/extra); Pro $575/mo (10 users); Enterprise min $20k/yr | Connect as PostgreSQL; Neon recommends pointing BI at a **read replica** | SQL + GUI query builder. **No Python** | Dashboard subscriptions, alerts, caching | Yes | Good, business-y; not statistical | AI questions / SQL generation (incl. OSS) | **Pro+ only** |
+| **Mode** | Historically a free "Studio" tier for individuals; **post-ThoughtSpot the pricing page no longer publishes tiers** — sales-gated. Treat as uncertain | Contact sales | Postgres supported | **Yes** (SQL + Python/R notebooks) | Scheduled reports on paid | Yes | Good | ThoughtSpot agentic analytics | Paid |
+| **Looker Studio** | **Free forever**, unlimited reports/viewers | **Pro $9/user/mo** (per GCP project, annual) | **Native PostgreSQL connector, direct query.** Neon doc: use the **`-pooler` host**, leave **port blank**, tick *Enable SSL*, leave client auth off, upload **`isrgrootx1.pem`** (Let's Encrypt root) | **SQL only**. No Python | Data freshness **15 min – 12 h**; scheduled email delivery free | Yes — share to your Google account only | **Weakest of the list**; dated, fiddly | Gemini features on Pro/Looker | Yes, free iframe embed (viewers must be authorised) |
+| **Streamlit Community Cloud** | Free: **1 private app + unlimited public apps**; ~0.078–2 vCPU, ~0.7–2.7 GB RAM, sleeps after 12 h idle | — (Snowflake-hosted paid path) | Any Postgres via psycopg/SQLAlchemy; connection string in Secrets manager | **Python only** (SQL through libraries) | None — runs on page visit | **Yes, but exactly one private app** | Whatever you code (Plotly/Altair) | No | Iframe-able, Streamlit-branded |
+| **marimo / molab** | **molab free** in preview: 4 CPU, 32 GB RAM, optional RTX Pro 6000 GPU, 12 h max run, 90 min idle shutdown | — | Any Postgres from Python | **Python-first**, reactive; marimo has SQL cells | **No scheduling** | ⚠️ **Notebooks are public-but-undiscoverable by default** — do not put Neon credentials there | Good (reactive UI, `marimo run` app mode) | marimo AI features | OSS marimo exports to WASM/HTML; self-host for private |
+| **Jupyter via GitHub Codespaces** | Free personal: **120 core-hours/mo** (= 60 h on 2-core) + 15 GB storage | Copilot/Pro raises the allowance | Anything, it's a VM | **Python + SQL**, total freedom | None in-tool — **use GitHub Actions** | **Maximum privacy**; Codespaces secrets for `DATABASE_URL` | Matplotlib/Plotly — you build it | Copilot | No — it's an IDE, not a dashboard |
+
+---
+
+### Neon connection gotchas that apply to all of them
+
+- **SNI is mandatory.** Neon routes by the TLS SNI field because the Postgres wire protocol carries no hostname. libpq ≥ 14 (Sept 2021) handles it; older/exotic drivers fail. Workaround: append `?options=endpoint%3D<endpoint-id>` to the URL, or prefix the password field with `endpoint=<endpoint_id>;` (this downgrades SCRAM to password auth but stays TLS-encrypted). ([Neon connection errors](https://neon.com/docs/connect/connection-errors))
+- **Use the pooled host** (`ep-xxx-pooler.<region>.aws.neon.tech`) for BI tools — PgBouncer, `sslmode=require` (not `verify-full`), and only a short list of startup parameters allowed. Keep the direct endpoint for migrations.
+- **Looker Studio specifically** needs the cert upload (`isrgrootx1.pem`) and an empty port field — this is the one tool with a non-obvious setup. ([Neon → Looker Studio](https://neon.com/docs/connect/connect-looker-studio))
+- **Neon recommends a read replica for BI tools**, since dashboards fire long/heavy queries that would otherwise hit your primary compute. ([Neon + Metabase guide](https://neon.com/guides/metabase-neon))
+- Because your pipeline already runs on **GitHub Actions**, the cheapest "scheduled refresh" is: Actions job computes valuations/Monte Carlo/accuracy metrics → writes materialised tables into Neon → the dashboard just does `SELECT`. That removes in-tool scheduling as a buying criterion for most of the table above.
+
+---
+
+### Why Hex, concretely, for your four dashboards
+
+1. **Watchlist diversification (sector/country):** SQL cell → dataframe → Hex chart cell (treemap/stacked bar) + a dropdown input filtering by portfolio or date. No code needed for the chart.
+2. **Value-vs-price distributions:** needs histograms, KDEs, and scatter of intrinsic-value vs market-price with a 45° line. Grafana and Looker Studio fight you here; a notebook with Plotly/Altair does not.
+3. **Monte Carlo ranges:** this is literally `numpy` in a Python cell over data pulled by the SQL cell above. Only Hex, Deepnote, Mode, Streamlit, molab and Codespaces can run it; of those, only Hex/Deepnote/Mode also publish a clean dashboard.
+4. **Model-accuracy scoreboard (bias/variance vs realised prices):** rolling error metrics = pandas/sklearn, then a table + trend chart. Same cell.
+5. **"Growing into data-science experiments":** the notebook is the experiment surface. You will not outgrow it in year one.
+
+**The honest costs of choosing Hex:** proprietary format (lock-in — your analysis lives in Hex, not in git); embedding into a web app is Enterprise-tier; Community compute is "small"; and scheduling on Professional is capped at one daily run per project (cron/hourly needs Team at $75). ([Hex scheduled runs docs](https://learn.hex.tech/docs/share-insights/scheduled-runs))
+
+**Close second — Deepnote Team at $39/editor/mo** if you'd rather have a plain Jupyter-shaped environment (more familiar for coursework), unlimited projects, and real scheduled notebooks. Its free tier (3 editors, 5 projects) is also a fine $0 start. Pick Deepnote if you value "it's just a notebook"; pick Hex if you value "it turns into a dashboard."
+
+**Avoid for this job:** Evidence Cloud ($2,500/mo), Observable Teams (~$900/mo), Metabase Cloud ($100/mo for SQL-only), Mode (sales-gated, opaque), Streamlit Community Cloud (one private app, sleeps, no scheduling), and **molab for anything with credentials** — its notebooks are public by default.
+
+---
+
+### When you'd need a custom Next.js app instead
+
+Build the app when **any** of these becomes true — not before:
+
+- **Write-back.** You want to edit a WACC or growth assumption in the UI and have it re-run the valuation and persist. Every tool above is read-only over Neon.
+- **More than one class of viewer.** Per-user auth with row-level scoping (you vs. friends vs. public), or you want to show it to someone without buying them a seat. Per-editor pricing punishes growth; a Next.js app's viewer cost is ~$0.
+- **Embedding is the product.** You want the dashboard *inside* your valuation app rather than beside it. Hex/Deepnote/Metabase all put embedding behind Enterprise/Pro walls; at that point building it is cheaper.
+- **Bespoke financial visuals.** DCF waterfall bridges, tornado/sensitivity charts, football-field valuation ranges — these need custom components (Recharts/visx/Observable Plot), not a chart picker.
+- **You're stitching ≥3 tools together**, or the BI bill passes ~$75/month. Both are signals the tool stopped being leverage.
+- **It's a portfolio piece.** A live Next.js app on Vercel demonstrates far more to an employer than a Hex link.
+
+Until then: keep the valuation engine in TypeScript on GitHub Actions writing to Neon, and treat the dashboard as a **disposable read layer**. If you architect it as "Actions computes → Neon stores results → something draws them", swapping Hex for Next.js later is a weekend, not a rewrite.
+
+---
+
+### INDmoney: public API and scraping terms
+
+**Yes — there is a real, public, free API, but it's the broking API, not a data API for the app.** INDmoney's broking arm INDstocks publishes the **INDstocks API Suite** at [api-docs.indstocks.com](https://api-docs.indstocks.com/faq/): REST + WebSocket covering order placement/modification/cancellation and GTT "Smart Orders", holdings/positions/real-time P&L, live quotes, 10+ years of historical OHLCV, and option chains with Greeks. Per the official FAQ there are **no subscription or API fees** (you pay flat per-order brokerage — the FAQ states ₹10/order, while some third-party reviews quote ₹5, so verify in-app), **no special approval** beyond an INDstocks account with SEBI KYC, **no minimum balance** to generate a token, **per-endpoint rate limits** (429 on breach; ~10 req/s on several endpoints), and **static-IP whitelisting is required for order-placement endpoints** under NSE rules — which matters for you, since GitHub Actions runners have no fixed IP (read-only market-data endpoints are unrestricted, so a read-only watchlist sync is fine). It's also wired into OpenAlgo if you want an off-the-shelf bridge. **Scraping, however, is clearly out.** INDmoney's [Terms of Service](https://www.indmoney.com/terms-of-services) grant only a limited licence for personal, non-commercial use of the platform, forbid copying/reproducing/republishing/transmitting/distributing any content from the platform without express written permission, forbid reverse engineering, and explicitly call out using bots to engage with the platform — with account suspension and legal referral as stated remedies. Practical rule: **use the official INDstocks API for your own holdings and market data; never scrape the app or indmoney.com.**
+
+### Bloomberg headline RSS: is it within ToS?
+
+**The feeds work, but Bloomberg has never granted written permission for automated consumption, so this is a grey area you should treat conservatively — not a clean "yes".** I verified on 14 Sep 2026 that `https://feeds.bloomberg.com/markets/news.rss` 301-redirects to `https://www.bloomberg.com/feeds/markets/news.rss` and returns a valid RSS channel ("Bloomberg Markets") with same-day items, carrying the notice `Copyright 2026 BLOOMBERG L.P. ALL RIGHTS RESERVED` and **no feed-level licence grant or usage terms**. Bloomberg's [Terms of Service](https://www.bloomberg.com/notices/tos/) contain **no RSS carve-out**: they permit downloading material and one print copy for personal, noncommercial use, prohibit framing Bloomberg pages without written permission, and bar the use of any "scraper, robot, bot, spider, data mining" device absent express written consent. An RSS endpoint is, by design, published *for* automated readers, and your intended use — a private, single-user system polling a few times a day, storing only headline + link + timestamp + your own derived signal, never storing article text, never redistributing, never framing — sits at the most defensible end of that clause and is plainly personal and non-commercial. But the blanket automation prohibition means Bloomberg could still characterise it as a breach; this is a contract/ToS question rather than a settled copyright one (bare headlines are generally thin on copyright), and the risk of enforcement against a low-volume personal reader is low but not zero. **Practical guardrails:** poll no more than a few times daily and honour `Last-Modified`/`ETag` caching; send an honest descriptive User-Agent; check `bloomberg.com/robots.txt` before you start and respect it; store titles + URLs + timestamps only (drop `<description>`); keep the output private and never republish; and **don't let Bloomberg be load-bearing** — anchor the core news signal on sources with explicit machine-access policies (SEC EDGAR full-text search and its filing RSS, with its published fair-access rate limit, is the obvious one for a Damodaran-style system), with Bloomberg as an optional colour layer you can drop. If this ever turns commercial or public-facing, get written permission or a licensed feed. I'm not a lawyer and this isn't legal advice.
+
+---
+
+### Sources
+
+- [Hex pricing](https://hex.tech/pricing/) · [Hex scheduled runs docs](https://learn.hex.tech/docs/share-insights/scheduled-runs) · [Hex pricing analysis, 2026](https://julius.ai/articles/hex-pricing)
+- [Deepnote pricing](https://deepnote.com/pricing) · [Deepnote PostgreSQL docs](https://deepnote.com/docs/postgresql)
+- [Evidence pricing](https://evidence.dev/pricing) · [Evidence self-host docs](https://docs.evidence.dev/self-host) · [Evidence on Cloudflare Pages](https://docs.evidence.dev/deployment/self-host/cloudflare-pages)
+- [Observable pricing (legacy page)](https://old.observablehq.com/pricing) · [Observable pricing](https://observablehq.com/pricing) · [Observable Framework (OSS)](https://github.com/observablehq/framework) · [Observable Pricing 2026 — G2](https://www.g2.com/products/observable/pricing)
+- [Grafana pricing](https://grafana.com/pricing/) · [Grafana Cloud pricing 2026 — MonitoringCost](https://monitoringcost.com/grafana-cloud-pricing) · [Neon → Grafana Cloud integration](https://neon.com/docs/guides/grafana-cloud)
+- [Metabase pricing](https://www.metabase.com/pricing/) · [Neon → Metabase guide](https://neon.com/guides/metabase-neon)
+- [Looker Studio pricing 2026 — Costbench](https://costbench.com/software/business-intelligence/looker-studio/) · [Neon → Looker Studio](https://neon.com/docs/connect/connect-looker-studio)
+- [Streamlit Community Cloud status & limitations](https://docs.streamlit.io/deploy/streamlit-community-cloud/status) · [Streamlit private-app FAQ](https://discuss.streamlit.io/t/faq-deploying-additional-private-apps-on-community-cloud/63632)
+- [molab docs](https://docs.marimo.io/guides/molab/) · [Announcing molab](https://marimo.io/blog/announcing-molab)
+- [GitHub Codespaces included usage](https://docs.github.com/en/codespaces/troubleshooting/troubleshooting-included-usage) · [Codespaces for Free and Pro accounts](https://github.blog/changelog/2022-11-09-codespaces-for-free-and-pro-accounts/)
+- [Neon connection errors / SNI](https://neon.com/docs/connect/connection-errors) · [Cloudflare Zero Trust free plan limits, 2026](https://zerometric.net/research/cloudflare-zero-trust-free-plan-limits-2026/)
+- [INDstocks API FAQ](https://api-docs.indstocks.com/faq/) · [INDstocks API Trading](https://www.indstocks.com/features/api-trading) · [INDmoney Terms of Service](https://www.indmoney.com/terms-of-services) · [OpenAlgo INDmoney docs](https://docs.openalgo.in/connect-brokers/brokers/indmoney)
+- [Bloomberg Terms of Service](https://www.bloomberg.com/notices/tos/) · [Bloomberg Markets RSS feed](https://www.bloomberg.com/feeds/markets/news.rss) (verified live 14 Sep 2026)
+
+KEY FACTS:
+ - Hex: Community free (5 projects, small compute, 7-day history, no published apps); Professional $36/editor/mo; Team $75/editor/mo; Enterprise custom (hex.tech/pricing, Sept 2026).
+ - Hex Professional includes scheduled runs but capped at 1 schedule per project, daily max; cron and hourly runs (up to 12/project) plus alerts require Team.
+ - Deepnote: Free forever = 3 editors, 5 projects, unlimited 2vCPU/5GB machines, no scheduling; Team = $39/editor/mo annual ($49 monthly) and adds scheduled notebooks, unlimited projects, 30-day history, $39 AI + $280 CPU credits.
+ - Evidence has no free cloud tier: Evidence Cloud Team is $2,500/month flat (unlimited users), Enterprise custom, 30-day trial. Evidence OSS self-hosting is free via Docker/Netlify/Cloudflare Pages with EVIDENCE_BASIC_USER/PASSWORD auth; SQL + Markdown only, no Python.
+ - Observable: Notebooks Free tier includes private notebooks and DB access; Notebooks Pro $22/editor/mo + $10/viewer adds scheduled notebook runs and removes embed watermark; Teams (Canvases) ~$90/user/mo with a 10-user minimum (~$900/mo). Observable Framework is free open source.
+ - Grafana Cloud Free (2026): 3 active users, 10k active metric series, 50 GB logs/traces/profiles, 14-day retention, no credit card. Pro adds a $19/mo platform fee plus usage ($6.50/1k series, ~$8/extra active user). PostgreSQL is a core data source; SQL only, no Python.
+ - Metabase has no free cloud tier: Starter $100/mo (5 users, $6/extra user), Pro $575/mo (10 users, embedding + whitelabel), Enterprise min $20,000/yr. OSS self-host is free. SQL/GUI only, no Python.
+ - Looker Studio is free forever; Looker Studio Pro is $9/user/month per Google Cloud project (annual). Native PostgreSQL connector runs direct queries; data freshness configurable 15 min to 12 h.
+ - Neon + Looker Studio requires: pooled '-pooler' host, port field left blank, 'Enable SSL' ticked, client auth unchecked, and upload of Let's Encrypt isrgrootx1.pem as server certificate (Neon official doc).
+ - Neon requires TLS SNI for routing (libpq 14+ is fine); non-SNI clients need '?options=endpoint%3D<endpoint-id>' or an 'endpoint=<id>;' password prefix. Pooled connections need sslmode=require, not verify-full. Neon recommends pointing BI tools at a read replica.
+ - Streamlit Community Cloud free tier allows exactly 1 private app plus unlimited public apps, ~0.078-2 vCPU and ~0.7-2.7 GB RAM, apps hibernate after 12 h of no traffic, and has no scheduling.
+ - marimo's molab is free (4 CPU / 32 GB RAM, optional RTX Pro 6000 GPU, 12 h max run, 90 min idle shutdown) but notebooks are public-but-undiscoverable by default, making it unsuitable for credentialed private dashboards.
+ - GitHub Codespaces free personal tier: 120 core-hours/month (60 h on a 2-core machine) plus 15 GB storage; fully private with Codespaces secrets, but no dashboard or scheduling layer (use GitHub Actions).
+ - Mode's public pricing is no longer published post-ThoughtSpot acquisition; the historically free individual 'Studio' tier is no longer clearly advertised and team plans are sales-gated - treat as uncertain.
+ - Recommendation: Hex - start on Community (free), move to Professional at $36/editor/month; it is the only listed tool combining SQL against Neon, real Python for Monte Carlo/bias-variance, strong chart cells with input widgets, private single-user sharing, and a built-in AI agent within budget. Main drawbacks: proprietary lock-in and embedding gated to Enterprise.
+ - Close second: Deepnote Team at $39/editor/month if a plain Jupyter-shaped environment and real scheduled notebooks matter more than dashboard polish. Free $0 paths: Grafana Cloud Free + molab/Codespaces, or Evidence OSS on Cloudflare Pages behind Cloudflare Access (free up to 50 users).
+ - Because the pipeline already runs on GitHub Actions, in-tool scheduling is mostly redundant: compute valuations/Monte Carlo/accuracy metrics in Actions, write materialised tables to Neon, and let the dashboard only SELECT.
+ - Switch to a custom Next.js app when you need write-back (editing assumptions triggers re-valuation), per-user auth with row-level scoping, embedding as the product, bespoke financial visuals (DCF waterfalls, tornado/football-field charts), more than ~3 stitched tools, or a BI bill above ~$75/month.
+ - INDmoney does offer a public developer API via its broking arm INDstocks (api-docs.indstocks.com): REST + WebSocket for orders/GTT, holdings, positions, real-time quotes, 10+ years OHLCV and option chains with Greeks; no subscription or API fees, open to any KYC-verified retail account, per-endpoint rate limits with 429s, and static-IP whitelisting mandatory for order-placement endpoints under NSE rules (market-data endpoints unrestricted).
+ - INDmoney's Terms of Service grant only a limited personal, non-commercial licence, forbid copying/reproducing/republishing any platform content without express written permission, forbid reverse engineering, and explicitly prohibit using bots to engage with the platform - so use the official INDstocks API and never scrape the app or website.
+ - Bloomberg's headline RSS feeds are live: feeds.bloomberg.com/markets/news.rss 301-redirects to www.bloomberg.com/feeds/markets/news.rss and returned valid same-day items on 14 Sep 2026, carrying 'Copyright 2026 BLOOMBERG L.P. ALL RIGHTS RESERVED' and no feed-level licence grant.
+ - Bloomberg's ToS has no RSS carve-out: it permits only personal, noncommercial download/one print copy, prohibits framing, and bars any 'scraper, robot, bot, spider, data mining' device without express written consent - so personal headline+link polling is a defensible grey area, not explicitly permitted.
+ - Bloomberg RSS guardrails: poll a few times daily with ETag/Last-Modified caching, honest User-Agent, check robots.txt, store only title+URL+timestamp (drop description), keep output private, never republish, and anchor the core news signal on SEC EDGAR RSS/full-text search (explicit fair-access policy) rather than Bloomberg.
+
+
+#################### CHECK 3 (chars 16670) ####################
+## SPEC 1 — "Is the market on the rails?" (descriptive regime dashboard)
+
+**Authority for the design.** His own framing: the implied ERP is "my composite indicator for whether the market is richly priced or not" (`/blog/2026/01/data-update-2-for-2026-equities-get.md`, 2026‑01‑23, https://aswathdamodaran.blogspot.com/2026/01/data-update-2-for-2026-equities-get.html). The interpretive rule is his, verbatim: ERP priced too low → "stocks are over priced"; ERP too high → "stocks today are under priced"; "If you are not a market timer, you are in effect arguing that the current ERP is, in fact, the right ERP for the market."
+
+### The eight indicators, with exact sources
+
+Primary file: `/pc/implprem/ERPbymonth.md` → sheet **"Historical ERP"** (Sept 2008–current, monthly) and sheet **"Last 12 months data"**. Columns, exactly: `Start of month | S&P 500 | T.Bond Rate | $ Riskfree Rate | Ten-year average CF | CF (Trailing 12 month) | Normalized CF | Expected growth rate | ERP (T12 m with sustainable payout) | ERP (T12m) | ERP (T12m) with adj riskfree rate | ERP (Smoothed) | ERP (Normalized) | ERP (Net Cash Yield) | ERP (Covid Adjusted) | Expected Return | Notes`.
+
+1. **Headline implied ERP** — `ERP (T12m)`. Latest row 2026‑09‑01: index 7686.14, T.Bond 4.75%, ERP 4.09%, Expected Return 8.84%. Monthly.
+2. **ERP with default‑risk‑adjusted dollar riskfree rate** — `$ Riskfree Rate` (4.53%) and `ERP (T12m) with adj riskfree rate` (4.31%). Rationale is in `/pc/implprem/ERPSept26.md`, "Impl premium calculator" note: Moody's downgraded the US from Aaa to Aa1 on 2025‑05‑16, so "netting out the default spread for an Aa1 rated sovereign … will yield a more consistent riskfree rate." Default spread = 0.22%.
+3. **Assumption band (dispersion across ERP definitions)** — `ERP (Smoothed)` 6.05% (ten‑year average cash yield), `ERP (T12 m with sustainable payout)` 4.14%, `ERP (Net Cash Yield)` 3.80%, `ERP (Normalized)` 3.56%. The width of this band is the honest error bar; `/New_Home_Page/home.md` publishes exactly these five numbers each month.
+4. **ERP vs its own history** — `/pc/datasets/histimpl.md`, sheet "Historical Impl Premiums", annual 1960–2025. Columns used: `Implied ERP (FCFE)`, `Implied ERP with risk adjusted riskfree rate`, `Implied Premium (FCFE with sustainable Payout)`, `ERP/Riskfree Rate`. 2025 row: 4.23% / 4.46% / ratio 1.012. Built‑in benchmark block at the foot of that sheet: 1960–2025 average ERP 4.2477% (ERP+rf 9.927%); 2006–2025 5.158% (8.038%); 2016–2025 4.999% (7.841%).
+5. **Expected return on stocks** — `Expected Return` column (8.84% Sept 2026; 8.41% on 2026‑01‑01). He uses it prescriptively: "the healthiest development for the market would be for it to deliver a return roughly equal to its expected return (8‑9%)" (Data Update 2 for 2026).
+6. **Earnings yield vs bond yield, and Bond‑Bill** — histimpl columns `Earnings Yield` (3.966% for 2025), `Dividend Yield` (1.147%), `T.Bill Rate` (3.65%), `T.Bond Rate` (4.18%), `Bond-Bill` (0.53%). Treat as context, not a signal: his PE critique in Data Update 2 for 2026 is that PE "is noisy and an unreliable indicator" and "would have suggested staying out of US equities for much of the last decade."
+7. **Price of risk in debt (cross‑check)** — he pairs equity and bond risk pricing in `/blog/2020/04/a-viral-market-meltdown-vi-price-of-risk.md` (2020‑04‑08) and again in `/blog/2026/09/interest-rates-and-stock-prices-old.md` (2026‑09‑10), which cites "Federal Reserve Data (FRED)" for daily ratings‑class default spreads. Free proxy: FRED `BAMLH0A0HYM2` (ICE BofA US High Yield OAS, daily; 2.70% on 2026‑09‑10, https://fred.stlouisfed.org/series/BAMLH0A0HYM2) and `BAMLC0A4CBBB`; riskfree from `DGS10` (4.95% on 2026‑09‑10, https://fred.stlouisfed.org/series/DGS10) and `DTB3`.
+8. **Breadth / concentration / dispersion** — from Data Update 2 for 2026: Mag Seven = 30.89% of US equity market cap (vs 11% in 2014), and the $3.9T they added in 2025 was 39.3% of the entire market‑cap increase; sector returns (best communication services +30.63%, tech +23.65%; worst staples/real estate ~2%); 95 industry groups (`pc/blog/IndustryReturns2025.xlsx`); small‑cap and low‑P/B spreads. Annual cadence; this is his substitute for a "breadth" indicator.
+
+### Update cadence
+
+- **Monthly, 1st of month**: ERPbymonth row + `ERP<Month><Year>.xlsx` calculator (`/pc/implprem/ERPSept26.md`). He shifted from annual to monthly in September 2008 (`/blog/2026/03/the-price-of-risk-equity-risk-premium.md`, 2026‑03‑15).
+- **Daily, during crises only**: "I have continued with the practice of estimating equity risk premiums, by day, during market crises (real or perceived)" — 2008, Brexit 2016, COVID 2020, tariffs 2025, the March 2026 war/oil shock (same post).
+- **Annual, early January**: histimpl, histretSP, Data Updates 1–8. `/New_Home_Page/home.md`: "The latest overall data update was on January 9, 2026; my next one update will be on January 2027."
+- **Semi‑annual**: country ERPs — `ctryprem.md` (Jan), `ctrypremApr26.md`, `ctrypremJuly26.md`.
+
+### How to compute it (TypeScript + free data)
+
+The calculator is an IRR solved by goal‑seek: `/pc/implprem/ERPSept26.md` instructs "In the set cell box, enter B54 … In 'By changing cell' enter C45." Replicate with bisection/Newton on r:
+
+`Index = Σ_{t=1..5} CF₀(1+g)ᵗ/(1+r)ᵗ + [CF₅(1+g_n)/(r−g_n)]/(1+r)⁵`, then `ERP = r − rf`.
+
+Inputs and their corpus switch codes (store the code, not just the number): base cash flow `C | A10 | A5 | P10 | P5 | NORM | NC`; growth `H | BU | TD | FC | FA` (Sept 2026 used `TD` = 13.99% top‑down); `g_n = rf`; riskfree from FRED `DGS10`, adjusted riskfree = `DGS10 − 0.0022`. Index level and trailing dividends+buybacks are the only non‑free inputs — mirror his published monthly values (2026‑09: CF T12m 201.83, ten‑year‑average CF 301.16, normalized CF 175.27) and re‑derive between updates. Validate your solver against his published outputs: intrinsic index value 7398.08 at ERP 4.25%, intrinsic trailing PE 27.19, intrinsic CAPE 59.29, implied expected return 8.8437%.
+
+Fair‑value grid (his own presentation, Data Update 2 for 2026): value the index at ERP = 2%…6%. He published 14834 at 2% ("undervalued by 53%") and 4790 at 6% ("overvaluation of 43%"). Reference ERPs live in the calculator: `HUS` 5.61%, `HG` 3.20%, `ERP10` 5.084%, `ERPLong` 4.2480%, `ERPHigh` 6.45%. The market‑wide spreadsheet lineage is `S&P500ValueJan2025.xlsx` (linked from `/New_Home_Page/home.md`), `S&P500ValueJan2024.xlsx`, `S&P500ValueMarch2024.xlsx`, `S&P500ValueJan2022.xlsx`, `S&P500ValueJan1.xlsx` (2021).
+
+### Dashboard presentation (states, not calls)
+
+One row per indicator: `value | percentile vs 1960–2025 | percentile vs last 10y | state | one‑sentence plain English | source file + as‑of date`. States, worded descriptively:
+
+- ERP percentile <25th vs 10‑year: "The market is pricing in **less** risk than it usually has over the last decade."
+- 25th–75th: "Risk is priced near its normal range."
+- >75th: "The market is pricing in **more** risk than usual."
+- Band width (indicator 3) >150 bp: "The answer depends heavily on which cash‑flow definition you accept — treat the headline number as soft."
+- Expected return vs 8–9%: "Stocks are priced to deliver X%."
+- HY OAS percentile: "Bond markets are pricing risk **more/less** cheaply than equity markets."
+- Concentration: "Top‑7 weight is N% — index moves are being driven by a handful of names."
+
+Anchor the whole panel with his own caveat text, quoted, so the dashboard never reads as a signal: *"I am not a market timer, but I do value the market at regular intervals, more to get a measure of what the market is pricing in, than to forecast future movements"* and *"I am a terrible market timer and try to avoid it in my investing"* (`/blog/2024/01/data-update-2-for-2024-stock-comeback.md`, 2024‑01‑10). Also: *"In bad news for market timers, none of the equity risk premium approaches does well at forecasting next year's actual return, and even at the longer time periods, there is significant error in predictions"* (`/blog/2026/03/the-price-of-risk-equity-risk-premium.md`). And: *"waiting on the sidelines for this to happen has not been a good strategy for the last decade"* (Data Update 2 for 2026).
+
+### What licensed news‑sentiment APIs may legitimately add
+
+Only **annotation, never input**. Permitted: (a) date‑stamped event labels on the ERP time series ("2026‑03‑01: war/oil shock — daily ERP run started"); (b) a divergence flag when headline tone moves but ERP does not — his 2026 opener is exactly that observation ("if you had been read just the news all through the year … you would have guessed … they had a bad year. You would have been wrong"); (c) narrative‑change detection feeding SPEC 2, not the dashboard. Forbidden: sentiment scores entering the ERP computation, or any ranking of the dashboard by sentiment. Rationale is the pricing/value distinction in `/blog/2020/03/a-viral-market-meltdown-iii-pricing-or.md` (2020‑03‑16): "markets are pricing mechanisms, not value mechanisms"; pricing is "reactive," value is "proactive." Store sentiment in a separate `market_context_events` table with source URL, publish timestamp, and provider, and render it as a chart overlay only.
+
+---
+
+## SPEC 2 — the per‑company "reasoned memo" (story → numbers, written before the calculator runs)
+
+### The pipeline it implements
+
+His five steps, from `/blog/2014/06/numbers-and-narrative-modeling-story.md` (2014‑06‑25): (1) develop a narrative; (2) "test the narrative against history, experience and common sense"; (3) "convert key parts of the narrative into drivers of value"; (4) connect drivers to a valuation; (5) "keep the feedback loop open." The memo is steps 1–3; the calculator is step 4; a diff-on-rerun is step 5.
+
+### The 3P gate
+
+From `/blog/2014/07/possible-plausible-and-probable-big.md` (2014‑07‑16): "the difference in market size in the narratives boils down to a simple calculus of what is probable, what is plausible and what is possible… Not everything that is possible is plausible, and not all plausible opportunities make the transition to the probable." Teaching form, `/New_Home_Page/webcastCLC.md` and `/New_Home_Page/CLC.md` (sessions 10–13, slides `/pdfiles/CLC/slides/Ch10.md`–`Ch13.md`): "Does your valuation story pass the 3P test? How does your valuation story play out in your valuation inputs (revenue growth, margins, reinvestment, and risk)? How uncertain are you?" The check on weakest links: "The 3P tests forces you to think through the weakest links in your story, starting with whether any part of your story crosses the line into the impossible (fairy tale)" (`/New_Home_Page/inv4E/inv4edquesanswrs.md`). Chapter map: `/New_Home_Page/NNPreface.md` — Ch.6 "Telling a story", Ch.7 "The Three Ps", Ch.8 "There is always a number", Ch.11 "Narrative breaks, shifts and tweaks".
+
+Memo schema: each claim carries `p3_class ∈ {possible, plausible, probable}`; only `probable` claims may set a base‑case input, `plausible` claims may set a scenario, `possible` claims are recorded and valued at zero. Same taxonomy applied to scenarios in `/blog/2026/03/ai-scenarios-from-economic-doomsday-to.md`.
+
+### The narrative‑to‑numbers checklist
+
+His own template is a live worksheet: `/pc/fcffsimpleginzu.md`, sheet **"Stories to Numbers"** — a story title, a paragraph ("Tell your story about the company. Keep it focused on the company's businesses and tie it into the three key levers of value: cash flows, growth and risk"), then a grid of `Base year | Next year | Years 2‑5 | Years 6‑10 | After year 10` for Revenues, Operating margin, Tax rate, Sales to Capital, Return on capital, Cost of capital — each with a mandatory **"Link to story"** cell ("Tie each assumption to the part of your story that relates to it"). Mirror this table one‑for‑one in Postgres.
+
+The narrative axes are total market → market share → company's cut → cost of capital → failure probability; his Uber comparison table has exactly those headers: `Narrative | Total Market | Market Share | Uber Cut | Cost of capital | Failure Probability | Value for Uber` (`/blog/2014/06/numbers-and-narrative-modeling-story.md`).
+
+### Inputs the memo must propose, each with a source
+
+Field names taken from the "Input sheet" of `/pc/fcffsimpleginzu.md`:
+
+| Input | Cell name | Required source |
+|---|---|---|
+| Revenue growth, year 1 | "Revenue growth rate for next year" | filing/guidance page cite |
+| Revenue CAGR, years 2–5 | "Compounded annual revenue growth rate - years 2-5" | market‑size × share arithmetic, each factor cited |
+| Margin, year 1 | "Operating Margin for next year" | trailing 12‑month worksheet |
+| Target margin | "Target pre-tax operating margin" | peer/industry averages sheet + story reason |
+| Convergence | "Year of convergence for margin" (default 5) | story reason |
+| Sales‑to‑capital, yrs 1–5 and 6–10 | "Sales to capital ratio" | company history + `Industry Averages(US)/(Global)` sheets |
+| Riskfree rate | "Riskfree rate" | FRED `DGS10` (less 0.22% if using his adjusted dollar rate) |
+| Cost of capital, initial and terminal | "Initial cost of capital"; stable default = riskfree + 4.5% | Cost of capital worksheet + `ctryprem.md` ERPs |
+| Failure probability and recovery | "If yes, enter the probability of failure" (=0.12 in the sample); "proceeds as percentage of book or fair value" (=0.5) | "Failure Rate worksheet" (e.g. 10‑year failure rate 11.78% for BB) |
+| Terminal assumptions | g = riskfree; ROC = cost of capital after year 10 unless overridden | must be explicitly justified to override |
+
+Plausibility guardrails he publishes: cost of capital — "80% of all US (global) companies have costs of capital between 5.26% (6.28%) and 9.88% (11.66%)"; a US dollar cost of capital of 14% "goes on my suspect list" (`/blog/2026/02/data-update-5-for-2026-risk-and-hurdle.md`, 2026‑02‑05). Reject or flag any memo input outside the published quartiles on the Input sheet's distribution columns.
+
+### The reverse DCF ("what does the price require")
+
+Required section, computed before the forward run. Method from `/blog/2015/08/big-markets-over-confidence-and-macro.md` (2015‑08): hold margin and cost of capital fixed at current levels and "solve for the imputed revenue in year 10" that justifies today's enterprise value — his `BreakevenRevenueCalculator.xls`. Then convert to an implied market share against the memo's total‑market number and run *that* through the 3P gate. Framing: "making the argument that Tesla is a very good, great or even exceptional company is only half the investment game, with assessing what the market is pricing in being the other half" (`/blog/2023/02/disagreements-and-first-principles.md`).
+
+### Guardrails
+
+1. **Every claim cited.** Schema: `claim_text, p3_class, source_type ∈ {filing, damodaran, dataset, news}, source_locator (accession + page/section, or corpus path + post date), quote, confidence`. Uncited claim ⇒ memo rejected, no run.
+2. **Numbers go to the database, not free text.** Memo writes rows to `valuation_inputs (run_id, field_name, value, unit, p3_class, claim_id)`; the calculator reads only that table. Prose is stored separately and is never parsed for numbers.
+3. **Golden test unaffected.** Keep a frozen fixture reproducing his published outputs (the Almarai/ginzu sample: value per share 7.18784027 vs price 72.28; and the index case: 7398.084728 at ERP 4.25%, expected return 0.08843700355). The memo layer must not touch the engine; CI fails on any drift beyond 1e‑6.
+4. **User reviews before the run.** Render a diff of proposed vs prior/default inputs with the linked claim and quote beside each; run is blocked until approved. His warning: "it is often easy to develop blind spots, and get attached to your own stories" (`/pdfiles/CLC/slides/Ch10.md`).
+5. **Opposing narrative field, mandatory.** A second, adversarial story with its own inputs and its own value — his Gurley/Uber exercise is the template, and his instruction is "Rather than become defensive, incorporate what you learn from others into your story" (Ch10). Store as a second scenario row so both values render side by side.
+6. **Feedback loop.** On re‑run, classify the change as tweak / shift / break (`/New_Home_Page/NNPreface.md` Ch.11; `/blog/2015/08/narrative-resets-revisiting-tech-trio.md`) and require the memo to state which. His rule for earnings reports: focus on "whether they change your narrative, not on whether the company met or beat some metric" (`/blog/2015/08/dcf-myth-2-dcf-is-exercise-in-modeling.md`).
+7. **No advice.** Memo output is a value and a story, with the price shown alongside; no buy/sell language anywhere in the template.
+
+KEY FACTS:
+ - ERPbymonth.md ('Historical ERP' sheet, monthly since Sept 2008) columns are exactly: Start of month | S&P 500 | T.Bond Rate | $ Riskfree Rate | Ten-year average CF | CF (Trailing 12 month) | Normalized CF | Expected growth rate | ERP (T12 m with sustainable payout) | ERP (T12m) | ERP (T12m) with adj riskfree rate | ERP (Smoothed) | ERP (Normalized) | ERP (Net Cash Yield) | ERP (Covid Adjusted) | Expected Return | Notes; a second sheet 'Last 12 months data' holds Date | S&P 500 | 10-year US Treasury | ERP.
+ - Latest corpus row (2026-09-01): S&P 500 = 7686.14, T.Bond 4.75%, adjusted $ riskfree 4.53%, ERP(T12m) 4.09%, ERP with adj riskfree 4.31%, ERP smoothed 6.05%, ERP normalized 3.56%, ERP net cash yield 3.80%, ERP with sustainable payout 4.14%, Expected Return 8.84%. Same five numbers are published on /New_Home_Page/home.md.
+ - The US default-spread adjustment (0.22%, Aa1) exists because Moody's downgraded the US from Aaa to Aa1 on 2025-05-16; explained in the 'Impl premium calculator' sheet of /pc/implprem/ERPSept26.md.
+ - histimpl.md ('Historical Impl Premiums', annual 1960-2025) columns: Year | Earnings Yield | Dividend Yield | S&P 500 | Earnings* | Dividends* | Dividends + Buybacks | Change in Earnings | Change in Dividends | T.Bill Rate | T.Bond Rate | Bond-Bill | Smoothed Growth | Implied Premium (DDM) | Analyst Growth Estimate | Implied ERP (FCFE) | Implied ERP with risk adjusted riskfree rate | Implied Premium (FCFE with sustainable Payout) | ERP/Riskfree Rate. 2025 row: EY 3.966%, DY 1.147%, index 6845.5, T.Bill 3.65%, T.Bond 4.18%, Bond-Bill 0.53%, implied ERP 4.23%, adj-rf ERP 4.46%, ERP/rf 1.012.
+ - histimpl.md carries built-in benchmark averages: 1960-2025 ERP 4.2477% (ERP+rf 9.927%); 2006-2025 5.158% (8.038%); 2016-2025 4.999% (7.841%) — use these as the history comparators for percentile states.
+ - Data Update 2 for 2026 (2026-01-23) calls the implied ERP 'my composite indicator for whether the market is richly priced or not', gives Jan 1 2026 expected return 8.41%, ERP 4.23% (4.46% on adjusted riskfree), and the fair-value grid: ERP 2% -> index 14834 (53% undervalued), ERP 6% -> 4790 (43% overvalued).
+ - His interpretive rule, verbatim: ERP priced too low = 'stocks are over priced'; ERP too high = 'stocks today are under priced'; 'If you are not a market timer, you are in effect arguing that the current ERP is, in fact, the right ERP for the market.'
+ - Market-timing warnings to quote: 'I am not a market timer, but I do value the market at regular intervals, more to get a measure of what the market is pricing in, than to forecast future movements' and 'I am a terrible market timer and try to avoid it in my investing' (/blog/2024/01/data-update-2-for-2024-stock-comeback.md); 'In bad news for market timers, none of the equity risk premium approaches does well at forecasting next year's actual return' (/blog/2026/03/the-price-of-risk-equity-risk-premium.md, 2026-03-15); 'waiting on the sidelines for this to happen has not been a good strategy for the last decade' (Data Update 2 for 2026).
+ - He warns the PE ratio 'is noisy and an unreliable indicator' and 'would have suggested staying out of US equities for much of the last decade' — so earnings-yield/PE indicators must be shown as context, not signals.
+ - Cadence: monthly on the 1st (ERPbymonth + ERP<Month><Year>.xlsx, practice begun September 2008); daily during crises (2008, Brexit 2016, COVID 2020, tariffs 2025, March 2026 oil/war shock); annual in early January (histimpl, histretSP, Data Updates 1-8; last full update 2026-01-09, next January 2027); country ERPs updated Jan + midyear (ctryprem.md, ctrypremApr26.md, ctrypremJuly26.md).
+ - The implied ERP is an IRR solved by Excel goal-seek (instructions inside ERPSept26.md: set cell B54 to the index level by changing C45). Replicate in TypeScript with bisection/Newton on r in Index = sum_{t=1..5} CF0(1+g)^t/(1+r)^t + [CF5(1+g_n)/(r-g_n)]/(1+r)^5, ERP = r - rf, g_n = rf.
+ - Calculator switch codes to persist alongside values: cash-flow choice C | A10 | A5 | P10 | P5 | NORM | NC; growth choice H | BU | TD | FC | FA (Sept 2026 used TD = 13.99%); reference ERPs HUS 5.61%, HG 3.20%, ERP10 5.084%, ERPLong 4.248%, ERPHigh 6.45%.
+ - Golden-test anchors from the corpus: index intrinsic value 7398.084728 at ERP 4.25%, intrinsic trailing PE 27.19, intrinsic CAPE 59.29, implied expected return 0.08843700355; ginzu sample (Almarai) value per share 7.18784027 vs price 72.28.
+ - Breadth/concentration data he actually uses (Data Update 2 for 2026): Mag Seven = 30.89% of US equity market cap (11% in 2014), their $3.9T 2025 gain = 39.3% of the total market-cap increase; sector returns (comm services +30.63%, tech +23.65%, staples/real estate ~2%); 95 industry groups in IndustryReturns2025.xlsx; small-cap and low-P/B spread revival; 2025 S&P return 17.72%, ranked 45th of 98 years.
+ - Bond-side price of risk: he pairs equity and bond risk pricing in /blog/2020/04/a-viral-market-meltdown-vi-price-of-risk.md and /blog/2026/09/interest-rates-and-stock-prices-old.md (2026-09-10), citing FRED for daily ratings-class spreads. Free proxies verified 2026-09-10: FRED DGS10 = 4.95% (https://fred.stlouisfed.org/series/DGS10) and BAMLH0A0HYM2 (ICE BofA US High Yield OAS) = 2.70% (https://fred.stlouisfed.org/series/BAMLH0A0HYM2).
+ - The pricing-vs-value doctrine that bounds news sentiment is /blog/2020/03/a-viral-market-meltdown-iii-pricing-or.md (2020-03-16): 'markets are pricing mechanisms, not value mechanisms'; pricing is reactive, value proactive. Sentiment may annotate the ERP series and flag news/price divergence, but must never enter the ERP computation.
+ - The 3P test is defined in /blog/2014/07/possible-plausible-and-probable-big.md (2014-07-16): 'Not everything that is possible is plausible, and not all plausible opportunities make the transition to the probable.' It is examined per life-cycle stage in /New_Home_Page/webcastCLC.md and CLC.md (sessions 10-13, slides /pdfiles/CLC/slides/Ch10.md-Ch13.md).
+ - The five-step narrative process is in /blog/2014/06/numbers-and-narrative-modeling-story.md (2014-06-25): develop narrative; test against history, experience and common sense; convert narrative into value drivers; connect drivers to valuation; keep the feedback loop open. Its Uber table uses headers Narrative | Total Market | Market Share | Uber Cut | Cost of capital | Failure Probability | Value.
+ - /pc/fcffsimpleginzu.md contains a 'Stories to Numbers' sheet that is literally the memo template: story title + paragraph, then Base year | Next year | Years 2-5 | Years 6-10 | After year 10 for Revenues, Operating margin, Tax rate, Sales to Capital, Return on capital, Cost of capital, each with a mandatory 'Link to story' cell.
+ - Ginzu 'Input sheet' field names the memo must populate: Revenue growth rate for next year; Operating Margin for next year; Compounded annual revenue growth rate - years 2-5; Target pre-tax operating margin; Year of convergence for margin; Sales to capital ratio (years 1-5 and 6-10); Riskfree rate; Initial cost of capital; probability of failure (sample 0.12) with proceeds tied to B or V at 0.5; defaults of stable cost of capital = riskfree + 4.5% and terminal ROC = cost of capital. A 'Failure Rate worksheet' gives e.g. 11.78% ten-year failure for a BB-rated firm.
+ - Plausibility guardrails from /blog/2026/02/data-update-5-for-2026-risk-and-hurdle.md (2026-02-05): 80% of US (global) companies have costs of capital between 5.26% and 9.88% (6.28% and 11.66%); a US dollar cost of capital of 14% 'goes on my suspect list'; a young global AI firm might start at 11.66% and move toward 8.65%.
+ - Reverse DCF method ('what does the price require') is in /blog/2015/08/big-markets-over-confidence-and-macro.md — hold margins and cost of capital fixed and solve for imputed year-10 revenue implied by today's enterprise value (BreakevenRevenueCalculator.xls); the framing quote is from /blog/2023/02/disagreements-and-first-principles.md: assessing 'what the market is pricing in' is 'the other half' of the investment game.
+ - Narrative-change taxonomy for re-runs: /New_Home_Page/NNPreface.md Ch.11 'Narrative breaks, shifts and tweaks'; /blog/2015/08/narrative-resets-revisiting-tech-trio.md; and /blog/2015/08/dcf-myth-2-dcf-is-exercise-in-modeling.md ('the focus ... should be on whether they change your narrative, not on whether the company met or beat some metric').
+ - Support for a mandatory 'opposing narrative' field: /pdfiles/CLC/slides/Ch10.md warns 'it is often easy to develop blind spots, and get attached to your own stories' and instructs 'Rather than become defensive, incorporate what you learn from others into your story'; the Gurley/Uber post is the worked example.
+ - Market-wide S&P 500 valuation spreadsheet lineage referenced in the corpus: S&P500ValueJan2025.xlsx (linked from /New_Home_Page/home.md), S&P500ValueJan2024.xlsx, S&P500ValueMarch2024.xlsx, S&P500ValueJan2022.xlsx, S&P500ValueJan1.xlsx (2021).

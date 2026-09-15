@@ -6,7 +6,7 @@
 
 This chapter collects the formal attacks on the method your engine copies. An academic critic publishes in a journal and argues from theory. A practitioner critic runs money and argues from results. Both appear here, because both have been right about something. Every entry has four parts: the claim in one sentence, why it matters, his reply if any, and what the app will do about it. Chapter 2 covers his misses company by company. Chapter 4 keeps the scoreboard.
 
-Source: /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bkm2kob5x.txt, Part 3 (2026-09-14)
+Source: /Users/siddharth/Desktop/Valuation/docs/sources/bkm2kob5x.txt, Part 3 (2026-09-14)
 
 Below, "the Report" means that same file, compiled 2026-09-14. Nothing past milestone M0 is built yet, so every app feature is written as "will".
 
@@ -26,7 +26,7 @@ Below, "the Report" means that same file, compiled 2026-09-14. Nothing past mile
 
 **What the app will do.** It will use his 192-country table, but never silently. Every run will store a country-risk vintage id, meaning the dated snapshot of his data it used. For India the January 2026 vintage reads Moody's Baa3, default spread 1.87%, CRP 2.85%, total ERP 7.08%. The July 2026 vintage reads 1.75%, 2.72% and 6.92%. The rupee risk-free rate will be the 10-year G-sec (Indian government bond) yield minus India's default spread, so sovereign risk is not counted twice.
 
-Source: the Report, Part 3.1 and Part 4 row 10 (2026-09-14); /Users/siddharth/Downloads/financeMD/damodaran/blog/2026/07/country-risk-drivers-measures-and.md (2026-07-15); /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bafb6h9rb.txt (2026-09-14); /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md, section 10.1 (2026-09-14)
+Source: the Report, Part 3.1 and Part 4 row 10 (2026-09-14); /Users/siddharth/Downloads/financeMD/damodaran/blog/2026/07/country-risk-drivers-measures-and.md (2026-07-15); /Users/siddharth/Desktop/Valuation/docs/sources/bafb6h9rb.txt (2026-09-14); /Users/siddharth/Desktop/Valuation/docs/plan.md, section 10.1 (2026-09-14)
 
 ## 3.2 Pablo Fernandez (IESE): there is no "the" risk premium, and beta is noise
 
@@ -40,7 +40,7 @@ Source: the Report, Part 3.1 and Part 4 row 10 (2026-09-14); /Users/siddharth/Do
 
 **What the app will do.** Betas will come from his industry tables, stamped with an industry vintage id. For India the fallback chain will be India, then emerging markets, then Global, switching when an industry has fewer than 10 firms. Today 27 of 94 Indian industry rows are that thin, and every run will print which table it used.
 
-Source: the Report, Part 3.2 (2026-09-14); /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bkdrkpfng.txt, section 6 (2026-09-14)
+Source: the Report, Part 3.2 (2026-09-14); /Users/siddharth/Desktop/Valuation/docs/sources/bkdrkpfng.txt, section 6 (2026-09-14)
 
 ## 3.3 Fama and French (1992): the beta and return relation is flat
 
@@ -54,7 +54,7 @@ Source: the Report, Part 3.2 (2026-09-14); /Users/siddharth/.claude/projects/-Us
 
 **What the app will do.** It will show the cost of capital as a labeled convention with its parts visible, checked against his plausibility bands from Data Update 5 for 2026, with a Monte Carlo range (the spread of results from re-running the model many times with inputs drawn at random) beside the point value.
 
-Source: the Report, Part 3.3 (2026-09-14); /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md, section 10.5 (2026-09-14)
+Source: the Report, Part 3.3 (2026-09-14); /Users/siddharth/Desktop/Valuation/docs/plan.md, section 10.5 (2026-09-14)
 
 ## 3.4 Terminal value dominance and input sensitivity: his own published ranges {#r3-sensitivity}
 
@@ -79,7 +79,7 @@ Terminal value is the value of every cash flow beyond the forecast years, folded
 
 **What the app will do.** It will always show the range, never only the point. The terminal value's share of total value and a sensitivity table will be on every screen. The golden case, Almarai at 7.187840270062114 per share against a price of 72.28, pins the terminal cost of capital to the risk-free rate plus the mature-market ERP. The sheet label saying "+4.5%" is misleading, and the engine will not copy it.
 
-Source: the Report, Part 3.4 and Part 6 item 5 (2026-09-14); /Users/siddharth/Downloads/financeMD/damodaran/blog/2014/03/return-to-firing-line-revisiting-tesla.md (2014-03-25); /Users/siddharth/Downloads/financeMD/damodaran/blog/2018/04/amazon-glimpses-of-shoeless-joe.md (2018-04-26); /Users/siddharth/Downloads/financeMD/damodaran/blog/2020/02/a-do-it-yourself-diy-valuation-of-tesla.md (2020-02-06); /Users/siddharth/Downloads/financeMD/damodaran/blog/2014/12/up-up-and-away-crowd-valuation-of-uber.md (2014-12); /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bkdrkpfng.txt (2026-09-14)
+Source: the Report, Part 3.4 and Part 6 item 5 (2026-09-14); /Users/siddharth/Downloads/financeMD/damodaran/blog/2014/03/return-to-firing-line-revisiting-tesla.md (2014-03-25); /Users/siddharth/Downloads/financeMD/damodaran/blog/2018/04/amazon-glimpses-of-shoeless-joe.md (2018-04-26); /Users/siddharth/Downloads/financeMD/damodaran/blog/2020/02/a-do-it-yourself-diy-valuation-of-tesla.md (2020-02-06); /Users/siddharth/Downloads/financeMD/damodaran/blog/2014/12/up-up-and-away-crowd-valuation-of-uber.md (2014-12); /Users/siddharth/Desktop/Valuation/docs/sources/bkdrkpfng.txt (2026-09-14)
 
 ## 3.5 Mauboussin and Rappaport: run the model backwards {#r3-reverse}
 
@@ -97,7 +97,7 @@ Source: the Report, Part 3.4 and Part 6 item 5 (2026-09-14); /Users/siddharth/Do
 
 **What the app will do.** Every memo will compute the reverse DCF first: keep margin and cost of capital fixed, solve for the year-10 revenue the price implies, convert it to an implied market share, and run that share through the 3P test from Chapter C1.
 
-Source: the Report, Part 3.5 and Part 6 item 1 (2026-09-14); /Users/siddharth/Downloads/financeMD/damodaran/blog/2021/11/teslas-trillion-dollar-moment-valuation.md (2021-11); /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md, section 10.5 (2026-09-14)
+Source: the Report, Part 3.5 and Part 6 item 1 (2026-09-14); /Users/siddharth/Downloads/financeMD/damodaran/blog/2021/11/teslas-trillion-dollar-moment-valuation.md (2021-11); /Users/siddharth/Desktop/Valuation/docs/plan.md, section 10.5 (2026-09-14)
 
 ## 3.6 Marcos López de Prado: discretionary valuation is not science {#r3-testing}
 
@@ -115,7 +115,7 @@ Source: the Report, Part 3.5 and Part 6 item 1 (2026-09-14); /Users/siddharth/Do
 
 **What the app will do.** The Almarai golden test at 1e-6 makes the implementation falsifiable even though the forecast is not. Every screen will carry the banner "The engine is tested (Almarai 1e-6). The forecast is not." Every run will be stored with its inputs, an input hash and three vintage ids. From M4 an accuracy scoreboard will record the realized price at 90, 180 and 365 days, and compute bias and variance by sector, region and vintage. That is the record of trials he asks for.
 
-Source: the Report, Part 3.6 and Part 6 item 2 (2026-09-14); /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md, sections 5 (M4) and 10.1 (2026-09-14)
+Source: the Report, Part 3.6 and Part 6 item 2 (2026-09-14); /Users/siddharth/Desktop/Valuation/docs/plan.md, sections 5 (M4) and 10.1 (2026-09-14)
 
 ## 3.7 Cliff Asness and AQR: cheapness works, except when it does not for a decade
 
@@ -127,7 +127,7 @@ Source: the Report, Part 3.6 and Part 6 item 2 (2026-09-14); /Users/siddharth/.c
 
 **What the app will do.** The scoreboard will measure at fixed horizons, so "eventually" gets a date. A test will reject any output containing advice words.
 
-Source: the Report, Part 3.7 (2026-09-14); /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md, section 10.1 (2026-09-14)
+Source: the Report, Part 3.7 (2026-09-14); /Users/siddharth/Desktop/Valuation/docs/plan.md, section 10.1 (2026-09-14)
 
 ## 3.8 Cathie Wood and ARK versus Damodaran on Tesla
 
@@ -155,7 +155,7 @@ Source: the Report, Part 3.8 (2026-09-14); /Users/siddharth/Downloads/financeMD/
 
 **What the app will do.** A second, opposing memo per company will be mandatory. The memo table will carry a `story_kind` field with values base and opposing. The plan calls this the "Gurley field".
 
-Source: the Report, Parts 3.9 and 2.5 (2026-09-14); /Users/siddharth/Downloads/financeMD/damodaran/blog/2014/07/possible-plausible-and-probable-big.md (2014-07-16); /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md, sections 1 and 10.3 (2026-09-14)
+Source: the Report, Parts 3.9 and 2.5 (2026-09-14); /Users/siddharth/Downloads/financeMD/damodaran/blog/2014/07/possible-plausible-and-probable-big.md (2014-07-16); /Users/siddharth/Desktop/Valuation/docs/plan.md, sections 1 and 10.3 (2026-09-14)
 
 ## 3.10 Nassim Taleb: the distributions are wrong
 
@@ -169,7 +169,7 @@ Source: the Report, Parts 3.9 and 2.5 (2026-09-14); /Users/siddharth/Downloads/f
 
 **What the app will do.** Failure probability and the recovery fraction will be visible inputs, from workbook cells B51 to B54, where the default recovery is 50%. Monte Carlo draws will come from the workbook's industry quartile tables rather than a bell curve. Even so, the UI copy will say the range understates the tails.
 
-Source: the Report, Part 3.10 (2026-09-14); /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bkdrkpfng.txt, Input rows B51 to B54 (2026-09-14)
+Source: the Report, Part 3.10 (2026-09-14); /Users/siddharth/Desktop/Valuation/docs/sources/bkdrkpfng.txt, Input rows B51 to B54 (2026-09-14)
 
 ## 3.11 Andrew Lo: the premium is not a constant
 
@@ -181,7 +181,7 @@ Source: the Report, Part 3.10 (2026-09-14); /Users/siddharth/.claude/projects/-U
 
 **What the app will do.** Every run will stamp three vintage ids, market, country risk and industry, and show them. A number with no vintage will be refused. The regime panel will show the September 2026 implied ERP of 4.09% and expected return of 8.84% as dated readings, never as constants.
 
-Source: the Report, Part 3.11 and Part 6 item 6 (2026-09-14); /Users/siddharth/Downloads/financeMD/damodaran/blog/2026/07/country-risk-drivers-measures-and.md (2026-07-15); /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/btzaixzyh.txt, regime spec (2026-09-14)
+Source: the Report, Part 3.11 and Part 6 item 6 (2026-09-14); /Users/siddharth/Downloads/financeMD/damodaran/blog/2026/07/country-risk-drivers-measures-and.md (2026-07-15); /Users/siddharth/Desktop/Valuation/docs/sources/btzaixzyh.txt, regime spec (2026-09-14)
 
 ## 3.12 Ben Thompson and Aggregation Theory: the narrative critique from the other side
 
@@ -193,7 +193,7 @@ Source: the Report, Part 3.11 and Part 6 item 6 (2026-09-14); /Users/siddharth/D
 
 **What the app will do.** The margin the model converges to, the year of convergence (workbook cell B30, default 5) and the sales-to-capital source will be selectable and labeled with the theory each encodes. No silent sector median. Stratechery is a paid newsletter, so it will be stored as `link_only` and never ingested.
 
-Source: the Report, Part 3.12 and Part 6 item 4 (2026-09-14); /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bkdrkpfng.txt, Input row B30 (2026-09-14)
+Source: the Report, Part 3.12 and Part 6 item 4 (2026-09-14); /Users/siddharth/Desktop/Valuation/docs/sources/bkdrkpfng.txt, Input row B30 (2026-09-14)
 
 ## 3.13 The 2024 to 2026 debate cluster
 
@@ -210,7 +210,7 @@ These arguments are live as of September 2026. The Report drew them from the web
 
 **What the app will do.** The market-regime panel will be descriptive only. Like him, it will refuse a point scenario and print his own market-timing caveats on the panel.
 
-Source: the Report, Part 3.13 (2026-09-14); /Users/siddharth/Downloads/financeMD/damodaran/blog/2026/08/ais-bar-mitzvah-moment-from-hype-hope.md (2026-08-20); /Users/siddharth/Downloads/financeMD/damodaran/blog/2026/08/the-situational-awareness-blow-up.md (2026-08-10); /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md, section 10.7 (2026-09-14)
+Source: the Report, Part 3.13 (2026-09-14); /Users/siddharth/Downloads/financeMD/damodaran/blog/2026/08/ais-bar-mitzvah-moment-from-hype-hope.md (2026-08-20); /Users/siddharth/Downloads/financeMD/damodaran/blog/2026/08/the-situational-awareness-blow-up.md (2026-08-10); /Users/siddharth/Desktop/Valuation/docs/plan.md, section 10.7 (2026-09-14)
 
 ## What he got right, in one list
 
@@ -247,4 +247,4 @@ Source: the Report, Parts 3.1 to 3.11 (2026-09-14)
 | Premia drift | Three vintage ids on every run | M2 |
 | Convergence bias | Labeled, selectable convergence and sales-to-capital sources | M4 |
 
-Source: the Report, Part 6 (2026-09-14); /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md, sections 5 and 10 (2026-09-14)
+Source: the Report, Part 6 (2026-09-14); /Users/siddharth/Desktop/Valuation/docs/plan.md, sections 5 and 10 (2026-09-14)

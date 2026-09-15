@@ -8,7 +8,7 @@ This chapter is a scoreboard. It lists twelve times someone took the opposite vi
 
 Read it the way you would read a sports table. Each row has a date, an opponent, the bet, the outcome, and what he said afterwards. The numbers come from his own blog posts wherever possible. Two episodes (Facebook 2012 and the Nvidia cut of January 2025) fall in years missing from the local corpus, so those come from the live web, as the research report notes.
 
-Source: /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bkm2kob5x.txt (Part 4 and corpus gap warning, compiled 2026-09-14)
+Source: /Users/siddharth/Desktop/Valuation/docs/sources/bkm2kob5x.txt (Part 4 and corpus gap warning, compiled 2026-09-14)
 
 ## Words you need before the table
 
@@ -33,7 +33,7 @@ Each of these appears in the table. They are defined once here.
 | Failure probability | The chance the company dies before it reaches maturity. Damodaran adds this as a separate number. |
 | Conviction | Certainty that you are right. In investing it is often used with borrowed money, which raises the stakes. |
 
-Source: /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bkm2kob5x.txt (Parts 1 and 3, compiled 2026-09-14)
+Source: /Users/siddharth/Desktop/Valuation/docs/sources/bkm2kob5x.txt (Parts 1 and 3, compiled 2026-09-14)
 
 ## The twelve episodes
 
@@ -54,7 +54,7 @@ Prices in the table are the prices at the time, before any later stock split. Th
 | 11 | 2009 to 2015 | Pablo Fernandez (IESE) | There is no agreed market risk premium (7,192 survey answers, 82 countries). Historical beta is useless. CAPM is "absurd" (234 of 307 respondents agreed). | Fernandez, on the descriptive claim. | His implied ERP and bottom-up betas are, read honestly, concessions to the critique rather than refutations. |
 | 12 | 2024 to Jul 2026 | Leopold Aschenbrenner (Situational Awareness fund) | Own AI stocks, bet against software stocks, use borrowed money, act with high conviction. | Won, then lost catastrophically. Up about 450% through late June 2026. The public stock book lost 67% in four weeks. Forced liquidation to Citadel. Principal down 43% overall. | A 10 Aug 2026 post arguing that conviction is not a virtue, and that "what the market gives easily, it also takes away just as easily". |
 
-Source: /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bkm2kob5x.txt (Part 4 table, with figures from Parts 2 and 3, compiled 2026-09-14)
+Source: /Users/siddharth/Desktop/Valuation/docs/sources/bkm2kob5x.txt (Part 4 table, with figures from Parts 2 and 3, compiled 2026-09-14)
 
 Source for the quoted lines checked in the local corpus: /Users/siddharth/Downloads/financeMD/damodaran/blog/2014/07/possible-plausible-and-probable-big.md (2014-07-16); /Users/siddharth/Downloads/financeMD/damodaran/blog/2020/02/a-do-it-yourself-diy-valuation-of-tesla.md (2020-02-06); /Users/siddharth/Downloads/financeMD/damodaran/blog/2023/01/tesla-in-2023-return-to-reality-start.md (2023-01-26); /Users/siddharth/Downloads/financeMD/damodaran/blog/2013/02/financial-alchemy-david-einhorns-value.md (2013-02-08); /Users/siddharth/Downloads/financeMD/damodaran/blog/2013/04/apple-calm-after-storm.md (2013-04-30)
 
@@ -64,7 +64,7 @@ Source for the quoted lines checked in the local corpus: /Users/siddharth/Downlo
 
 Old prices look huge next to today's prices because of stock splits. Tesla split 5-for-1 in Aug 2020 and 3-for-1 in Aug 2022, which is 15-for-1 in total. His 2019 entry at $180 is $12 in today's shares. The Nov 2021 peak near $1,200 is about $410. Nvidia split 10-for-1 in Jun 2024, so his $240 value is about $24 today. Amazon split 20-for-1 in Jun 2022, so his $1,019 is about $51. Apple split 4-for-1 in Aug 2020.
 
-Source: /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bkm2kob5x.txt (Part 2.1 to 2.4, compiled 2026-09-14)
+Source: /Users/siddharth/Desktop/Valuation/docs/sources/bkm2kob5x.txt (Part 2.1 to 2.4, compiled 2026-09-14)
 
 ### Episode 1 is the model for your app
 
@@ -76,13 +76,13 @@ Source: /Users/siddharth/Downloads/financeMD/damodaran/blog/2014/07/possible-pla
 
 These two show the model failing in both directions, in the same market, in the same quarter. On Paytm his value was too high by a factor of nearly three against a simpler analyst model. On Zomato his value was too low by a factor of more than seven against the later peak. Neither error came from arithmetic. Both came from the story that fed the arithmetic.
 
-Source: /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bkm2kob5x.txt (Part 2.7, compiled 2026-09-14)
+Source: /Users/siddharth/Desktop/Valuation/docs/sources/bkm2kob5x.txt (Part 2.7, compiled 2026-09-14)
 
 ### Episodes 10 and 11 are about your cost of capital sheet
 
 These two are not about a company. They attack the inputs every valuation uses: the risk premium, the country premium and beta. Chapter 3 covers the arguments. The point for the table is that his answers to both are partial. He kept the constructs, made them more forward-looking, and admitted their crudeness in print.
 
-Source: /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bkm2kob5x.txt (Part 3.1 to 3.2, compiled 2026-09-14)
+Source: /Users/siddharth/Desktop/Valuation/docs/sources/bkm2kob5x.txt (Part 3.1 to 3.2, compiled 2026-09-14)
 
 ## Honorable mentions: the ones he won
 
@@ -96,13 +96,13 @@ Source: /Users/siddharth/Downloads/financeMD/damodaran/blog/2019/09/insights-on-
 
 Between 26 Feb 2020 and 5 Nov 2020 he wrote fourteen "Viral Market" posts, all in the local corpus. He kept valuing companies through the crash. He published the implied ERP as it moved, reaching 6.01% on 1 Apr 2020. He added to his positions during the fall. On 24 Apr 2020 he published data showing the market was punishing cheap, high-dividend stocks more than expensive ones. He called that "disappointing news for value purists". Publishing evidence against your own side is the behavior this whole reader is looking for.
 
-Source: /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bkm2kob5x.txt (Part 2.9, compiled 2026-09-14); /Users/siddharth/Downloads/financeMD/damodaran/blog/2020/04/a-viral-market-update-vii-mayhem-with.md (2020-04-24)
+Source: /Users/siddharth/Desktop/Valuation/docs/sources/bkm2kob5x.txt (Part 2.9, compiled 2026-09-14); /Users/siddharth/Downloads/financeMD/damodaran/blog/2020/04/a-viral-market-update-vii-mayhem-with.md (2020-04-24)
 
 ### The ARK argument, 2022 to 2026 (a half win)
 
 Cathie Wood's projections for Tesla beat his values from 2018 to 2021. From 2022 onward the record turned. ARK reiterated a $2,600 projection for 2029 or 2030 in Jun 2024, while Tesla traded around $240 to $320 in 2025. His methodological point has aged well: a projection with no discounting and no charge for capital is a price forecast, not a valuation. His price calls did not age as well. Both facts belong in the table.
 
-Source: /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bkm2kob5x.txt (Part 3.8, compiled 2026-09-14)
+Source: /Users/siddharth/Desktop/Valuation/docs/sources/bkm2kob5x.txt (Part 3.8, compiled 2026-09-14)
 
 ## What the scoreboard actually says {#r3-scoreboard}
 
@@ -118,10 +118,10 @@ Three patterns run through the twelve rows.
 
 The AQR view supplies the harshest fair summary. Being right on value and early is, over any horizon you can actually invest through, indistinguishable from being wrong. That sentence is why your app must score its own valuations later, which Chapter 6 explains.
 
-Source: /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bkm2kob5x.txt (Parts 2.6, 3.6 and 3.7, compiled 2026-09-14)
+Source: /Users/siddharth/Desktop/Valuation/docs/sources/bkm2kob5x.txt (Parts 2.6, 3.6 and 3.7, compiled 2026-09-14)
 
 ## Gaps to fix before the app quotes this chapter
 
 The local blog mirror has 803 posts covering 2008 to 2011, 2013 to 2024 and 2026. It has no 2012 and no 2025. The Facebook IPO valuation (Feb 2012) and the DeepSeek Nvidia cut (Jan 2025) live in those holes. Backfill both years before the librarian indexes this reader, or the chat will guess around them.
 
-Source: /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bkm2kob5x.txt (corpus gap warning and Local files used, compiled 2026-09-14)
+Source: /Users/siddharth/Desktop/Valuation/docs/sources/bkm2kob5x.txt (corpus gap warning and Local files used, compiled 2026-09-14)

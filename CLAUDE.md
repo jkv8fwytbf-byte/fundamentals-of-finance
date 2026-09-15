@@ -40,14 +40,21 @@ Usage limits often cut a session with no goodbye. A "update the handoff when you
 | Critics | `docs/other-side/` | `docs/3-the-other-side.pdf` | `output/pdf/3-the-other-side.pdf` |
 | Tools manual | `docs/guide/` | `docs/4-the-guide.pdf` | `output/pdf/4-the-guide.pdf` |
 | The plan, section by section | `docs/plan-explained/` | `docs/5-the-plan-explained.pdf` | `output/pdf/5-the-plan-explained.pdf` |
+| The full plan (v4) | `docs/plan.md` | — | — |
+| Research reports the documents cite | `docs/sources/` (see its `README.md`) | — | — |
 
-`docs/plan-explained/00-preface.md` names `docs/plan.md` as the full plan. That file is not in this folder. Until it is, use `docs/plan-explained/`. Do not invent `docs/plan.md`.
+`docs/plan.md` is the full plan (v4, 2026-09-14). Document 5 (`docs/plan-explained/`) restates it in shorter sentences; when they differ, `docs/plan.md` wins. Change it only when Siddharth changes the plan. `docs/sources/` holds the nine research reports the documents cite; they are frozen inputs, not documents to edit.
 
 Rebuild from `docs/` with `docs/_build/build.sh` (plain PDFs into `docs/`) or `docs/_build/build.sh reading` (colorful editions into `output/pdf/`). Needs pandoc and tectonic; the reading build also needs node, Playwright, and Chrome. How the reading markup works: `docs/_build/READING-EDITION.md`. Edit the markdown, then rebuild. Do not treat a PDF as the source.
 
+## Outside this folder
+
+- The Damodaran corpus: `/Users/siddharth/Downloads/financeMD/` (markdown mirror of his site, about 3,900 files, 89 MB), with the raw archives next to it in `~/Downloads/` (`damodaran-full-part*.tar.gz`, `damodaran-notes-part*.tar.gz`, `damodaran-data-01.zip`, `damodaran-data-02.zip`, `fcffsimpleginzu.xlsx`). The documents cite it by full path. It stays there; do not copy it into this repo.
+- Sessions before 2026-09-15 ran from `~/Downloads`, so their transcripts sit under `~/.claude/projects/-Users-siddharth-Downloads/`. Their memory has been imported into this folder's Claude Code memory; there is nothing to fetch from there routinely.
+
 ## How to work
 
-- One folder, one branch: this folder, `main`. Do not create worktrees or side branches unless asked. The old `dev` and `dev2` branches are frozen backups from before the consolidation; leave them alone.
+- One folder, one branch: this folder, `main`. There are no other branches. Do not create worktrees or side branches unless asked.
 - Match the writing: plain, calm, terms defined on first use. See `docs/read-this-first.md`.
 - Prefer editing existing docs over duplicating them.
 - Commit on `main` when a chunk of work is done, with a plain message. Never push; there is nowhere to push to.

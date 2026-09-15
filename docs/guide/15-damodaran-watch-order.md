@@ -18,7 +18,7 @@ Source: /Users/siddharth/Downloads/financeMD/damodaran/New_Home_Page/webcastvalo
 
 The calculator copies his spreadsheet, and the nightly jobs copy his datasets. So the only person who can explain why a number is what it is, is him. In Data Update 1 for 2026 he says AI bots "will not only match, but be better than I am, at mechanical and rule-based tasks". He also says he plans to hand almost the whole data update process to his bot. You are building the mechanical part. The judgment part, reading a memo and spotting a story that does not add up, stays with you. Chapter 0, rule 10, calls the corpus the antidote to the tool. This chapter is the dosing schedule.
 
-Source: /Users/siddharth/Downloads/financeMD/damodaran/blog/2026/01/data-update-1-for-2026-push-and-pull-of.md (2026-01-09); /Users/siddharth/Valuation/docs/guide/00-how-to-learn-with-an-ai-tool.md
+Source: /Users/siddharth/Downloads/financeMD/damodaran/blog/2026/01/data-update-1-for-2026-push-and-pull-of.md (2026-01-09); /Users/siddharth/Desktop/Valuation/docs/guide/00-how-to-learn-with-an-ai-tool.md
 
 ## How it is used in this project
 
@@ -100,7 +100,7 @@ Five evenings of 45 minutes is 3.75 hours a week. The report's total is about 40
 
 Data Updates 2, 3, 6 and 8 are optional. Read one whenever an evening finishes early.
 
-Source: bkm2kob5x.txt section 13 (2026-09-14); /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md section 4
+Source: bkm2kob5x.txt section 13 (2026-09-14); /Users/siddharth/Desktop/Valuation/docs/plan.md section 4
 
 ## 10-minute exercise
 

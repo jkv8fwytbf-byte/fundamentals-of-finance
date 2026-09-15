@@ -8,7 +8,7 @@ This chapter is the reading list for the critics' side, arranged for a beginner.
 
 Think of it as a syllabus for one course. You would not read a textbook's chapters in the order the author wrote them. You would read the easy, concrete ones first and the hard, abstract ones last. The order at the end of this chapter does that.
 
-Source: /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bkm2kob5x.txt (Part 5, compiled 2026-09-14)
+Source: /Users/siddharth/Desktop/Valuation/docs/sources/bkm2kob5x.txt (Part 5, compiled 2026-09-14)
 
 ## Two words before the list
 
@@ -44,7 +44,7 @@ The report writes some URLs in shorthand. Where it does, the full address below 
 | 16 | Damodaran 2026 trio: "AI Scenarios" (4 Mar), "The Situational Awareness Blow-up" (10 Aug), "AI's Bar Mitzvah Moment" (20 Aug) | https://aswathdamodaran.blogspot.com/2026/03/ai-scenarios-from-economic-doomsday-to.html ; https://aswathdamodaran.blogspot.com/2026/08/the-situational-awareness-blow-up.html ; https://aswathdamodaran.blogspot.com/2026/08/ais-bar-mitzvah-moment-from-hype-hope.html | 3 h | Live fire. All three are in your local corpus already |
 | 17 | The "Viral Market Meltdown" series (parts I to VI) and its continuation "A Viral Market Update" (parts VII to XIV), Feb to Nov 2020 | /Users/siddharth/Downloads/financeMD/damodaran/blog/2020/ | 6 h | The counter-example: the method working under maximum stress, including data against his own side |
 
-Source: /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bkm2kob5x.txt (Part 5 table; full URLs from Parts 1, 2.5, 2.10 and 3, compiled 2026-09-14); /Users/siddharth/Downloads/financeMD/damodaran/blog/2019/11/the-softbank-wework-end-game-savior.md (front matter shows the canonical blog URL pattern, 2019-11-15)
+Source: /Users/siddharth/Desktop/Valuation/docs/sources/bkm2kob5x.txt (Part 5 table; full URLs from Parts 1, 2.5, 2.10 and 3, compiled 2026-09-14); /Users/siddharth/Downloads/financeMD/damodaran/blog/2019/11/the-softbank-wework-end-game-savior.md (front matter shows the canonical blog URL pattern, 2019-11-15)
 
 ## The suggested order
 
@@ -70,13 +70,13 @@ The report's order puts the concrete cases first, the constructive alternative i
 | 16 | 17 | The method working, under stress, for six hours of reading |
 | 17 | 2 | The full seminar deck, as revision |
 
-Source: /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bkm2kob5x.txt (Part 5, "Suggested order for a beginner", compiled 2026-09-14)
+Source: /Users/siddharth/Desktop/Valuation/docs/sources/bkm2kob5x.txt (Part 5, "Suggested order for a beginner", compiled 2026-09-14)
 
 ## Time budget
 
 Adding the report's per-item estimates gives about 30 hours. That excludes the Mauboussin and Rappaport book, which is paid and about 250 pages. At five hours a week the list takes six weeks. The Uber trilogy (item 6) is the one block that should not be split across days.
 
-Source: /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bkm2kob5x.txt (Part 5 length column, summed, compiled 2026-09-14)
+Source: /Users/siddharth/Desktop/Valuation/docs/sources/bkm2kob5x.txt (Part 5 length column, summed, compiled 2026-09-14)
 
 ## Where each item lives, and what the app may do with it
 
@@ -95,7 +95,7 @@ This matters for the librarian (the search index the app builds over your docume
 
 Two warnings. First, the widely shared free PDF of item 10 at ivc-forum.org now redirects to an unrelated domain; do not fetch it. Second, items 4 to 6 and 16 to 17 are in the corpus, but the corpus is missing 2012 and 2025, so nothing from those years is available locally.
 
-Source: /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bkm2kob5x.txt (Part 1 ingestion note, Part 3.1 link hygiene, Part 6 licensing line, compiled 2026-09-14)
+Source: /Users/siddharth/Desktop/Valuation/docs/sources/bkm2kob5x.txt (Part 1 ingestion note, Part 3.1 link hygiene, Part 6 licensing line, compiled 2026-09-14)
 
 ## How to read these as a beginner
 
@@ -104,4 +104,4 @@ Source: /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-77
 - Skip the equations on the first pass of items 11, 13 and 14. Read the tables and the conclusions. Return to the equations after your statistics coursework starts.
 - When a post gives a value and a price, write both down with the date. Later, look up the split-adjusted price (the old price rescaled for any stock splits since, so that it is comparable with today's per-share price). That habit is the whole scoreboard idea from Chapter 6.
 
-Source: /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bkm2kob5x.txt (Parts 2.1, 3.4 and 5, compiled 2026-09-14)
+Source: /Users/siddharth/Desktop/Valuation/docs/sources/bkm2kob5x.txt (Parts 2.1, 3.4 and 5, compiled 2026-09-14)

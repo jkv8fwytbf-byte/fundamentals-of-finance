@@ -20,7 +20,7 @@ There are two reasons, and both come from the plan.
 
 First, the golden test lives here. Damodaran's spreadsheet ships with a worked example, Almarai, whose value per share is 7.187840270062114. Our calculator must reproduce that number to 1e-6, which means to six decimal places. CI turns that rule from a promise into a gate. A pull request that moves the number goes red and cannot merge.
 
-Source: /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md, sections 1 and 10.1 (2026-09-14); bkm2kob5x.txt, learning path section 2.
+Source: /Users/siddharth/Desktop/Valuation/docs/plan.md, sections 1 and 10.1 (2026-09-14); bkm2kob5x.txt, learning path section 2.
 
 Second, it is the free scheduler. Vercel, which hosts web pages, allows its Hobby plan only one cron run per day, fired at any minute inside the stated hour. A cron is a timer that starts a job on a fixed calendar. GitHub Actions has a `schedule` trigger with no such daily cap. A private repo on the Free plan gets 2,000 Linux minutes per month. So every nightly robot in this system will run on Actions and will write its results to the Neon database. Vercel only serves pages.
 

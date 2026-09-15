@@ -12,7 +12,7 @@ Think of it as a very fast junior colleague who never sleeps and never says "I a
 
 Damodaran has a name for the trap. He calls it "the Google curse", the growing habit of retrieving answers rather than reasoning toward them. He adds: "Reasoning is a muscle. If you stop using it, evolution takes it away." He has drawn a related line since 2012. Using first principles and using the market as a check are healthy responses to uncertainty. "Outsourcing by off-loading the decision making to others" is not.
 
-Source: /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bkm2kob5x.txt, section "How to learn with an AI harness", quoting https://imaa-institute.org/blog/investing-age-of-ai-damodaran-imaa-webinar/ and https://rpc.cfainstitute.org/blogs/enterprising-investor/2012/addressing-uncertainty-in-investment-valuations (2026-09-14)
+Source: /Users/siddharth/Desktop/Valuation/docs/sources/bkm2kob5x.txt, section "How to learn with an AI harness", quoting https://imaa-institute.org/blog/investing-age-of-ai-damodaran-imaa-webinar/ and https://rpc.cfainstitute.org/blogs/enterprising-investor/2012/addressing-uncertainty-in-investment-valuations (2026-09-14)
 
 He also says where a machine should do the work. In Data Update 1 for 2026 he writes that AI bots "will not only match, but be better than I am, at mechanical and rule-based tasks". He plans to hand almost his entire data-compilation process to a bot. So the split is his own: the machine does the mechanical half, and the person keeps the reasoning half.
 
@@ -24,7 +24,7 @@ This project's whole value is being right about numbers that other people may on
 
 The approved plan lists "dependence on the AI tool" as a named risk. Its mitigations are the rules below: [attempt-then-ask]{.reading-highlight}, own the tests, one no-AI evening a week, and a decisions log.
 
-Source: /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md, section 9 (2026-09-14)
+Source: /Users/siddharth/Desktop/Valuation/docs/plan.md, section 9 (2026-09-14)
 
 ## How it is used in this project
 
@@ -33,25 +33,25 @@ Source: /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md, s
 - M3 also asks you to track your ratio of lines written to lines accepted (rule 8 below).
 - The day-one exercise in M1 is the pattern for everything after it: ask the tool, then find the answer yourself in the workbook, then compare.
 
-Source: /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md, sections 4 and 5 (M1, M3) (2026-09-14)
+Source: /Users/siddharth/Desktop/Valuation/docs/plan.md, sections 4 and 5 (M1, M3) (2026-09-14)
 
 ## The ten operational rules, each with a 5-minute exercise
 
 These are the rules from the learning-path report, restated in plain words. Rule 9 was written for a terminal tool called pi and is translated here for Cursor.
 
-Source for all ten: /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bkm2kob5x.txt, section "How to learn with an AI harness" (2026-09-14)
+Source for all ten: /Users/siddharth/Desktop/Valuation/docs/sources/bkm2kob5x.txt, section "How to learn with an AI harness" (2026-09-14)
 
 ### Rule 1. Attempt, then ask
 
 Before any prompt, write two or three sentences in a scratch file. Say what you think the answer is and why. Then ask the tool. Compare the two. The difference is your learning signal. With no attempt there is no difference, and nothing is learned. This single rule does most of the work.
 
-Five-minute exercise: create `~/Valuation/scratch/attempts.md`. Write today's date and one guess: "I think a branch in git is ...". Do not look anything up yet. You will check it in chapter 1.
+Five-minute exercise: create `~/Desktop/Valuation/scratch/attempts.md`. Write today's date and one guess: "I think a branch in git is ...". Do not look anything up yet. You will check it in chapter 1.
 
 ### Rule 2. You own the test; the tool owns the implementation
 
 A test is a small program that checks a bigger program and reports pass or fail. Never let the tool write both the check and the code that satisfies it. The golden number for the Almarai example, 7.187840270062114 value per share, is the model. The expected values are extracted from the workbook by a script, and the fixture file (the file of expected answers the test compares against) is protected in CI (continuous integration, the automatic check that runs on every pull request; chapter 1) so an agent can never "fix" the test instead of the code. If the tool proposes changing a test, that is a design conversation, not an edit.
 
-Source: /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md, sections 1 and 10.1 (2026-09-14)
+Source: /Users/siddharth/Desktop/Valuation/docs/plan.md, sections 1 and 10.1 (2026-09-14)
 
 Five-minute exercise: open `/Users/siddharth/Downloads/financeMD/damodaran/pc/fcffsimpleginzu.md` and search for "Estimated value /share". Write the number you find in your attempts file, with the line number. That is the first invariant you own.
 
@@ -61,7 +61,7 @@ Source: /Users/siddharth/Downloads/financeMD/damodaran/pc/fcffsimpleginzu.md, li
 
 No PR merges until you can say out loud, without looking, what each changed file does and why. If you cannot, you have a PR you cannot maintain. Revert it and redo it in smaller pieces. This is the review step a solo developer otherwise skips.
 
-Five-minute exercise: pick any file in `~/Valuation/docs/`. Close it. Say in two sentences what it is for. Open it and check.
+Five-minute exercise: pick any file in `~/Desktop/Valuation/docs/`. Close it. Say in two sentences what it is for. Open it and check.
 
 ### Rule 4. One no-AI evening a week
 
@@ -79,9 +79,9 @@ Five-minute exercise: in Cursor, open the Source Control panel (the branch icon 
 
 A decisions log is a folder of short notes, one per decision. The format is `docs/decisions/NNN-title.md`, about ten lines each, written by a human. Each note says what was decided, what was rejected, and why. It is the only artifact that proves you made the call. It is also the context you hand the tool next month, so it stops re-opening settled choices.
 
-Five-minute exercise: create `~/Valuation/docs/decisions/001-daily-tool-is-cursor.md`. Write: decided (Cursor as the daily tool), rejected (pi, a second paid tool), why (already paid, shows diffs, has a plan mode). The reasons are in plan section 2.
+Five-minute exercise: create `~/Desktop/Valuation/docs/decisions/001-daily-tool-is-cursor.md`. Write: decided (Cursor as the daily tool), rejected (pi, a second paid tool), why (already paid, shows diffs, has a plan mode). The reasons are in plan section 2.
 
-Source: /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md, section 2 (2026-09-14)
+Source: /Users/siddharth/Desktop/Valuation/docs/plan.md, section 2 (2026-09-14)
 
 ### Rule 7. Spend the tool on mechanical work, spend yourself on judgment
 
@@ -140,13 +140,13 @@ This is the day-one exercise from the plan, with rule 1 added.
 3. Open the workbook markdown yourself and find the cell label `Mature Market ERP +` and the note "riskfree rate + 4.5%".
 4. Write three lines: what you guessed, what the tool said, what the workbook says. Note any place the tool was more confident than the workbook.
 
-Source: /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md, section 5, M1 step 6 (2026-09-14); /Users/siddharth/Downloads/financeMD/damodaran/pc/fcffsimpleginzu.md, lines 48 and 608
+Source: /Users/siddharth/Desktop/Valuation/docs/plan.md, section 5, M1 step 6 (2026-09-14); /Users/siddharth/Downloads/financeMD/damodaran/pc/fcffsimpleginzu.md, lines 48 and 608
 
 ## Done when
 
 ::: {.reading-emphasis .key-idea}
-- `~/Valuation/scratch/attempts.md` exists with at least one attempt-then-ask entry and the week-1 ratio row.
-- `~/Valuation/docs/decisions/001-daily-tool-is-cursor.md` exists and is under fifteen lines.
+- `~/Desktop/Valuation/scratch/attempts.md` exists with at least one attempt-then-ask entry and the week-1 ratio row.
+- `~/Desktop/Valuation/docs/decisions/001-daily-tool-is-cursor.md` exists and is under fifteen lines.
 - The no-AI evening is on your calendar for twelve weeks.
 - You can list the ten rules from memory, in any order, in your own words.
 - You have found one answer in the corpus with grep before asking the tool about it.

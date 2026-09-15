@@ -1,0 +1,305 @@
+============================== SURVEY 5: LANDSCAPE ==============================
+Web research brief, all figures current as of 2026-09-13. Sources are inline as URLs with dates where the page carries one.
+
+---
+
+## 1) pi.dev — the "pi" coding agent / harness (Mario Zechner, `badlogic/pi-mono`)
+
+**What it is.** A terminal-first, open-source AI coding agent + agent *harness* by Mario Zechner (`badlogic`, creator of libgdx). Tagline on the site: "a minimal agent harness. Adapt Pi to your workflows, not the other way around." Monorepo `github.com/badlogic/pi-mono` started Aug 2025; npm packages are published under the Earendil Inc. scope (`@earendil-works/pi-coding-agent`, `pi-agent-core`, `pi-ai`). (https://pi.dev/, https://github.com/badlogic/pi-mono)
+
+**What "harness" means here.** The harness is the scaffolding *around* the model: task intake, context assembly (what actually goes into the prompt), the tool set, the agent loop (call model → run tool → feed result back), permission/sandboxing, failure handling, and the terminal UI. The model is the engine; the harness is the car. Claude Code, OpenCode, Cursor and pi are all harnesses over the same underlying LLM APIs. pi's differentiator is deliberately *small*: ~4 core tools and a system prompt reportedly under ~1,000 tokens, on the philosophy that what you leave out matters more than what you put in. A Databricks benchmark (Aug 2026, as reported) found pi sent roughly 3x less context per turn than competing harnesses, which directly cuts token cost. (https://explainx.ai/blog/pi-minimal-agent-harness-mario-zechner-guide-2026, https://dev.to/wonderlab/one-open-source-project-a-day-no-53-pi-mono-minimalist-high-performance-ai-coding-agent-4d73)
+
+**Extension / skills model** (four layers, all yours to write):
+| Layer | What it is |
+|---|---|
+| Extensions | TypeScript modules with access to tools, slash commands, keyboard shortcuts, events, and the TUI |
+| Skills | On-demand capability packages = instructions + tools (loaded only when relevant, to save context) |
+| Prompt templates | Reusable Markdown prompts invoked as slash commands |
+| Themes | Visual styling |
+
+Install community packages with `pi install npm:@foo/pi-tools` or `pi install git:github.com/user/repo`. Ships 50+ example extensions (sub-agents, plan mode, permission gates, sandboxing). Notable: **pi has no built-in permission system** — the README says it "does not include a built-in permission system for restricting filesystem, process, network, or credential access"; you are expected to containerize/sandbox it yourself. That is a real beginner footgun versus Claude Code's default permission prompts.
+
+**Providers (15+).** Anthropic, OpenAI, Google, Azure, Bedrock, Mistral, Groq, Cerebras, xAI, Hugging Face, Kimi For Coding, MiniMax, NVIDIA, OpenRouter, Ollama; custom providers via config or extension. Switch mid-session with `/model` or Ctrl+L.
+
+**Open source / pricing.** MIT licensed. The software is free. There is no subscription — you pay whatever your chosen model provider charges (BYO API key, or route through OpenRouter).
+
+---
+
+## 2) OpenCode (opencode.ai, SST → Anomaly) + three-way comparison
+
+**What it is.** MIT-licensed open-source coding agent from the SST team (now under the Anomaly org). Terminal TUI, plus a desktop app and IDE extensions. Plan-then-Build split so you review proposed edits before they land; LSP diagnostics; undo/redo; shareable session links. Rewritten in TypeScript/Bun (the archived Go repo `opencode-ai/opencode` is dead — stopped Sept 2025; the live one is the SST/Anomaly one). ~160k–190k GitHub stars in 2026. (https://opencode.ai/docs/, https://www.datacamp.com/blog/what-is-opencode)
+
+**Providers.** Via the Models.dev registry: **75+ providers** including Anthropic, OpenAI, Google, DeepSeek, Groq, and local models via Ollama. Also **OpenCode Zen**, an optional first-party gateway: 50+ curated/benchmarked coding models, pay-as-you-go with *no markup*, ~6 free models at any time, plus a **Zen Go** flat plan at **$10/mo** with caps ($12/5h, $30/wk, $60/mo) over 24 open-weight coding models. Zen is explicitly optional. (https://opencode.ai/docs/zen/, https://opencode.ai/zen)
+
+**CRITICAL for this user — the Anthropic OAuth story.** Timeline:
+- **2026-01-09**: Anthropic began server-side rejection of Claude Pro/Max OAuth tokens used by third-party tools ("This credential is only authorized for use with Claude Code").
+- **2026-02-19**: Anthropic's legal/compliance docs added an authentication-and-credential-use position: subscription OAuth tokens are for Claude Code / Claude.ai only; the Agent SDK requires API-key auth.
+- **2026-03-19**: OpenCode merged a PR ("anthropic legal requests") removing the Anthropic OAuth plugin and all Claude Pro/Max auth.
+- **2026-04-04**: third-party tools formally blocked from Claude Pro/Max quota.
+- **2026-05-13**: Anthropic **reinstated** third-party agent use on subscriptions, but via a separate, **non-rollover monthly "Agent SDK credit" pool** billed at API list rates: **Pro $20/mo, Max 5x $100/mo, Max 20x $200/mo, Team/Enterprise $100–$200/seat**. Interactive Claude Code usage is unaffected; programmatic/third-party usage draws only from that pool. (https://venturebeat.com/technology/anthropic-reinstates-openclaw-and-third-party-agent-usage-on-claude-subscriptions-with-a-catch, 2026-05-13; corroborated by https://www.zbuild.io/resources/news/opencode-blocked-anthropic-2026 and https://tech-insider.org/ie/claude-code-agent-pricing-split-2026/)
+
+Caveat: I could not find the exact "Authentication and credential use" wording in Anthropic's public consumer-terms or commercial-terms pages I fetched; the clause is reported by multiple secondary sources and by the enforcement error strings. **Verify on Anthropic's own legal/usage page before relying on it.**
+
+**Three-way comparison**
+
+| | **Claude Code** | **OpenCode** | **pi** |
+|---|---|---|---|
+| License | Closed-source product | MIT | MIT |
+| Model lock-in | Anthropic only | 75+ providers via Models.dev, or Zen gateway | 15+ providers, incl. OpenRouter & Ollama |
+| Auth to Claude | Native — Pro/Max subscription covers interactive use | API key, or subscription only via the capped Agent-SDK credit pool | same constraint as OpenCode |
+| Extensibility | Skills, subagents, hooks, MCP, plugins — curated | Custom commands, themes, formatters, MCP, agents | Extensions/Skills/templates in TypeScript; you build the harness |
+| UI | TUI + desktop + IDE | TUI + desktop app + IDE extensions | TUI |
+| Permissions/sandbox | Built-in permission prompts by default | Plan-then-Build review gate | **None built in** — you sandbox it |
+| Cost | $20 Pro / $100 Max5x / $200 Max20x, or API | Free software; BYOK, or Zen PAYG, or Zen Go $10/mo | Free software; BYOK / OpenRouter |
+| Setup effort for a beginner | Minutes | ~30 min (keys + config) | Highest — "harness engineering required" |
+| Benchmarks | Fastest/most instruction-following in head-to-heads | Builder.io early-2026 test: OpenCode 78% slower on identical tasks with Sonnet 4.5 | ~3x less context/turn (Databricks, Aug 2026) → cheaper |
+
+**Verdict for this user:** stay on **Claude Code**. He already pays for it, it is the lowest-friction path, it has the permission system a beginner needs, and MCP + Skills already cover the extensibility he'll want for a valuation app. OpenCode is the right *second* tool — install it free, keep it configured with a cheap model (Zen free tier or an OpenRouter key) for high-volume grunt work (bulk file conversion, scraping loops, repetitive refactors) so those tokens don't eat the Claude quota. **pi is not recommended yet**: no built-in permission system, and it expects you to write your own harness in TypeScript — that is a project, not a tool, and it competes for the time he should spend on valuation logic.
+
+---
+
+## 3) OpenRouter
+
+**What it is.** One OpenAI-compatible API gateway, one API key, one credit balance, one base URL, in front of hundreds of models from dozens of providers. Swap models by changing a string. Adds automatic fallback/routing across providers of the same model.
+
+**Billing (2026).**
+- **Credits model**: buy credits, spend per token. **5.5% fee on credit purchases, with an ~$0.80 minimum per purchase** → effective 8–16% on purchases under $20. Buy in larger chunks to amortize.
+- **Per-token rates** are pass-through: at or very close to direct provider list price for most popular models.
+- **BYOK** (bring your own provider key): **$0 fee up to $25,000/month of list-price inference** on Pay-as-you-go ($200,000/mo Enterprise), then 5% on the excess. Some sources describe it as 1M free BYOK requests/month then 5%; treat the exact BYOK terms as needing verification on openrouter.ai/docs.
+- **Sept 2026**: new self-serve **Business tier at 8%** platform fee, which pins inference to EU-only or US-only providers with no cross-region fallback (data-residency play).
+(https://ofox.ai/blog/openrouter-pricing-hidden-markup-breakdown-2026/, https://www.truefoundry.com/blog/openrouter-pricing, https://apimart.ai/blog/openrouter-pricing-explained-model-costs-credits-provider-routing)
+
+**When a solo dev needs it vs calling Anthropic/OpenAI directly:**
+- **Use OpenRouter when**: you want to A/B many models cheaply; you want one billing relationship instead of 5 signups; you want automatic failover; you want access to open-weight models (Qwen, DeepSeek, Kimi, Llama) without standing up inference yourself; you're prototyping and don't know which model wins.
+- **Go direct when**: you've settled on one or two models and are running real volume — you then save the 5.5% and get first-class features (Anthropic prompt caching, batch API 50% discount, extended thinking controls) that gateways sometimes lag on.
+- **For this project**: direct Anthropic for the main valuation reasoning; an OpenRouter key as the cheap side-channel for bulk/embarrassingly-parallel jobs (summarizing 54 transcripts, tagging 100+ datasets) and for benchmarking a cheap open-weight model against the expensive one.
+
+---
+
+## 4) "Fine-tuned harness" vs "fine-tuned open-weight model"
+
+**Fine-tuned harness (the cheap, right thing).** You do not touch the model's weights. You shape the *scaffolding*: system prompt, the tool set, which files/skills get loaded when, retrieval, output schemas, evals. In Claude Code terms: CLAUDE.md + Skills + MCP servers + subagents + slash commands. Cost: your time. Reversible in seconds. This is what "adapt the harness to your workflow" means and it is 90% of the value for a domain app.
+
+**Fine-tuned open-weight model.** You take a model whose weights are downloadable (Llama, Qwen, Mistral, Gemma, DeepSeek) and run additional training on your own examples so its *behavior* changes — output format, tone, refusal patterns, a consistent reasoning style. Usually done with **LoRA/QLoRA**: you train a small adapter (a few million params) instead of all weights, which is why it's affordable.
+
+**Is it realistic for a solo beginner in 2026 for financial valuation? — Almost certainly not, and not yet.** Evidence both ways:
+- **Cost is genuinely low.** FinLoRA (arXiv 2505.19819, 2025-05-26; Open-Finance-Lab) fine-tuned Llama-3.1-8B on 19 financial datasets incl. 4 novel XBRL-analysis sets over 150 SEC filings: 14.1–15.9 wall-clock hours on 4× A5000 = ~56–64 GPU-hours ≈ **$14.66–$16.54** at $0.26/GPU-hr. Result: vanilla LoRA (8-bit, rank 8) scored 74.74 avg vs 37.05 base — a **+37.69 point / ~36% average lift**. So the compute is trivially affordable. (https://arxiv.org/abs/2505.19819, https://finlora-docs.readthedocs.io/en/latest/benchmark_results/overview.html)
+- **The data and the lifecycle are where it dies.** The accepted 2026 sequencing is **Prompt → RAG → Fine-tune → Distill**, and the standing advice is "fine-tuning is for *form*, not *facts* — style, structured output, refusal patterns — not for knowledge that changes weekly." You need ~500–1,000 hand-curated high-quality input/output pairs, and budget 3–5x the training cost for 12 months of retraining/eval ownership. (https://bigdataboutique.com/blog/fine-tuning-llms-when-rag-isnt-enough, https://www.layer3labs.io/open-weights/fine-tuning-open-weights-models)
+- **Applied to this project**: Damodaran's method is *facts + arithmetic + a book of rules*. Cost of capital tables, ERPs, industry betas, lease-capitalization rules, R&D capitalization rules — these change annually and live in the corpus he already has on disk. That is a textbook RAG + deterministic-code problem, not a weights problem. A fine-tune would be justified only later, and only for **form**: e.g. forcing a model to always emit a valid DCF-assumption JSON block, or to always flag when a growth assumption violates the reinvestment-rate identity. Even then, prompt + JSON schema + a validator function gets you most of the way for $0.
+
+**Bottom line:** RAG over the Damodaran corpus + prompting + deterministic Python for the actual math. Revisit fine-tuning only if, after 6+ months, you have logged 1,000+ real (input, corrected-output) pairs from your own app and a specific formatting/behavior failure that prompting cannot fix.
+
+---
+
+## 5) Artificial Analysis (artificialanalysis.ai)
+
+**What the site measures.** Independent third-party benchmarking of AI models *and* the providers/endpoints serving them, on three axes: **intelligence, speed, price**. Current headline: **Artificial Analysis Intelligence Index v4.3**, an aggregate of 10 evals (AA-Briefcase, GDPval-AA v2, AutomationBench-AA, Terminal-Bench v4.0, SciCode, and others). Sub-indices include a **Coding Agent Index (v1.5)**, a **Finance & Accounting Index**, an **Openness Index**, Elo arenas for image/video/speech, plus per-provider endpoint output speed, latency, accuracy and cost-per-task.
+
+**The Search Index** (launched **2026-08-18**): benchmarks **search API providers** — not models — on quality, cost and speed *as used by an agent*. Method: same model (GPT-5.6 Luna), same agent scaffold (Stirrup, AA's open-source framework), 25 runs per task; the only variable swapped is the search provider. Score = equal-weighted mean of three benchmarks:
+| Benchmark | What it tests | Size |
+|---|---|---|
+| DeepSearchQA | broad research questions needing multiple queries; F1-scored | 900 tasks |
+| BrowseComp | hard-to-find facts requiring multi-hop browsing; exact match | 200-task subset |
+| AA-Omniscience | factual recall across 6 knowledge domains; accuracy | 600 tasks |
+
+Launch coverage: 11 results across 7 providers — **Parallel, Exa, Firecrawl, You.com, Keenable, Tavily, Brave** (Perplexity and TinyFish also appear). Top scores: **Parallel Search (advanced) 75, Exa (auto) 74, Firecrawl 73**; no-search baseline = **33**. Cost for search alone ranges **$13.64 per 1,000 tasks (Parallel turbo) to $126 (Tavily basic)**; all-in with model tokens **$44.94–$80.53 / 1,000 tasks**. (https://artificialanalysis.ai/articles/search-api, 2026-08-18; https://artificialanalysis.ai/agents/search-api; https://artificialanalysis.ai/methodology/search-api)
+
+**Relevance to a valuation app: mostly indirect, one direct use.**
+- **Not relevant** for the core product. A long-horizon fundamentals platform should read *structured* data from SEC EDGAR / NSE filings / a fundamentals API, not web search. Search quality doesn't fix a wrong cash-flow number.
+- **Relevant** for (a) the qualitative layer — news, management commentary, competitive context, "what changed this quarter" — where you'd pick a search API and the Index tells you Exa/Parallel/Firecrawl lead and roughly what per-query cost to expect; and (b) it's the one place with an apples-to-apples *cost* table, so it's a good budgeting reference if you add a news/research feature.
+- The main index (Intelligence + price/speed) **is** directly useful: use it to pick the cheapest model that clears your quality bar for the bulk summarization work.
+
+---
+
+## 6) Vector store: Pinecone vs Postgres+pgvector
+
+**Pinecone (2026)** — https://www.pinecone.io/pricing/
+| Starter (free) | Standard | Enterprise |
+|---|---|---|
+| 2 GB storage | $50/mo minimum, then PAYG | $500/mo minimum |
+| 2M write units/mo, 1M read units/mo | Storage $0.33/GB-mo | 99.95% uptime SLA |
+| 1 GB egress/mo | Writes $4–4.50 / 1M WU | Pro support |
+| 5 indexes, 100 namespaces/index | Reads $16–18 / 1M RU | |
+| Assistant: 1 GB storage, 500k input tok/mo (promo 1M), 300k output tok/mo | Assistant: $3/GB-mo storage, $8/1M input tok, $15/1M output tok | |
+| 5M embedding tokens/mo, 500 rerank req/mo (bge-reranker-v2-m3) | 3-week trial with $300 credits | |
+
+**Postgres + pgvector managed**
+| | Supabase | Neon |
+|---|---|---|
+| Free | 500 MB DB, 1 GB file storage, 5 GB egress + 5 GB cached, 50k MAU, **2 active projects**, **pauses after 1 week idle** | 0.5 GB storage/project, 100 CU-hours/project, 10 branches, 100 projects, autoscale to 2 CU (8 GB RAM), 5 GB egress |
+| Paid entry | **Pro $25/mo**: 8 GB disk included then $0.125/GB, 250 GB egress, 100 GB file storage, 100k MAU, includes $10 compute credit (covers one Micro instance) | **Launch**: compute $0.106/CU-hr, storage $0.35/GB-mo, autoscale to 16 CU, 500 GB egress/project |
+| Compute add-ons | Micro $10, Small $15, Medium $60 /mo | Scale: $0.222/CU-hr |
+| pgvector | yes | yes, all plans |
+(https://supabase.com/pricing, https://neon.com/pricing)
+
+**Standard advice for ~50–100 MB of text.** Do the arithmetic: 100 MB of text ≈ 25M tokens ≈ **~50,000–70,000 chunks** at 400–500 tokens/chunk. At 1536-dim float32 that's ~6 KB/vector = **~300–420 MB of vectors**, or ~half that at 768-dim, or ~4x less with halfvec/int8 quantization. That is **tiny**.
+
+The consensus is unambiguous: **use Postgres + pgvector.** Below 10M vectors (you're at ~0.05–0.07M, i.e. 100–200x under) pgvector with an HNSW index returns in <50 ms and you get SQL JOIN/GROUP BY/window functions against your *fundamentals tables in the same database* — which matters enormously here, because you will constantly want "semantic match on Damodaran's text AND ticker = X AND fiscal_year >= 2023". Pinecone's metadata filtering can't express that. The crossover where Pinecone wins is somewhere around **50–100M vectors**, or when you refuse to spend any time tuning HNSW params. (https://encore.dev/articles/pgvector-vs-pinecone, https://selfhost.dev/blog/pgvector-vs-pinecone/, https://www.kunalganglani.com/blog/pgvector-vs-pinecone)
+
+**Practical note on the free tiers**: Supabase Free's **500 MB DB** may be tight once vectors + fundamentals coexist, and the **1-week-idle auto-pause** is annoying for a hobby project you touch weekly. Neon Free gives 0.5 GB/project but across **100 projects** and scales-to-zero by design (no pause penalty). For $0, Neon is the better fit for this workload; for $25/mo, Supabase Pro (8 GB) removes all doubt and bundles auth/storage. Pinecone Starter's 2 GB would fit too, but you'd be splitting your data across two systems for no benefit.
+
+---
+
+## 7) Deployment
+
+**Vercel Hobby, 2026 (all from vercel.com/docs, last-updated 2026-07/08/09):**
+| Item | Hobby |
+|---|---|
+| Price | Free |
+| **Commercial use** | **Prohibited.** "Hobby teams are restricted to non-commercial personal use only. All commercial usage of the platform requires either a Pro or Enterprise plan." Commercial = any deployment "used for the purpose of financial gain of **anyone** involved in **any part of the production** of the project, including a paid employee or consultant writing the code." Examples: requesting/processing payment, advertising a product/service, being paid to build or host the site, affiliate linking as primary purpose, ads/AdSense. **Donations are explicitly NOT commercial.** (https://vercel.com/docs/limits/fair-use-guidelines, 2026-07-29) |
+| Function max duration | **300s default and maximum** (Fluid compute; Fluid is default for new projects). Pro: 300s default / 800s max / 1800s extended beta. Legacy non-Fluid projects: Hobby 10s default, 60s max. |
+| Function memory | 2 GB / 1 vCPU (max) |
+| **Cron** | 100 cron jobs per project, but **minimum interval = once per DAY**, and precision is per-hour (±59 min). A `0 * * * *` expression **fails at deploy time**. Pro: once per minute, per-minute precision. (https://vercel.com/docs/cron-jobs/usage-and-pricing, 2026-07-15) |
+| **Python** | Fully supported & GA. Auto-detects FastAPI / Flask / Django from `requirements.txt`/`pyproject.toml`/`Pipfile`. Python **3.12 (default), 3.13, 3.14**. ASGI + WSGI. Streaming on by default. Bundle limit **500 MB** uncompressed (vs 250 MB for Node), up to 5 GB via Large Functions beta. `uv` supported. (https://vercel.com/docs/functions/runtimes/python, 2026-08-12) |
+| Included usage | 4 CPU-hrs Active CPU, 360 GB-hrs provisioned memory, 1M invocations, 100 GB fast data transfer, 10 GB fast origin transfer, 1M edge requests, 200 projects, 100 deployments/day, 1 concurrent build, 45 min max build, 1 hour runtime log retention |
+| Other gotchas | Cannot connect a Hobby project to a Git **organization** repo (personal repos only). Request/response body capped at **4.5 MB**. Exceeding a Hobby limit generally means waiting 30 days. |
+| Pro | $20/user/mo |
+
+**Python backend alternatives (2026):**
+| Platform | Free tier | Entry paid | Notes for this project |
+|---|---|---|---|
+| **Render** | **Yes, real**: 750 instance-hours/mo free web services, but **spin down after 15 min idle, ~1 min cold start** | Hobby free for solo; **Pro $25/mo flat**, unlimited team members | Only one of the three PaaS with a genuine free tier. Per-service pricing makes multi-service setups pricier ($21–34/mo for web+db+worker) |
+| **Railway** | No free tier since 2023; one-time **$5 trial credit** | **Hobby $5/mo** + usage; **Pro $20/mo** incl. $20 usage credits | Cheapest for a low-traffic multi-service app: web + Postgres + worker ≈ **$10–15/mo**. Best all-round fit for a FastAPI + Postgres + nightly-ingest-worker stack |
+| **Fly.io** | No ongoing free allowance for orgs created after 2024-10-07 | Per-VM-second; `shared-cpu-1x`/256 MB ≈ **$2.02/mo** running 24/7 | Cheapest raw compute; more ops knowledge required |
+| **Modal** | **$30/mo free compute credits**, 3 seats, 100 containers, 10 concurrent GPUs | Team $250/mo ($100 credits, unlimited seats, 1000 containers, 50 GPUs) | Per-second billing, scale-to-zero, no Dockerfile — decorators on Python functions. GPUs: T4 $0.59/hr, A10G $1.10, A100-40 $2.78, A100-80 $3.72, H100 $3.95. **Ideal for the batch/ingest jobs**: nightly EDGAR pulls, embedding generation, any eventual fine-tune. Not a good fit for a always-on low-latency API |
+
+**Recommended shape:** Next.js frontend on **Vercel Hobby** (fine while it's a personal, non-monetized project — move to Pro the day money is involved), Python/FastAPI API + Postgres on **Railway Hobby $5/mo** (or Render free while prototyping), heavy nightly ingest + embedding on **Modal's $30/mo free credits**. Note the Hobby cron limit (once/day, ±59 min) is actually *sufficient* for an EOD-fundamentals platform — daily bhavcopy/EDGAR refresh is a once-a-day job by nature.
+
+---
+
+## 8) MARKET & FUNDAMENTALS DATA (the important one)
+
+### 8A. INDIA (NSE/BSE)
+
+| Source | Prices | Fundamentals | Cost (2026) | ToS / caveats |
+|---|---|---|---|---|
+| **yfinance** (`TICKER.NS` / `.BO`) | EOD + intraday, long history | Income stmt, balance sheet, cash flow, ~4 yrs annual + quarterly, ratios | **Free** | Unofficial. Yahoo retired its public API in 2017; yfinance scrapes internal endpoints. Yahoo ToS prohibits automated access without written permission; the library itself says "intended for personal use only" and is "not affiliated, endorsed or vetted by Yahoo." **Personal/research: low risk. Customer-facing or redistributed: real legal exposure.** Also: India fundamentals coverage is thinner and noisier than US; consolidated-vs-standalone is often ambiguous; endpoints break without notice |
+| **NSE bhavcopy** (nseindia.com daily CSV/zip) | EOD OHLCV for all equities/indices/F&O, authoritative | No | **Free**, no licensing fee for the daily files | **No official public API.** Community libs (`NseIndiaApi`, `jugaad-data`, `nsepython`, getbhavcopy.com) hit NSE servers directly and need cookie/UA handling; they break often. NSE's *real-time* products have separate commercial licensing. Mass scraping / commercial redistribution is restricted |
+| **BSE** | EOD bhavcopy files | Corporate-announcement & results filings (PDF/XBRL) | Free files | Same pattern: no clean public API; scraping tolerated for personal use, redistribution not licensed |
+| **screener.in** | Yes (site) | **Best-in-class India fundamentals**: 10–13 yrs P&L / BS / CF, quarterly, ratios, shareholding | Free tier + paid (~₹4,000/yr historically) | **No official public API.** Excel export exists for logged-in users with limits. Scraping is against site terms; third-party scrapers exist (Apify ~$8/1,000 requests, ~$2/1,000 stocks) but that does not grant you a license to the data. **Do not build a product on scraped screener data.** Use it manually for validation |
+| **Tijori Finance** | Yes | Deep segment-level India fundamentals | Consumer: free plan; ~$43/yr (~$3.5/mo) | **No public developer API.** `dev.tijorifinance.com` exists but enterprise/custom only — contact sales. Not a solo-builder option |
+| **Tickertape** | Yes | Screeners, forecasts, MMI sentiment, exports | Free core; Pro adds exports/custom screens | **No public API.** Consumer product |
+| **indianapi.in** ("Indian Stock Market API") | Yes, NSE+BSE | Income stmt, BS, CF, ratios, analyst views, shareholding, corp actions, news | Free / Hobby / Developer / Growth Analyst / Pro tiers (separate base URLs: dev./analyst./pro.). Exact INR figures only on the pricing tab | Closest thing to a purpose-built India fundamentals REST API at indie pricing. **Verify pricing + redistribution terms directly** |
+| **EODHD** | EOD 150k+ tickers incl. NSE/BSE, intraday | Fundamentals from 1985 (US), global coverage | Free $0 (**20 API calls/day**); EOD $19.99/mo; EOD+Intraday $29.99; **Fundamentals Feed $59.99/mo**; ALL-IN-ONE $99.99/mo (~20% off annual). Paid = 100k calls/day, 1,000 req/min | **Paid plans are "personal use" licensed. Commercial use requires separate enterprise pricing.** 50% student discount. Best value single vendor covering India + global in one API |
+| **FMP** | Yes | Statements, ratios, DCF endpoints | Free **250 calls/day**, 500 MB/30d bandwidth, ~5 yrs US annuals; Starter (US realtime); **Premium $99/mo** (deeper history + UK/CA, 50 GB); **Ultimate $149/mo annual** (global coverage incl. India, transcripts, holdings, 1-min, bulk, 150 GB) | NSE appears as an exchange parameter but **India coverage is effectively on the global/Ultimate tier**. **Displaying or redistributing FMP data requires a separate Data Display and Licensing Agreement.** India fundamentals quality is weaker than a domestic vendor |
+| **Alpha Vantage** | Yes, incl. Indian exchanges | Income stmt, BS, CF, earnings | **Free tier cut to 25 requests/DAY**; paid from $49.99/mo (75 req/min) up to $249.99/mo (1,200 req/min) | Free tier is now effectively useless for bulk work. India coverage exists but is thin/stale |
+| **Zerodha Kite Connect** | **Yes — live + historical candles** | **No fundamentals** | **₹500/mo per API key** (historical data no longer a separate ₹2,000 add-on — it's included). Free "Personal API" tier covers orders/positions/holdings only, **no market or historical data** | Broker account required. **You may not redistribute Kite market data to other platforms/users** — it's licensed for your own use. Best-quality India price data at indie pricing |
+| **Upstox** | Historical OHLC 1-min→1-month, back to 2005 | No | API free; ₹10/executed order via API until 2026-03-31 | Broker account required; same redistribution constraint |
+| **Dhan** | Real-time + historical | No | **₹499** for data APIs | Broker account; publishes explicit rate limits |
+| **ICICI Breeze** | NSE/BSE prices, historical | Limited | Free to connect/use | ICICI Direct account required. **Note: SEBI requires a static IP for API-based trading from 2026-04-01** |
+
+**India reality check:** there is no single free, legal, redistributable source of Indian *annual/quarterly financial statements*. The pragmatic split is **prices from one source, fundamentals from another**.
+
+### 8B. GLOBAL / US
+
+| Source | What | Cost | Caveats |
+|---|---|---|---|
+| **SEC EDGAR XBRL APIs** (`data.sec.gov`) | `companyfacts` (every structured fact a filer has ever reported — revenues, assets, shares out, hundreds more, one JSON per company), `companyconcept`, `frames` (one fact across all filers for a period), `submissions` | **Free, no API key** | **Rate limit 10 req/s per IP** (429 + temp IP block if exceeded; sleep 0.1s or cap at ~8/s). Must send a descriptive `User-Agent` with contact email. Public-domain US-government data — **the only source here with no redistribution restriction.** This is your anchor for US/global-listed-in-US. (https://www.sec.gov/search-filings/edgar-application-programming-interfaces) |
+| **FMP** | Statements, ratios, DCF, transcripts, holdings | Free 250/day; Premium $99/mo; Ultimate $149/mo (annual) | Display/redistribution needs a licensing agreement |
+| **EODHD** | 150k+ tickers, 30+ yrs history, fundamentals from 1985 | $19.99–$99.99/mo | Personal-use license; commercial = enterprise |
+| **Polygon.io** | US equities focus | Free: **5 calls/min, 2 yrs history**; Starter **$29/mo** (unlimited calls, 5 yrs, WebSockets, snapshots, **15-min delayed**); serious tiers from $199/mo | Added unified Financials/fundamentals endpoints in 2025-26. **Essentially no India coverage** |
+| **Alpha Vantage** | Global-ish | Free 25 req/day; $49.99–$249.99/mo | Free tier now too small to matter |
+| **Yahoo / yfinance** | Everything, free | $0 | Same ToS exposure as above |
+
+### 8C. Recommended starting stack (solo builder, small budget)
+
+**Phase 0 — free, build the pipeline (₹0 / $0)**
+1. **US/global fundamentals: SEC EDGAR `companyfacts` + `frames`.** Free, no key, no redistribution restriction, XBRL-structured, and it is exactly the raw material Damodaran's spreadsheets consume. Cache every response to disk/Postgres; respect 10 req/s.
+2. **India prices: NSE/BSE bhavcopy daily files.** Free, authoritative EOD, perfect for a long-horizon (non-intraday) platform. Ingest once a day.
+3. **India + global convenience layer: yfinance** (`.NS`/`.BO`) for quick prices, market cap, shares outstanding, and rough statements — **but flag every yfinance-derived field in your schema** so you can swap it later, and keep the app private while you're on it.
+4. **Damodaran's own datasets** (already on disk: `damodaran/pc/datasets/`, data-current 2026 zips) for ERPs, industry betas, cost of capital, multiples — these are the inputs his method actually needs and he publishes them annually for free.
+
+**Phase 1 — first paid tier when free hits a wall (~$20–60/mo)**
+5. **EODHD ALL-IN-ONE $99.99/mo** or **Fundamentals Feed $59.99/mo** if you need one vendor for India + global fundamentals with a clean license for personal use. Alternatively **indianapi.in** for India-only fundamentals at a lower price point (verify tier pricing).
+6. **Kite Connect ₹500/mo** if and when you need accurate India price/corporate-action data you can trust (requires a Zerodha account, which he may already have).
+
+**Phase 2 — only if you go commercial**
+7. Replace yfinance and any scraped source entirely. Buy an FMP **Data Display and Licensing Agreement** or an EODHD commercial license. Move Vercel to Pro. Budget $150–400/mo.
+
+### 8D. Licensing/redistribution rules to write down now
+- **SEC EDGAR**: US-government work, public domain — free to display and redistribute. The only truly unencumbered source.
+- **Damodaran's datasets**: published free on the NYU site for educational use. Attribute him; don't resell the raw tables.
+- **Yahoo/yfinance**: ToS-prohibited for automated + commercial use. hiQ v. LinkedIn (2022) means scraping public data isn't a CFAA crime, but **it does not override contract/ToS**. Personal use only.
+- **screener.in / Tickertape / Tijori**: consumer products, no redistribution rights, no public API. Manual validation only.
+- **NSE/BSE**: free daily bhavcopy files are fine for your own app; **commercial redistribution and real-time feeds require a licensing deal with the exchange**.
+- **Broker APIs (Kite/Upstox/Dhan/Breeze)**: data licensed for *your* use only — explicitly cannot be pushed to other platforms or other users.
+- **FMP**: display/redistribute → separate Data Display and Licensing Agreement.
+- **EODHD**: paid plans are personal-use; commercial needs enterprise pricing.
+- **Design implication**: store a `source` and `license_class` column on every fact you ingest. Then "can I show this publicly?" becomes a query, not a panic.
+
+---
+
+## 9) MCP (Model Context Protocol) + existing financial MCP servers
+
+**What it is.** An open standard, introduced by Anthropic in **Nov 2024**, that standardizes how LLM applications connect to external tools and data sources — "USB-C for AI tools." A *client* (Claude Code, Claude Desktop, Cursor, etc.) speaks MCP to any number of *servers*, each exposing tools, resources and prompts. Reference SDKs in TypeScript and Python.
+
+**2026 status.** Adopted by OpenAI, Google, Microsoft, IBM, AWS. **Dec 2025: Anthropic donated MCP to the Agentic AI Foundation under the Linux Foundation** (launched 2025-12-09 with Anthropic, Block, OpenAI as co-founders; AWS, Google, Microsoft, Cloudflare, Bloomberg as platinum members). Spec versions: 2025-03-26, 2025-06-18, 2025-11-25, with a 2026-07-28 release candidate. ~97M monthly SDK downloads, 10,000+ active servers reported as of Dec 2025. (https://en.wikipedia.org/wiki/Model_Context_Protocol, https://www.anthropic.com/news/model-context-protocol)
+
+**Financial MCP servers that exist today and plug into Claude Code:**
+| Server | Covers | Notes |
+|---|---|---|
+| **EdgarTools MCP** (edgartools.io) | SEC EDGAR — 13 tools: financial statements, insider trading, company filings, live SEC data | Free, open source, **no API key required**. Strongest candidate for the US side |
+| **SEC EDGAR MCP** (various, incl. an Apify-hosted one — marked DEPRECATED) | 13M+ filings | Prefer EdgarTools |
+| **FinStack MCP** (`github.com/finstacklabs/finstack-mcp`) | **India-first**: live NSE/BSE quotes, Nifty 50, Sensex, Bank Nifty, fundamentals, analytics + SEC EDGAR + US quotes, crypto, forex | Open source. Best India-side starting point |
+| **Kai Stock Market MCP** (`github.com/neerajadhav/kai-stock-market-mcp`) | Indian market data via **yfinance**, NSE-optimized, full global support | Open source; inherits yfinance's ToS caveats |
+| **Yahoo Finance MCP** (`mcp-server-yfinance`) | Historical prices, dividends, splits, company info | Open source |
+| **Financial Datasets MCP** (docs.financialdatasets.ai/mcp-server) | Income stmt, BS, CF, historical prices, market news | Official, runs locally, API key needed |
+| **Polygon MCP** | Polygon.io official | Needs a Polygon key |
+
+**How this user should use it.** MCP is the right extensibility surface for Claude Code here — no need for pi or OpenCode. Concretely: wire **EdgarTools MCP** (free, no key) + **FinStack MCP** (India) into Claude Code, and later write **your own MCP server** wrapping your Postgres fundamentals DB and your DCF engine. Then Claude Code can query your own valuation data directly rather than you pasting numbers. Writing an MCP server in Python is ~50 lines with FastMCP — this is the single highest-leverage "extension" move available and it costs nothing.
+
+---
+
+## RECOMMENDED DEFAULTS FOR THIS USER
+
+1. **Agent/harness**: stay on **Claude Code**. Add **OpenCode** (free, MIT) as a secondary with a cheap model for bulk grunt work. **Skip pi** for now — no built-in permission system, and it's a harness-building project, not a tool.
+2. **Model access**: Claude subscription for interactive work. Add an **OpenRouter** account with ~$25–50 of credits (buy in one chunk to amortize the 5.5% + $0.80 min fee) for batch/cheap-model jobs. Go direct to Anthropic API if/when one model dominates your volume. Remember: third-party harnesses hitting Claude draw from the separate capped **Agent-SDK credit pool** ($20 Pro / $100 Max5x / $200 Max20x), not the interactive pool.
+3. **Fine-tuning**: **no.** Do RAG over the Damodaran corpus + deterministic Python for the math + JSON-schema-validated outputs. Revisit only after 1,000+ logged real correction pairs and a specific *formatting* failure prompting can't fix. Reference: FinLoRA (arXiv 2505.19819) shows compute is ~$15 but the lift is on *form*, not facts.
+4. **Vector store**: **Postgres + pgvector**, not Pinecone. Start on **Neon Free** (0.5 GB/project, scale-to-zero, no idle-pause penalty), upgrade to **Supabase Pro $25/mo** when you want auth + storage + 8 GB in one place. Your 50–100 MB corpus is ~50–70k vectors — roughly 200x below where a dedicated vector DB starts paying for itself.
+5. **Deployment**: Next.js frontend on **Vercel Hobby** (free — but it is **non-commercial only**, so switch to Pro $20/user/mo the moment there's payment, ads, or affiliate revenue). Python/FastAPI + Postgres on **Railway Hobby $5/mo** (~$10–15/mo all-in) or **Render free** while prototyping. Heavy nightly ingest + embeddings on **Modal's $30/mo free credits**. Vercel Hobby cron's **once-per-day, ±59-min** limit is fine for an EOD platform.
+6. **Data — start here, in this order**: (a) **SEC EDGAR companyfacts/frames** for US — free, unencumbered, XBRL; (b) **NSE/BSE bhavcopy** daily files for India prices — free; (c) **yfinance** as a convenience layer, tagged as personal-use-only in your schema; (d) **Damodaran's own 2026 datasets** (already on disk) for ERP/beta/WACC inputs. First paid upgrade when you outgrow it: **EODHD Fundamentals Feed $59.99/mo** (India + global, one vendor) or **indianapi.in** for India-only; add **Kite Connect ₹500/mo** for trustworthy India prices.
+7. **Search API** (if you add news/qualitative): pick from the AA Search Index leaders — **Parallel (75), Exa (74), Firecrawl (73)**; Parallel turbo is cheapest at $13.64/1,000 tasks. Not needed for v1.
+8. **MCP**: install **EdgarTools MCP** (free, no key) + **FinStack MCP** (India) into Claude Code today. Then write your own MCP server over your Postgres + DCF engine — highest-leverage extension you can build, ~50 lines with FastMCP.
+9. **Compliance hygiene from day one**: every ingested fact gets a `source` and `license_class`. Keep the app private/personal until every source in it is commercially licensed. Never ship scraped screener.in / Tickertape / Tijori data.
+
+KEY FACTS:
+ - pi (pi.dev, badlogic/pi-mono) is MIT-licensed, free, TypeScript; 15+ providers (incl. OpenRouter, Ollama); Extensions/Skills/Prompt-templates/Themes model; ~4 core tools, <1k-token system prompt; Databricks Aug-2026 benchmark: ~3x less context per turn. CRITICAL: README states pi has NO built-in permission system for filesystem/process/network/credential access - you must sandbox it yourself.
+ - OpenCode (opencode.ai, SST/Anomaly) is MIT, free, TypeScript/Bun; 75+ providers via Models.dev; TUI + desktop app + IDE extensions; optional OpenCode Zen gateway (50+ models, no markup, ~6 free models, Zen Go flat $10/mo with $12/5h, $30/wk, $60/mo caps). ~160-190k GitHub stars.
+ - Anthropic/third-party timeline: 2026-01-09 OAuth tokens from Pro/Max blocked for third-party tools; 2026-02-19 legal docs said Agent SDK needs API keys; 2026-03-19 OpenCode stripped Claude OAuth ('anthropic legal requests'); 2026-04-04 formal block; 2026-05-13 REINSTATED via separate non-rollover Agent-SDK credit pool: Pro $20/mo, Max 5x $100/mo, Max 20x $200/mo, Team/Ent $100-200/seat, billed at API list rates. Interactive Claude Code usage unaffected.
+ - OpenRouter: 5.5% fee on credit purchases with ~$0.80 minimum (=> 8-16% effective under $20); per-token rates are pass-through at/near direct list price; BYOK free up to $25,000/mo of list-price inference then 5%; Sept 2026 added Business tier at 8% with EU-only or US-only routing.
+ - FinLoRA (arXiv 2505.19819, 2025-05-26): LoRA on Llama-3.1-8B over 19 financial datasets incl. 4 XBRL sets from 150 SEC filings; 14.1-15.9 hrs on 4x A5000 = 56-64 GPU-hrs = $14.66-$16.54; score 74.74 vs 37.05 base (+37.69 pts). Compute is cheap; data curation and lifecycle are the real cost.
+ - 2026 consensus sequencing is Prompt -> RAG -> Fine-tune -> Distill. 'Fine-tuning is for form, not facts.' Need ~500-1000 curated pairs; budget 3-5x training cost for 12 months of ownership. Damodaran's method = facts + arithmetic + annually-changing tables => RAG + deterministic Python, not fine-tuning.
+ - Artificial Analysis Search Index launched 2026-08-18: equal-weighted mean of DeepSearchQA (900 tasks, F1), BrowseComp (200-task subset, exact match), AA-Omniscience (600 questions, 6 domains). Same model (GPT-5.6 Luna) + same agent (Stirrup), 25 runs/task, only the search provider varies. 11 results / 7+ providers: Parallel 75, Exa 74, Firecrawl 73; no-search baseline 33. Search-only cost $13.64/1k tasks (Parallel turbo) to $126 (Tavily basic); all-in $44.94-$80.53/1k.
+ - Artificial Analysis main product: Intelligence Index v4.3 (10 evals), Coding Agent Index v1.5, Finance & Accounting Index, Openness Index, plus speed/latency/cost-per-task per provider endpoint.
+ - Pinecone Starter (free): 2 GB storage, 2M write units/mo, 1M read units/mo, 1 GB egress/mo, 5 indexes, 100 namespaces/index; Assistant 1 GB storage + 500k input tok/mo (promo 1M) + 300k output tok/mo; 5M embedding tokens/mo; 500 reranks/mo. Standard: $50/mo min, $0.33/GB-mo, $4-4.50/1M WU, $16-18/1M RU. Enterprise $500/mo min. Assistant paid: $3/GB-mo, $8/1M in, $15/1M out.
+ - Supabase Free: 500 MB DB, 1 GB file storage, 5 GB egress + 5 GB cached, 50k MAU, 2 active projects, AUTO-PAUSES after 1 week idle. Pro $25/mo: 8 GB disk then $0.125/GB, 250 GB egress, 100 GB storage, 100k MAU, $10 compute credit. Compute add-ons Micro $10 / Small $15 / Medium $60.
+ - Neon Free: 0.5 GB storage/project, 100 CU-hrs/project, 10 branches, 100 projects, autoscale to 2 CU (8 GB RAM), 5 GB egress. Launch: $0.106/CU-hr + $0.35/GB-mo storage, 500 GB egress/project. pgvector on all plans.
+ - Vector sizing: 100 MB text ~= 25M tokens ~= 50-70k chunks at 400-500 tok ~= 300-420 MB of 1536-dim float32 vectors. That is ~200x below the 10M-vector point where pgvector is still comfortable, and ~1000x below the 50-100M crossover where Pinecone starts to win. Verdict: Postgres+pgvector, and SQL JOINs against fundamentals tables are the decisive advantage.
+ - Vercel Hobby 2026: FREE but NON-COMMERCIAL ONLY. Exact definition: any deployment 'used for the purpose of financial gain of anyone involved in any part of the production of the project, including a paid employee or consultant writing the code' - payments, ads/AdSense, affiliate-as-primary-purpose, being paid to build/host. Donations are explicitly NOT commercial.
+ - Vercel Hobby functions (Fluid compute, default for new projects): max duration 300s (default AND maximum), 2 GB / 1 vCPU memory. Legacy non-Fluid: 10s default / 60s max. Pro: 300s default, 800s max, 1800s extended beta. Request/response body capped at 4.5 MB.
+ - Vercel Hobby cron: 100 jobs per project BUT minimum interval is ONCE PER DAY and precision is per-hour (+/-59 min); a more-frequent cron expression fails at DEPLOY time. Pro/Enterprise: once per minute, per-minute precision.
+ - Vercel Python runtime is GA in 2026: auto-detects FastAPI/Flask/Django, Python 3.12 (default)/3.13/3.14, ASGI+WSGI, streaming on by default, 500 MB uncompressed bundle limit (vs 250 MB Node), 5 GB via Large Functions beta, uv supported.
+ - Vercel Hobby included usage: 4 CPU-hrs Active CPU, 360 GB-hrs provisioned memory, 1M invocations, 100 GB fast data transfer, 10 GB fast origin transfer, 1M edge requests, 200 projects, 100 deploys/day, 1 concurrent build, 45 min max build, 1 hr log retention. Cannot connect Hobby projects to Git ORGANIZATION repos.
+ - PaaS 2026: Render still has a real free tier (750 instance-hrs/mo, spins down after 15 min idle, ~1 min cold start); Pro $25/mo flat. Railway killed free tier in 2023, $5 one-time trial credit, Hobby $5/mo + usage (web+db+worker ~ $10-15/mo), Pro $20/mo with $20 credits. Fly.io no ongoing free allowance for orgs created after 2024-10-07; shared-cpu-1x/256MB ~ $2.02/mo 24/7. Modal: $30/mo free credits, 3 seats, 100 containers, 10 concurrent GPUs; Team $250/mo; T4 $0.59/hr, A10G $1.10, A100-40 $2.78, A100-80 $3.72, H100 $3.95, per-second billing.
+ - SEC EDGAR data.sec.gov XBRL APIs (companyfacts, companyconcept, frames, submissions) are FREE, no API key, rate limit 10 req/s per IP (429 + temp IP block), descriptive User-Agent with contact email required. US-government public-domain data = the ONLY source in this brief with no redistribution restriction.
+ - India has NO single free, legal, redistributable source of annual/quarterly financial statements. Practical split: prices from one source (NSE/BSE bhavcopy free, or Kite Connect Rs 500/mo), fundamentals from another (EODHD Fundamentals $59.99/mo, or indianapi.in, or yfinance for personal use only).
+ - yfinance: Yahoo retired its public API in 2017; yfinance scrapes internal endpoints. Yahoo ToS prohibits automated access without written permission; the library says 'intended for personal use only' and is not affiliated with Yahoo. hiQ v. LinkedIn (2022) means scraping public data is not a CFAA crime but does NOT override contractual ToS. Personal research = low risk; customer-facing/redistributed = real exposure.
+ - screener.in has NO official public API; Excel export is limited and logged-in only; scraping violates site terms (third-party scrapers exist at ~$2-8 per 1,000 requests but confer no license). Tijori has no public dev API (enterprise only, ~$43/yr consumer plan). Tickertape has no public API. Do not build a product on any of these.
+ - EODHD 2026: Free $0 = 20 API calls/DAY. EOD Historical $19.99/mo, EOD+Intraday $29.99/mo, Fundamentals Feed $59.99/mo, ALL-IN-ONE $99.99/mo (~20% off annual). Paid = 100k calls/day, 1,000 req/min, 30+ yrs history, 150,000+ tickers incl. NSE/BSE. Paid plans are PERSONAL USE licensed; commercial requires enterprise pricing. 50% student discount.
+ - FMP 2026: Free 250 calls/day + 500 MB/30-day bandwidth + ~5 yrs US annuals; Premium $99/mo (deeper history + UK/CA, 50 GB); Ultimate $149/mo billed annually (GLOBAL coverage incl. India, transcripts, holdings, 13F, 1-min, bulk, 150 GB). Displaying or redistributing FMP data requires a separate Data Display and Licensing Agreement.
+ - Alpha Vantage free tier was cut to 25 requests/DAY (down from 500); paid from $49.99/mo (75 req/min) to $249.99/mo (1,200 req/min). India coverage exists but thin. Polygon.io: free 5 calls/min + 2 yrs history; Starter $29/mo (unlimited calls, 5 yrs, 15-min delayed); serious tiers $199/mo+; essentially US-only, no India.
+ - Zerodha Kite Connect: Rs 500/mo per API key, historical candle data now INCLUDED (the separate Rs 2,000 historical add-on is gone). Free 'Personal API' tier gives orders/positions/holdings only - NO market or historical data. Kite market data may NOT be redistributed to other platforms or users. Upstox: API free, Rs 10/executed order via API until 2026-03-31, historical OHLC 1-min to 1-month back to 2005. Dhan: Rs 499 for data APIs. ICICI Breeze free (SEBI requires static IP for API trading from 2026-04-01).
+ - NSE/BSE bhavcopy daily CSV/zip files are free with no licensing fee for the files themselves, but there is NO official public NSE API - community libs (NseIndiaApi, jugaad-data, nsepython, getbhavcopy.com) scrape and break often. Commercial redistribution and real-time feeds require an exchange licensing deal.
+ - MCP: introduced by Anthropic Nov 2024; donated to the Agentic AI Foundation under the Linux Foundation in Dec 2025 (launched 2025-12-09; Anthropic/Block/OpenAI co-founders; AWS, Google, Microsoft, Cloudflare, Bloomberg platinum). Spec versions 2025-03-26, 2025-06-18, 2025-11-25, 2026-07-28 RC. ~97M monthly SDK downloads, 10,000+ active servers.
+ - Existing financial MCP servers a Claude Code user can plug in today: EdgarTools MCP (SEC EDGAR, 13 tools, free, NO API key - best US option); FinStack MCP (github.com/finstacklabs/finstack-mcp - India-first NSE/BSE + Nifty/Sensex/Bank Nifty + SEC EDGAR + US/crypto/forex); Kai Stock Market MCP (github.com/neerajadhav/kai-stock-market-mcp - India via yfinance); Yahoo Finance MCP (mcp-server-yfinance); Financial Datasets MCP (official, needs key); Polygon MCP (official, needs key).
+ - Highest-leverage extension move for this user: write his own MCP server (~50 lines with FastMCP) wrapping his Postgres fundamentals DB + DCF engine, so Claude Code queries the valuation data directly. Costs nothing, no need for pi or OpenCode to get extensibility.
+ - Compliance design rule: store a `source` and `license_class` column on every ingested fact, so 'can I display this publicly?' becomes a SQL query rather than a legal panic later.
+
+OPEN QUESTIONS:
+ - Is this project going to be monetized (subscriptions, ads, affiliate links) or stay a personal/portfolio tool? This single answer changes: Vercel Hobby vs Pro ($20/user/mo, Hobby is strictly non-commercial), whether yfinance/NSE-scraping is usable at all, and whether EODHD/FMP personal licenses suffice or you need commercial/redistribution agreements.
+ - Which Claude plan is he on (Pro $20 / Max 5x $100 / Max 20x $200)? That sets the size of the separate non-rollover Agent-SDK credit pool ($20/$100/$200 per month) available for any programmatic or third-party-harness usage, which caps how much automated ingestion/summarization he can run on the subscription before paying API rates.
+ - Does he already have a Zerodha (or Upstox/Dhan/ICICI) demat account? If yes, Kite Connect at Rs 500/mo is the cheapest trustworthy India price feed and needs no new signup; if no, the broker account opening is a prerequisite worth knowing about.
+ - What is the intended coverage scope - a watchlist of 20-50 companies, the Nifty 500, or every listed NSE/BSE + US name? Under ~100 tickers the free tiers (EDGAR + bhavcopy + yfinance) are comfortably sufficient; at full-universe scale the API call budgets (FMP free 250/day, EODHD free 20/day, Alpha Vantage free 25/day) break immediately and a $60-100/mo data vendor becomes mandatory.
+ - Does he want the platform to be India-primary with global as a secondary, or genuinely both at equal depth? India-primary argues for indianapi.in or EODHD plus Kite; global-primary argues for SEC EDGAR as the spine with India bolted on.
+ - Is he comfortable writing Python (FastAPI, pandas) or does he want to stay in TypeScript/Next.js end to end? This decides Railway/Render/Modal vs an all-Vercel deployment, and whether the Damodaran spreadsheet logic gets reimplemented in Python or JS.
+ - Monthly budget ceiling for infrastructure + data? The recommendation splits sharply at $0 (EDGAR + bhavcopy + yfinance + Neon free + Render free), ~$25-35/mo (Railway + Supabase Pro), and ~$100-160/mo (adds EODHD ALL-IN-ONE or FMP Ultimate for licensed India + global fundamentals).

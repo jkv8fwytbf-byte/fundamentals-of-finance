@@ -1,0 +1,202 @@
+============================== SURVEY 2: DATASETS ==============================
+## 1. Dataset families — what's on disk
+
+**Locations**
+- Originals (xls/xlsx): `/Users/siddharth/Downloads/finance-and-valuation/damodaran/pc/datasets/` — **254 files**
+- Markdown mirrors: `/Users/siddharth/Downloads/financeMD/damodaran/pc/datasets/` — **254 .md, 1:1, zero conversion failures**
+- 2026 refresh: `/Users/siddharth/Downloads/damodaran-data-01.zip` (93 files) + `damodaran-data-02.zip` (182 files) → both unpack to `data-current/`, **275 files total**, superset of the crawl (adds `indname.xls`, `indname.xlsx`, `indreg.xls`, 16 dated `ERP*.xlsx`, `AlldataMarch2026.xlsx`, `ERPbymonth`, `mktcapmult.xls`/`mktcaprisk.xls`, `AppleTTM.xls`, `S&P500ValueJan2025.xlsx`, `DisneyTaxReform.xlsx`, `ctryprem_pc_root.xls`)
+- Historical archives: `/Users/siddharth/Downloads/finance-and-valuation/damodaran/pc/archives/` — **1,647 files**, mirrored to md, years **1998–2024** (suffix `98`…`24`). Covers US/Europe/Japan/emerg/Global only. **No India, no China, no Rest in archives.**
+- Implied-ERP models: `…/damodaran/pc/implprem/` → `ERPFeb25.xlsx`, **`ERPSept26.xlsx`**, `ERPbymonth.xlsx` (+ md mirrors)
+
+**File-count arithmetic (254):** 29 families × 8 regions = 232, + `mgnroc`/`mgnrocGlobal` (2), + `uValue`/`uValueGlobal` (2), + 18 non-regional country/market files.
+
+**Region suffix convention** (from `wacc*.md` "What is this data?" cell):
+
+| Suffix | Region label in file |
+|---|---|
+| *(none)* | US companies |
+| `Europe` | Europe (EU, UK, Switzerland, Scandinavia) |
+| `Japan` | Japan |
+| `emerg` | Emerging Markets (Asia ex-Japan, LatAm, Africa, MidEast, E. Europe/Russia) |
+| `India` | India |
+| `China` | China |
+| `Rest` | Australia, NZ and Canada |
+| `Global` | All firms (cost of capital in US$) |
+
+Naming irregularities to hard-code in any loader: US base file is `betas.xls` (not `beta.xls`), `pedata/pbvdata/psdata` (not `pe/pbv/ps`), `DollarUS.xls` (not `Dollar.xls`); `R&D*.xls` contains an ampersand; `countrytaxrates` and `histretSP` exist as **both** `.xls` and `.xlsx` (mirrors are `countrytaxrates.xls.md` / `countrytaxrates.xlsx.md`, `histretSP.xls.md` / `histretSP.xlsx.md`).
+
+### Industry-level families (all 8 regions unless noted)
+
+| Family | Contents | Key columns (data sheet) |
+|---|---|---|
+| `beta` (`betas`) | Levered/unlevered/pure-play betas | Industry Name, # firms, Beta, D/E, Effective Tax rate, Unlevered beta, Cash/Firm value, **Unlevered beta corrected for cash**, HiLo Risk, Std dev of equity, Std dev in op income (10y), 4–5 prior-year betas, Average |
+| `totalbeta` | Betas for undiversified investors | Avg Unlevered/Levered Beta, Avg correlation with market, Total Unlevered Beta, Total Levered Beta |
+| `wacc` | **Updateable** cost of equity/capital | Beta, Cost of Equity, E/(D+E), Std Dev in Stock, Cost of Debt, Tax Rate, After-tax Cost of Debt, D/(D+E), **Cost of Capital**, Cost of Capital (Local Currency). Header block holds editable inputs: T-bond 3.95%, ERP 4.46%, global default spread 0.23%, marginal tax 25%, local inflation 2.5%, plus a **std-dev→debt-spread lookup table** |
+| `margin` | Profitability | Gross, Net, Pre-tax pre-SBC Op, **Pre-tax Unadjusted Op**, After-tax Unadj Op, Pre/After-tax Lease-adj, Pre/After-tax Lease & R&D adj, EBITDA/Sales, COGS/Sales, R&D/Sales, SG&A/Sales, SBC/Sales, Lease Exp/Sales |
+| `mgnroc` (US, Global only) | Margin↔ROC triangle | After-tax Op Margin, **Sales/Invested Capital (LTM)**, Return on Capital |
+| `capex` | Reinvestment | Cap Ex, D&A, CapEx/Depr, Acquisitions, Net R&D, Net CapEx/Sales, Net CapEx/EBIT(1-t), **Sales/Invested Capital (LTM)** |
+| `wcdata` | Working capital | Acc Rec/Sales, Inventory/Sales, Acc Pay/Sales, **Non-cash WC/Sales** |
+| `fundgr` | Equity fundamental growth | ROE, Retention Ratio, Fundamental Growth |
+| `fundgrEB` | EBIT fundamental growth | **ROC, Reinvestment Rate, Expected Growth in EBIT** |
+| `histgr` | Historical + forecast growth | CAGR Net Income 5y, CAGR Revenues 5y, Exp Growth Revenues next 2y / next 5y, Exp Growth EPS next 5y |
+| `roe` | Return on equity | ROE (unadjusted), ROE (adjusted for R&D) |
+| `taxrate` | Tax rates | Total Taxable Income, Taxes Paid (Accrual), Cash Taxes Paid, Cash/Accrual, **Effective tax rate** (avg all / avg money-makers / aggregate), **Cash tax rate** (2 variants) |
+| `dbtfund` | Capital-structure determinants | Book D/Cap, Market D/Cap (unadj & lease-adj), Market D/E (both), **Interest Coverage Ratio**, Debt/EBITDA, Effective tax rate, Institutional Holdings, Std dev stock, EBITDA/EV, Net PP&E/TA, CapSpend/TA |
+| `debtdetails` | Debt composition | Lease Debt (my estimate), Conventional Debt, Total Debt w/ leases, Interest expense, **Book interest rate**, ST debt %, Lease Debt (accounting), Debt repaid, Debt raised |
+| `leaseeffect` | Lease capitalization impact | Lease Exp/Sales, Debt w/ and w/o leases, D/Cap both ways, Op income before/after, ROIC both ways, Pre-tax margin both ways, Lease debt (mine vs accounting) |
+| `optvar` | Option-pricing inputs | Std Dev in Equity, Std Dev in Firm Value, E/(D+E), D/(D+E) |
+| `divfund` | Dividend policy | Total Dividends, Special Div %, **Dividend Payout**, Dividend Yield, Market Cap, ROE, Inst. Holdings, Std Dev |
+| `divfcfe` | Cash return vs FCFE | Dividends, Net Income, Payout, Div+Buybacks, Cash Return/NI, Div+BB−Issuance, **FCFE pre-debt / post-debt**, Net Cash Returned/FCFE, Cash/Firm Value |
+| `finflows` | Financing flows | Dividends, Buybacks, Equity Issuance, Net Equity Change (+% of BV), Debt Repaid, Debt Raised, Net Debt Change (+%), Change in Lease Debt |
+| `EVA` | Excess returns | Beta, ROE, Cost of Equity, (ROE−COE), BV Equity, Equity EVA, **ROC, Cost of Capital, (ROC−WACC), BV Capital, EVA**, E/(D+E), Std Dev, Cost of Debt, Tax Rate, D/(D+E) |
+| `R&D` | R&D capitalization | R&D Capitalized (estimate), Cap R&D as % Invested Capital, R&D LTM, R&D % Revenue, R&D t−1…t−5, CAGR in R&D |
+| `goodwill` | M&A residue | Goodwill $, Change in Goodwill, Goodwill % Total Assets, Impairment LTM, Impairment % Goodwill |
+| `Employee` | Labour/SBC | # Employees, Market Cap, Revenues, Mkt Cap/Employee, Revenues/Employee, SBC $, SBC % Revenue |
+| `MktCap` | Market-cap time series | 4 quarterly values + year-end 2020-12-31…2025-12-31 + annual % changes 2021–2025 |
+| `Dollar` (`DollarUS`) | Aggregate $ scale by industry | Avg Company Age, Market Cap, Book Equity, EV, Invested Capital, Total Debt (incl leases), Revenues, Gross Profit, EBITDA, EBIT, Net Income |
+| `inshold` | Corporate governance | CEO Holding, Corporate Holdings, **Institutional Holdings**, Insider Holdings |
+| `pe` (`pedata`) | Earnings multiples | % money-losing, Current PE, **Trailing PE**, Forward PE, Aggregate MCap/NI (all / money-makers), Expected growth 5y, PEG |
+| `pbv` (`pbvdata`) | Book multiples | PBV, ROE, EV/Invested Capital, ROIC |
+| `ps` (`psdata`) | Sales multiples | Price/Sales, Net Margin, **EV/Sales**, Pre-tax Op Margin |
+| `vebitda` | EV multiples | EV/EBITDAR&D, **EV/EBITDA, EV/EBIT, EV/EBIT(1-t)** — reported twice (aggregate and average) |
+| `uValue` (US, Global only) | One-stop value drivers | Unlevered beta corrected for cash, Market D/E, Market D/Cap, Effective tax rate, Payout, Net Margin, Pre-tax Op Margin, ROE, ROIC, **Sales/Capital**, EV/Sales, Rev growth last 5y, Exp earnings growth next 5y |
+
+Every one of these 236 industry files has **exactly 96 data rows = 94 industries + "Total Market" + "Total Market (without financials)"**, and the industry-name list is **byte-identical across US / India / Global** (verified by diff).
+
+### Country / market-level files (no region suffix)
+
+| File | Contents | Newest vintage |
+|---|---|---|
+| `ctryprem.xlsx` | **The CRP/ERP master.** 17 sheets: Explanation & FAQ, Summary of Most Recent Update, Country Lookup, **ERPs by country**, Relative Equity Volatility, Regional Simple Averages, Regional Weighted Averages, Regional breakdown, Sovereign Ratings (Moody's/S&P/Fitch), Regional lookup table, Default Spreads for Ratings, 10-year CDS Spreads, Country GDP, Ratings worksheet, **Country Tax Rates**, PRS Worksheet, Data Update Sequence. ~205 countries. Columns on "ERPs by country": Country, Region, Moody's rating, Adj. Default Spread, Equity Risk Premium, Country Risk Premium, CDS spread, ERP(CDS), CRP(CDS) | `ctryprem.xlsx` = **Jan 1 2026** (ratings refreshed Feb 16); `ctrypremApr26` = Apr 1 2026; **`ctrypremJuly26.xlsx` = Jul 1 2026 (newest)**; `ctrypremJuly25`, `ctrypremJune13` = older |
+| `countrystats.xls` | Country-level multiples/CF measures, **127 countries** | Jan 5 2026 |
+| `countrytaxrates.xls`/`.xlsx` | Marginal corporate tax rate by country + **rate accounting for Global Minimum Tax** (source: Tax Foundation), ~250 rows | Jan 5 2026 |
+| `sovrrating2025.xlsx` | Country, S&P / Fitch / Moody's ratings | Jan 2025 |
+| `sovrCDS2024.xlsx` | Country, CDS spread, CDS net of US | Jan 2024 (stale) |
+| `histretSP.xls`/`.xlsx` | 19 sheets — Returns by year (1928→), S&P 500 raw, Small Cap, **T.Bond yield & return**, T.Bill rates, Inflation, Home Prices, Moody's Rates, Gold, Nominal vs Real | Jan 1 2026 |
+| `histimpl.xls` | Implied ERP by year 1960→: Earnings Yield, Div Yield, S&P 500, T.Bill, **T.Bond**, Implied Premium (DDM), Implied ERP (FCFE), **Implied ERP with risk-adjusted riskfree rate**, ERP/Riskfree | **Jan 5 2024 — stale, 2 years behind** |
+| `ERP&GDP.xls` | Country, GDP, Moody's rating, default spread, Total Risk Premium, CRP, Corporate Tax Rate, Region, GDP weights | **Feb 2016 — very stale** |
+| `macro.xls` | Annual + quarterly T.Bond rate, GDP, CPI, weighted dollar | **2010 — stale** |
+| `macrodur.xls` | Duration/cyclicality/inflation regression by sector | **2007 — stale** |
+| `mktcapmult.xlsx` | US pricing/operating measures by **market-cap decile**: Trailing/Forward PE, PEG, PBV, P/S, EV/EBIT, EV/EBITDA, EV/Sales, EV/IC, ROE, pre-tax ROIC, margins, % loss-makers | Jan 5 2026 |
+| `mktcaprisk.xlsx` | US risk/liquidity by market-cap decile: Cash/Firm Value, D/Cap, Median Beta, Correlation, Std Dev, **Total Beta**, HiLo, Interest Coverage | Jan 5 2026 |
+| `indname.xls`/`.xlsx` | **Company→industry map (see §3). NOT in the website crawl — zip/tarball only.** | Jan 2026 |
+| `indreg.xls` | Regression betas + Jensen's alpha by industry (US only in 2026 zip; full region set 1998–2024 in archives) | Jan 2026 |
+| `ERP*.xlsx` (in `data-current/` + `pc/implprem/`) | Implied-ERP calculators. 16 vintages present: ERPFeb13/14, ERPDec24, ERPJan25/Feb25/May25/July25/Aug25/Sept25/Oct25/Nov25/Dec25, **ERPJan26, ERPFeb26, ERPMay26, ERPJuly26, ERPAug26, ERPSept26**. Sheets: Impl premium calculator, Buyback & Dividend computation, Expected growth rate, Implied ERP annual since 1960, **Implied ERP monthly from 9-08**, Historical ERP, S&P 500 Monthly (Cap IQ), T.Bond vs nominal growth | **`ERPSept26.xlsx` = newest** (index 7686.14, 10-yr T-bond **4.75%**, Aa1 default spread 0.22%) |
+| `ERPbymonth.xlsx` | Monthly series 2008-09→: S&P 500, T.Bond Rate, $ Riskfree Rate, ERP (T12m), ERP w/ adj riskfree, ERP smoothed/normalized/net-cash-yield | 2026 |
+| `AlldataMarch2026.xlsx` | **Daily** market tape: S&P close/high/low, 3-mth T-Bill, **10-yr T.Bond**, Expected Return on Stocks, **ERP**, Brent/WTI, BBB yield (25 rows, March 2026) | Mar 2026 |
+
+**Key current numbers already extractable:** mature-market ERP **4.20%** (Jul 2026) / 4.23% (Jan 2026); US ERP 4.42%; **India: Moody's Baa3, adj. default spread 1.750%, ERP 6.920%, CRP 2.720%, CDS 0.72%, corporate tax 30%** (`ctrypremJuly26`, Jul 1 2026). Jan 2026 India values: default spread 1.868%, ERP 7.075%, CRP 2.845%. Riskfree: 3.95% (wacc.xls Jan-2026 input) → 4.75% (ERPSept26).
+
+---
+
+## 2. Ginzu model input → dataset mapping
+
+Model: `/Users/siddharth/Downloads/finance-and-valuation/damodaran/pc/fcffsimpleginzu.xlsx`, mirror `/Users/siddharth/Downloads/financeMD/damodaran/pc/fcffsimpleginzu.md` (17 sheets: Input sheet, Valuation output, Stories to Numbers, Valuation as picture, Diagnostics, Option value, Synthetic rating, R&D converter, Operating lease converter, **Cost of capital worksheet**, Failure Rate worksheet, **Country equity risk premiums**, **Industry Averages(US)**, **Industry Averages (Global)**, **Input Stat Distributioons**, Trailing 12-month worksheet, Answer keys).
+
+| Ginzu input (Input sheet / Cost-of-capital sheet) | Dataset that supplies it | Already embedded in ginzu? |
+|---|---|---|
+| Riskfree rate (`0.0458` in shipped file) | `histretSP` "T.Bond yield & return" / `ERPbymonth` "$ Riskfree Rate" / `AlldataMarch2026` (daily 10-yr) / `ERPSept26` B9 | No — manual cell |
+| Mature-market ERP | `ctryprem*.xlsx` "ERPs by country" header cell; ultimately `ERP<Month><YY>.xlsx` implied-ERP calculator | **Yes** — sheet "Country equity risk premiums", MM-ERP = 0.0423, "Updated January 1, 2026" |
+| Country ERP / **CRP** (by country of incorporation, by operating-country mix, by operating-region mix) | `ctryprem*.xlsx` ERPs-by-country + Regional Simple/Weighted Averages | **Yes** — full ~200-country table + 9-region table wired into the "Operating Countries / Operating Regions ERP calculator" on the cost-of-capital sheet |
+| **Industry unlevered beta** | `betas.xls` / `betaGlobal.xls` (and `betaIndia.xls` if you want India-specific), column "Unlevered beta corrected for cash" | **Yes, US + Global only** — "Industry Averages(US)"/"(Global)", cols `Unlevered Beta`, `Equity (Levered) Beta`, `Cost of equity`. **India beta is NOT embedded — add `betaIndia.xls` yourself** |
+| **Sales-to-capital ratio** (years 1-5 and 6-10) | `capex.*` "Sales/Invested Capital (LTM)", `uValue` "Sales/Capital", `mgnroc` | **Yes** — `Sales/Capital` column in both industry sheets + 1st/median/3rd quartile in "Input Stat Distributioons" |
+| **Operating margin** (next year + target) | `margin.*` "Pre-tax Unadjusted Operating Margin" (and "Pre-tax Lease & R&D adj Margin") | **Yes** — both `Pre-tax Operating Margin (Unadjusted)` and `(Lease & R&D adjusted)` + quartile distribution |
+| Revenue growth (yr 1, CAGR yrs 2-5) | `histgr.*` (CAGR rev 5y, expected rev growth next 2y/5y); `fundgrEB` for ROC×reinvestment sanity check | **Yes** — `Annual Average Revenue growth - Last 5 years` + quartiles of "Revenue Growth Rate = Last 3 years" |
+| **Effective tax rate** | `taxrate.*` (avg across money-makers / aggregate) | **Yes** — `Average effective tax rate` column |
+| **Marginal tax rate** | `countrytaxrates.xls` (Tax Foundation, incl. Global-Minimum-Tax-adjusted rate); also `ctryprem` "Country Tax Rates" sheet | **Yes** — Corporate Tax Rate column on the country-ERP sheet |
+| **Cost of debt / default spread** | Path A: synthetic rating — interest coverage → rating → spread (ginzu "Synthetic rating" sheet, two lookup tables: large-manufacturing and small/risky-firm). Path B: `wacc.*` std-dev-in-stock→basis-spread lookup table. Industry inputs: `dbtfund` (Interest Coverage Ratio, Debt/EBITDA), `debtdetails` (Book interest rate) | **Yes** — full rating/spread table + 1-to-10-yr cumulative default probabilities by rating |
+| Country default spread added to cost of debt | `ctryprem` "Adj. Default Spread" / "Default Spreads for Ratings" | **Yes** |
+| Debt ratio D/(D+E) for the business mix | `wacc.*` `D/(D+E)`, `dbtfund` market D/Cap, `beta.*` D/E | **Yes** — `Market Debt/Capital` column + quartiles |
+| Std dev in stock price (for options & cost of debt) | `optvar.*`, `beta.*` "Standard deviation of equity", `wacc.*` | **Yes** |
+| Non-cash WC, CapEx, Net CapEx, Reinvestment Rate | `wcdata.*`, `capex.*` | **Yes** — `Non-cash WC as % of Revenues`, `Cap Ex as % of Revenues`, `Net Cap Ex as % of Revenues`, `Reinvestment Rate` |
+| Payout / equity reinvestment (for FCFE variants) | `divfund.*`, `divfcfe.*` | **Yes** — `Dividend Payout Ratio`, `Equity Reinvestment Rate` |
+| Multiples sanity check (EV/Sales, EV/EBITDA, EV/EBIT, PBV, Trailing PE) | `psdata/vebitda/pbvdata/pedata` + `countrystats` for country medians (India row present) | **Yes** — `EV/Sales`, `EV/EBITDA`, `EV/EBIT`, `Price/Book`, `Trailing PE` |
+| Probability of failure | ginzu "Failure Rate worksheet" + rating→cumulative-default-probability table | Yes |
+| R&D capitalization / lease conversion | `R&D.*` and `leaseeffect.*` for industry amortizable life & magnitudes; ginzu has "R&D converter" and "Operating lease converter" sheets | Partly |
+
+Net: **the ginzu is self-contained for a US or Global-industry valuation of a company in any of ~200 countries.** The only things it does NOT ship are (a) India/China/Japan/Europe/emerg/Rest industry averages, (b) a current riskfree rate, (c) a post-Jan-2026 mature-market ERP. Those are exactly the three things an automation layer must inject.
+
+---
+
+## 3. Industry classification (`indname`)
+
+- **Not present in the website crawl** (`pc/datasets/` has no `indname.*`). Sources: `damodaran-data-02.zip → data-current/indname.xls` (22,255,104 B) and `indname.xlsx` (7,927,920 B); `indname.xlsx` also in `damodaran-full-part04.tar.gz`.
+- `indname.xlsx` — 3 sheets, all the same 48,157-row × 8-col table, differently sorted: **"By industry" / "By company name" / "By geography"**.
+- Columns: `Company Name | Exchange:Ticker | Industry Group | Primary Sector | SIC Code | Country | Broad Group | Sub Group`
+- **48,156 companies**, **94 industry groups**, **11 GICS-style primary sectors**, **132 countries**.
+- Primary sectors: Industrials 9,007 · Materials 6,457 · Consumer Discretionary 6,358 · Information Technology 6,234 · Financials 5,278 · Health Care 4,452 · Consumer Staples 3,202 · Real Estate 2,671 · Communication Services 2,193 · Energy 1,402 · Utilities 902.
+- Broad Group (5): Emerging Markets 27,360 · Developed Europe 6,559 · United States 5,994 · Australia, NZ and Canada 4,278 · Japan 3,965.
+- Sub Group (12): Small Asia 10,367 · China 7,775 · United States 5,994 · EU & Environs 5,649 · **India 5,170** · Japan 3,965 · Canada 2,576 · Africa & Middle East 2,555 · Australia & NZ 1,702 · UK 984 · Latin America & Caribbean 980 · Eastern Europe & Russia 439.
+- **Cross-check passes:** `betas.md` "Total Market" = 5,994 firms = US count in indname. `betaIndia.md` "Total Market" = 5,170 = India count in indname. So `Sub Group == "India"` is exactly the population behind every `*India.xls`.
+- **There is NO India-specific industry list.** The same 94 industries are used worldwide; India gets its own *averages* (29 families), not its own taxonomy. Indian companies are tagged by ticker (`BSE:544435`, `NSEI:…`) with Country = India, Broad Group = Emerging Markets, Sub Group = India.
+- Largest industries globally: Metals & Mining 1,874 · Machinery 1,553 · Software (System & Application) 1,532 · Electronics (General) 1,481 · Food Processing 1,450.
+- Tagging is Damodaran's own mapping (he states he collapses the provider taxonomy); `SIC Code` is carried per company so you can build your own crosswalk. Some Indian industries are **empty or near-empty** — e.g. `Utility (General)` has 0 firms in `betaIndia` (row present, values NA), `Utility (Water)` has 1, `Transportation (Railroads)` has 3, `Air Transport` has 5. Any automation must fall back to Global or emerg for those.
+
+---
+
+## 4. Data-quality notes
+
+- **`_conversion_log.csv` is clean for datasets.** 4,329 rows total: **3,915 `ok`, 413 `skipped`, 0 errors**. All **254** `pc/datasets/*` rows are `ok`. (Note: the CSV has one malformed row — a filename containing a literal newline, `"…/financeMD/Aswath Damodaran - Investment Valuation` — unrelated to datasets. Columns are `source,target,status,detail,seconds`; naive `$NF` parsing gives seconds, not status.)
+- **No truncated tables.** All 236 industry-level mirrors contain exactly 96 data rows.
+- `_(empty sheet)_` markers appear in 24 mirrors, but all are trailing blank `Sheet1/Sheet2` tabs, not data loss: `EVAChina`, `Employee*` (all 8), `MktCap*` (5), `dbtfundemerg`, `divfcfeIndia`, `leaseeffect`, `mktcapmult`, `taxrate`/`taxrateEurope`/`taxrateemerg`, plus the intentionally-blank `Sheet11–16` in `histretSP` (6) and `histimpl` (15).
+- **Spreadsheet formulas are lost.** Mirrors are value-only markdown, so `wacc.xls`'s "updateable" recalculation (change the T-bond rate → new sector cost of capital) does **not** work from the md. Use the originals for that.
+- **Split-file breakage:** `MANIFEST.txt` records `data/pc/datasets/indname.xls` split into `indname.xls.partaa` (20,971,520 B, **in `damodaran-full-part02.tar.gz`**) and `partab` (1,283,584 B, in `part03`). **`part01` and `part02` are missing from `/Users/siddharth/Downloads/`** → `indname.xls` **cannot** be reassembled from the tarballs. It is fully intact in `damodaran-data-02.zip`, and `indname.xlsx` is intact in both `data-02.zip` and `part04`. No action needed beyond "use the zip". (Same split treatment applies to `cfpacket1spr26.pdf` and `valpacket1spr26.pdf` in the notes packs — those parts *are* present.)
+- **Stale files masquerading as current:** `histimpl.xls` (Jan 2024), `ERP&GDP.xls` (Feb 2016), `macro.xls` (2010), `macrodur.xls` (2007), `sovrCDS2024.xlsx` (Jan 2024), `sovrrating2025.xlsx` (Jan 2025). Use `ctryprem*.xlsx`'s own Sovereign Ratings / CDS / Country GDP sheets instead — they are refreshed with the CRP file.
+- **Vintage skew inside one snapshot:** industry files = **2026-01-05**, `ctryprem`/`histretSP` = **2026-01-01**, `wacc` mtime 2026-01-12, `ctrypremJuly26` = 2026-07-01, `ERPSept26` = 2026-09. Anything that mixes a July ERP with a January sector cost of capital will be internally inconsistent unless you re-run `wacc.xls`'s input cells.
+- **No India/China/Rest history.** Archives stop at 2024 and only carry US/Europe/Japan/emerg/Global. Backtests on Indian sector data beyond the current year are impossible from this corpus.
+- `betas.xls` regional variants label the trailing-year beta columns inconsistently (`2022|2023|2024|2025|Average (2022-2026)` in US, `Beta: 2021…Average Beta: 2021-26` in India, `Average (2020-24)` in Global) — do not parse those headers positionally across regions.
+- `vebitda.*` repeats the same four column names twice (aggregate vs simple-average blocks) — duplicate-column handling required.
+
+---
+
+## 5. Snapshot cadence & auto-refresh
+
+**Cadence (verbatim from `New_Home_Page/datahistory.md` and `datacurrent.md`):** "I update most of the data only once a year, in the first two weeks of January." Current corpus: *"Data of last full update: **January 9, 2026**; Country risk premiums last updated: **January 5, 2026**."* Exceptions updated intra-year: **country risk premiums** (Jan/Apr/Jul — `ctrypremApr26`, `ctrypremJuly26`) and **implied ERP** (monthly — 16 `ERP<Mon><YY>.xlsx` vintages, latest Sept 2026), plus the daily `Alldata<Month><Year>.xlsx` tape.
+
+**To refresh automatically from `pages.stern.nyu.edu`:**
+1. Base URL pattern: `https://pages.stern.nyu.edu/~adamodar/pc/datasets/<name>.xls[x]`. `datacurrent.md` contains **244 distinct dataset URLs** — it is a ready-made, machine-parsable download manifest (`grep -o 'https://pages.stern.nyu.edu/~adamodar/pc/datasets/[A-Za-z0-9&._-]*'`). Archived years live at `…/pc/archives/<name><YY>.xls`. Implied-ERP files at `…/pc/implprem/ERP<Mon><YY>.xlsx`.
+2. Generate names as `{family} × {"", Europe, Japan, emerg, India, China, Rest, Global}` with the four hard-coded exceptions (`betas`, `pedata`, `pbvdata`, `psdata`, `DollarUS`) and the `.xls` vs `.xlsx` split.
+3. Dated files (`ctryprem<Mon><YY>.xlsx`, `ERP<Mon><YY>.xlsx`) must be **discovered**, not guessed — scrape `datacurrent.html` / `impliederp.html` link lists monthly. `ctryprem.xlsx` (undated) is the canonical January file; the dated ones are the intra-year updates.
+4. Schedule: full crawl **mid-January**; `ctryprem*` **quarterly (Jan/Apr/Jul)**; `ERP*` **monthly**; `Alldata*` **daily** if you want a live riskfree/ERP.
+5. Change detection: every sheet carries a `Date updated:` cell in row 1 (`2026-01-05`) and a `What is this data?` + region cell in row 4 — parse those as the version stamp rather than relying on HTTP headers.
+6. Parsing: `.xls` = BIFF8 (needs `xlrd<2` / `libreoffice --convert-to`); `.xlsx` = OOXML (`openpyxl`). The data sheet is always named **"Industry Averages"** (occasionally "Industry Values") and the real header row is the one whose first cell is `Industry Name` / `Industry name` — **it is not row 1**; 8–12 metadata rows precede it. Read the file as headerless and locate that row.
+7. Gotchas: the site 404s/redirects oddly for Chrome (he says so explicitly on the page); use a plain HTTP client with a UA. `R&D*.xls` needs URL-encoding of `&`. `indname.xls`/`indname.xlsx` are at `pc/datasets/` (22 MB / 8 MB) but are **not linked from `datacurrent.html`** — link is on `databreakdown.html` and points at `www.stern.nyu.edu/~adamodar/pc/datasets/indname.xlsx`.
+8. Usage rules (`datahistory.md`): acknowledgement optional, no per-company raw-data redistribution (that's why only derived sector stats exist post-2018), explicit request not to use for legal/public-policy purposes. Sources are Bloomberg/Morningstar/Capital IQ/Compustat.
+
+
+KEY FACTS:
+ - 254 dataset files, mirrored 1:1 to markdown with ZERO conversion failures: all 254 pc/datasets rows in /Users/siddharth/Downloads/financeMD/_conversion_log.csv are status=ok (log totals: 3915 ok, 413 skipped, 0 errors).
+ - Region suffix set is 8: '' (US), Europe, Japan, emerg, India, China, Rest (=Australia/NZ/Canada), Global. 29 families x 8 regions = 232 files, + mgnroc/mgnrocGlobal, + uValue/uValueGlobal, + 18 country/market files = 254.
+ - Every one of the 236 industry-level files has exactly 96 data rows = 94 industries + 'Total Market' + 'Total Market (without financials)'. The industry-name list is byte-identical across US, India and Global (verified by diff).
+ - indname.xlsx = 48,156 companies x 8 cols (Company Name, Exchange:Ticker, Industry Group, Primary Sector, SIC Code, Country, Broad Group, Sub Group), 3 sheets (By industry / By company name / By geography), 94 industry groups, 11 primary sectors, 132 countries.
+ - There is NO India-specific industry taxonomy. India gets its own averages (29 families) over the SAME 94 industries. Sub Group='India' = 5,170 companies, which exactly equals betaIndia.xls 'Total Market' firm count; US=5,994 matches betas.xls. Cross-check passes.
+ - indname.xls/.xlsx are NOT in the website crawl (pc/datasets has no indname). Only source on disk: damodaran-data-02.zip -> data-current/indname.xls (22.2 MB) and indname.xlsx (7.9 MB); indname.xlsx also in damodaran-full-part04.tar.gz.
+ - SPLIT-FILE BREAKAGE: MANIFEST.txt splits indname.xls into partaa (in damodaran-full-part02.tar.gz) + partab (part03). part01 and part02 are MISSING from Downloads, so indname.xls cannot be rebuilt from tarballs. Use damodaran-data-02.zip instead. No other dataset is affected.
+ - Snapshot cadence: full annual update in the first two weeks of January. Current corpus = 'Data of last full update: January 9, 2026; Country risk premiums last updated January 5, 2026'. Industry files stamp 2026-01-05; ctryprem/histretSP stamp 2026-01-01.
+ - Intra-year updates: country risk premiums quarterly (ctryprem.xlsx Jan-1-2026, ctrypremApr26 Apr-1, ctrypremJuly26 Jul-1 = NEWEST), implied ERP monthly (16 vintages, ERPSept26.xlsx newest), and a daily tape AlldataMarch2026.xlsx (S&P close, 3mth T-bill, 10-yr T-bond, expected return, ERP, oil, BBB yield).
+ - Current India risk inputs from ctrypremJuly26.xlsx: Moody's Baa3, adj default spread 1.750%, ERP 6.920%, CRP 2.720%, CDS 0.72%, corporate tax 30%. Jan-2026 values: 1.868% / 7.075% / 2.845%. Mature-market ERP 4.20% (Jul-26), 4.23% (Jan-26); US ERP 4.42%.
+ - Riskfree rate is NOT a dataset column: wacc.xls carries an editable 3.95% T-bond input (Jan 2026); ERPSept26.xlsx uses 4.75%; live values come from AlldataMarch2026.xlsx, ERPbymonth.xlsx or histretSP 'T.Bond yield & return'.
+ - wacc.xls is 'updateable' by design: header block holds Long Term Treasury bond rate, Risk Premium for Equity, Global Default Spread, marginal tax rate, and expected local-currency inflation (for the 'Cost of Capital (Local Currency)' column), plus a std-dev-in-stock -> debt-basis-spread lookup table. Formulas are lost in the md mirror; use the original xls.
+ - fcffsimpleginzu.xlsx already embeds: full ~200-country ERP/CRP/tax table (mature ERP 4.23%, Jan 1 2026), Industry Averages(US) and Industry Averages(Global) with 27 columns each (unlevered beta, sales/capital, pre-tax op margin, cost of capital, EV multiples, reinvestment, payout), an Input Stat Distributions sheet (1st/median/3rd quartile for rev growth, margin, sales-to-capital, cost of capital, beta, D/Cap), a synthetic-rating interest-coverage->rating->spread table, and rating->cumulative default probability (1-10 yr).
+ - The ginzu does NOT embed India (or Japan/Europe/emerg/China/Rest) industry averages, a current riskfree rate, or a post-Jan-2026 ERP. Those three are exactly what an automation layer must inject; betaIndia.xls / marginIndia.xls / capexIndia.xls / waccIndia.xls etc. supply the first.
+ - Sales-to-capital comes from capex.* 'Sales/Invested Capital (LTM)', uValue 'Sales/Capital' and mgnroc; operating margin from margin.* ('Pre-tax Unadjusted Operating Margin' and 'Pre-tax Lease & R&D adj Margin'); effective tax from taxrate.*; marginal tax from countrytaxrates.xls (Tax Foundation, incl. Global-Minimum-Tax-adjusted column); industry growth from histgr.* (historical + next-2y/5y forecasts), fundgr (ROE x retention) and fundgrEB (ROC x reinvestment).
+ - Cost-of-debt spread has two independent paths: synthetic rating via interest coverage (ginzu 'Synthetic rating' sheet, two lookup tables for large-manufacturing vs small/risky firms) and the std-dev-of-equity -> basis-spread table inside wacc.xls. Industry-level interest coverage is in dbtfund.*; realized book interest rate in debtdetails.*.
+ - Stale files to avoid treating as current: histimpl.xls (Jan 2024), sovrCDS2024.xlsx (2024), sovrrating2025.xlsx (2025), ERP&GDP.xls (Feb 2016), macro.xls (2010), macrodur.xls (2007). ctryprem*.xlsx has fresher Sovereign Ratings, 10-year CDS Spreads and Country GDP sheets internally.
+ - Archives at finance-and-valuation/damodaran/pc/archives (1,647 files, mirrored to md) span 1998-2024 but cover ONLY US/Europe/Japan/emerg/Global. No India, China or Rest history exists -- Indian sector backtests beyond the current year are impossible from this corpus.
+ - Filename irregularities any loader must hard-code: betas.xls (not beta.xls), pedata/pbvdata/psdata (not pe/pbv/ps), DollarUS.xls (not Dollar.xls), R&D*.xls contains '&' (URL-encode), countrytaxrates and histretSP exist as both .xls and .xlsx.
+ - Parsing rule: the real header row is the one starting 'Industry Name'/'Industry name' -- it sits 8-12 rows below the top, under a metadata block (Date updated, Created by, What is this data?, Home Page, Data website, Companies in each industry, Variable definitions). Sheet is named 'Industry Averages' (occasionally 'Industry Values'). Parse headerless and locate the row.
+ - New_Home_Page/datacurrent.md contains 244 distinct https://pages.stern.nyu.edu/~adamodar/pc/datasets/ URLs -- a ready-made machine-parsable download manifest for an auto-refresh job. Archives at /pc/archives/<name><YY>.xls; implied ERP at /pc/implprem/ERP<Mon><YY>.xlsx.
+ - ctryprem*.xlsx has 17 sheets: Explanation/FAQ, Summary of Update, Country Lookup, ERPs by country (~205 rows), Relative Equity Volatility, Regional Simple Averages, Regional Weighted Averages, Regional breakdown, Sovereign Ratings, Regional lookup, Default Spreads for Ratings, 10-year CDS Spreads, Country GDP, Ratings worksheet, Country Tax Rates, PRS Worksheet, Data Update Sequence.
+ - countrystats.xls gives 127 countries x ~20 country-level medians (Current/Trailing/Forward PE, PEG, PBV, PS, EV/EBIT, EV/EBITDA, EV/IC, EV/Sales, Cash/Firm Value, Dividend Yield, aggregate MCap/Debt/Firm Value/Cash/EV). India row present (4,520 firms, median trailing PE 24.8, PBV 2.15, EV/EBITDA 15.99).
+ - Data sources are Bloomberg/Morningstar/Capital IQ/Compustat; per-company raw data was discontinued after 2018 at the providers' insistence, which is why only derived sector averages exist. Usage rules: acknowledgement optional, explicit request not to use for legal disputes or public-policy arguments.
+ - Post-conversion md mirrors are value-only: 24 files carry '_(empty sheet)_' markers but all are trailing blank tabs, not data loss. Formulas, comments and the ginzu's live recalculation are absent from the markdown -- originals needed for any recalculation.
+
+OPEN QUESTIONS:
+ - Which vintage should the automation standardize on? The corpus mixes a Jan-5-2026 industry snapshot with a Jul-1-2026 CRP file and a Sept-2026 implied ERP. Pin everything to Jan-2026 for internal consistency, or always use the freshest ERP/CRP and accept that sector costs of capital are stale unless wacc.xls is re-run?
+ - For Indian companies, should industry averages come from betaIndia/marginIndia/capexIndia (India-only peers, but thin: Utility (General) has 0 firms, Utility (Water) 1, Transportation (Railroads) 3, Air Transport 5), from Global (deep but different economics), or a blend with a firm-count threshold for falling back? What threshold?
+ - Should valuations be produced in USD (Damodaran's native unit -- all datasets are US$) or INR? INR requires the inflation-differential adjustment; wacc.xls has a 'Cost of Capital (Local Currency)' column driven by an editable expected-local-inflation cell (currently 2.5%), which only works in the original xls, not the md mirror.
+ - Do you want a live refresh pipeline hitting pages.stern.nyu.edu (244 URLs parsed from datacurrent.html, plus discovery of dated ctryprem*/ERP* files), or is the frozen Jan-2026 snapshot in damodaran-data-01/02.zip sufficient for now?
+ - Should the system parse the original .xls/.xlsx (needs xlrd<2 or LibreOffice headless, preserves formulas and lets wacc.xls be recomputed at a new riskfree rate) or the value-only markdown mirrors (trivial to parse, but formulas and recalculation are gone)?
+ - Is a company->industry lookup needed at run time? indname.xlsx (48,156 companies, keyed on 'Exchange:Ticker' like BSE:544435 / NSEI:...) can drive automatic industry tagging, but it is 8 MB inside a zip and its ticker format needs a crosswalk to whatever ticker source you feed in.
+ - Do you need the historical archives (1998-2024, US/Europe/Japan/emerg/Global only) loaded for backtesting, knowing India/China/Rest have no history at all?
+ - Is it worth trying to recover damodaran-full-part01.tar.gz and part02.tar.gz, or is damodaran-data-02.zip (which contains the complete indname.xls) enough? Nothing else in the dataset set appears to depend on the missing parts -- but part01 also held ~100 pc/ model spreadsheets whose absence I did not audit.

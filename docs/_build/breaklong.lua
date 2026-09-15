@@ -13,7 +13,7 @@ local ZWNJ = '\u{200C}'
 
 local function shorten(s)
   s = s:gsub('/Users/siddharth/Downloads/financeMD/', 'financeMD/')
-  s = s:gsub('/Users/siddharth/Valuation/', 'Valuation/')
+  s = s:gsub('/Users/siddharth/Desktop/Valuation/', 'Valuation/')
   s = s:gsub('/Users/siddharth/%.claude/plans/', 'plans/')
   s = s:gsub('/Users/siddharth/%.claude/projects/[^/]+/[^/]+/', 'claude/')
   s = s:gsub('/Users/siddharth/%.claude/projects/[^/]+/', 'claude/')

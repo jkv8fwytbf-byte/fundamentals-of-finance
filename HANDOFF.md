@@ -11,9 +11,14 @@ Nothing in flight. Milestone M0, reading stage. Waiting for Siddharth.
 
 ## Done recently
 
+- Round 2 (2026-09-15, Claude Code): only `main`, and the repo made self-contained.
+  - `dev` and `dev2` deleted. `main` is the only branch.
+  - The full plan (v4) copied in as `docs/plan.md` (original left at `~/.claude/plans/help-me-out-here-abstract-wilkinson.md`). The nine research reports the documents cite copied in as `docs/sources/*.txt`, with a `README.md` that maps the short names the documents use.
+  - Stale paths rewritten in 31 markdown files: `/Users/siddharth/Valuation/` and `~/Valuation/` now point at `~/Desktop/Valuation/`; citations of the plan and the reports now point at `docs/plan.md` and `docs/sources/`. `docs/_build/breaklong.lua` updated so the PDFs still print those paths short. All ten PDFs rebuilt.
+  - Old Claude Code memory (his profile, working preferences, project direction) imported from the `~/Downloads` project into this folder's memory.
 - Consolidation (2026-09-15, Claude Code): one folder, one branch, one tool.
   - Folder is `/Users/siddharth/Desktop/Valuation`, branch `main`. The old `~/Valuation` (branch `dev`, Cursor) and `~/Valuation-dev2` (branch `dev2`, Codex worktree) folders are gone. Their content is all here: `main` was fast-forwarded to `dev2` (`3e6af79`, the docs plus the colorful reading editions), and the briefing files were brought over from `dev`. Nothing was lost; `dev2` already contained every source edit that had been made on `dev`.
-  - `dev` (`25fb538`) and `dev2` (`3e6af79`) still exist as frozen backup branches. Leave them alone; delete only if he asks.
+  - `dev` (`25fb538`) and `dev2` (`3e6af79`) were kept as backups at first; deleted in round 2.
   - Briefing simplified for a single tool: `AGENTS.md` folded into `CLAUDE.md` and deleted; `.cursor/` and `.vscode/` deleted; `README.md` shortened; this file rewritten. `docs/0-START-HERE.txt` and `docs/_build/READING-EDITION.md` lost their branch/worktree wording.
   - Stale worktree registration pruned. Old build logs in `docs/_build/` removed.
   - Both PDF pipelines were run from the new location and succeeded: `docs/_build/build.sh` (five plain PDFs, 16 s) and `docs/_build/build.sh reading` (five colorful editions, 21 s, diagrams rendered via Chrome). The test builds were then discarded and the committed PDFs kept, since no PDF source changed and `output/validation/verification.json` records their hashes.
@@ -33,12 +38,11 @@ Nothing in flight. Milestone M0, reading stage. Waiting for Siddharth.
 - One tool: Claude Code. One folder: `/Users/siddharth/Desktop/Valuation`. One branch: `main`. No worktrees or side branches unless he asks.
 - `CLAUDE.md` is the briefing. This file is the live state. Do not add a third instruction file (`AGENTS.md`, `CODEX.md`, `CONTINUE.md`, or the like).
 - Commit on `main` when a chunk is done. Do not leave finished work uncommitted for days.
-- `docs/plan.md` is not in this folder. Use `docs/plan-explained/`. Do not invent `docs/plan.md`.
+- `docs/plan.md` is the full plan (v4). Document 5 restates it; when they differ, `docs/plan.md` wins. Change it only when he changes the plan. `docs/sources/` are frozen inputs.
 - Estimates, not advice. No buy, sell, hold, or target price.
 - Markdown is the source; PDFs are built copies. Edit the markdown, then rebuild.
 
 ## Blocked / wait-for-Siddharth
 
 - "Go" (after he has read PDF 1 and PDF 2).
-- Whether to delete the frozen `dev` and `dev2` branches. Not needed; harmless to keep.
 - Watchlist names and free-account yes/no are later (M2 and M1). Not now.

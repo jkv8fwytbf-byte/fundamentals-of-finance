@@ -1,0 +1,484 @@
+SURVEY 1: report chars=38029 key_facts=23 open_q=8
+SURVEY 2: report chars=24962 key_facts=25 open_q=8
+SURVEY 3: report chars=28448 key_facts=23 open_q=8
+SURVEY 4: report chars=23184 key_facts=20 open_q=7
+SURVEY 5: report chars=38634 key_facts=31 open_q=7
+
+============================== SURVEY 1: MODEL SCHEMA ==============================
+## 0. Sources actually read
+
+| What | Path |
+|---|---|
+| Values-only MD mirror (primary) | `/Users/siddharth/Downloads/financeMD/damodaran/pc/fcffsimpleginzu.md` (1187 lines, 17 sheets) |
+| **Live formulas** (authoritative) | `/Users/siddharth/Downloads/finance-and-valuation/damodaran/pc/fcffsimpleginzu.xlsx` — streamed `xl/worksheets/sheet1..17.xml` + `xl/sharedStrings.xml` via `zipfile` in-memory (no extraction) |
+| Full ginzu | `/Users/siddharth/Downloads/financeMD/damodaran/pc/fcffginzu.md` (15 sheets) |
+| Corona variant (values + formulas) | `.../financeMD/damodaran/pc/fcffsimpleginzuCorona.md`, `.../finance-and-valuation/damodaran/pc/fcffsimpleginzuCorona.xlsx` (15 sheets) |
+| Rating table key | `/Users/siddharth/Downloads/financeMD/damodaran/pc/ratings.md` |
+| India data | `/Users/siddharth/Downloads/financeMD/damodaran/pc/datasets/{wacc,capex,margin,beta,histgr,taxrate,EVA}India.md`; raw in `damodaran-data-01.zip` / `-02.zip` under `data-current/` |
+
+**`SpreadsheetGuide.md` is NOT Damodaran** — it is a Tykoh Group "Spreadsheet Skills and Modelling" guide (66 sheets). Ignore it for this task.
+
+Sheet → XML map (needed to re-extract): `sheet1`=Input sheet, `sheet2`=Valuation output, `sheet3`=Stories to Numbers, `sheet4`=Valuation as picture, `sheet5`=Diagnostics, `sheet6`=Option value, `sheet7`=Synthetic rating, `sheet8`=R&D converter, `sheet9`=Operating lease converter, `sheet10`=Cost of capital worksheet, `sheet11`=Failure Rate worksheet, `sheet12`=Country equity risk premiums, `sheet13`=Industry Averages(US), `sheet14`=Industry Averages (Global), `sheet15`=Input Stat Distributioons, `sheet16`=Trailing 12 month, `sheet17`=Answer keys. Workbook has `<calcPr iterate="1"/>` — **circular references are intentional** (equity value ↔ cost of capital via the option/market-value loop).
+
+Live example in the file: **Almarai**, Saudi Arabia, Food Processing, valuation date 2026-02-01, riskfree 4.58%, mature-market ERP 4.23% (dated Jan 1, 2026).
+
+---
+
+## 1. COMPLETE INPUT SCHEMA — `Input sheet` (sheet1)
+
+Legend: **I** = pure user input; **P** = pre-filled with a formula but *designed to be overwritten* (Damodaran's "default you can override"); **C** = computed, never type here.
+
+### 1.1 Identity & lookup keys
+| Cell | Label | Example | Units | Kind | Feeds / validated against |
+|---|---|---|---|---|---|
+| B3 | Date of valuation | 2026-02-01 | date (note: workbook is `date1904="1"`) | I | display only (`Stories to Numbers`!G1) |
+| B4 | Company name | Almarai | text | I | display only |
+| B7 | Country of incorporation | Saudi Arabia | enum, 192 rows | I | dropdown = `'Country equity risk premiums'!$A$5:$A$196`; → `Synthetic rating` country default spread `VLOOKUP(B7, CERP!A5:C196, 3)`; → optional ERP `VLOOKUP(B7, CERP!A5:E195, 4)` |
+| B8 | Industry (US) | Food Processing | enum, 94 rows | I | `'Industry Averages(US)'!A2:AA95` (revenue growth, margin, ROC, unlevered beta, σ, cost of capital, sales/capital, EV/Sales) |
+| B9 | Industry (Global) | Food Processing | enum, 94 rows | I | `'Industry Averages (Global)'!A2:AA95` **and** `'Input Stat Distributioons'!$A$3:$T$96` (quartiles) |
+
+### 1.2 Base-year financials — two columns: **B = Most Recent 12 months (LTM)**, **C = Last 10K before LTM**
+| Cell | Label | Example (B / C) | Units | Kind | Notes |
+|---|---|---|---|---|---|
+| B11 / C11 | Revenues | 21765.4 / 20979.5 | currency, consistent units (millions) | I | |
+| D11 | Years since last 10K | 0.5 | years | I | only used in `I25 = (B11/C11)^(1/D11)-1` |
+| B12 / C12 | Operating income or EBIT | 3060.9 / 3064.1 | currency | I | pre-R&D/lease adjustment |
+| B13 / C13 | Interest expense | 493.4 / 562.7 | currency | I | → `Cost of capital`!B31 → synthetic rating coverage |
+| B14 / C14 | Book value of equity | 10667.8 / 13111.1 | currency | I | → invested capital, → distress proceeds if "B" |
+| B15 / C15 | Book value of debt | 45063 / 44544 | currency | I | → invested capital, → debt subtracted, → `Cost of capital`!B30 |
+| B16 | Do you have R&D expenses to capitalize? | No | Yes/No | I | Yes → must fill `R& D converter` |
+| B17 | Do you have operating lease commitments? | No | Yes/No | I | Yes → must fill `Operating lease converter`. **Post-2019 IFRS/GAAP warning in the sheet: do not use if the accountant already capitalised leases — double counting.** |
+| B18 / C18 | Cash and Marketable Securities | 19000 / 13663 | currency | I | |
+| B19 / C19 | Cross holdings & other non-operating assets | 21119 / 21644 | currency | I | |
+| B20 / C20 | Minority interests | 1558 / 1539 | currency | I | |
+| B21 | Number of shares outstanding | 4315 | share count, same units as currency | I | |
+| B22 | Current stock price | 72.28 | currency/share | I | |
+| B23 | Effective tax rate | 0.175 | decimal | I | year 1–5 tax rate |
+| B24 | Marginal tax rate | 0.25 | decimal | I | terminal tax rate + after-tax cost of debt |
+
+### 1.3 The five value-driver "levers"
+| Cell | Label | Example | Units | Kind | Default source |
+|---|---|---|---|---|---|
+| B26 | Revenue growth rate for next year | 0.05 | decimal | **I** | "Growth Lever – Next year" |
+| B27 | Operating Margin for next year | 0.14063 | decimal | **P** `={I26}` | = base-year margin `'Valuation output'!B4`. "Profitability Lever – Next year" |
+| B28 | Compounded annual revenue growth, years 2–5 | 0.05 | decimal | **P** `={B26}` | "Growth Lever – Long term" |
+| B29 | Target pre-tax operating margin | 0.14063 | decimal | **P** `={B27}` | "Profitability Lever – Long term" |
+| B30 | Year of convergence for margin | 5 | integer year 1–10 | **I** | "Speed of convergence lever" |
+| B31 | Sales to capital ratio (years 1–5) | 1.70854 | ratio | **P** `={K27}` | = **Global** industry average Sales/Capital (`VLOOKUP(B9,'Industry Averages (Global)'!A2:N95,14)`). "Efficiency of Growth Lever" |
+| B32 | Sales to capital ratio (years 6–10) | 1.70854 | ratio | **P** `={B31}` | |
+
+### 1.4 Market numbers
+| Cell | Label | Example | Units | Kind | Notes |
+|---|---|---|---|---|---|
+| B34 | Riskfree rate | 0.0458 | decimal | **I** | **currency-defining input**; also the default perpetuity growth rate |
+| B35 | Initial cost of capital | 0.070550 | decimal | **C** `={'Cost of capital worksheet'!B13}` | sheet explicitly says "Do not input. Go to cost of capital sheet." |
+
+### 1.5 Employee options
+| Cell | Label | Example | Units | Kind |
+|---|---|---|---|---|
+| B37 | Do you have employee options outstanding? | No | Yes/No | I |
+| B38 | Number of options outstanding | 7.72 | count | I |
+| B39 | Average strike price | 1.29 | currency/share | I |
+| B40 | Average maturity | 7 | years | I |
+| B41 | Standard deviation on stock price | 0.45 | decimal (annualised σ) | I |
+
+### 1.6 The nine "Default assumptions" (Damodaran's explicit override blocks)
+Each is a Yes/No switch + a value that is only read if the switch = "Yes".
+
+| # | Switch | Value cell(s) | Example | Default behaviour if "No" | Consumed at |
+|---|---|---|---|---|---|
+| 1 | B45 stable cost of capital | B46 (`={B35}`) | 0.07055 | terminal COC = `riskfree + mature-market ERP` = `B34 + 'Country equity risk premiums'!B1` = 4.58%+4.23% = **8.81%** | `Valuation output`!M12 |
+| 2 | B48 stable return on capital | B49 | 0.15 | stable ROC = year-10 cost of capital (`'Valuation output'!L12`) → excess returns fade to zero | `Valuation output`!M40 |
+| 3 | B51 probability of failure | B52 | 0.12 | 0% failure | `Valuation output`!B22 |
+| 3b | — | B53 proceeds tied to | "V" | enum {`B`=book value of capital, `V`=estimated fair value}; **always read**, not gated | `Valuation output`!B23 |
+| 3c | — | B54 distress proceeds % | 0.5 | fraction of B or V; **always read** | `Valuation output`!B23 |
+| 4 | B56 reinvestment lag | B57 | 1 | lag = 1 year (reinvest in t → growth in t+1) | `Valuation output`!C8:L8 |
+| 5 | B59 tax-rate convergence | — (no value cell) | — | effective (B23) grades linearly to marginal (B24) over years 6–10; if "Yes" the rate **stays at effective** forever | `Valuation output`!M6 |
+| 6 | B61 NOL carryforward | B62 | 731.4 (`={474.8+256.6}`) | NOL = 0 | `Valuation output`!B10 |
+| 7 | B64 riskfree after year 10 | B65 | 0.02 | today's riskfree prevails forever | `Valuation output`!M2 and M12 |
+| 8 | B67 growth in perpetuity | B68 | -0.05 | g∞ = riskfree (B34, or B65 if #7 = Yes) | `Valuation output`!M2 |
+| 9 | B70 trapped cash | B71 amount, B72 foreign tax rate | 140000 / 0.15 | cash is a neutral asset, added at face | `Valuation output`!B27 |
+
+Note the **label/formula mismatch on #1**: the text says "riskfree rate + 4.5%" but the formula adds `'Country equity risk premiums'!B1` = the mature-market ERP of the vintage (4.23% for Jan-2026). Code the formula, not the label.
+
+### 1.7 Read-only feedback block on the Input sheet (columns E–N, rows 23–36)
+Six comparison rows, company vs US industry vs Global industry vs global quartiles:
+
+| Row | Metric | Company (col I) | Industry US (J) | Industry Global (K) | 1stQ/Med/3rdQ (L/M/N) |
+|---|---|---|---|---|---|
+| 25 | Revenue growth, most recent year | `IF(C11>0,(B11/C11)^(1/D11)-1,"NA")` | `VLOOKUP(B8,IA_US,3)` | `VLOOKUP(B9,IA_GL,3)` | `VLOOKUP(B9,StatDist,3/4/5,FALSE)` |
+| 26 | Pre-tax operating margin | `'Valuation output'!B4` | col 4 | col 4 | cols 6/7/8 |
+| 27 | Sales to capital | `B11/'Valuation output'!B39` | col 14 | col 14 | cols 9/10/11 |
+| 28 | Marginal sales to capital | `ΔRev / Δ(BVE+BVD−Cash)` (if >0 else "NA") | — | — | — |
+| 29 | ROIC most recent year | `'Valuation output'!B7/'Valuation output'!B39` | col 5 | col 5 | — |
+| 30 | Std dev in stock prices | — | col 10 | col 10 | — |
+| 31 | Cost of capital | `={B35}` | col 13 | col 13 | cols 12/13/14 |
+| 34/35/36 | Year-10 revenue / EBIT / ROIC | `'Valuation output'!M3 / M5 / L40` | | | |
+
+---
+
+## 2. COMPUTATION CHAIN — `Valuation output` (sheet2), exact formulas
+
+Grid: col **B** = Base year, **C…L** = years 1…10, **M** = Terminal year, **N** = aggregates. Rows below are the real row numbers.
+
+### 2.1 Base-year restatement (row 5, 39)
+```
+EBIT_0  (B5)  = Input!B12
+                + (Input!B17="Yes" ? 'Operating lease converter'!F32 : 0)     ' lease op-income add-back
+                + (Input!B16="Yes" ? 'R& D converter'!D39 : 0)                ' R&D expense − amortization
+Margin_0(B4)  = B5 / B3                    ; B3 = Input!B11 (LTM revenues)
+InvCap_0(B39) = Input!B14 + Input!B15 − Input!B18
+                + (lease ? 'Operating lease converter'!F33 : 0)               ' debt value of leases
+                + (R&D  ? 'R& D converter'!D35 : 0)                           ' value of research asset
+ROIC_0  (B40) = B7 / B39
+EBIT(1-t)_0 (B7) = IF(B5>0, B5*(1−B6), B5)  ; B6 = Input!B23 (effective tax rate)
+```
+
+### 2.2 Revenue growth → revenues (rows 2–3)
+```
+g1  (C2) = Input!B26
+g2..g5   = Input!B28                      (D2 = Input!B28, E2=D2, F2=E2, G2=F2)
+g6..g10  (H2..L2) = g5 − (g5 − g_T)/5 * k,  k = 1..5      → g10 = g_T exactly
+g_T (M2) = IF(Input!B67="Yes", Input!B68,
+            IF(Input!B64="Yes", Input!B65, Input!B34))     ' perpetuity growth = riskfree by default
+Rev_t = Rev_{t-1} * (1 + g_t)             ; Rev_T (M3) = Rev_10 * (1+g_T)
+```
+
+### 2.3 Operating margin (row 4) — linear convergence
+```
+m1 (C4) = Input!B27
+for t = 2..10:
+  m_t = IF( t > Y_conv, m_target,
+            m_target − ((m_target − m1)/Y_conv) * (Y_conv − t) )
+  where m_target = Input!B29, Y_conv = Input!B30
+m_T (M4) = m_10
+EBIT_t (row5) = m_t * Rev_t
+```
+
+### 2.4 Tax rate (row 6) and NOL (rows 7, 10)
+```
+t_1..t_5 = Input!B23 (effective)
+t_6..t_10 (H6..L6) = t_{prev} + (t_T − t_5)/5            → t_10 = t_T
+t_T (M6) = IF(Input!B59="Yes", Input!B23, Input!B24)     ' default: converge to marginal
+NOL_0 (B10) = IF(Input!B61="Yes", Input!B62, 0)
+NOL_t (C10) = IF(EBIT_t < 0, NOL_{t-1} − EBIT_t,
+                 IF(NOL_{t-1} > EBIT_t, NOL_{t-1} − EBIT_t, 0))
+EBIT(1-t)_t (row7) = IF(EBIT_t > 0,
+                        IF(EBIT_t < NOL_{t-1}, EBIT_t,             ' fully shielded
+                           EBIT_t − (EBIT_t − NOL_{t-1}) * t_t),
+                        EBIT_t)                                     ' losses untaxed
+EBIT(1-t)_T (M7) = EBIT_T * (1 − t_T)      ' NOL ignored in terminal year
+```
+
+### 2.5 Reinvestment via sales-to-capital (row 8) — the lag switch
+```
+s2c_t (row38) = Input!B31 for t = 1..5 ; Input!B32 for t = 6..10
+lag = IF(Input!B56="No", 1, Input!B57)          ' values 0,1,2,3
+
+Reinv_t = (Rev_{t+lag} − Rev_{t+lag-1}) / s2c_t        ' default lag=1 → (Rev_{t+1} − Rev_t)/s2c_t
+   (Excel writes the four branches explicitly; for t=9,10 with lag=2/3 it degenerates to
+    K8: Rev_T * g_T / s2c ; L8: Rev_T * g_T / s2c ; L8(lag=3): K8*(1+g_T))
+
+Reinv_T (M8) = IF(g_T > 0, (g_T / ROC_stable) * EBIT(1-t)_T, 0)    ' reinvestment rate = g/ROC
+N8 = SUM(C8:M8)                                                    ' cumulated reinvestment
+
+FCFF_t (row9) = EBIT(1-t)_t − Reinv_t ;  FCFF_T (M9) = M7 − M8
+InvCap_t (row39) = InvCap_{t-1} + Reinv_t
+ROIC_t   (row40) = EBIT(1-t)_t / InvCap_{t-1}
+ROC_stable (M40) = IF(Input!B48="Yes", Input!B49, L12)             ' = year-10 cost of capital
+```
+**No floor on reinvestment** in the 2026 sheet — it can go negative when revenues shrink.
+
+### 2.6 Cost of capital path (row 12–13)
+```
+WACC_1..WACC_5 (C12..G12) = Input!B35 = 'Cost of capital worksheet'!B13
+WACC_6..WACC_10 (H12..L12) = WACC_{prev} − (WACC_5 − WACC_T)/5      → WACC_10 = WACC_T
+WACC_T (M12) = IF(Input!B45="Yes", Input!B46,
+                  IF(Input!B64="Yes", Input!B65 + CERP!B1,
+                                      Input!B34 + CERP!B1))          ' rf + mature-market ERP
+CumDF_1 (C13) = 1/(1+WACC_1) ;  CumDF_t = CumDF_{t-1} * 1/(1+WACC_t)
+PV(FCFF)_t (row14) = FCFF_t * CumDF_t
+```
+
+**`Cost of capital worksheet` (sheet10) — how B13 is produced.** Four selectable approaches (`B11` ∈ {`I will input`, `Detailed`, `Industry Average`, `Distribution`}):
+```
+B13 = IF(B11="I will input", B12,
+      IF(B11="Detailed",      E62,
+      IF(B11="Industry Average", B67, B72)))
+```
+*Approach "Detailed" (used in the file, result 7.0550%):*
+```
+Shares B18 = Input!B21 ;  Price B19 = Input!B22
+Unlevered beta B23 = switch(B21):
+   "Direct input"            -> B22 (regression/levered beta used directly at B57)
+   "Single Business(US)"     -> VLOOKUP(Input!B8, IA_US!A2:G95, 7)
+   "Single Business(Global)" -> VLOOKUP(Input!B9, IA_GL!A2:G95, 7)
+   "Multibusiness(US)"       -> K48   (EV/Sales-weighted blend, grid G36:L47)
+   "Multibusiness(Global)"   -> K64   (grid G52:L63)
+Riskfree B24 = Input!B34
+ERP B27 = switch(B25):
+   "Will Input"              -> B26
+   "Country of Incorporation"-> VLOOKUP(Input!B7, CERP!A5:E195, 4)
+   "Operating countries"     -> K18  = Σ(ERP_i * Rev_i/ΣRev), ERP_i=VLOOKUP(country,CERP!A5:D196,4)
+   "Operating regions"       -> K32  = Σ(ERP_r * Rev_r/ΣRev), ERP_r = CERP!B201:B209 + 2 free rows
+Pre-tax cost of debt B37 = switch(B33):
+   "Direct input"    -> B34
+   "Synthetic Rating"-> 'Synthetic rating'!D16
+   "Actual rating"   -> B24 + VLOOKUP(B35, 'Synthetic rating'!G42:H56, 2)
+Tax rate B38 = Input!B24 (marginal)
+MV of straight debt C53 = B31*(1−(1+B37)^(−B32))/B37 + B30/(1+B37)^B32      ' annuity, B32 = avg maturity
+Convertible straight-debt part C54 = same formula on B41/B40/B42 ; equity part B56 = B43 − C54
+Lease debt C55 = IF(Input!B17="Yes",'Operating lease converter'!F33,0)
+Levered beta C57 = IF(B21="Direct input", B22, B23*(1 + (1−B38)*(C60/B60)))   ' Hamada, D/E at market
+MV row 60: E = B18*B19 (equity) | C53+C54+C55 (debt) | B48*B49 (preferred) | sum
+Weights row 61 = component / total
+Costs  row 62: Ke = B24 + C57*B27 ; Kd(after tax) = B37*(1−B38) ; Kp = B50/B49
+WACC   E62 = We*Ke + Wd*Kd + Wp*Kp
+```
+*Approach "Industry Average" (B67):* industry cost of capital from IA table col 13 **plus a riskfree-rate differential** `+ (Input!B34 − 4.58%)` — 4.58% is the hard-coded US$ riskfree of that vintage. This is the currency/date conversion hook.
+*Approach "Distribution" (B70/B71/B72):* `VLOOKUP(region, A75:F79, {First Decile|First Quartile|Median|Third Quartile|Ninth Decile})` over regions {Emerging, Europe, Global, Japan, US}; same `+ (rf − 4.58%)` adjustment applies in spirit (values are US$-based, stated in the sheet note).
+
+**`Synthetic rating` (sheet7) — cost of debt:**
+```
+firm_type  = 'Cost of capital worksheet'!B36        ' 1 = large manufacturing, 2 = smaller/riskier, 3 = financial service
+EBIT_sr    = Input!B12 + (lease ? 'Operating lease converter'!F32 : 0)
+IntExp_sr  = 'Cost of capital worksheet'!B31 + (lease ? OLC!C28 * OLC!C15 : 0)
+rf         = Input!B34
+coverage   = IF(IntExp=0, 1000000, IF(EBIT<0, −100000, EBIT/IntExp))
+rating     = VLOOKUP(coverage, table(firm_type), 3)   ' lookup is "greater than" banded, ascending
+spread     = VLOOKUP(coverage, table(firm_type), 4)
+ctry_spread= VLOOKUP(Input!B7, CERP!A5:C196, 3)       ' Adj. Default Spread of country of incorporation
+cost_of_debt = rf + spread + ctry_spread
+```
+Almarai example: coverage = 3060.9/493.4 = 6.2037 → band (5.5, 6.499999] → **A1/A+**… *(the sheet reports A2/A because `firm_type = 2` uses the smaller/riskier table: band (6, 7.499999] → A2/A, spread 0.7751%)*; + Saudi country spread 0.51% + rf 4.58% = **5.8651%**.
+
+### 2.7 Terminal value → equity → per share (rows 16–35)
+```
+B16 Terminal cash flow      = M9                         = 1855.228
+B17 Terminal cost of capital= M12                        = 0.0881
+B18 Terminal value          = B16 / (B17 − M2)           = 43858.82      ' Gordon on FCFF_T
+B19 PV(Terminal value)      = B18 * L13                  = 21122.99      ' year-10 cumulated DF
+B20 PV(CF next 10 years)    = SUM(C14:L14)               = 16394.54
+B21 Sum of PV               = B19 + B20                  = 37517.53
+B22 Probability of failure  = IF(Input!B51="Yes", Input!B52, 0)
+B23 Proceeds if firm fails  = IF(Input!B53="B", (Input!B14+Input!B15)*Input!B54,
+                                                 B21 * Input!B54)
+B24 Value of operating assets = B21*(1−B22) + B23*B22
+B25 − Debt                  = Input!B15 + (lease ? 'Operating lease converter'!C28 : 0)
+B26 − Minority interests    = Input!B20
+B27 + Cash                  = IF(Input!B70="YES", Input!B18 − Input!B71*(Input!B24 − Input!B72),
+                                                   Input!B18)
+B28 + Non-operating assets  = Input!B19
+B29 Value of equity         = B24 − B25 − B26 + B27 + B28
+B30 − Value of options      = IF(Input!B37="No", 0, 'Option value'!B29)
+B31 Equity in common stock  = B29 − B30
+B32 Number of shares        = Input!B21
+B33 Estimated value / share = B31 / B32                  = 7.18784
+B34 Price                   = Input!B22
+B35 Price as % of value     = B34 / B33                  = 10.0559
+```
+All arithmetic reproduced exactly against the stored values.
+
+### 2.8 Option value (sheet6) — dilution-adjusted Black-Scholes, circular
+```
+S=Input!B22, K=Input!B39, T=Input!B40, σ=Input!B41, q=0 (local input B8), r=Input!B34
+nW=Input!B38, nS=Input!B21
+Adjusted S (B17) = (S*nS + V_total_options*nW) / (nS + nW)     ' B17 = (B15*D16 + B28*D15)/(D16+D15)  <-- circular, needs iteration
+Variance D18 = σ^2 ; r_adj D20 = r − q
+d1 = (ln(S*/K) + (r−q + var/2)*T) / (sqrt(var)*sqrt(T))
+d2 = d1 − sqrt(var)*sqrt(T)
+Value/option (B28) = e^(−qT)*S*·N(d1) − K·e^(−rT)·N(d2)
+Value of all options (B29) = B28 * nW
+```
+The circular `Adjusted S` is exactly why `iterate="1"` is required. Reimplementation: fixed-point iterate B17 until convergence.
+
+---
+
+## 3. LOOKUP TABLES AND THEIR COLUMNS
+
+### 3.1 `Industry Averages(US)` (sheet13) and `Industry Averages (Global)` (sheet14) — identical schema, 94 industries each, data rows A2:AA95, keyed on industry name (exact string)
+| # | Column | Used by |
+|---|---|---|
+| 1 | Industry Name | key |
+| 2 | Number of firms | |
+| 3 | Annual Average Revenue growth – Last 5 years | Input!J25/K25, Diagnostics!B3 |
+| 4 | Pre-tax Operating Margin (Unadjusted) | Input!J26/K26 |
+| 5 | After-tax ROC | Input!J29/K29 |
+| 6 | Average effective tax rate | |
+| **7** | **Unlevered Beta** | `Cost of capital`!B23, multi-business K48/K64 |
+| 8 | Equity (Levered) Beta | |
+| 9 | Cost of equity | |
+| **10** | **Std deviation in stock prices** | Input!J30/K30 |
+| 11 | Pre-tax cost of debt | |
+| 12 | Market Debt/Capital | |
+| **13** | **Cost of capital** | Input!J31/K31, `Cost of capital`!B67, L48/L64 |
+| **14** | **Sales/Capital** | Input!J27/K27 → **default for Input!B31** |
+| **15** | **EV/Sales** | multi-business business-value weights (I36:I47, I52:I63) |
+| 16–19 | EV/EBITDA, EV/EBIT, Price/Book, Trailing PE | not used by the DCF |
+| 20–26 | Non-cash WC % Rev, CapEx % Rev, Net CapEx % Rev, Reinvestment Rate, ROE, Dividend Payout, Equity Reinvestment Rate | reference only |
+| 27 | Pre-tax Operating Margin (Lease & R&D adjusted) | reference only |
+
+### 3.2 `Country equity risk premiums` (sheet12)
+- **B1 = Mature Market ERP = 0.0423**, "Updated January 1, 2026". Changing B1 re-derives every country ERP **and** the terminal cost of capital.
+- Country table **A5:F196 (192 countries)**: `Country | Moody's rating | Adj. Default Spread | Equity Risk Premium (= $B$1 + CRP) | Country Risk Premium | Corporate Tax Rate`.
+  - Lookups used: col 3 (default spread → synthetic rating), col 4 (ERP). **Col 6 (Corporate Tax Rate) is never referenced by any formula — informational only.**
+- Region table **A201:F210 (rows 201–209 wired into the COC region calculator + row 210 "Global")**: `Region | ERP | Weighted Average: Default Spread | Tax Rate | Weighted Average: CRP | Total GDP ($m)`. Regions: Africa, Asia, Australia & New Zealand, Caribbean, Central and South America, Eastern Europe, Middle East, North America, Western Europe, Global.
+- A third, smaller grouping table below it (`ERP | Default Spread | Tax rate | CRP`): Africa & Mid East, Australia/NZ & Canada, Latin America & Caribbean, Japan, US, Europe, Emerging Markets, Small Asia (No India/China/Japan), **India**, China, Global; plus "For other regional groupings" (EMEA etc.).
+
+### 3.3 `Input Stat Distributioons` (sheet15) — 94 industry groups, A3:T96, keyed on **Global** industry name, `VLOOKUP(..., FALSE)` exact match
+| Cols | Block |
+|---|---|
+| 1–2 | Industry Group, count |
+| 3–5 | Revenue Growth Rate (last 3 yrs): 1stQ / Median / 3rdQ |
+| 6–8 | Pre-tax Operating Margin: 1stQ / Median / 3rdQ |
+| 9–11 | Sales to Invested Capital: 1stQ / Median / 3rdQ |
+| 12–14 | Cost of Capital: 1stQ / Median / 3rdQ |
+| 15–17 | Beta: 1stQ / Median / 3rdQ |
+| 18–20 | Debt to Capital Ratio: 1stQ / Median / 3rdQ |
+
+### 3.4 `Synthetic rating` (sheet7) rating tables
+Three interest-coverage → (rating, spread) tables, all "greater than / ≤ to" banded, 15 bands each:
+- **A22:D36** — `firm_type = 1`, large manufacturing/non-financial (bands −100000→0.2→0.65→0.8→1.25→1.5→1.75→2→2.25→2.5→3→4.25→5.5→6.5→8.5→100000)
+- **A41:D55** — `firm_type = 2`, smaller & riskier (bands −100000→0.5→0.8→1.25→1.5→2→2.5→3→3.5→4→4.5→6→7.5→9.5→12.5→100000)
+- **F22:I36** — `firm_type = 3`, financial service firms (per `ratings.md`: bands 0.05/0.1/0.2/0.3/0.4/0.5/0.6/0.75/0.9/1.2/1.5/2/2.5/3)
+- **G42:H56** — flat rating→spread map used when the user supplies an *actual* rating (unsorted; 16 ratings Aaa/AAA … D2/D)
+2026 spreads: Aaa/AAA 0.400%, Aa2/AA 0.5506%, A1/A+ 0.7003%, A2/A 0.7751%, A3/A- 0.8872%, Baa2/BBB 1.1113%, Ba1/BB+ 1.3828%, Ba2/BB 1.8395%, B1/B+ 2.7531%, B2/B 3.2098%, B3/B- 5.0899%, Caa/CCC 8.85%, Ca2/CC 12.6101%, C2/C 16%, D2/D 19%.
+Sheet warning: negative EBIT yields a D rating — **do not** use it as a going-concern cost of debt; substitute BB.
+
+### 3.5 `Failure Rate worksheet` (sheet11) — **reference only, zero formula links**
+- *Approach 1, ratings:* cumulative default probability by rating × horizon 1–10 yrs. Rows AAA, AA, A, BBB, BB, B, CCC/C. (e.g. BB 10-yr = 11.78%, CCC/C 10-yr = 50.38%.)
+- *Approach 2, corporate age:* BLS (2022) failure rate by age 0–10 across Agriculture, Mining, Utilities, Construction, Manufacturing, Retail, Transportation, Information, Health Care, All Sectors — plus the mirrored survival-rate block.
+- Four qualitative adjustments listed (size, access to capital, revenue growth, unit economics).
+The user reads a number off this sheet and types it into `Input!B52`.
+
+### 3.6 `Answer keys` (sheet17) — the enum domains, verbatim
+| Col | Domain | Values |
+|---|---|---|
+| A | Yes/No | Yes, No |
+| B | Book or Market Value | B, V |
+| C | ERP choices | Will input, Country of incorporation, Operating countries, Operating regions |
+| D | Cost of debt | Direct input, Synthetic rating, Actual rating |
+| E | Synthetic rating firm type | 1, 2, 3 |
+| F | Beta | Direct input, Single Business(US), Single Business(Global), Multibusiness(US), Multibusiness(Global) |
+| G | Rating is | Aaa/AAA, Aa2/AA, A1/A+, A2/A, A3/A-, Baa2/BBB, Ba1/BB+, Ba2/BB, B1/B+, B2/B, B3/B-, C2/C, Ca2/CC, Caa/CCC, D2/D |
+| H | Region (distribution) | First Decile, First Quartile, Median, Third Quartile, Ninth Decile |
+| I | Cost of Capital Approach | I will input, Detailed, Industry Average, Distribution |
+| J | Reinvestment lag | 0, 1, 2, 3 |
+
+### 3.7 Converters (both optional, gated by Input!B16 / B17)
+**`R& D converter` (sheet8):** inputs `F6` amortization years (≤10, default from lookup table `A44:B137` industry → amortizable life, e.g. Advertising 2, Aerospace/Defense 10), `F7` current-year R&D, `B11:B20` prior-year R&D. Outputs: `D35` Value of Research Asset = Σ(R&D_i × unamortized fraction (F6+year)/F6); `D37` current-year amortization; **`D39` Adjustment to Operating Income = F7 − D37**; `D40` tax effect = D39 × marginal tax rate.
+**`Operating lease converter` (sheet9):** inputs `E4` current lease expense, `B7:B12` commitments years 1–5 and "6 and beyond". `C15` pre-tax cost of debt = `'Cost of capital worksheet'!B37`. `D18` years embedded in yr-6 = `ROUND(B12/AVERAGE(B7:B11),0)`. `C28` Debt Value of leases = Σ PV; yr-6+ discounted as an annuity of `B12/D18` for `D18` years, then discounted 5 more years. `F31` depreciation = `C28/(5+D18)`; **`F32` Adjustment to Operating Earnings = E4 − F31**; **`F33` = C28** (debt add-back).
+
+### 3.8 `Trailing 12 month Worskheet` (sheet16) — standalone, **not wired to the Input sheet**
+Columns `Last Annual | First X months: Last year | First X months: Current year | Trailing 12 month`, with `E = B − C + D` for Revenues, Operating income, Interest expense, and effective tax rate = tax/pre-tax income. Instruction cells say "Copy into …". Manual paste.
+
+---
+
+## 4. DIAGNOSTICS / SANITY CHECKS (`Diagnostics`, sheet5)
+
+Six steps, each pairing computed numbers with hard questions:
+
+| Step | Row | Comparison it puts side by side | Formula |
+|---|---|---|---|
+| 1 Revenue growth | 3 | Industry Avg \| Most Recent yr \| Next yr \| Years 2-5 | `Input!J25`, `Input!I25`, `VO!C2`, `VO!D2` |
+| 2 Dollar revenues | 7 | Most Recent \| Next yr \| Year 5 \| Year 10 | `VO!B3, C3, G3, L3` — "how big is the total market, what share are you implying in year 10?" |
+| 3 Margins | 12 | Most Recent \| Next yr \| Year 5 \| Year 10 | `VO!B4, C4, G4, M4` |
+| 4 Reinvestment | 17 | Sales/Capital: Most Recent \| Next yr \| Yr 5 \| Yr 10 | `Input!I27`, `VO!C38, G38, L38` |
+| 4b Reinvestment drag | 21–23 | PV of after-tax op income (10y) = `Σ EBIT(1-t)_t × CumDF_t` = 21877.6 (100%); Value effect of reinvestment = `B21 − B23` = 5483.1 (25.06%); PV of FCFF = `VO!B20` = 16394.5 (74.94%) | shows what share of operating cash the growth consumes |
+| 4c ROC ladder | 27 | Most recent \| **Marginal (1-10)** \| ROC yr 10 \| Stable ROC | marginal ROC = `(VO!L7 − VO!B7)/(VO!L39 − VO!B39)` = 0.14499 — the key "is the growth worth it" test |
+| 5 Risk | 31 | Industry Avg \| **Compounded** \| Year 1-5 \| Stable | compounded WACC = `(1/VO!L13)^(1/10) − 1` = 0.075797 |
+| 5b | 33 | Failure Rate | `VO!B22` |
+| 6 Price vs value | 36–37 | `value/price = VO!B33 / VO!B34` and a verdict string | `IF(=="NA","Value is negative. See below", IF(>2,"Value seems high. See below", IF(<0.5,"Value seems low. See below"," ")))` |
+| 6b | 39–42 | Fix-it matrix: for each of revenue growth (B25/B27), operating margin (B26/B28), sales-to-capital (B30-B32), perpetuity ROC (B48/B49) — what to raise if value too low, what to lower if too high | plain text; note the cell references in the labels are **stale by one row** vs the actual 2026 cells (B26/B28, B27/B29, B31/B32, B48/B49) |
+
+There are **no hard validations** (no blocking assertions, no `IFERROR` guards). The guard rails are (a) the `Answer keys` dropdowns, (b) the comparison columns on the Input sheet, (c) Diagnostics, (d) free-text warnings ("If you get REF! all over…", "If you get Value Errors all over, go to Option value B17…"). A reimplementation should convert these into real assertions.
+
+---
+
+## 5. SIMPLE GINZU vs FULL GINZU vs CORONA
+
+| Dimension | `fcffsimpleginzu` (2026, 17 sheets) | `fcffginzu` (full, 2024 Eli Lilly example, 15 sheets) | `fcffsimpleginzuCorona` (2020-03-27 Boeing, 15 sheets) |
+|---|---|---|---|
+| Growth driver | **Revenue growth is the primitive**; margin & sales-to-capital derive EBIT and reinvestment | **Operating income growth from fundamentals**: `g = ROC × Reinvestment Rate`, or direct input. Explicit CapEx, Depreciation, ΔWorking Capital lines | same as simple ginzu |
+| Reinvestment | `ΔRevenue / sales-to-capital`, two s2c bands (yrs 1–5 `B31`, yrs 6–10 `B32`), lag switch 0–3 (default 1) | CapEx − Depreciation + ΔNon-cash WC; WC as % of revenues input; stable-growth reinvestment from ROC or CapEx/Depreciation ratio | **single** s2c ratio, **no lag** (contemporaneous), and **floored at zero in year 1**: `C8 = IF(C3>B3,(C3−B3)/Input!B28,0)`; `D8 = (D3−C3)/D38` |
+| Horizon | fixed 10 years + terminal | **user-set high-growth length** (`Length of high growth period = 10`), optional gradual adjustment in the second half | fixed 10 |
+| Cost of capital | full embedded `Cost of capital worksheet` with 4 approaches, ERP by country/region/operating mix, beta from industry averages, synthetic or actual rating | user types beta, ERP, debt ratio, cost of debt **separately for high-growth and stable** periods; separate `Ratings estimator` | same 4-approach COC worksheet, but industry sheets are only `Industry Average Beta (US)/(Global)` |
+| Tax | effective → marginal, linear over years 6–10 | separate effective and stable tax rates, user-set | same as simple (in the Boeing example effective = marginal = 25%, so flat) |
+| Distress | probability of failure + proceeds tied to Book or Value | none | same as simple |
+| NOL | yes (rows 7/10) | via `Earnings Normalizer` instead | yes |
+| Options | dilution-adjusted BS, circular | yes, plus "use current price or estimated value" toggle | yes |
+| Non-traded firms | not supported | supported: "Is your stock currently traded? No" → book-value or user-specified debt ratio | not supported |
+| Earnings normalizer | none (negative EBIT handled via NOL + tax logic) | dedicated `Earnings Normalizer` sheet; sheet warns to use `highgrowth.xls` if EBIT negative | none |
+| Unique sheets | `Valuation as picture`, `Failure Rate worksheet`, `Input Stat Distributioons`, `Diagnostics`, full `Industry Averages` × 2 | `Read me first`, `Earnings Normalizer`, `Input Summary`, `Ratings estimator` | `Summary Sheet` (a flat 4-block year-by-year table: revenue/margin/tax; reinvestment/ROC; COC components; discounting), no `Valuation as picture`, no `Failure Rate`, no `Input Stat Distributioons` |
+| Stable cost of capital default | `rf + mature-market ERP` (4.58% + 4.23% = 8.81%) | user types stable beta/ERP/debt ratio/cost of debt | same formula; Boeing: 0.02 + 0.052 = 6.72% |
+| Data vintage | Jan 1 2026, rf 4.58%, mature ERP 4.23% | May 2024, rf 4.50%, ERP 4.92% | Mar 27 2020, rf **0.85%**, mature ERP ~5.2% |
+
+Net: **Corona ≡ the March-2020 snapshot of simple ginzu** (same architecture, older/simpler: one s2c, no lag, no failure-rate or distribution sheets, Summary Sheet instead of the picture/diagnostics pair). **Full ginzu is a different model family** — fundamentals-driven growth with explicit capex/depreciation/working-capital, phase-specific risk parameters, and support for private/non-traded firms. For a code re-implementation, target **simple ginzu**; full ginzu only if you need fundamentals-based growth or private companies.
+
+---
+
+## 6. RUNNING THIS FOR AN INDIAN COMPANY
+
+**What changes (and the exact cells):**
+
+| Item | Cell / sheet | India setting |
+|---|---|---|
+| Currency | implicit, set by `Input!B34` | Either (a) **INR**: B34 = nominal 10-yr GoI bond yield (or US$ rf + INR−US$ expected-inflation differential), all financials in ₹ crore/₹ mn consistently; or (b) **US$**: B34 = US 10-yr, financials converted at spot. Damodaran's own rule: currency is a *unit*, so pick one and stay consistent through share count |
+| Perpetuity growth | `Input!B67/B68` | default g∞ = B34; in INR that's ~6–7% which is correct and self-consistent. Do **not** import a US-dollar 2.5% g into an INR model |
+| Country of incorporation | `Input!B7` = `India` | `Country equity risk premiums` row: **Moody's Baa3, Adj. Default Spread 1.87%, ERP 7.08%, CRP 2.85%, Corporate Tax Rate 30%** (Jan-2026 vintage, mature ERP 4.23%) |
+| ERP | `Cost of capital`!B25 | `"Country of incorporation"` → 7.08%. Better: `"Operating countries"`/`"Operating regions"` with revenue weights if the company sells abroad. Regional row `India` also exists in the small grouping table (ERP 7.0690%, default spread 1.8678%, CRP 2.8390%, tax 30%) |
+| Cost of debt | `Synthetic rating`!D16 | = `Input!B34 + company spread + 1.87% (India default spread)`. Automatic once B7 = India |
+| Tax rates | `Input!B23` effective, `Input!B24` marginal | **Must be typed manually** — the Corporate Tax Rate column in the CERP table is never read by a formula. India marginal: 25.17% (new regime, 22% + surcharge + cess) or 34.94% (old regime) or 17.16% (new manufacturing); the CERP table's own India figure is 30%. Effective rate from the company's own tax note |
+| Industry averages | `Input!B8` (US) and `Input!B9` (Global) | **The workbook ships only US and Global tables — there is no India table.** Options: (1) use Global as the comparison set; (2) replace/extend sheets 13–15 with Damodaran's India datasets |
+| India datasets on disk | `damodaran-data-01.zip` / `-02.zip` → `data-current/*India.xls`; markdown mirrors in `/Users/siddharth/Downloads/financeMD/damodaran/pc/datasets/` | `betaIndia` (unlevered beta), `waccIndia` (`Industry Name \| Number of Firms \| Beta \| Cost of Equity \| E/(D+E) \| Std Dev in Stock \| Cost of Debt \| Tax Rate \| After-tax Cost of Debt \| D/(D+E) \| Cost of Capital \| **Cost of Capital (Local Currency)**`), `capexIndia` (`… \| Net Cap Ex/Sales \| Net Cap Ex/EBIT(1-t) \| **Sales/ Invested Capital (LTM)**`), `marginIndia` (pre-tax operating margin), `histgrIndia` (revenue CAGR), `EVAIndia` (ROIC), `taxrateIndia` (effective tax rates), `optvarIndia` (σ), `R&DIndia` (amortizable lives), `leaseeffectIndia`, `MktCapIndia`, `totalbetaIndia`, `wcdataIndia`, `pbvIndia`, `peIndia`, `psIndia`, `vebitdaIndia`, `divfcfeIndia`, `dbtfundIndia`, `debtdetailsIndia`, `DollarIndia` |
+| Currency adjustment of imported averages | `Cost of capital`!B67 / B72, and the sheet note next to `Input!B22` | The COC "Industry Average" and "Distribution" approaches already add `(Input!B34 − 4.58%)` — i.e. the riskfree differential vs the US$ rate of that vintage — which converts a US$ industry cost of capital into your currency. For **growth and margin** averages the sheet's own note applies: "If you are not working in US dollars, you should add the inflation differential to the industry averages". `waccIndia` also publishes a ready-made **Cost of Capital (Local Currency)** column that bypasses the adjustment |
+| Distribution approach regions | `Cost of capital`!B70 | choose `Emerging` (1stQ 7.63%, median 8.95%, 3rdQ 10.69% — US$ based, then `+ (rf − 4.58%)`) |
+| Failure rate | `Input!B51/B52` | BLS survival tables are US data; treat as a prior only |
+
+**Minimum edit list to run an Indian company as-is:** B4 name, B7 = India, B8/B9 = closest industry, B11:C20 financials in ₹ (consistent units), B21 shares, B22 price in ₹, B23/B24 India tax rates, B26–B32 the five levers (replace the pre-filled B27/B31 defaults which come from US/Global tables), B34 = INR riskfree, then on `Cost of capital worksheet` set B11 approach, B21 beta source, B25 = "Country of incorporation" (or operating-region weights), B32 avg debt maturity, B33/B36 cost-of-debt approach + firm type. Everything else falls out of the nine default-assumption blocks.
+
+---
+
+## 7. RE-IMPLEMENTATION NOTES
+
+1. **Iteration is mandatory.** `Option value`!B17 (dilution-adjusted S) depends on total option value which depends on B17. Excel is set to `iterate="1"`. In code: fixed-point loop (or just note that with `Input!B37="No"` the whole option branch is dead and B30 = 0).
+2. **Two lookup styles.** Industry/country lookups use `VLOOKUP(..., TRUE)`-style **approximate** match by default (no 4th arg) in most places — for exactly-matching text keys this behaves as exact only if the table is sorted ascending; the industry tables are alphabetical, so it works. `Input Stat Distributioons` lookups use `FALSE` (exact). Rating tables use genuine banded approximate match on a numeric coverage ratio.
+3. **`B67` / `B72` hard-code `4.58%`** as the US$ riskfree of the Jan-2026 vintage. Any re-implementation must expose that as `RF_DATASET_VINTAGE`, not a literal.
+4. **Row-offset trap in the markdown mirror.** Empty self-closing `<c/>` cells shift values one column left in naive parsers — e.g. FCFF year-1 lives in `C9`, not `B9`. Parse the xlsx, not the MD, for cell addressing.
+5. **Defaults that are formulas** (`B27={I26}`, `B28={B26}`, `B29={B27}`, `B31={K27}`, `B32={B31}`, `B46={B35}`, `B62={474.8+256.6}`) must become *initialisers* in code, not permanent bindings — the user is meant to overwrite them.
+6. **Unit invariance.** The only per-share quantity is `B22` (price) and `B21` (share count). Everything else is in the same currency unit; the sheet warns explicitly about mixing millions with a raw share count.
+
+KEY FACTS:
+ - Live formulas were extracted directly from /Users/siddharth/Downloads/finance-and-valuation/damodaran/pc/fcffsimpleginzu.xlsx (streamed, not extracted). The markdown mirror at /Users/siddharth/Downloads/financeMD/damodaran/pc/fcffsimpleginzu.md is values-only and has a column-shift artifact where empty self-closing cells exist — parse the xlsx for cell addressing.
+ - Sheet-to-XML map: sheet1=Input sheet, sheet2=Valuation output, sheet3=Stories to Numbers, sheet4=Valuation as picture, sheet5=Diagnostics, sheet6=Option value, sheet7=Synthetic rating, sheet8=R&D converter, sheet9=Operating lease converter, sheet10=Cost of capital worksheet, sheet11=Failure Rate, sheet12=Country ERP, sheet13=Industry Averages(US), sheet14=Industry Averages (Global), sheet15=Input Stat Distributioons, sheet16=Trailing 12 month, sheet17=Answer keys.
+ - Core chain verified numerically against stored values (Almarai, SAR): Rev_t = Rev_{t-1}*(1+g_t); margin converges linearly to target by Input!B30; EBIT(1-t) with NOL shield; Reinv_t = (Rev_{t+lag} - Rev_{t+lag-1})/s2c_t with default lag=1; Reinv_T = (g_T/ROC_stable)*EBIT(1-t)_T; TV = FCFF_T/(WACC_T - g_T); value/share = 7.18784 vs price 72.28.
+ - Terminal cost of capital default = Input!B34 (riskfree) + 'Country equity risk premiums'!B1 (mature market ERP, 4.23% for Jan-2026) = 8.81%. The on-sheet label says 'riskfree + 4.5%' — label is WRONG, code the formula.
+ - Stable ROC default = year-10 cost of capital ('Valuation output'!L12), i.e. excess returns fade to zero. Overridable at Input!B48/B49.
+ - Nine 'default assumption' override blocks live at Input!B45/46, B48/49, B51/52 (+B53 B/V and B54 proceeds %, both always read), B56/57 (reinvestment lag 0-3), B59 (tax convergence), B61/62 (NOL), B64/65 (riskfree after yr10), B67/68 (perpetuity growth), B70/71/72 (trapped cash).
+ - Five pre-filled-but-overridable value drivers: B27={I26} base-year margin, B28={B26}, B29={B27}, B31={K27} = GLOBAL industry average Sales/Capital, B32={B31}. These are initialisers, not bindings.
+ - Cost of capital has 4 selectable approaches at 'Cost of capital worksheet'!B11: 'I will input' / 'Detailed' / 'Industry Average' / 'Distribution'. Industry Average and Distribution both add (Input!B34 - 4.58%) — 4.58% is a hard-coded US$ riskfree vintage constant that must be parameterised in code.
+ - Synthetic rating: coverage = IF(IntExp=0,1000000,IF(EBIT<0,-100000,EBIT/IntExp)); rating/spread from one of three banded tables keyed on firm_type (1=large manufacturing, 2=smaller/riskier, 3=financial service); cost of debt = riskfree + company spread + country default spread (VLOOKUP country in CERP col 3).
+ - Industry Averages(US) and (Global) share an identical 27-column schema, 94 industries (A2:AA95). Key columns used by the model: 3 revenue growth, 4 pre-tax margin, 5 after-tax ROC, 7 unlevered beta, 10 std dev, 13 cost of capital, 14 Sales/Capital, 15 EV/Sales.
+ - Country ERP sheet: B1 = mature market ERP 0.0423; 192 countries at A5:F196 with columns Country | Moody's rating | Adj. Default Spread | ERP | CRP | Corporate Tax Rate. Column 6 (tax rate) is NEVER referenced by any formula.
+ - Input Stat Distributioons: 94 industry groups, A3:T96, exact-match VLOOKUP keyed on the GLOBAL industry name; six quartile blocks (revenue growth, margin, sales/invested capital, cost of capital, beta, debt/capital).
+ - Failure Rate worksheet has ZERO formula links into the model — the user reads a number off it and types it into Input!B52. Contains rating-based cumulative default probabilities (1-10 yrs) and BLS 2022 failure-by-age tables across 9 sectors.
+ - Diagnostics is 6 steps: revenue growth vs industry, dollar revenues + market-share sanity, margins, sales-to-capital + reinvestment drag (PV of after-tax op income vs PV of FCFF), ROC ladder incl. marginal ROC = (VO!L7-VO!B7)/(VO!L39-VO!B39), risk metrics incl. compounded WACC = (1/L13)^(1/10)-1, and price-vs-value verdict string (high if >2, low if <0.5).
+ - There are NO hard validations anywhere — guard rails are dropdowns (Answer keys sheet), comparison columns, Diagnostics text, and free-text warnings. A code port should turn these into real assertions.
+ - Workbook requires Excel iterative calculation (calcPr iterate=1) because 'Option value'!B17 (dilution-adjusted stock price) is circular. If Input!B37='No' the option branch is dead and B30=0.
+ - Corona variant = March-2020 snapshot of simple ginzu: single sales-to-capital ratio, NO reinvestment lag (contemporaneous), year-1 reinvestment floored at zero via IF(C3>B3,(C3-B3)/s2c,0), has a 'Summary Sheet', lacks Valuation as picture / Failure Rate / Input Stat Distributioons, and carries only 'Industry Average Beta (US)/(Global)' sheets. rf = 0.85%.
+ - Full fcffginzu is a DIFFERENT model family: fundamentals-driven growth (g = ROC x reinvestment rate), explicit CapEx / Depreciation / change-in-working-capital, user-set high-growth length, phase-specific beta/ERP/debt-ratio/cost-of-debt, an Earnings Normalizer sheet, and support for non-traded (private) firms. No distress/failure-rate module.
+ - India (Jan-2026 CERP vintage): Moody's Baa3, Adj. Default Spread 1.87%, ERP 7.08%, CRP 2.85%, Corporate Tax Rate 30% (informational only — must be typed into Input!B23/B24 manually).
+ - The workbook ships NO India industry-average table. India datasets exist separately: /Users/siddharth/Downloads/financeMD/damodaran/pc/datasets/{waccIndia,capexIndia,marginIndia,betaIndia,histgrIndia,taxrateIndia,EVAIndia,optvarIndia,...}.md (raw .xls in damodaran-data-01/02.zip under data-current/). capexIndia has 'Sales/ Invested Capital (LTM)'; waccIndia has both 'Cost of Capital' and 'Cost of Capital (Local Currency)' — the latter avoids the riskfree-differential adjustment.
+ - SpreadsheetGuide.md is NOT a Damodaran document — it is a Tykoh Group 'Spreadsheet Skills and Modelling' guide (66 sheets). Irrelevant to this model.
+ - Optional converters: R&D converter outputs D35 (research asset -> invested capital) and D39 (EBIT add-back); Operating lease converter outputs C28/F33 (lease debt) and F32 (EBIT add-back). Both gated by Input!B16 / Input!B17. The lease sheet warns that post-2019 IFRS/GAAP already capitalise leases — using it then double-counts.
+ - Trailing 12 month worksheet is a standalone helper (E = B - C + D) with NO formula link to the Input sheet — numbers are pasted manually.
+
+OPEN QUESTIONS:
+ - Target currency for the Indian re-implementation: INR (riskfree = nominal GoI 10-yr, perpetuity growth ~6-7%) or US$ (riskfree = US 10-yr, financials converted at spot)? This determines Input!B34 and whether imported industry averages need an inflation-differential adjustment.
+ - Which India marginal tax rate should be the default: 25.17% (new regime 22% + surcharge + cess), 34.94% (old regime), 17.16% (new manufacturing), or the 30% figure carried in Damodaran's Country ERP table?
+ - Should the re-implementation ship the US + Global industry tables as-is, or replace/extend them with the India datasets (betaIndia, waccIndia, capexIndia, marginIndia, histgrIndia, EVAIndia) as a third selectable region?
+ - Do you need the employee-option (dilution-adjusted Black-Scholes) branch at all? It is the only circular dependency in the workbook and can be dropped entirely if options are always No.
+ - Should the R&D and operating-lease converters be ported? Post-2019 IFRS/GAAP already capitalise leases, so the lease converter is a double-count risk for any recent Indian filer.
+ - Target scope: simple ginzu only, or also the full fcffginzu path (fundamentals-based growth, explicit capex/depreciation/working capital, private-company support)? They are different models, not variants.
+ - Should the Diagnostics checks stay advisory (text verdicts, as in the sheet) or become hard validation errors/warnings in code?
+ - Which data vintage should be frozen into the lookup tables — Jan-2026 (mature ERP 4.23%, US$ rf 4.58%, the version in this workbook) — and should the tables be refreshable from the data-current/ zips?

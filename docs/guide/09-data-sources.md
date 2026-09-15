@@ -10,7 +10,7 @@ A data source is any place the system fetches a number or a sentence from. Think
 
 Every supplier differs in three ways: a delivery schedule (daily, monthly, yearly), a container (a JSON file, an old Excel file, a CSV), and a contract saying what you may do with the goods. In this project that contract is written onto every stored row as a licence class (section 3.3 of read-this-first.md).
 
-Source: /Users/siddharth/Valuation/docs/read-this-first.md, section 3.3 (2026-09-14)
+Source: /Users/siddharth/Desktop/Valuation/docs/read-this-first.md, section 3.3 (2026-09-14)
 
 Two terms you will meet on every page below:
 
@@ -25,13 +25,13 @@ Source: /Users/siddharth/Downloads/financeMD/damodaran/New_Home_Page/datahistory
 
 The second reason is money and law. The system must run under $200 a month, and everything stored must be legal to keep. So: free public sources first (SEC, Damodaran, FRED, NSE files), one paid licence for India statements (EODHD), and nothing scraped from apps or newspapers.
 
-Source: /Users/siddharth/Valuation/docs/read-this-first.md, section 12 (2026-09-14)
+Source: /Users/siddharth/Desktop/Valuation/docs/read-this-first.md, section 12 (2026-09-14)
 
 ## How it is used in this project
 
 The nightly robot (Chapter 3, GitHub Actions) wakes at about 6:17 UTC, checks each watchlist company for a new filing, downloads the numbers, builds trailing-twelve-month figures, and writes them to Neon with source, licence class and vintage. A monthly and quarterly job watches Damodaran's files for a changed fingerprint. A third job pulls licensed headlines and stores them as annotations only.
 
-Source: /Users/siddharth/Valuation/docs/read-this-first.md, section 7 (2026-09-14)
+Source: /Users/siddharth/Desktop/Valuation/docs/read-this-first.md, section 7 (2026-09-14)
 
 ### The source table
 
@@ -45,7 +45,7 @@ Source: /Users/siddharth/Valuation/docs/read-this-first.md, section 7 (2026-09-1
 | FRED | US Treasury yields, credit spreads | daily | CSV or JSON | free | `open_access` |
 | Bloomberg | reading only | n/a | web, email | your own subscription | `proprietary_personal` |
 
-Source: /Users/siddharth/Valuation/docs/read-this-first.md, sections 3.3, 10 and 12; /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md, section 7 (2026-09-14)
+Source: /Users/siddharth/Desktop/Valuation/docs/read-this-first.md, sections 3.3, 10 and 12; /Users/siddharth/Desktop/Valuation/docs/plan.md, section 7 (2026-09-14)
 
 ### SEC EDGAR
 
@@ -61,7 +61,7 @@ Three endpoints matter. Each takes the company's CIK, a ten-digit identifier pad
 
 The nightly job reads `submissions` first. A new accession number means a new filing, and only then does it fetch `companyfacts`. The `frames` endpoint is your free peer-group builder: one number for every filer in one period, which is how you check a US industry median for free. Bulk zip files of both are published nightly at about 03:00 US Eastern time.
 
-Source: /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bkm2kob5x.txt, section 12 (2026-09-14)
+Source: /Users/siddharth/Desktop/Valuation/docs/sources/bkm2kob5x.txt, section 12 (2026-09-14)
 
 The User-Agent rule. The SEC requires every request to carry a descriptive User-Agent header with your name and email. A request without it is refused. Read the SEC's fair-access policy before you write any loop, because it sets a request-rate limit and the SEC blocks addresses that exceed it.
 
@@ -69,17 +69,17 @@ Source: same report, section 12
 
 The LTM construction. LTM means "last twelve months." Company filings do not give it to you directly. A 10-K (the annual report) covers a fiscal year, and a 10-Q (the quarterly report) covers a year-to-date period. The rule is: LTM = last 10-K, minus the prior year's year-to-date interim, plus the current year-to-date interim. Damodaran's own workbook has a "Trailing 12 month" worksheet that computes exactly `E = B - C + D`, but it is a standalone helper that you paste into by hand. Our ingest code does the subtraction and records which three filings it used.
 
-Source: /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bkdrkpfng.txt, sections 1.2 and 3.8 (2026-09-14)
+Source: /Users/siddharth/Desktop/Valuation/docs/sources/bkdrkpfng.txt, sections 1.2 and 3.8 (2026-09-14)
 
 Missing interest expense. The workbook turns interest expense into a synthetic credit rating through the coverage ratio, operating income divided by interest expense. If interest expense is zero the sheet sets coverage to 1,000,000, which reads as a perfect rating. Apple's `InterestExpense` tag exists in `companyfacts`, but its last value covers the year ending 2023-09-30 (3,933 million dollars) and nothing after. So a naive loader sees "missing" and writes zero, and the model rewards Apple with a top rating by accident. The plan's fix is a visible `interest_missing` flag on the `ltm_financials` row, never a silent zero.
 
-Source: https://data.sec.gov/api/xbrl/companyfacts/CIK0000320193.json (fetched 2026-09-14); bkdrkpfng.txt, section 3.4; /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md, sections M2 and 10.3 (2026-09-14)
+Source: https://data.sec.gov/api/xbrl/companyfacts/CIK0000320193.json (fetched 2026-09-14); bkdrkpfng.txt, section 3.4; /Users/siddharth/Desktop/Valuation/docs/plan.md, sections M2 and 10.3 (2026-09-14)
 
 ### Damodaran's datasets
 
 Cadence. His data page says: "I update most of the data only once a year, in the first two weeks of January." The current full update is dated January 9, 2026. Three things move faster: country risk premiums (January, April, July), the implied equity risk premium (monthly), and a daily market tape during crises.
 
-Source: /Users/siddharth/Downloads/financeMD/damodaran/New_Home_Page/datahistory.md; /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bafb6h9rb.txt, section 5 (2026-09-14)
+Source: /Users/siddharth/Downloads/financeMD/damodaran/New_Home_Page/datahistory.md; /Users/siddharth/Desktop/Valuation/docs/sources/bafb6h9rb.txt, section 5 (2026-09-14)
 
 File names. Files live under `https://pages.stern.nyu.edu/~adamodar/pc/datasets/`. The name is a family plus a region suffix: `wacc.xls` for the US, `waccIndia.xls`, `waccemerg.xls`, `waccGlobal.xls`, and so on across eight regions. Five names break the pattern and must be hard-coded: `betas.xls` (not `beta`), `pedata`, `pbvdata`, `psdata`, and `DollarUS.xls`. The `R&D` files contain an ampersand that must be URL-encoded. Dated files such as `ctrypremJuly26.xlsx` and `ERPSept26.xlsx` cannot be guessed; the job must read the link list and discover them.
 
@@ -91,7 +91,7 @@ Source: bafb6h9rb.txt, section 5; verified by grep on /Users/siddharth/Downloads
 
 The `.xls` gotcha. Most files are `.xls`, the pre-2007 Excel binary format called BIFF8. ExcelJS cannot read it at all. The only mainstream JavaScript reader is SheetJS Community Edition, version 0.20.3, which is installed from `cdn.sheetjs.com` by tarball address, not from npm. The `xlsx` package on npm is stuck at 0.18.5 with two unpatched high-severity security advisories. Never run `npm i xlsx`. The Python fallback is `pandas.read_excel(..., engine="xlrd")`.
 
-Source: /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bo0hrclp7.txt, section 7 (2026-09-14)
+Source: /Users/siddharth/Desktop/Valuation/docs/sources/bo0hrclp7.txt, section 7 (2026-09-14)
 
 Inside each file the data sheet is named "Industry Averages" and the real header row is not row 1. Eight to twelve rows of notes come first, so the loader reads the sheet headerless and finds the row whose first cell is "Industry Name". Row 1 carries a "Date updated:" cell, which becomes the vintage stamp. His usage rules: acknowledgment is optional, per-company raw data is not to be redistributed, and he asks that the data stay out of court cases.
 
@@ -101,7 +101,7 @@ Source: bafb6h9rb.txt, section 5, points 5, 6 and 8 (2026-09-14)
 
 EODHD is a paid data vendor covering more than 70 exchanges, including NSE and BSE. It is the project's only paid data licence, chosen because it is the one vendor with documented, long-history India statements in a normalized schema. It arrives at milestone M4, not before.
 
-Source: /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bj0fbejiq.txt, Role 10 (2026-09-14)
+Source: /Users/siddharth/Desktop/Valuation/docs/sources/bj0fbejiq.txt, Role 10 (2026-09-14)
 
 - Price: the Fundamentals Data Feed is $59.99 a month (read-this-first.md rounds it to $60). The free plan allows 20 calls a day.
 - Call units: one fundamentals request costs 10 API call units, not one. A 50-name daily refresh is 500 units a day. So the project caches every response in Neon and re-pulls only on a new filing.
@@ -123,7 +123,7 @@ INDmoney's broking arm, INDstocks, publishes a real, free, official API at `api-
 
 Two rules shape its use here. First, order-placement endpoints require a whitelisted static IP address under NSE rules. GitHub Actions runners have no fixed address, and this project never places orders, so that constraint never applies. Read-only market-data endpoints have no such restriction. Second, INDmoney's terms forbid bots on its app and forbid copying or republishing content. So the system reads your holdings and prices through the official API only, and never scrapes the app or the website.
 
-Source: /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/btzaixzyh.txt, CHECK 2, INDmoney section (2026-09-14)
+Source: /Users/siddharth/Desktop/Valuation/docs/sources/btzaixzyh.txt, CHECK 2, INDmoney section (2026-09-14)
 
 ### FRED
 
@@ -157,7 +157,7 @@ Source: bo0hrclp7.txt, RESEARCH 6, part 2 (2026-09-14)
 
 The seven classes in read-this-first.md section 3.3 are the contract label on every box. A database rule refuses `licensed_personal`, `proprietary_personal` and `link_only` rows from the librarian's index. For any new source, write down its class first, then its cadence, then its format. Legal, then fresh, then correct.
 
-Source: /Users/siddharth/Valuation/docs/read-this-first.md, section 3.3 (2026-09-14)
+Source: /Users/siddharth/Desktop/Valuation/docs/read-this-first.md, section 3.3 (2026-09-14)
 
 ## Learn it
 

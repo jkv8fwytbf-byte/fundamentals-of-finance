@@ -10,17 +10,17 @@
 
 An **API** (application programming interface) is a door that one program uses to talk to another. Every AI company has its own door, its own key, and its own bill. **OpenRouter** is a single door in front of hundreds of those doors. You hold one key, you keep one credit balance, and you pick a model by changing one name in your code. If the company serving that model goes down, OpenRouter can quietly route the same request to another company serving the same model.
 
-Source: /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/b31x0pyot.txt, section 3 (2026-09)
+Source: /Users/siddharth/Desktop/Valuation/docs/sources/b31x0pyot.txt, section 3 (2026-09)
 
 The analogy is a food-delivery app. You do not open an account with every restaurant. You open one account with the app, and the app takes your order to whichever kitchen you choose. The app adds a service fee on top-ups, but the menu prices are the kitchen's own prices. OpenRouter works the same way: it charges a fee when you buy credit, and charges nothing extra per token.
 
-Source: /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bcy86uopa.txt, section 4 (2026-09-14)
+Source: /Users/siddharth/Desktop/Valuation/docs/sources/bcy86uopa.txt, section 4 (2026-09-14)
 
 ### Artificial Analysis
 
 A **benchmark** is a standardized exam for a model. **Artificial Analysis** (AA) is an independent site that runs many such exams on many models and publishes the marks, together with speed and price. Think of it as the consumer-testing magazine for AI models. The headline mark is the **Intelligence Index**, a weighted average of ten exams. Underneath it sit narrower scoreboards for coding agents, for making things up, and for web-search services.
 
-Source: /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/b31x0pyot.txt, section 5
+Source: /Users/siddharth/Desktop/Valuation/docs/sources/b31x0pyot.txt, section 5
 
 ## Why this tool now (for this project)
 
@@ -28,19 +28,19 @@ Source: /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-77
 
 This confused you before, so slowly. **Place 1 is while you write code.** That is Cursor, on the models Cursor includes in the $20 subscription you already pay. You never paste an API key into Cursor. Doing so is unofficial, switches off features like Tab, and voids Cursor's zero-data-retention promise. Privacy Mode stays on.
 
-Source: /Users/siddharth/Valuation/docs/read-this-first.md, sections 4 and 11 (2026-09-14); /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/btzaixzyh.txt, CHECK 1
+Source: /Users/siddharth/Desktop/Valuation/docs/read-this-first.md, sections 4 and 11 (2026-09-14); /Users/siddharth/Desktop/Valuation/docs/sources/btzaixzyh.txt, CHECK 1
 
 **Place 2 is inside the product when it runs at night.** Our own code, started by GitHub Actions (Chapter 3), calls a model to write memos, answer librarian questions, and clean transcripts. Those calls go through OpenRouter. That is where the volume and the cost live, so that is where the cheap open-weight models go. **Open-weight** means the model's weights are downloadable and hosted by many companies, so no single vendor can switch you off, and a pinned checkpoint keeps a 2026 valuation reproducible in 2029.
 
-Source: /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md, sections 2a and 2b (2026-09-14)
+Source: /Users/siddharth/Desktop/Valuation/docs/plan.md, sections 2a and 2b (2026-09-14)
 
 The price of that choice is capability. On the AA Intelligence Index v4.3 (released 2026-09-07) the frontier models score 53 and the best open-weight model, GLM-5.3, scores 45. The gap sits in long autonomous coding tasks, not in the "read a filing and extract" work that fills a valuation pipeline. Open-weight models cost 7 to 40 times less per token, so for Place 2 the trade is worth it.
 
-Source: /Users/siddharth/Valuation/docs/read-this-first.md, section 4; bcy86uopa.txt, section 1b
+Source: /Users/siddharth/Desktop/Valuation/docs/read-this-first.md, section 4; bcy86uopa.txt, section 1b
 
 Cline, the free extension inside Cursor, is the one exception that touches both places. It takes your OpenRouter key and lets you feel what an open-weight model does before its name goes into a robot. It is a bench, not the daily driver.
 
-Source: /Users/siddharth/Valuation/docs/read-this-first.md, section 11
+Source: /Users/siddharth/Desktop/Valuation/docs/read-this-first.md, section 11
 
 ## How it is used in this project
 
@@ -54,11 +54,11 @@ You will create the account in milestone 1 (Document A, section 10). Buy $20 of 
 | Prompt logging | Off | Logging is opt-in, and turning it on hands OpenRouter broad rights over your prompts |
 | Zero-data-retention routing | On | Only companies that promise not to store your prompts may serve your requests |
 
-Source: /Users/siddharth/Valuation/docs/read-this-first.md, sections 10 and 12
+Source: /Users/siddharth/Desktop/Valuation/docs/read-this-first.md, sections 10 and 12
 
 **Zero data retention** (ZDR) means the company that ran your request deletes the prompt and the answer once the answer is sent. OpenRouter is the only router in the vendor scorecard that can enforce ZDR per request, which is the feature that makes "everything private" possible through a router. The research also notes that enabling prompt logging "grants OpenRouter an irrevocable right to commercial use" of the logged text. That is why logging stays off.
 
-Source: /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bj0fbejiq.txt, Role 4
+Source: /Users/siddharth/Desktop/Valuation/docs/sources/bj0fbejiq.txt, Role 4
 
 ### Fees, and the credit arithmetic
 
@@ -84,15 +84,15 @@ The runtime will pin four model ids in one file, with the AA index version next 
 | Fallback | `deepseek/deepseek-v4.1-flash` | $0.15 / $0.60 | Fastest in class at 214 tokens a second; plain MIT license |
 | Never | DeepSeek V4 Pro | | 94% hallucination rate on AA-Omniscience, fatal for a chat that must cite |
 
-Source: /Users/siddharth/Valuation/docs/read-this-first.md, section 4.1; bcy86uopa.txt, sections 1a, 3 and 9
+Source: /Users/siddharth/Desktop/Valuation/docs/read-this-first.md, section 4.1; bcy86uopa.txt, sections 1a, 3 and 9
 
 To make the prices concrete: a typical librarian answer sends about 8,000 tokens and receives about 700. That costs about $0.0143 on GLM-5.3 and about $0.00155 on GLM-5.3-Flash. One judge call on Kimi K3 costs about $0.0298, so a 200-case evaluation run costs about $5.96. A **token** is a word piece, roughly four characters.
 
-Source: /Users/siddharth/Valuation/docs/read-this-first.md, section 4.1; bcy86uopa.txt, section 9
+Source: /Users/siddharth/Desktop/Valuation/docs/read-this-first.md, section 4.1; bcy86uopa.txt, section 9
 
 One caution on licenses. The model-selection report lists GLM-5.3 under a bespoke permissive license that is explicitly not MIT, and DeepSeek V4.1 Flash under plain MIT. The plan describes GLM-5.3-Flash as plain MIT, while the report lists it as bespoke permissive. For a private project neither wording matters. If the system ever becomes public, read each model card yourself before deciding.
 
-Source: bcy86uopa.txt, section 1a; /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md, section 2a
+Source: bcy86uopa.txt, section 1a; /Users/siddharth/Desktop/Valuation/docs/plan.md, section 2a
 
 ### Reading the Artificial Analysis pages
 

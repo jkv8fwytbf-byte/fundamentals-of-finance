@@ -143,7 +143,7 @@ Source: URLs from btzaixzyh.txt, CHECK 1, Sources list (verified 2026-09-14); MC
 You can do this today, before the repo exists.
 
 1. Open Cursor. Settings, then General, then Privacy Mode: on. Two minutes.
-2. Open the folder `~/Valuation/docs`. Open the agent panel. Press Shift+Tab until the mode reads Plan. Ask: "Plan a change that adds a one-line glossary entry for the word hunk to read-this-first.md, section 15. Do not make the change." Read the plan. Note which file it says it would touch. Four minutes.
+2. Open the folder `~/Desktop/Valuation/docs`. Open the agent panel. Press Shift+Tab until the mode reads Plan. Ask: "Plan a change that adds a one-line glossary entry for the word hunk to read-this-first.md, section 15. Do not make the change." Read the plan. Note which file it says it would touch. Four minutes.
 3. Press Shift+Tab to Agent mode. Ask for the same one-line change. When the diff appears, read the red and green lines, then reject the hunk. Open the Source Control panel and confirm no file is modified. Three minutes.
 4. Add one line to your decisions log from chapter 0 saying what Plan mode showed you. One minute.
 

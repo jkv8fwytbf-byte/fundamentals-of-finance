@@ -20,7 +20,7 @@ Source: pptfiles/val3E/valpacket2spr25.md, title slide notes (Spring 2025)
 
 **Why it matters for the calculator:** the industry averages sheet inside fcffsimpleginzu carries EV/EBITDA, EV/EBIT, Price/Book and Trailing PE, but the DCF never reads them. Only EV/Sales is used, and only to weight the parts of a multi-business company. Multiples belong in a separate pricing panel, never inside the value.
 
-Source: /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bkdrkpfng.txt, industry table rows 15 to 19 (2026)
+Source: /Users/siddharth/Desktop/Valuation/docs/sources/bkdrkpfng.txt, industry table rows 15 to 19 (2026)
 
 ### Pricing is not valuing
 
@@ -128,7 +128,7 @@ Source: pc/implprem/ERPbymonth.md, sheet "Historical ERP", row 2026-09-01 (2026-
 
 Two notes on that table. The adjusted riskfree rate exists because Moody's downgraded the United States from Aaa to Aa1 on May 16, 2025. He nets out the 0.22% default spread for an Aa1 sovereign to get "a more consistent riskfree rate". And the spread between the six ERP definitions, from 3.56% to 6.05%, is your honest error bar. The regime spec shows it as a band and calls the headline "soft" whenever the band is wider than 150 basis points.
 
-Source: pc/implprem/ERPSept26.md, sheet "Impl premium calculator" (September 2026); /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/btzaixzyh.txt, CHECK 3, SPEC 1 (2026)
+Source: pc/implprem/ERPSept26.md, sheet "Impl premium calculator" (September 2026); /Users/siddharth/Desktop/Valuation/docs/sources/btzaixzyh.txt, CHECK 3, SPEC 1 (2026)
 
 The mechanics are simple. Base cash flow grows at the expected growth rate for five years, then at the riskfree rate forever. The discount rate is riskfree plus ERP. Excel goal-seeks the ERP until value equals the index. The September 2026 sheet solves to an implied expected return of 8.8437%, which is the 8.84% above (4.75% plus the 4.09% ERP). Its what-if row at an ERP of 4.25% gives an intrinsic index value of 7398.08 and an intrinsic trailing PE of 27.19. Those numbers are the golden test for impliedErp.ts.
 
@@ -182,7 +182,7 @@ Source: blog/2026/03/the-price-of-risk-equity-risk-premium.md (2026-03-15)
 
 The implied ERP is computed from three things: the index level, trailing cash flows, and an earnings growth estimate. News is not one of them. Damodaran's reason is a doctrine, not a technicality: "markets are pricing mechanisms, not value mechanisms", and "Price is reactive, Value is proactive!" His 2026 opener is the proof. Someone who read only the news in 2025 "would have guessed" that stocks "had a bad year", and "You would have been wrong". The regime spec turns this into a rule. Sentiment may annotate the ERP chart with dated events and flag a divergence between news tone and the ERP. It may never be an input, and the panel may never be sorted by it. Store it in a separate market_context_events table and draw it as an overlay.
 
-Source: blog/2020/03/a-viral-market-meltdown-iii-pricing-or.md (2020-03-16); blog/2026/01/data-update-2-for-2026-equities-get.md (2026-01-23); /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/btzaixzyh.txt, CHECK 3, "What licensed news-sentiment APIs may legitimately add" (2026)
+Source: blog/2020/03/a-viral-market-meltdown-iii-pricing-or.md (2020-03-16); blog/2026/01/data-update-2-for-2026-equities-get.md (2026-01-23); /Users/siddharth/Desktop/Valuation/docs/sources/btzaixzyh.txt, CHECK 3, "What licensed news-sentiment APIs may legitimately add" (2026)
 
 **Why it matters for the calculator:** the no-advice test and the "numbers go to the database, not free text" rule both depend on the ERP being a pure function of stored numbers.
 
@@ -197,7 +197,7 @@ Source: blog/2020/03/a-viral-market-meltdown-iii-pricing-or.md (2020-03-16); blo
 - blog/2024/01/data-update-2-for-2024-stock-comeback.md and blog/2026/03/the-price-of-risk-equity-risk-premium.md: the market-timing caveats and the forecasting evidence.
 - blog/2020/03/a-viral-market-meltdown-iii-pricing-or.md: the price versus value doctrine.
 - pdfiles/country/val2dayIndia2025.md: the India session, with "Relative valuation or Pricing" defined and the line "Much of what passes for valuation is pricing."
-- /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/btzaixzyh.txt, CHECK 3: the regime panel spec built from all of the above.
+- /Users/siddharth/Desktop/Valuation/docs/sources/btzaixzyh.txt, CHECK 3: the regime panel spec built from all of the above.
 
 ## Three things to remember
 

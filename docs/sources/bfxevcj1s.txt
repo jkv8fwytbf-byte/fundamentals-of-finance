@@ -1,0 +1,310 @@
+============================== SURVEY 3: RAG CORPUS ==============================
+# Damodaran teaching corpus — ingest survey
+
+All paths absolute. Token estimate = bytes/4 (understates for numeric tables in `pc/`, which tokenize worse; overstates slightly for transcripts, which are lowercase word-wrapped).
+
+## 1. Headline totals
+
+| Layer | Files | Bytes | ~Tokens |
+|---|---|---|---|
+| Markdown mirror `/Users/siddharth/Downloads/financeMD/**/*.md` | 3,916 | 84,096,911 (84.1 MB) | 21.0 M |
+| YouTube transcripts (raw .txt, inside `damodaran-full-part21/22.tar.gz`) | 1,477 | 72,104,324 (72.1 MB) | 18.0 M |
+| Spring-2026 lecture PDFs (NOT yet converted) | 136 PDFs, 333.6 MB source | est. 2.0–2.5 MB md | ~0.6 M |
+| **Raw grand total (text)** | **5,529** | **~158.5 MB** | **~39.6 M** |
+| **After recommended drops (§4)** | ~4,150 | **~119 MB** | **~29.7 M** |
+| Non-text (spreadsheets/models, for a tools layer, not embeddings) | 380 files | 88.6 MB | — |
+
+Embedding cost at 29.7 M tokens: ~$0.59 (text-embedding-3-small @ $0.02/M), ~$1.8 (voyage-3 @ $0.06/M), ~$3.9 (text-embedding-3-large @ $0.13/M). Even the raw 39.6 M is <$5.50 on the most expensive tier — **embedding cost is not a constraint; conversion + cleaning time is.**
+
+## 2. Bucket table
+
+### (a) Blog — `/Users/siddharth/Downloads/financeMD/damodaran/blog/`
+| Slice | Files | Bytes | ~Tok |
+|---|---|---|---|
+| Real posts (`*.md` excl. `index.md`) | 609 | 10,256,978 | 2.56 M |
+| `index.md` archive pages (year + month) | 194 | 10,224,014 | 2.56 M |
+| Total | 803 | 20,480,992 | 5.12 M |
+
+Per-year (post+index bytes): 2008 315K/47f · 2009 513K/73 · 2010 544K/57 · 2011 929K/68 · 2013 1.14M/48 · 2014 1.47M/57 · 2015 1.91M/63 · 2016 1.54M/61 · 2017 1.00M/36 · 2018 1.43M/48 · 2019 1.32M/37 · 2020 1.48M/43 · 2021 1.31M/36 · 2022 1.18M/31 · 2023 1.68M/37 · 2024 1.23M/29 · 2026 1.51M/32.
+
+Quality: **best-in-corpus.** Clean YAML front matter on all 609 (`title`, `date`, `url`, `source`), full prose, tables preserved, dates span 2008-09-17 → 2026-09-10. Residue: Blogger `<div id="post-body-...">` wrappers, `blogger.googleusercontent.com` image links (dead weight, ~5-8% of bytes), trailing `*Labels: ...*` line (useful — convert to tags), embedded YouTube "An error occurred. / Unable to execute JavaScript." blocks. No `?m=1` mobile duplicates survived — the converter skipped 211 of them (see `_conversion_log.csv`, detail = "Blogger mobile duplicate (?m=)").
+
+**Gap: years 2012 and 2025 are entirely absent from the crawl**, not just the mirror (`/Users/siddharth/Downloads/finance-and-valuation/damodaran/blog/` has no 2012 or 2025 directory). That loses the whole 2025 data-update series and 2025 company valuations (~55–65 posts). Refetch from blogspot.
+
+### (b) Lecture packets & topic decks — `/Users/siddharth/Downloads/financeMD/damodaran/pdfiles/` (136 md, 5,804,793 B, 1.45 M tok)
+| Subdir | Files | Bytes | Note |
+|---|---|---|---|
+| `LB2/` | 7 | 3,717,500 | **Not decks** — 3rd-party filings: ZomatoProspectus 1.73 MB, UnileverAnnualReport 990 KB, KHC2022 509 KB, Alphabet10K 337 KB, BiggestBanks 121 KB, BB&BHistory 24 KB, beverage 12 KB |
+| `cfovhds/` | 6 | 389,885 | cfpacket1spr25 197 KB, cfpacket2spr25 154 KB, syllabus, project |
+| `CLC/slides/` | 21 | 249,658 | Corporate Life Cycle book, Ch1–Ch20 + intro |
+| `eqnotes/` | 8 | 233,118 | valpacket2spr25 91 KB, valpacket3spr25 91 KB, ValIntroSpr25, syllabi |
+| `eqprojects/` | 9 | 228,229 | valproject1–9 |
+| `cfexams/` | 32 | 219,077 | quizzes + `*soln.md` pairs, Spr23–Spr25 |
+| `eqexams/` | 11 | 128,581 | ValFinal/Quiz Spr25 + solutions (MBA and UG) |
+| `papers/` | 4 | 422,368 | costofcapital, multiples, realopt, valuesurvey |
+| `country/` | 1 | 93,090 | **val2dayIndia2025** (208-page India seminar) |
+| newsletters (3 dirs) | 34 | 74,186 | weekly class newsletters spr25 |
+| `classslidesMar12/`, `BloombergStuff/` | 3 | 49,101 | |
+
+Quality: `pymupdf4llm` slide extraction. Readable but slide-shaped — running headers ("Aswath Damodaran"), bare slide numbers on their own line, `§`/`¨`/`¤` bullet glyphs, occasional `**Damodaran240Aswath**` header-merge artifacts, `*[embedded object: Word.Document.8 — not extractable]*`. Every file starts with `# <name>` + an HTML comment recording source PDF and page count — keep that as provenance.
+
+Loose duplicates at `/Users/siddharth/Downloads/financeMD/`: `cfpacket1spr25.md`, `cfpacket2spr25.md`, `valpacket2spr25.md` are **byte-identical (md5-verified)** to the `pdfiles/` copies. `valpacket1spr25.md` (186,023 B) exists ONLY at root — no `pdfiles/` twin; keep it.
+
+**Spring-2026 packets exist only as PDFs**, in `damodaran-notes-part1..6.tar.gz` and mirrored in `damodaran-full-part15..21.tar.gz` under `notes/`, `notes_cf/`, `notes_invphil/`:
+- `notes/` 27 PDFs 88.4 MB — valpacket2spr26 (11.0 MB), valpacket3spr26 (6.1 MB), cfpacket2spr26 (15.5 MB), Pricing, dcfrates, dcfegs, dcfgrowt, dcfcf, dcfstabl, cash, pvt, option, valenh, AcqValn, narrativeandnumbers, basics, model, eva, ddm, fcff, fcfe, brand, assetvaluation, valopt, ValIntroSpr26, eqproj, eqsyllspr15
+- `notes_cf/` 51 PDFs 102.3 MB — session1–session36 decks + hurdlerate, capstr, mgtobj, divintro, divassessment, invretA/B, riskandret, valuation, debtdesign, capstruchoices, cfproj, cfsyllspr25
+- `notes_invphil/` 55 PDFs 64.6 MB — infotrading, valinv, techanal, mktefficiency, finale, …
+- Split files (`cat` parts to restore): `notes/cfpacket1spr26.pdf` (2 parts), `notes/valpacket1spr26.pdf` (2), `notes_cf/cfpacket1spr26.pdf` (2) — in `SPLIT/` inside the full-parts, or whole inside `damodaran-notes-part1.tar.gz.00/.01` (valpacket1spr26) and `part2` (cfpacket1spr26).
+- Observed PDF→md ratio on packets: 24.26 MB → 197 KB (0.81%); 11.21 MB → 91 KB (0.81%); 25.09 MB → 93 KB (0.37%). So all 136 spr26 PDFs ≈ **2.0–2.5 MB of markdown, ~0.6 M tokens.** Cheap. Convert them.
+
+### (c) Books & long-form — `/Users/siddharth/Downloads/financeMD/*.md` (12 files, 6,210,375 B, 1.55 M tok)
+| File | Bytes |
+|---|---|
+| `Aswath Damodaran - Investment Valuation, University Edition ... (2023).md` | 3,057,164 |
+| `Advances in Financial Machine Learning Marcos Lopez de Prado.md` | 814,731 |
+| `DeepLearningforFinancePython2024.md` | 614,362 |
+| `apple2024.md` (Apple FY2024 10-K, 121 pp) | 427,644 |
+| `Amazon-2024-Annual-Report.md` | 332,873 |
+| `Apple-2025-10-K.md` (80 pp) | 284,824 |
+| `Deep Learning for Finance_ Learning Plan.md` | 26,092 |
+| `Unaudited Financial Results ... Q1 FY 2024.md` (Trent Ltd) | 24,657 |
+| spr25 packet dupes (4) | 628,028 |
+
+Book quality: 1,358 pages via `pymupdf4llm` (+46 pages re-extracted with a legacy engine). Structure is good — 32 `# **CHAPTER n ...**` headings, 1,716 headings total, tables rendered as pipe tables, illustrations labeled `ILLUSTRATION n.n`. **Systematic OCR defect: the `fi`/`fl` ligature is replaced by U+FFFD — 13,515 occurrences** ("Ef�iciency", "cash �low", "�irm", "pro�itability", "de�inition"). A 5-line regex fix (`�i`→`fi`, `�l`→`fl`) repairs essentially all of it and is mandatory before embedding — otherwise "firm", "efficiency", "cash flow" never match queries. Front matter of the file is a 700-line ToC / List of Illustrations / List of Tables dump (lines 1–682) that should be stripped; real content starts at line 683 (`# **Investment Valuation**`).
+
+AFML and Deep-Learning-for-Finance are not Damodaran and are off-persona; keep them in a **separate index** for the later evaluation/backtesting work.
+
+### (d) Slides — `pptfiles/` (43 md, 885,663 B) and `podcasts/` (49 md, 751,716 B)
+| Set | Files | Bytes | Note |
+|---|---|---|---|
+| `pptfiles/invphil3ed/session1..42` | 40 | 349,966 | Investment Philosophies deck, **has `### Notes:` speaker notes** (24 blocks; session5 alone has 7) |
+| `pptfiles/acf4E/cfpacket2spr25.md` | 1 | 265,159 | **256 speaker-note blocks** |
+| `pptfiles/val3E/valpacket2spr25.md` | 1 | 145,615 | **163 notes blocks** |
+| `pptfiles/val3E/valpacket3spr25.md` | 1 | 124,923 | **149 notes blocks** |
+| `podcasts/valUGspr24/session3–27slides` | 25 | ~380 K | page-slices of valpacket1spr24.pdf |
+| `podcasts/valspr24/session3–25slides` | 23 | ~360 K | same, MBA |
+| `podcasts/cfspr24/session2slides` | 1 | ~11 K | |
+
+Key finding: **the `pptfiles/` (python-pptx) versions of the packets are strictly richer than the `pdfiles/` (pymupdf4llm) versions of the same packets** — 265 KB vs 154 KB for cfpacket2spr25, 146 KB vs 91 KB for valpacket2spr25 — because the pptx path captures Damodaran's speaker notes, which are first-person teaching prose ("It always helps to lay a philosophical foundation…"). `grep -c '^### Notes:'` on the pdfiles versions = 0. **Prefer pptfiles, drop the pdfiles twins.**
+
+`podcasts/*/sessionNslides.md` are page-range slices of the Spring-2024 packet PDF (each file's `# valpacket1spr24` title gives it away). Content ≈ 90% redundant with the spr25/spr26 packets, but they carry the only explicit **session-number → content mapping** in the corpus. Use them to build a session index, not as primary retrieval text.
+
+### (e) Site pages — `New_Home_Page/` (841 md, 10,306,400 B, 2.58 M tok)
+| Subdir | Files | Bytes | Prose value |
+|---|---|---|---|
+| `articles/` | 150 (127 md) | 1,364,999 | **3rd-party press** (Forbes/WSJ/NYT clippings) — 0 of 127 mention "Damodaran" |
+| `datafile/` | 102 | 962,823 | regression pages, mostly image refs + short text; many exact dupes |
+| `valquestions/` | 53 | 513,089 | Q&A on country risk, R&D, risk premium — good |
+| `problems/` | 15 | 433,560 | DCF & relval problem sets — good |
+| `invmgmt/`, `invfables/`, `invemgmt/` | 104 | 931,881 | investment-philosophy prose — good |
+| `lectures/` | 18 | 248,017 | topic notes (fcff, fcfe, pe, pbv, eva, opt) — very good |
+| `CFTheory/`, `AppldCF/`, `cfin2E/`, `ACF3E/`, `ApplCF2ed/` | 70 | 733,273 | book support, concept checks |
+| `Valuationofweek/` | 24 | 133,466 | good |
+| `background/` | 6 | 126,821 | `valintro.md` (75 KB) is a superb standalone valuation primer |
+| `project/` | 11 | 143,279 | |
+| `cfpuzzles/` | 59 | 210,070 | weekly puzzles; 5 exact-dup groups across years |
+| `definitions.md` | 1 | 72,152 | **financial-ratio glossary, 4-column table** — highest value/byte in the corpus |
+| `cfemail/eqemail/cfUGemail/eqUGemail.md` | 4 | 825,804 | class email logs — real teaching Q&A, but front-loaded with a nav menu |
+| `dataarchived.md` | 1 | 153,497 | pure link table — drop |
+| remainder (root .md etc.) | ~220 | ~3.4 M | mixed |
+
+Boilerplate: 89 files carry the `[![](Budimage/titlesm.gif)](../home.htm)` nav header; 61 files are <1,500 B (63 KB total) and are essentially nav stubs; 305 files are <4,000 B (690 KB). Link-density heuristic (words per link < 15): 67 of 842 files are link tables. So ~1.4 MB of the 10.3 MB is navigation/link chrome — filter, don't hand-curate.
+
+### (f) Transcripts — inside `damodaran-full-part21.tar.gz` (+`part22`)
+| Set | Files | Bytes | Status |
+|---|---|---|---|
+| `transcripts_extra/` (41 playlists, part21) | 981 | 58,409,295 | 948 unique video ids (33 cross-playlist dupes) |
+| `transcripts_extra/PLUkh9m2Borqk3IDRAWNFvMqVqlJDVtcd-/` (Blog Posts playlist, part22) | 302 | 7,432,318 | **not in MANIFEST** (listed as "deferred/incomplete"); actually present |
+| `transcripts_cf/` | 63 | 2,535,504 | unique (0 overlap with extra) |
+| `transcripts/` | 54 | 2,351,252 | unique (0 overlap with extra) |
+| `transcripts_invphil/` | 77 | 1,375,955 | **100% duplicated inside `transcripts_extra/` — drop** |
+| **Total** | **1,477 paths / 1,366 unique ids** | **72,104,324** | ~18.0 M tok (~16.7 M deduped) |
+
+`damodaran-transcripts-meta.tar.gz` (832 KB) is a small standalone pack: 54 transcripts + `meta/transcripts_index.json` (title, url, char_count, caption_type per video) + playlist JSON + `harness.json` + `run_harness.py`. Its README says "Pinecone upload not completed (API key was missing)" — i.e. a prior ingest attempt exists.
+
+Playlist inventory from `meta/transcripts_extra_index.json` inside part21: **45 playlists, 1,144 videos, 1,140 with captions, 64,348,170 chars.** Largest: Valuation UG Spr2021 (2.38 M ch), Valuation UG Spr2019 (2.23 M), CF MBA Spr2019 (2.15 M), Valuation UG Spr2024 (2.11 M), Valuation MBA Spr2020 (2.07 M) … plus topical sets: Investment Philosophies 2026 Edition (43 vids, 769 K), Corporate Finance Online (37, 641 K), The Corporate Life Cycle: The Book (41, 1.12 M), Valuation Tools Webcasts (15, 399 K), CF In-practice Webcasts (23, 373 K), Statistics 101 (14, 289 K), Accounting 101 (12, 190 K), Little Book of Valuation Revised (13, 247 K), Spreadsheet Support (18, 220 K), Foundations of Finance (11, 168 K), Executive Valuation Trium 2022 (8, 649 K), Odds & Ends (5, 39 K).
+
+Caption quality — two tiers:
+- **Live class recordings** (the ~29 semester playlists, ~2 MB each): raw auto-captions. No punctuation, all lowercase, hard-wrapped at ~5 words/line, `[Music]` markers, false starts ("yes / right / oh / okay folks"), and long stretches of classroom admin ("if your name is not on that sheet … just go in and alphabetically add a line"). Roughly 10–20% of a class transcript is non-teaching content. Header line is good: `# <title> | <video_id> | <url> [| <playlist>]`.
+- **Blog-post webcasts** (302 files, part22): same no-punctuation format but **self-recorded monologue, no admin chatter, dense content start-to-finish** ("hi welcome back in this session I'd like to talk about…"). This is the single best transcript slice per token.
+
+### (g) India-specific material (all paths absolute)
+Seminar / decks
+- `/Users/siddharth/Downloads/financeMD/damodaran/pdfiles/country/val2dayIndia2025.md` (93,090 B, 208-page two-day India valuation seminar, Aug 2025) — original PDF `/Users/siddharth/Downloads/finance-and-valuation/damodaran/pdfiles/country/val2dayIndia2025.pdf`
+- `/Users/siddharth/Downloads/financeMD/damodaran/New_Home_Page/seminars.md` (12 India refs)
+
+India blog posts
+- `.../damodaran/blog/2021/07/the-zomato-ipo-bet-on-big-markets-and.md` (33 hits)
+- `.../damodaran/blog/2021/08/a-diy-do-it-yourse-valuation-of-zomato.md`
+- `.../damodaran/blog/2021/10/the-indian-smartphone-revolution-paytms.md` (25)
+- `.../damodaran/blog/2022/07/a-zomato-2022-update-value-pricing-and.md`
+- `.../damodaran/blog/2018/05/walmarts-india-flipkart-gambit-growth.md` (17)
+- `.../damodaran/blog/2023/02/control-and-complexity-deconstructing.md` (Adani, 15)
+- `.../damodaran/blog/2016/11/the-4c-tradeoff-promise-and-peril-of.md` (demonetisation, 11)
+- `.../damodaran/blog/2019/02/...` (10)
+- 381 md files mention "india" at least once corpus-wide.
+
+India datasets (`/Users/siddharth/Downloads/financeMD/damodaran/pc/datasets/`) — 24 `*India*.md`: `betaIndia`, `capexIndia`, `DollarIndia`, `EVAIndia`, `EmployeeIndia`, `MktCapIndia`, `R&DIndia`, `dbtfundIndia`, `debtdetailsIndia`, `divfcfeIndia`, `divfundIndia`, `finflowsIndia`, `fundgrIndia`, `fundgrEBIndia`, `goodwillIndia`, `histgrIndia`, `insholdIndia`, `leaseeffectIndia`, `marginIndia`, `optvarIndia`, `pbvIndia`, `peIndia`, `psIndia`, `roeIndia`, `taxrateIndia`, `totalbetaIndia`, `vebitdaIndia`, `waccIndia`, `wcdataIndia`. Each carries a rich "Explanation & FAQs" prose block + an industry-average table (betaIndia.md = 28,182 B).
+
+Country risk premium rows containing India: `pc/datasets/ctryprem.md`, `ctrypremApr26.md`, `ctrypremJuly25.md`, `ctrypremJuly26.md`, and `pc/archives/ctryprem14..24.md` (11 vintages, 12–21 India hits each).
+
+Indian company docs
+- `.../damodaran/pdfiles/LB2/ZomatoProspectus.md` (1,726,163 B, 604 India hits — the Zomato DRHP)
+- `.../damodaran/pc/blog/ZomatoIPO.md` and `.../damodaran/pc/littlebook2/ZomatoIPO.md` (valuation workbooks)
+- `/Users/siddharth/Downloads/financeMD/Unaudited Financial Results (Standalone and Consolidated) - Q1 FY 2024.md` — **Trent Ltd** Q1 FY25 (board meeting 9-Aug-2024) NSE/BSE filing, 10 pp, clean pymupdf4llm output including the Deloitte limited-review report.
+- `.../damodaran/pc/blog/Adani2023.md`, `AdaniHistory.md`
+
+Raw India data (xls, not text): `data-current/betaIndia.xls`, `capexIndia.xls`, `EVAIndia.xls`, `finflowsIndia.xls`, `wcdataIndia.xls`, … inside `damodaran-data-01.zip` / `-02.zip`.
+
+### (h) Company filings already present (templates for a "fetch filings" parser)
+| File | Bytes | Pages | Engine |
+|---|---|---|---|
+| `/Users/siddharth/Downloads/financeMD/Apple-2025-10-K.md` (accession 0000320193-25-000079) | 284,824 | 80 | pymupdf4llm |
+| `/Users/siddharth/Downloads/financeMD/apple2024.md` (0000320193-24-000123) | 427,644 | 121 | pymupdf4llm |
+| `/Users/siddharth/Downloads/financeMD/Amazon-2024-Annual-Report.md` | 332,873 | — | pymupdf4llm |
+| `.../damodaran/pdfiles/LB2/Alphabet10K.md` | 336,802 | — | |
+| `.../damodaran/pdfiles/LB2/KHC2022.md` | 508,930 | — | |
+| `.../damodaran/pdfiles/LB2/UnileverAnnualReport.md` | 989,648 | — | |
+| `.../damodaran/pdfiles/LB2/ZomatoProspectus.md` | 1,726,163 | — | |
+| `/Users/siddharth/Downloads/financeMD/Unaudited Financial Results ... Q1 FY 2024.md` (Trent) | 24,657 | 10 | |
+
+Parse quality is usable: `# <accession-number>` as H1, a `<!-- source: ... | N pages | converted with pymupdf4llm -->` provenance comment, financial tables as pipe tables with `**bold**` headers. Weakness: cover-page key/value blocks collapse into 2-column tables (`|**One Apple Park Way**||`), and multi-column footnote text interleaves. A "fetch filings" step should prefer SEC's XBRL/Financial-Statement JSON for numbers and use the PDF/HTML→md path only for MD&A and risk-factor prose.
+
+### Non-text assets (tools layer, not embeddings)
+- `damodaran-data-01.zip` 93 files 30.0 MB + `damodaran-data-02.zip` 182 files 48.4 MB → `data-current/` = the 2026 dataset drop (AlldataMarch2026.xlsx, ctryprem.xls/xlsx, ERPJan/May/Sept/Oct/Nov 25 & 26, betas/capex/EVA/finflows/wcdata × {US, Europe, Japan, China, India, emerg, Global, Rest}).
+- `damodaran-models.zip` 104 files 9.98 MB (`damodaran-spreadsheets/models/` + `other/` + its own MANIFEST.txt).
+- `/Users/siddharth/Downloads/fcffsimpleginzu.xlsx` 288 KB — the key DCF model.
+- `Business-Valuation-with-Discounted-Cash-Flow-In-Python-main.zip` — 1 notebook `DCF_Model_Python.ipynb` (12.97 MB, mostly stored outputs) + README.
+- `damodaran-full-part01.tar.gz` (107 .xls models) and `part02` (first half of `indname.xls`) are **missing on disk**. Nothing textual is lost: part01's models are all inside `damodaran-models.zip`; only `data/pc/datasets/indname.xls` (industry-name mapping) is unrecoverable from the tarballs — but `damodaran-data-*.zip` likely carries an equivalent. `damodaran-full-part22.tar.gz` is present but is **not documented in MANIFEST.txt** (MANIFEST says "Parts: 21").
+
+## 3. Conversion-log health (`/Users/siddharth/Downloads/financeMD/_conversion_log.csv`, 4,329 rows)
+- `ok` 3,916 · `skipped` 413 (0 hard failures).
+- Skip reasons: 211 Blogger mobile `?m=` duplicates, 168 binary blobs with `.htm/.html` names, 30 Word-HTML OLE blobs, 2 empty/frameset pages, 1 `.mov`, **1 legacy binary `.ppt`** (the only real content loss).
+- Engines: `pandas-pipe-tables` 2,047 (xls/xlsx), `pandoc` 850, `blogger-structured+pandoc` 803, `pymupdf4llm` 172 (+1 legacy), `python-pptx` 43.
+- Source extensions converted: .xls 1,949 · .html 1,041 · .htm 612 · .pdf 173 · .xlsx 98 · .pptx 43.
+- RSS/Atom feeds exist only in the originals (`/Users/siddharth/Downloads/finance-and-valuation/damodaran/blog/feeds/posts/default?alt=rss`) and were never converted — nothing to exclude.
+
+## 4. Drop list (dedup) — ~39 MB / ~9.9 M tokens removed
+| Drop | Files | Bytes | Why |
+|---|---|---|---|
+| `damodaran/blog/**/index.md` | 194 | 10,224,014 | Year/month archive pages that reprint full post bodies. 100% redundant with the 609 posts. |
+| `damodaran/pc/archives/` | 1,647 | 25,888,551 | Historical numeric dataset dumps (DollarUS19, ctryprem14…). Pure tables, low answer value, 6.5 M tokens. Defer to a SQL/tool layer. |
+| `damodaran/New_Home_Page/articles/` | 127 md | 1,364,999 | Third-party Forbes/WSJ/NYT clippings; 0/127 mention Damodaran. Persona contamination + copyright risk. Index separately with `author != damodaran` if at all. |
+| `transcripts_invphil/` | 77 | 1,375,955 | md5-basename-verified 100% subset of `transcripts_extra/`. |
+| 33 cross-playlist transcript dupes + 78 other dupes (1,477 paths → 1,366 ids) | 111 | ~5.4 M | Same video in two playlists. Dedupe on video_id; keep all playlist ids as a multi-value field. |
+| `/Users/siddharth/Downloads/financeMD/{cfpacket1spr25,cfpacket2spr25,valpacket2spr25}.md` | 3 | 442,005 | md5-identical to `pdfiles/` copies. (Keep root `valpacket1spr25.md` — no twin.) |
+| `pdfiles/cfovhds/cfpacket2spr25.md`, `pdfiles/eqnotes/valpacket2spr25.md`, `pdfiles/eqnotes/valpacket3spr25.md` | 3 | 336,391 | Inferior pdf-derived twins of the pptx versions in `pptfiles/` that carry 568 speaker-note blocks. |
+| `damodaran/soln.md` | 1 | 38,241 | md5-identical to `New_Home_Page/soln.md`. |
+| `New_Home_Page/dataarchived.md` + 67 link-table pages + 61 nav stubs (<1,500 B) | ~129 | ~1.4 M | Navigation chrome; word/link ratio < 15. |
+| 17 other exact-dup pairs in `New_Home_Page/` (`datafile/dbtreg14`≡`dbtreg15`, `divreg`≡`divreg24`, `dbtreg18`≡`dbtreg19`, `dbtreg`≡`dbtreg24`, `MReg05`≡`MReg97`, 5 `cfpuzzles` groups, 3 `ACF3E/concchks`≡`ApplCF2ed/concchks`, `AppldCF/derivn/ch2deriv`≡`CFTheory/deriv/ch2deriv`, `cfovhds/CapIQAccess`≡`eqnotes/CapIQAccess`) | ~23 | ~200 K | md5-verified. |
+
+**No `?m=1` mobile pages and no feed XML reached the mirror** — that cleanup already happened upstream.
+
+Also drop/clean in-place (not whole files): Blogger `<div id="post-body-...">` wrappers and `googleusercontent` image URLs; `"An error occurred. / Unable to execute JavaScript."` YouTube-embed blocks; the `Budimage/titlesm.gif` nav header; the book's lines 1–682 (ToC/List of Illustrations/List of Tables); `[Music]` and bare `yes/right/okay` filler lines in transcripts; `**Damodaran<N>Aswath**` header-merge artifacts in packet md.
+
+## 5. Recommended ingest order (best answers per token first)
+
+**Tier 1 — ship the MVP on this alone (~20.8 MB, ~5.2 M tok, ~1 day)**
+1. `damodaran/pptfiles/acf4E/`, `pptfiles/val3E/` packets (535 KB, 568 speaker-note blocks) + `pptfiles/invphil3ed/session1..42` (350 KB). Highest density of Damodaran explaining *why*, already session-segmented.
+2. `transcripts_extra/PLUkh9m2Borqk3IDRAWNFvMqVqlJDVtcd-/` — 302 blog-post webcasts (7.43 MB). Clean monologue captions; one-to-many aligned with blog posts.
+3. `damodaran/blog/**` non-index posts (10.26 MB, 609 files). Front matter is already retrieval-ready; covers every current topic incl. 2026.
+4. `damodaran/New_Home_Page/{definitions.md, background/, lectures/, valquestions/, problems/}` (~1.4 MB). `definitions.md` alone answers a huge share of "what is / how do you compute X".
+5. `damodaran/pdfiles/{CLC/slides, papers, country/val2dayIndia2025}` (765 KB).
+
+**Tier 2 — depth and worked numbers (~22.8 MB, ~5.7 M tok)**
+6. Book `Investment Valuation (2023)` — **only after the U+FFFD ligature repair** (3.06 MB).
+7. `damodaran/pc/datasets/` (254 files, 5.71 MB) — the "Explanation & FAQs" blocks are prose gold and the industry tables answer "what's the unlevered beta for X in India".
+8. `damodaran/pc/blog/` (40 files, 4.81 MB) — worked company valuations (Tesla DIY 2024/2025, JPM, Uber, Aramco, Zomato, Starbucks, Nvidia, S&P500 value).
+9. `damodaran/pc/*.md` root (79 files, 2.06 MB) — model documentation (fcffginzu, wacccalc, SpreadsheetGuide).
+10. `damodaran/pdfiles/{cfexams, eqexams, eqprojects, newsletters, syllabi}` (~0.65 MB). Quiz+solution pairs double as a **free eval set** — hold ~40 out of the index for retrieval QA.
+11. Remaining `New_Home_Page/` prose (invmgmt, invfables, invemgmt, Valuationofweek, CFTheory, AppldCF, cfin2E, project, cfpuzzles, risk) (~3.2 MB).
+12. Class email logs `cfemail/eqemail/cfUGemail/eqUGemail.md` (826 KB) after stripping the nav menu — real student-question → Damodaran-answer pairs, the closest thing to the target chat format.
+
+**Tier 3 — bulk, after the pipeline is proven (~69 MB, ~17.3 M tok)**
+13. Convert the 136 Spring-2026 PDFs (→ ~2.3 MB md) and make spr26 the canonical packet; keep spr25 with `year: 2025` for "what changed" questions rather than deleting.
+14. Class transcripts: `transcripts_extra/` 29 semester playlists + `transcripts_cf/` + `transcripts/` (~62 MB deduped). **Do not embed raw.** Run a restore-punctuation/segment pass and strip the admin stretches first, or retrieval will be noisy and expensive. Good rule: split on the session header, then chunk 60–90 s of speech.
+15. `damodaran/podcasts/` (752 KB) — use as the session-number → topic map, low retrieval weight.
+16. `damodaran/pdfiles/LB2/` filings (3.72 MB) — company evidence, separate `source_type: filing`.
+
+**Tier 4 — tools, not embeddings**
+17. `damodaran-data-*.zip` (275 xls, 78.4 MB) + `damodaran-models.zip` (104) + `fcffsimpleginzu.xlsx`: expose as a lookup/compute tool (ERP by month, CRP by country, industry beta/margin/WACC), not as vectors. `pc/archives/` (25.9 MB) belongs here too.
+18. `Advances in Financial Machine Learning`, `DeepLearningforFinancePython2024`, `DCF_Model_Python.ipynb`: separate non-Damodaran index for the evaluation/backtesting workstream.
+
+## 6. Suggested chunking + metadata
+
+Chunking by source type (target 800–1,200 tokens, 15% overlap, `text-embedding-3-large` or voyage-3):
+| source_type | Split on | Target |
+|---|---|---|
+| `blog` | `##`/`**bold**` sub-heads, never across posts | 900 tok, prepend `title` + `date` to every chunk |
+| `slide_deck` | `<!-- Slide number: N -->` boundary; **keep slide body + its `### Notes:` in one chunk** | 1 slide = 1 chunk, merge runs of tiny slides up to 600 tok |
+| `packet` | slide/page marker from the `<!-- source: ... N pages -->` header | 1,000 tok |
+| `book` | `# **CHAPTER n**` → `## SECTION` → `### sub`; keep `ILLUSTRATION n.n` intact | 1,200 tok |
+| `transcript` | header line, then ~60–90 s of speech (≈700 tok) after punctuation restore | 800 tok, 20% overlap |
+| `dataset` | keep the whole "Explanation & FAQs" block as one chunk; table rows chunked by 40 rows with the header repeated | varies |
+| `site_page` | `#`/`##` headings; drop chunks that are >50% links | 900 tok |
+| `exam` | one question + its solution = one chunk (join `X.md` with `Xsoln.md`) | whole Q&A |
+| `filing` | Item boundaries (Item 1A, Item 7, Item 8) | 1,200 tok |
+
+Metadata schema (every chunk):
+```
+id                 sha1(path + chunk_index)
+source_type        blog | slide_deck | packet | book | transcript | dataset
+                   | site_page | exam | filing | email | paper | article
+title              from front matter / H1 / transcript header
+author             "Aswath Damodaran" | third_party   <-- set false for New_Home_Page/articles, LB2, filings
+date               ISO; blog front matter, packet term, transcript upload, filing period
+year               int (for recency-preferring rerank: spr26 > spr25 > spr24)
+course             valuation | corp_finance | inv_philosophy | clc | seminar | none
+course_level       mba | ug | exec | online | none
+term               spr25 | spr26 | spr24 | fall16 | ...
+session            int (from sessionN.md, sessionNslides.md, transcript title "Session N: ...")
+topic              erp | beta | cost_of_capital | terminal_value | multiples | dividends
+                   | capital_structure | real_options | distress | narrative | lifecycle | ...
+region             us | india | europe | japan | china | emerging | global   <-- enables India filtering
+company            AAPL | ZOMATO | TSLA | ... (from pc/blog, LB2, filings)
+url                canonical NYU/blogspot/YouTube URL (blog front matter has it; transcripts have it in the header line)
+path               absolute source path in financeMD / tar member path
+page               PDF page or slide number when known
+video_id           YouTube id
+playlist_ids       [] (multi-valued after dedup)
+converter          pymupdf4llm | python-pptx | pandoc | blogger-structured | pandas-pipe-tables
+has_speaker_notes  bool (pptx-derived)
+quality            clean | needs_punctuation | ocr_ligature_damaged | table_only
+token_count        int
+```
+Retrieval notes: (1) filter `author == "Aswath Damodaran"` by default so press clippings and filings can't be quoted as his view; (2) boost by `year` so a "current ERP" question hits the 2026 data update, not the 2015 one; (3) `region == india` is a cheap high-precision filter given 24 India datasets + 8 India blog posts + val2dayIndia2025; (4) route "what is the number today" questions to the spreadsheet tool, not the vector index.
+
+KEY FACTS:
+ - Markdown mirror /Users/siddharth/Downloads/financeMD: 3,916 .md files, 84,096,911 bytes (~21.0M tokens). Transcripts (raw .txt in damodaran-full-part21/22.tar.gz): 1,477 files, 72,104,324 bytes (~18.0M tokens). Unconverted Spring-2026 PDFs: 136 files, 333.6 MB source, estimated ~2.3 MB markdown (~0.6M tokens). Raw text grand total ~158.5 MB / ~39.6M tokens; ~119 MB / ~29.7M tokens after recommended drops.
+ - Embedding cost is negligible: 29.7M tokens = ~$0.59 on text-embedding-3-small, ~$3.9 on text-embedding-3-large. The real cost is PDF conversion and transcript cleaning, not embeddings.
+ - Blog: 609 real posts (10,256,978 B) all with clean YAML front matter (title, date, url, source), dates 2008-09-17 to 2026-09-10. Plus 194 index.md archive pages (10,224,014 B) that reprint full post bodies verbatim — exactly 50% of the blog bucket is duplicate; drop them.
+ - Blog years 2012 and 2025 are MISSING from the source crawl itself (/Users/siddharth/Downloads/finance-and-valuation/damodaran/blog/ has no 2012 or 2025 dir, 0 rows in _conversion_log.csv). That is ~55-65 posts including the entire 2025 data-update series. Needs a refetch from blogspot.
+ - No ?m=1 mobile duplicates and no feed XML reached the markdown mirror — the converter already skipped 211 Blogger mobile dupes. _conversion_log.csv: 3,916 ok, 413 skipped, 0 failures; only real content loss is 1 legacy binary .ppt.
+ - The book 'Investment Valuation (2023)' (3,057,164 B, 1,358 pages, 32 CHAPTER headings) has a systematic OCR defect: 13,515 occurrences of U+FFFD replacing the fi/fl ligature ('Ef?iciency', 'cash ?low', '?irm'). A regex repair is mandatory before embedding or those terms will never match. Lines 1-682 are ToC/List-of-Illustrations dump and should be stripped.
+ - pptfiles/ (python-pptx) versions of the spr25 packets are strictly richer than the pdfiles/ (pymupdf4llm) versions of the same packets because they carry Damodaran's speaker notes: cfpacket2spr25 265,159 B with 256 '### Notes:' blocks vs 153,915 B with 0; valpacket2spr25 145,615 B/163 notes vs 91,330 B/0; valpacket3spr25 124,923 B/149 notes vs 91,146 B/0. Prefer pptfiles, drop the pdfiles twins.
+ - Transcripts split into two quality tiers. Live class recordings (~29 semester playlists, ~2 MB each) are raw auto-captions: no punctuation, all lowercase, ~5 words per line, [Music] markers, and 10-20% classroom admin chatter. The 302-file 'Blog Posts' playlist (PLUkh9m2Borqk3IDRAWNFvMqVqlJDVtcd-, 7,432,318 B, only in damodaran-full-part22.tar.gz) is self-recorded monologue with no admin chatter — best transcripts per token.
+ - Transcript dedup: 1,477 paths but only 1,366 unique video ids. transcripts_invphil/ (77 files, 1,375,955 B) is a 100% subset of transcripts_extra/ — drop entirely. transcripts/ (54) and transcripts_cf/ (63) have ZERO overlap with extra — keep both.
+ - meta/transcripts_extra_index.json (inside damodaran-full-part21.tar.gz) catalogs 45 playlists, 1,144 videos, 1,140 with captions, 64,348,170 chars, with per-video title/url/char_count/caption_type. damodaran-full-part22.tar.gz is NOT documented in MANIFEST.txt (which says 'Parts: 21').
+ - Missing tarball parts 01 and 02 cost nothing textual: part01 was 107 .xls models (all present in damodaran-models.zip), part02 was the first half of data/pc/datasets/indname.xls.
+ - damodaran/pc/ is 2,031 files / 39,618,731 B (9.9M tokens) — 47% of the whole mirror. Of that, pc/archives/ is 1,647 files / 25,888,551 B of historical numeric dumps with almost no prose: defer to a tool/SQL layer, not the vector index. pc/datasets/ (254 files, 5,714,847 B) is worth indexing because each file leads with a rich 'Explanation & FAQs' prose block.
+ - New_Home_Page/articles/ (127 md, 1,364,999 B) is third-party press (Forbes/WSJ/NYT course readings) — 0 of 127 mention 'Damodaran'. Indexing it into an 'Ask Damodaran' persona would put other authors' words in his mouth. Tag author != damodaran or exclude.
+ - New_Home_Page boilerplate: 89 files carry the Budimage/titlesm.gif nav header, 61 files are <1,500 B nav stubs, 67 of 842 are link tables (words/link < 15) — about 1.4 MB of the 10.3 MB is navigation chrome, filterable by heuristic.
+ - India material located: pdfiles/country/val2dayIndia2025.md (93,090 B, 208-page seminar); 24 pc/datasets/*India*.md files; 15 ctryprem vintages (pc/datasets/ctryprem*.md + pc/archives/ctryprem14..24.md) with India rows; 8 India blog posts (Zomato IPO 2021 x2, Zomato 2022, Paytm 2021, Walmart-Flipkart 2018, Adani 2023, demonetisation 2016); pdfiles/LB2/ZomatoProspectus.md (1,726,163 B, 604 India hits); Trent Ltd Q1 FY25 filing at financeMD root; data-current/*India.xls in damodaran-data-01/02.zip.
+ - Filings already converted as parser templates: Apple-2025-10-K.md (284,824 B, 80 pp, accession 0000320193-25-000079), apple2024.md (427,644 B, 121 pp, 0000320193-24-000123), Amazon-2024-Annual-Report.md (332,873 B), plus LB2/Alphabet10K, KHC2022, UnileverAnnualReport, ZomatoProspectus, and the Trent Q1 filing. Cover-page key/value blocks collapse into malformed 2-col tables; prefer SEC XBRL for numbers and PDF->md only for MD&A/risk-factor prose.
+ - PDF-to-markdown extraction ratio measured on packets: 24.26 MB -> 197 KB (0.81%), 11.21 MB -> 91 KB (0.81%), 25.09 MB -> 93 KB (0.37%). So converting all 136 Spring-2026 PDFs (333.6 MB) yields only ~2.0-2.5 MB of markdown — cheap, do it.
+ - Spring-2026 packets live as split files needing `cat` to restore: notes/cfpacket1spr26.pdf (2 parts), notes/valpacket1spr26.pdf (2 parts), notes_cf/cfpacket1spr26.pdf (2 parts). Whole copies also exist in damodaran-notes-part1.tar.gz.00/.01 (valpacket1spr26) and damodaran-notes-part2.tar.gz (cfpacket1spr26).
+ - Exam bucket doubles as a free eval set: pdfiles/cfexams/ (32 files) and pdfiles/eqexams/ (11 files) are quiz/final PDFs paired with *soln.md solution files, Spring 2023-2025. Hold ~40 Q&A pairs out of the index for retrieval QA.
+ - damodaran-transcripts-meta.tar.gz README states 'Pinecone upload not completed (API key was missing)' — a prior ingest attempt exists, and meta/harness.json + meta/run_harness.py are in that pack.
+ - Exact md5 duplicate audit across all 3,916 md found only 20 dup groups (~23 redundant files), the notable ones being the 3 loose spr25 packets at financeMD root (cfpacket1spr25, cfpacket2spr25, valpacket2spr25) being byte-identical to their pdfiles/ copies, and damodaran/soln.md == New_Home_Page/soln.md. valpacket1spr25.md (186,023 B) exists ONLY at root with no pdfiles twin — keep it.
+ - Non-text assets for a tools layer: damodaran-data-01.zip (93 files, 30.0 MB) + -02.zip (182 files, 48.4 MB) = data-current/ 2026 datasets; damodaran-models.zip (104 files, 9.98 MB); fcffsimpleginzu.xlsx (288 KB); Business-Valuation-with-Discounted-Cash-Flow-In-Python-main.zip (1 notebook, 12.97 MB).
+ - /Users/siddharth/Valuation (the additional working directory) is completely empty — no existing ingest code to build on.
+
+OPEN QUESTIONS:
+ - Should the 2012 and 2025 blog years be refetched from aswathdamodaran.blogspot.com before ingest, or is shipping with that gap acceptable for v1? 2025 contains a full data-update series that users will ask about.
+ - Is the assistant meant to speak only as Damodaran? That decides whether New_Home_Page/articles/ (127 third-party Forbes/WSJ/NYT clippings), the LB2 filings, and the AFML / Deep-Learning-for-Finance books go into the same index, a separate index, or are excluded.
+ - Should class transcripts (~62 MB deduped) go through a punctuation-restoration / admin-chatter-stripping LLM pass before embedding? That is a real cost (~16M tokens through a cheap model) but raw auto-captions retrieve poorly. Alternative: ship Tier 1+2 without them and add later.
+ - Do you want the 2026 numeric datasets (ERP, country risk premium, industry betas/WACC) exposed as a live lookup tool rather than embedded text? Embedding pc/archives/ costs 6.5M tokens and still answers numeric questions badly.
+ - For spr25 vs spr26 packets: keep both with a year field so 'what changed this year' questions work, or replace spr25 entirely with spr26?
+ - Which vector store and embedding model? The transcripts meta pack shows a prior Pinecone attempt — reuse Pinecone, or switch (pgvector / Chroma / Turbopuffer)?
+ - Is India-specific coverage a first-class product requirement (region filter, India defaults for risk-free rate and ERP), or just one topic among many?
+ - Should chunk text be stored verbatim or lightly cleaned (Blogger div wrappers, googleusercontent image URLs, nav headers, [Music] markers stripped)? Cleaning helps retrieval but breaks exact-quote citation back to the source file.

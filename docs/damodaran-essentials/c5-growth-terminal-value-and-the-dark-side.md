@@ -117,7 +117,7 @@ The plan requires every memo to name the company's uncertainty type and pull the
 | Complex holding structures | Consolidated statements mix parent and holdings; cross holdings are opaque | Value the parent alone, then each holding, then add and subtract | Non-operating assets and minority interests as separate, cited rows |
 | Emerging market | Country risk, currency and inflation shifts, governance, nationalization, more cross holdings | Add a country risk premium scaled from default spreads; strip the sovereign spread from the local risk-free rate | Country-risk vintage id on every run; INR risk-free equals the 10-year Indian government bond (G-sec) yield minus India's default spread |
 
-Source: /Users/siddharth/Downloads/financeMD/valpacket1spr25.md, slides 292 to 321 and 339 (Spring 2025); /Users/siddharth/Downloads/financeMD/damodaran/pdfiles/CLC/slides/Ch13.md; bafb6h9rb.txt (India rows); /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md, memo section
+Source: /Users/siddharth/Downloads/financeMD/valpacket1spr25.md, slides 292 to 321 and 339 (Spring 2025); /Users/siddharth/Downloads/financeMD/damodaran/pdfiles/CLC/slides/Ch13.md; bafb6h9rb.txt (India rows); /Users/siddharth/Desktop/Valuation/docs/plan.md, memo section
 
 For India, the January 2026 vintage carries a default spread of 1.87% and a country risk premium of 2.85% on top of the mature premium of 4.23%. That is the concrete form "emerging market" takes in the numbers.
 
@@ -157,7 +157,7 @@ Why it matters for the calculator: the guard rail is not a smarter formula. It i
 
 His answer to input uncertainty is to stop pretending you know the number. If a key variable is uncertain, "why not quantify the uncertainty in a distribution (rather than a single price) and use that distribution in your valuation." That is a Monte Carlo simulation. You draw each uncertain input from a distribution many times, run the model each time, and look at the spread of values. The output is a value distribution, plus the probability that value sits below price. The plan commits the system to this from M2, with distributions from his industry quartiles, and the dashboard will show the ranges.
 
-Source: /Users/siddharth/Downloads/financeMD/valpacket1spr25.md, slide 340 (Spring 2025); the approved plan, M2 section; /Users/siddharth/Valuation/docs/read-this-first.md, section 3.5
+Source: /Users/siddharth/Downloads/financeMD/valpacket1spr25.md, slide 340 (Spring 2025); the approved plan, M2 section; /Users/siddharth/Desktop/Valuation/docs/read-this-first.md, section 3.5
 
 ### The "Input Stat Distributioons" sheet
 
@@ -188,7 +188,7 @@ Source: bafb6h9rb.txt and the approved plan (three vintage ids per run)
 - /Users/siddharth/Downloads/financeMD/damodaran/blog/2020/, the fourteen "Viral Market" posts, especially III, VI, and IX
 - /Users/siddharth/Downloads/financeMD/damodaran/pdfiles/CLC/slides/Ch11.md, Ch12.md and Ch13.md, terminal value at growth, mature, and declining firms
 - /Users/siddharth/Downloads/financeMD/damodaran/pc/fcffsimpleginzu.md, the "Input Stat Distributioons" and "Failure Rate worksheet" sheets
-- /Users/siddharth/Valuation/docs/other-side/, Document D, for the critics' side of terminal value and input sensitivity
+- /Users/siddharth/Desktop/Valuation/docs/other-side/, Document D, for the critics' side of terminal value and input sensitivity
 
 ## Three things to remember
 

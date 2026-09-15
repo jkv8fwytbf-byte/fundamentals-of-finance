@@ -9,3 +9,5 @@
 - Nothing was staged, committed, merged, pushed, or submitted as a pull request.
 
 `original-checkout-baseline.json` records the original branch references, status, index hash and file hashes. `verification.json` records checks and SHA-256 hashes of the five delivered PDFs.
+
+Note added 2026-09-15: the SHA-256 hashes in `verification.json` are from the Codex build of that morning. All ten PDFs were rebuilt later the same day after the folder moved to `~/Desktop/Valuation` and the paths inside the documents were updated, so the current PDF hashes differ. The checks described above were not rerun.

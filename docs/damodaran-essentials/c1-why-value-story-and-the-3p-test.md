@@ -18,7 +18,7 @@ Source: /Users/siddharth/Downloads/financeMD/damodaran/pdfiles/eqnotes/ValIntroS
 
 Why it matters for the calculator: the engine must be exact in its arithmetic, but the inputs are guesses, so every run also produces a range from Monte Carlo draws and a sensitivity table. Monte Carlo means running the model many times with inputs drawn at random from a chosen spread. That design is the three myths turned into code.
 
-Source: /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md (2026-09)
+Source: /Users/siddharth/Desktop/Valuation/docs/plan.md (2026-09)
 
 ## Price versus value
 
@@ -32,7 +32,7 @@ Source: /Users/siddharth/Downloads/financeMD/damodaran/blog/2020/03/a-viral-mark
 
 Why it matters for the calculator: the calculator computes value, and the market price is a separate input typed in beside it. The output is a gap, nothing more. A rule in the plan scans every memo and answer for advice language and fails the build if it finds any.
 
-Source: /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md (2026-09)
+Source: /Users/siddharth/Desktop/Valuation/docs/plan.md (2026-09)
 
 ## The three ways to value anything
 
@@ -81,7 +81,7 @@ Source: /Users/siddharth/Downloads/financeMD/damodaran/blog/2014/06/numbers-and-
 
 Why it matters for the calculator: his workbook has a sheet called "Stories to Numbers" with the story in a text box, then one row per assumption with a "Link to story" column. The shipped example carries Amazon's story text over Almarai's numbers, and the sheet does not notice, because the story column is free text with no checks. Our memo writer uses the same template but forces every proposed input to cite a filing page or a Damodaran passage, and a second opposing memo per company is mandatory.
 
-Source: /Users/siddharth/Downloads/financeMD/damodaran/pc/fcffsimpleginzu.md (valuation date 2026-02-01 in sheet); /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md (2026-09)
+Source: /Users/siddharth/Downloads/financeMD/damodaran/pc/fcffsimpleginzu.md (valuation date 2026-02-01 in sheet); /Users/siddharth/Desktop/Valuation/docs/plan.md (2026-09)
 
 ## The 3P test: possible, plausible, probable
 
@@ -103,7 +103,7 @@ Source: /Users/siddharth/Downloads/financeMD/damodaran/blog/2014/06/numbers-and-
 
 Why it matters for the calculator: the plan hard-codes the test as a rule. Only probable claims may set a base-case input. Plausible claims become a scenario. Possible claims are recorded at zero, which is where an option value would go if we ever add one.
 
-Source: /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md (2026-09)
+Source: /Users/siddharth/Desktop/Valuation/docs/plan.md (2026-09)
 
 ## The corporate life cycle lens
 
@@ -130,7 +130,7 @@ Source: /Users/siddharth/Downloads/financeMD/damodaran/New_Home_Page/NNPreface.m
 
 Why it matters for the calculator: the workbook's five levers (growth next year, growth for years 2 to 5, target margin, years to converge, sales-to-capital) plus its failure-probability switch are how the life cycle enters the numbers. The memo must also name the company's uncertainty type so the right chapter of "The Dark Side of Valuation" is pulled before inputs are proposed.
 
-Source: /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bkdrkpfng.txt (2026-09); /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md (2026-09)
+Source: /Users/siddharth/Desktop/Valuation/docs/sources/bkdrkpfng.txt (2026-09); /Users/siddharth/Desktop/Valuation/docs/plan.md (2026-09)
 
 ## Narrative breaks, shifts, and tweaks
 
@@ -150,7 +150,7 @@ Source: /Users/siddharth/Downloads/financeMD/damodaran/New_Home_Page/NNPreface.m
 
 Why it matters for the calculator: every run is stored with its inputs and data vintage, so a shift is a new run with changed levers, a break is the failure-probability switch, and a change is a new memo with a new story. The nightly jobs re-value the watchlist, so the feedback loop is a schedule rather than a good intention.
 
-Source: /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md (2026-09)
+Source: /Users/siddharth/Desktop/Valuation/docs/plan.md (2026-09)
 
 ## Where this comes from
 

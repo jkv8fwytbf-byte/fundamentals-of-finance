@@ -10,7 +10,7 @@ A DCF (discounted cash flow) valuation is a way of putting a number on a busines
 
 We follow one company through every station: Almarai, a Saudi food company, valued on 2026-02-01. It is the example that ships inside the workbook. Its answer, 7.187840270062114 per share against a share price of 72.28, is the golden test for your calculator. The calculator must reproduce that number to six decimals before it is trusted with anything else. All Almarai figures below are in millions of Saudi riyals, except the share count and the per-share numbers.
 
-Source: /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md (2026-09); /Users/siddharth/Downloads/financeMD/damodaran/pc/fcffsimpleginzu.md (valuation date 2026-02-01)
+Source: /Users/siddharth/Desktop/Valuation/docs/plan.md (2026-09); /Users/siddharth/Downloads/financeMD/damodaran/pc/fcffsimpleginzu.md (valuation date 2026-02-01)
 
 ## The grid you are filling in
 
@@ -36,7 +36,7 @@ Almarai's starting inputs, as typed on the Input sheet:
 
 EBIT means earnings before interest and taxes. It is the profit from running the business, before lenders and the tax office are paid. Every other term in the table gets defined at the station where it is used.
 
-Source: /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bkdrkpfng.txt, section 1 (2026-09)
+Source: /Users/siddharth/Desktop/Valuation/docs/sources/bkdrkpfng.txt, section 1 (2026-09)
 
 ## Station 1: the revenue growth path
 
@@ -234,7 +234,7 @@ The Diagnostics sheet puts your forecast beside history and industry data, then 
 
 Why it matters for the calculator: the sheet has no hard validations, only dropdowns and text. The plan turns these checks into real errors and warnings, so the calculator should compute every number above.
 
-Source: fcffsimpleginzu.md, "Diagnostics" (2026-02-01); bkdrkpfng.txt, section 4; /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md, milestone 2 (2026-09)
+Source: fcffsimpleginzu.md, "Diagnostics" (2026-02-01); bkdrkpfng.txt, section 4; /Users/siddharth/Desktop/Valuation/docs/plan.md, milestone 2 (2026-09)
 
 ## Simple ginzu versus full ginzu
 
@@ -245,7 +245,7 @@ Source: bkdrkpfng.txt, section 5 (2026-09)
 ## Where this comes from
 
 - /Users/siddharth/Downloads/financeMD/damodaran/pc/fcffsimpleginzu.md, the workbook itself; read "Valuation output", "Stories to Numbers" and "Diagnostics" together.
-- /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bkdrkpfng.txt, the formula-by-formula schema, including the nine overrides and the simple-versus-full table.
+- /Users/siddharth/Desktop/Valuation/docs/sources/bkdrkpfng.txt, the formula-by-formula schema, including the nine overrides and the simple-versus-full table.
 - /Users/siddharth/Downloads/financeMD/valpacket1spr25.md, slides 191 to 211 (growth, sales to capital, terminal value and stable growth) and slide 310 (distress).
 - /Users/siddharth/Downloads/financeMD/damodaran/blog/2016/11/myth-55-terminal-value-ate-my-dcf.md, why a large terminal share is normal.
 - /Users/siddharth/Downloads/financeMD/damodaran/blog/2016/11/myth-53-growth-is-good-more-growth-is.md, growth must be paid for with reinvestment.

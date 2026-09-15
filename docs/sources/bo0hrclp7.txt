@@ -1,0 +1,383 @@
+
+
+#################### RESEARCH 3 (chars 34269) ####################
+FULLY MANAGED STACK — VERIFIED SPECIFICS, SEPT 2026
+(All figures from primary docs unless marked. Dates are the docs' own `last_updated` where shown.)
+
+=====================================================
+1) VERCEL
+=====================================================
+
+1.1 Functions / Fluid compute (docs last_updated 2026-08-24)
+https://vercel.com/docs/functions/limitations
+- Fluid compute is ON by default for new projects.
+- Max duration (Node/Bun/Python, with Fluid): Hobby 300s default AND 300s maximum. Pro/Ent 300s default, 800s max (GA), 1800s extended max (beta, needs per-function config, not supported with Secure Compute/Static IPs).
+- Memory: Hobby 2 GB / 1 vCPU (default = max). Pro/Ent 2 GB default, up to 4 GB / 2 vCPU.
+- Concurrency: auto-scales to 30,000 (Hobby AND Pro), 100,000+ Ent.
+- Bundle: 250 MB uncompressed; 500 MB Python; "Large functions" beta up to 5 GB (Node/Bun/Python, requires Fluid + Active CPU, env var VERCEL_SUPPORT_LARGE_FUNCTIONS=1).
+- Request/response body: 4.5 MB hard cap (413 FUNCTION_PAYLOAD_TOO_LARGE). This matters: do not stream a 27-column x 94-industry table through a route handler body without paging.
+- 1,024 file descriptors shared across concurrent executions — use the Neon HTTP driver, not a TCP pool.
+- Default region iad1; multi-region is Pro+.
+
+1.2 Fluid pricing (docs last_updated 2026-06-16)
+https://vercel.com/docs/functions/usage-and-pricing
+- Hobby included: 4 Active-CPU-hours, 360 GB-hrs provisioned memory, 1,000,000 invocations/month.
+- Regional rates: iad1/pdx1/cle1 $0.128 per Active-CPU-hour and $0.0106 per GB-hr. Mumbai bom1 $0.140 / $0.0116. São Paulo gru1 $0.221 / $0.0183.
+- Invocations on Pro: $0.60 per million.
+- Billing model: Active CPU pauses during I/O (LLM calls, DB queries are effectively free CPU); provisioned memory bills for the whole instance lifetime. A valuation that waits on EDGAR is cheap; a valuation that does heavy numeric work is not.
+
+1.3 Hobby plan (docs last_updated 2026-08-31) https://vercel.com/docs/plans/hobby
+- 1,000,000 edge requests, 200 projects, 100 deployments/day, build 2 vCPU / 8 GB / 32 GB disk, runtime logs retained 1 hour, WAF 3 IP blocks + 3 custom rules.
+- Hobby is restricted to non-commercial personal use (fair-use guidelines). A private research tool for himself is fine; the moment it is sold or shown to clients, it must move to Pro ($20/seat/mo).
+- Exceeding a Hobby limit pauses that feature for 30 days (7 days for Web Analytics). There is no overage billing to absorb a mistake.
+
+1.4 Cron (docs last_updated 2026-07-15) https://vercel.com/docs/cron-jobs/usage-and-pricing
+- 100 cron jobs per project on ALL plans.
+- Hobby: minimum interval ONCE PER DAY, precision ±59 minutes. `0 * * * *` or `*/30 * * * *` fail at deploy time with an explicit error.
+- Pro/Ent: once per minute, per-minute precision.
+- DIRECT CONSEQUENCE: the "monthly ERP / quarterly CRP watch" and "nightly refresh" fit Hobby. Anything intraday does not. And ±59 min jitter means the vintage stamp must come from the data source's own date, never from the cron fire time.
+
+1.5 Vercel Queues — PUBLIC BETA (docs last_updated 2026-09-03 / pricing 2026-08-12)
+https://vercel.com/docs/queues , https://vercel.com/docs/queues/pricing
+- Durable append-only topics, fan-out to independent consumer groups, at-least-once, push mode (`handleCallback` + `experimentalTriggers: [{type:"queue/v2beta", topic:"..."}]` in vercel.json) and poll mode. SDKs: `@vercel/queue` (JS) and `vercel-queue` (Python).
+- Billed per API operation (Send / Receive / Delete / Visibility change / Notify), metered in 4 KiB chunks — a 12 KiB message = 3 operations. Idempotency-key sends and max-concurrency push deliveries bill at 2x.
+- Limits: TTL 60s–7 days (default 24h), delay up to 7 days, visibility timeout up to 60 min, 1–10 messages per receive, max message size 100 MB, unlimited topics and consumer groups, forced backoff after 32 retry attempts.
+
+1.6 Vercel Workflows (docs last_updated 2026-09-04 / pricing 2026-06-16)
+https://vercel.com/docs/workflows , https://vercel.com/docs/workflows/pricing
+- Durable execution via the open-source Workflow SDK (workflow-sdk.dev): `'use workflow'` / `'use step'`. JS/TS AND Python (via the `vercel` Python SDK). Built on Queues + managed persistence.
+- No max run duration, no max sleep duration. Per-run: 25,000 events, 10,000 steps, 50 MB max payload, 2 GB entity storage, 240s max replay time, 1,000 run creations/sec.
+- Pricing: Workflow Events $0.02 per 1K (Hobby includes 50,000/month); Workflow Data Written $0.50/GB (Hobby includes 1 GB); Workflow Data Retained $0.50/GB-month and is NOT AVAILABLE ON HOBBY. Retention after run completion: Hobby 1 day, Pro 7 days, Ent 30 days.
+- A normal step produces 3 events (step_created/started/completed), +1 per retry. A 5,000-company fan-out with 8 steps each ≈ 5,000 × (8×3 + overhead) ≈ 130K+ events/night ≈ 4M/month = ~$80/mo in events alone. Workflows is the wrong tool for wide cheap fan-out; it is the right tool for one long durable pipeline with sleeps.
+
+1.7 Python runtime — GA (docs last_updated 2026-08-12)
+https://vercel.com/docs/functions/runtimes/python
+- Versions: 3.12 (default), 3.13, 3.14. uv supported zero-config.
+- Framework presets for FastAPI / Flask / Django. Entrypoint = `app.py|index.py|server.py|main.py|wsgi.py|asgi.py` (also under `src/` or `app/`) exposing top-level `app` (ASGI/WSGI) or `application` (Django); or `[tool.vercel] entrypoint = "pkg.mod:app"`.
+- Streaming on by default; bytecode precompiled into the bundle; 500 MB bundle (5 GB via Large Functions beta).
+- To run Python AND Next.js in ONE project, use Vercel Services (each part builds independently, shared domain). This is the escape hatch if any part of the valuation engine is easier in Python — but the golden-test requirement argues for keeping the engine in one language.
+
+1.8 AI SDK + OpenRouter vs AI Gateway
+- AI SDK current major is v7 ("v7 (Latest)" on ai-sdk.dev). AI SDK for Python is in beta. There is no v6 line to target.
+- `@openrouter/ai-sdk-provider` latest is 3.0.0: supports `ai@^7.0.0`, requires Node.js 22+, ESM-only, ~300+ models, reasoning via `providerOptions.openrouter.reasoning` or `extraBody`. It is a COMMUNITY provider — update timing follows the package maintainer, not Vercel's release train. (npm/@openrouter/ai-sdk-provider; github.com/OpenRouterTeam/ai-sdk-provider)
+- Vercel AI Gateway is GA (docs last_updated 2026-09-07). Zero markup and zero platform fee on tokens, including BYOK. Endpoint `https://ai-gateway.vercel.sh/v1/chat/completions`; also speaks OpenAI Chat Completions, OpenAI Responses, and Anthropic Messages. Works from ANY infrastructure, not just Vercel; Vercel deployments can auth by OIDC instead of an API key. Free tier = a SUBSET of models plus a monthly free credit with lower per-model rate limits; buying credits moves you to paid and the monthly free credit stops. Add-on surcharges: Custom Reporting $0.075/1K tag writes + $5/1K report queries; team-wide provider allowlist $0.10/1K successful requests (per-request `only` filter is free); team-wide ZDR $0.10/1K requests (per-request ZDR free, Pro/Ent); Trace Drains $0.05/1K traces + $0.50/GB egress with no Pro allowance.
+- OpenRouter fees (openrouter.ai/docs/faq): 5.5% + $0.80 minimum on Stripe credit purchases (5% crypto); BYOK 5% above a $25,000/month free allowance on pay-as-you-go; no per-request fee; prompts and completions are NOT logged by default (opt into logging for a 1% discount); free models limited to 50 requests/day, 1,000/day once you hold ≥$10 in credits.
+- RECOMMENDATION: keep OpenRouter. The only measurable penalty is 5.5% on top-ups — on $25/month of models that is $1.38/month, which is noise against the $60–100 budget, and OpenRouter has the deepest open-weight catalog plus per-provider routing/privacy controls he wants. Mitigate the lock-in by putting model selection behind one module (`lib/models.ts` exporting `getModel(role)`), because both OpenRouter and AI Gateway are AI SDK v7 providers — swapping is a one-file change. Use AI Gateway only if he later wants keyless OIDC auth from Vercel or wants the free-tier credits for dev/CI.
+
+1.9 Deployment Protection (docs last_updated 2026-08-28)
+https://vercel.com/docs/deployment-protection
+- Hobby gets Vercel Authentication + Standard Protection: previews and generated deployment URLs are protected, THE PRODUCTION DOMAIN REMAINS PUBLIC. Protecting production requires Pro or Enterprise.
+- Password Protection is Enterprise-only, or a Pro add-on. That add-on is "Advanced Deployment Protection" at $150/MONTH (bundles Password Protection + Private Production Deployments + Protection Bypass exceptions), and you must keep it 30 days minimum before you can cancel.
+- Protection Bypass for Automation exists for CI/cron hitting protected URLs (supports multiple secrets).
+- Preview deployments: one per PR automatically via the Git integration; they inherit Standard Protection on Hobby. Env vars are scoped Production/Preview/Development; system vars `VERCEL_URL`/`VERCEL_BRANCH_URL` become non-public once Standard Protection is on, so fetch relative paths instead.
+
+1.10 Adjacent Vercel primitives worth knowing
+- Blob (docs 2026-08-11): Hobby free within limits (example rates: $0.023/GB-month storage beyond 5 GB included, simple ops $0.40/M beyond 100K, advanced ops $5.00/M beyond 10K, data transfer $0.05/GB in iad1 beyond 100 GB). Max file 5 TB; blobs >512 MB are never cached. Hobby: 100 stores, 1,200 simple ops/min, 900 advanced ops/min. Good home for the raw .xls/.xlsx and the JSON conversion artifacts.
+- Sandbox: Firecracker microVMs with native Node and Python. Hobby free allotment reported as ~5 active CPU-hours, 420 GB-hrs, 5,000 creations, 20 GB transfer, 15 GB lifetime storage, 10 concurrent; session length 45 min Hobby, up to 24 h Pro; Pro ceilings 8 vCPU / 16 GB (secondary sources + vercel.com/docs/sandbox/pricing).
+
+=====================================================
+2) NEON
+=====================================================
+https://neon.com/docs/introduction/plans , https://neon.com/pricing
+
+2.1 Free plan ($0)
+- 100 projects; 10 branches per project; 0.5 GB storage PER PROJECT; 100 CU-hours compute per project per month (≈400 hours at 0.25 CU); autoscaling up to 2 CU (~8 GB RAM); scale-to-zero after 5 minutes and it CANNOT be disabled; 5 GB public egress per project/month; 6-hour instant-restore history capped at 1 GB-month; 1 manual snapshot; community support.
+- The 0.5 GB storage cap is the binding constraint for this project, not compute. 254 industry/country datasets + 192-country ERP table + US/Global 94×27 tables + SEC facts for a 50-name watchlist will be in the tens of MB; add per-company LTM history and it grows. Free is fine for the US milestone, not for 5,000 companies.
+
+2.2 Launch (pay-as-you-go, NO monthly minimum since Dec 2025)
+- Compute $0.106/CU-hour; storage $0.35/GB-month; 500 GB egress per project included then $0.10/GB; autoscaling to 16 CU; instant restore up to 7 days at $0.20/GB-month; 100 manual snapshots; scale-to-zero can be disabled; protected branches; EXTRA BRANCHES $1.50 per branch-month beyond the included count.
+- Scale: $0.222/CU-hour, same storage rate, 30-day restore, SOC 2 / ISO / GDPR / HIPAA, private networking $0.01/GB.
+
+2.3 Branch-per-PR (GitHub integration)
+https://neon.com/docs/guides/neon-github-integration
+- The Neon GitHub App sets a `NEON_API_KEY` repo SECRET and a `NEON_PROJECT_ID` repo VARIABLE.
+- Four official Actions: Create branch, Delete branch, Schema diff (posts the diff as a PR comment), Reset branch (reset to parent state).
+- Canonical workflow: create branch on `pull_request: opened`, run migrations+tests against it, delete on `closed`. Pair with Vercel's per-PR preview deployment and set the preview `DATABASE_URL` to the branch's connection string.
+- Cost control: branches are cheap because Neon copy-on-writes storage, but on Launch each extra branch beyond the included count is $1.50/branch-month — delete on PR close, always.
+
+2.4 pgvector + serverless connections
+https://neon.com/docs/extensions/pgvector
+- pgvector supported at latest version plus one prior. HNSW supported for: `vector` up to 2,000 dims, `halfvec` up to 4,000, `bit` up to 64,000, `sparsevec` up to 1,000 non-zero. `halfvec` halves storage and memory.
+- Index-build guidance: `maintenance_work_mem` should be ≤50–60% of compute RAM (Neon's worked example: 10 GB on a 7 CU / 28 GB compute); raise `max_parallel_maintenance_workers` to the core count.
+- Serverless access: `@neondatabase/serverless` over HTTP or WebSockets. Drizzle has first-class `drizzle-orm/neon-http` (HTTP, no interactive transactions) and `drizzle-orm/neon-serverless` (WebSocket, supports transactions). Neon's POOLED endpoint runs PgBouncer by default — use the pooled URL from serverless functions, the direct URL for migrations.
+- VERDICT on vectors: Neon pgvector is a viable second home for embeddings, but do not run two vector stores. Pick Pinecone for the corpus (see §3) and keep Neon purely relational — facts, vintages, runs, watchlist.
+
+2.5 Neon Auth
+- Rebranded/rebuilt as "Managed Better Auth". Announced July 2026 alongside Neon Object Storage, Neon Functions, and a Neon AI Gateway; all in beta, free during beta, pricing to be published before GA. Auth MAU allowances on the pricing page: up to 60,000 MAU on Free, up to 1,000,000 on Launch/Scale.
+
+=====================================================
+3) PINECONE
+=====================================================
+https://www.pinecone.io/pricing/ , https://docs.pinecone.io/guides/assistant/pricing-and-limits
+
+3.1 Index plans
+- Starter (FREE): 2 GB storage, 2M write units/month, 1M read units/month, up to 5 indexes, 100 namespaces.
+- Builder ($20/mo flat): 10 GB, 5M WU, 2M RU, 10 indexes/project, 1,000 namespaces.
+- Standard ($50/mo minimum): storage $0.33/GB-month, WU $4–4.50 per million, RU $16–18 per million (region-dependent), 20 indexes/project, 100,000 namespaces.
+- Enterprise ($500/mo min): WU $6–6.75/M, RU $24–27/M, 200 indexes.
+
+3.2 Hard operation limits (https://docs.pinecone.io/reference/api/database-limits/operation-limits) — these apply on EVERY plan
+- Upsert (pre-computed vectors): 1,000 records OR 2 MB per batch.
+- Upsert with integrated embedding (`upsert_records`, text): MAX 96 RECORDS PER BATCH. 60,000 chunks ⇒ 625 batches. Plan the ingest as a queued fan-out, not one request.
+- Record ID ≤512 chars. Dense vectors ≤20,000 dims. Filterable metadata ≤40 KB per record. `top_k` max 10,000; query response capped at 4 MB. Fetch by ID 1,000/request; fetch by metadata 10,000/response at 5 req/s per namespace. `$in`/`$nin` limited to 10,000 values each. Import: 1 TB / 100,000 files per job.
+
+3.3 Integrated inference
+- `createIndexForModel` / `create_index_for_model` with `embed: {model, fieldMap}` — Pinecone embeds on upsert AND on query, so you never run an embedding service. Hosted models include `llama-text-embed-v2` (multilingual, up to 2,048 input tokens, Matryoshka/dynamic output dims) and rerankers such as `cohere-rerank-3.5` via a separate rerank endpoint.
+- Namespaces are the tenancy/partition primitive; metadata is the filter primitive.
+
+3.4 Assistant
+- Limits by plan: max assistants per project 5 (Starter) / 200 (Builder) / unlimited (Standard, Ent). File storage per org 1 GB / 3 GB / unlimited. Max file size 10 MB for .docx/.json/.md/.txt on every plan; .pdf 10 MB (Starter) / 50 MB (Builder) / 100 MB (Standard+). Chat input tokens/month 500K / 2M / unlimited; chat output 300K / 1M / unlimited. MAX INPUT TOKENS PER QUERY 64K ON EVERY PLAN. Monthly ingestion units 1K / 10K / unlimited (1 unit ≈ 400 tokens ≈ 300 words).
+- Paid rates: chat input $8/M, chat output $15/M, CONTEXT RETRIEVAL $5/M, ingestion $0.0005/unit, assistant storage $3/GB/month. Multimodal PDF ingestion bills ≈2x.
+- Supported file types: .docx, .json, .md, .pdf, .txt. File metadata: key/value pairs up to 16 KB per file, SET ONLY AT UPLOAD AND IMMUTABLE; supports filtering chat responses and listing files by filter.
+- BYO-LLM: YES. The Context API (`/context`) takes `query`, `top_k` (default 16), `snippet_size` (default 2048 tokens) and returns `snippets[]` each with `type`, `content`, `score`, and a `reference` containing the file `{id, name, size, status}`, a `pages[]` array, and a `signed_url` valid for 1 hour. So citation = file name + page numbers + snippet + link, exactly the shape an "Ask Damodaran" answer needs, and you can hand those snippets straight to OpenRouter.
+
+3.5 RECOMMENDATION for the ~60k-chunk corpus: INDEX WITH INTEGRATED EMBEDDING, NOT ASSISTANT.
+Reasons, in order:
+ a. Metadata. He needs `source_type ∈ {blog, packet, book, dataset, exam, transcript}`, `region`, `vintage`, `license_class`. An index gives 40 KB of FILTERABLE metadata per record and full `$eq/$in/$nin` filtering; Assistant gives 16 KB per FILE, immutable after upload, and filters at file granularity only.
+ b. Chunking control. The corpus is already deduped and chunked; Assistant re-chunks opaquely and 1,477 unpunctuated ASR transcripts are exactly the case where you want your own chunker.
+ c. Free-tier headroom. 60k chunks × 1024 dims × 4 bytes ≈ 245 MB + metadata — comfortably inside Starter's 2 GB. Assistant Starter caps at 1 GB of FILES and 500K chat input tokens/month, which one afternoon of testing would exhaust.
+ d. Cost shape. Index reads are $16–18/M RU only above the free 1M; Assistant bills $5/M context tokens with no free ceiling once you leave Starter.
+ e. He keeps the LLM on OpenRouter either way, but with an index he also keeps the retrieval prompt, the reranker choice, and the citation format.
+Use Assistant only as a 1-day spike to see what "good" citations look like before building the index path.
+
+=====================================================
+4) MANAGED BACKGROUND JOBS / FAN-OUT
+=====================================================
+- Inngest (https://www.inngest.com/pricing): Hobby FREE = 50,000 executions/month, 5 concurrent steps, 500 MB span data, 500K events ingested, 3 users. Pro from $99/mo = 1M executions (PAYG to 20M), 100+ concurrent steps, 5 GB spans, 5M+ events, 15 users then $10/user, 7-day trace retention. CRITICAL COUNTING RULE: an execution = the run ITSELF PLUS each step. A function with 5 `step.run()` calls burns 6 executions per run. TS-first (also Python and Go SDKs), HTTP-invoked so it works fine against Vercel functions.
+- Trigger.dev: Free = $0 with 20 CONCURRENT RUNS, 10 schedules, 1-day log retention, $5/month usage credits, unlimited tasks. Apache-2.0, self-hostable (Docker Compose / K8s), v4 GA. REAL PYTHON: the `pythonExtension` build extension + `@trigger.dev/python` run actual Python scripts inside the task container (pandas, Pillow, ML libs). `batchTrigger()` / `batchTriggerAndWait()` are built for fan-out. Best free-tier concurrency of the four.
+- Upstash QStash (https://upstash.com/pricing/qstash): Free = 1,000 messages/DAY, 10 schedules, 1 MB max message, 50 GB bandwidth. PAYG $1 per 100K messages; fixed plans from $180/mo. Pure HTTP/REST so it calls Vercel functions with no SDK runtime. RETRIES ARE BILLED AS EXTRA MESSAGES (2 attempts = 2 messages). No Python execution — it only delivers HTTP.
+- Vercel Cron + Queues (+ Workflows): cheapest integration (same project, same env vars, same logs) but Hobby cron is once-a-day only, Queues is beta, and Workflow events at $0.02/1K punish wide fan-out.
+- RECOMMENDATION, staged:
+  · 50 companies: Vercel Cron (daily, free) → one route handler loops 50 companies inside a single 300s invocation. No job platform at all. Zero extra cost, zero extra vendor.
+  · 500–5,000 companies: Vercel Cron fires ONE handler that enqueues N jobs. Choose Inngest if you want step-level retries/memoization and concurrency throttling in TypeScript (5,000 × 9 executions = 45K/night = 1.35M/month → Pro $99). Choose QStash if the work is one HTTP call per company and you just need cheap durable fan-out (150K messages/month = $1.50). Choose Trigger.dev if any step must be Python.
+  · Reserve Vercel Workflows for the single long durable pipeline (e.g. "refresh ERP → recompute CRP → revalue watchlist → notify") where sleeps and human-in-the-loop matter, not for the 5,000-way fan-out.
+
+=====================================================
+5) AUTH FOR A SINGLE-USER PRIVATE APP
+=====================================================
+- Vercel password protection on Hobby: NOT POSSIBLE. Hobby only gets Vercel Authentication with Standard Protection, which leaves the production domain public; Password Protection is Enterprise or the Pro $150/month Advanced Deployment Protection add-on (30-day minimum). Do not do this.
+- Auth.js / NextAuth v5: in MAINTENANCE MODE since early 2026 — security updates only, no new features; development moved to Better Auth, which now maintains the project. Do not start a greenfield 2026 app on it.
+- Clerk: free up to 50,000 MRU (monthly RETAINED users — a user only counts if they return ≥24h after signup), changed from the old 10,000 MAU tier on 2026-02-05; Pro $25/mo ($20 annual) for production features. Free tier is overkill-generous for one user, but it is a third vendor and a third dashboard.
+- Neon Managed Better Auth: free during beta, 60,000 MAU on Free / 1M on Launch, and the user table lives in the same Postgres he is already paying for.
+- RECOMMENDATION: Better Auth with the GitHub OAuth provider, users table in Neon (via Neon's managed Better Auth if the beta holds, else self-configured Better Auth tables through Drizzle), plus a hard allowlist in the session callback: `if (profile.login !== 'jkv8fwytbf-byte') deny`. That is ~30 lines, $0, no extra vendor, and it protects the production domain — which Vercel's own Hobby protection does not. Keep Vercel Authentication ON for previews so PR deploys are private for free.
+
+=====================================================
+6) LLM OBSERVABILITY / EVALS
+=====================================================
+- Langfuse Cloud (langfuse.com/pricing): Hobby FREE = 50,000 units/month, 30-day data access, 2 users, unlimited projects, no card. Core $29/mo = 100K units, 90-day retention, unlimited users. Pro $199/mo = 3-year retention. Overage graduated: $8 per 100K (to 1M), $7 (1–10M), $6.50 (10–50M), $6 (50M+). A unit = one ingested event (trace, observation, or score). DATASETS AND EVALUATIONS ARE INCLUDED ON ALL TIERS INCLUDING FREE.
+- Helicone: free = 10,000 REQUESTS/month; paid from $79/mo. Proxy-based, trivially easy to point at OpenRouter, but 10K/month is too small for a nightly 5,000-company job.
+- Braintrust: 10,000 scores free then $2.50 per 1K scores. Eval-first product; billing by score punishes exactly the exam-based eval set he wants to run repeatedly.
+- RECOMMENDATION: LANGFUSE CLOUD. It is the only one of the three whose free tier includes both tracing AND the dataset/eval runner, its unit model (~6 units for a trace with 5 spans ⇒ ~8,000 traces/month free) matches a research tool's volume, it takes OpenTelemetry so it also ingests Vercel AI Gateway trace drains if he ever switches, and it is self-hostable if pricing changes. Log every OpenRouter call with `metadata: {vintage, source_ids, license_class, model_id, prompt_version}` so the exam evals can be sliced by corpus vintage. SAMPLE the nightly batch (10%) — logging 5,000 companies × 6 units × 30 days = 900K units/month would cost ~$93/mo on Core.
+
+=====================================================
+7) READING .XLS (BIFF8) AND .XLSX IN TYPESCRIPT
+=====================================================
+- SheetJS Community Edition: current version 0.20.3, Apache-2.0, distributed FROM cdn.sheetjs.com, NOT from npmjs. Install by tarball URL: `npm i https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz`. SheetJS left the public npm registry; the `xlsx` package on npmjs is stuck at 0.18.5 (published ~4 years ago) and carries 2 unpatched high-severity advisories (prototype pollution, ReDoS) with no fix on that channel. NEVER `npm i xlsx`.
+- ExcelJS: actively maintained, but XLSX/CSV ONLY — it cannot read legacy BIFF8 .xls at all. It is not an option for betaIndia/marginIndia/capexIndia/waccIndia .xls.
+- BIFF8 is a Compound File Binary (OLE2) container; SheetJS CE is effectively the only mainstream JS library that parses it. The Python fallback is `pandas.read_excel(..., engine="xlrd")` (xlrd 2.x reads .xls only).
+- OUTSOURCED ONE-OFF CONVERSION (275 .xls → JSON → Neon), best to worst:
+  1. GITHUB ACTION (recommended). Public repos get unlimited free minutes on standard GitHub-hosted runners; private repos on the Free plan get 2,000 minutes/month + 500 MB storage shared with Packages. A `workflow_dispatch` job checks out the raw files (or pulls them from Vercel Blob), runs the SheetJS CE converter, writes JSON artifacts, and `COPY`s into Neon using `NEON_API_KEY`/`NEON_PROJECT_ID`. The run log IS the provenance record — commit the converter, the input checksums, and the output row counts. Deterministic, re-runnable, versioned, $0.
+  2. Trigger.dev task with the Python extension, if he prefers pandas.
+  3. Vercel Sandbox (Firecracker microVM, native Python) invoked once — fine, but 45-min Hobby session cap and it is a worse audit trail than a committed Action.
+  4. A Vercel route handler doing it inline — worst: 4.5 MB body cap, 300s Hobby duration, 250 MB bundle, and no artifact history.
+- Whichever path: stamp every emitted row with `source_file`, `sha256`, `vintage_date`, `retrieved_at`, `license_class`, and store the raw .xls in Vercel Blob so the conversion is reproducible from the original bytes.
+
+=====================================================
+8) COST TABLES
+=====================================================
+
+8.1 HOBBY SCALE — 1 user, 20–50 name watchlist, US only, nightly EDGAR refresh, RAG chat
+  Vercel Hobby                       $0     (4 CPU-hrs, 360 GB-hrs, 1M invocations, 1M edge requests; daily cron only; NON-COMMERCIAL USE ONLY)
+  Neon Free                          $0     (0.5 GB storage/project, 100 CU-hrs/project, 10 branches) — budget $5–15 on Launch once storage passes 0.5 GB
+  Pinecone Starter                   $0     (2 GB, 2M WU, 1M RU — holds 60k chunks; a full re-embed of the corpus is ~1 full WU budget, so re-index at most once a month on free)
+  OpenRouter                     $10–25     (open-weight models; + 5.5% on top-ups)
+  Langfuse Hobby                     $0     (50K units ≈ 8K traces/month)
+  Inngest Hobby / QStash free        $0     (or skip entirely at 50 companies)
+  Better Auth + GitHub OAuth         $0
+  GitHub (public repo)               $0     (unlimited Actions minutes)
+  ---------------------------------------
+  SUBTOTAL BEFORE DATA           $10–25/mo
+  EODHD Fundamentals Feed         ~$65/mo   (€59.99; EOD+Intraday All World Extended is a separate €29.99)
+  ---------------------------------------
+  TOTAL AT INDIA MILESTONE       $75–90/mo  — inside the $60–100 budget ONLY while Vercel/Neon/Pinecone stay on free tiers.
+
+8.2 5,000-COMPANY SCALE — nightly revaluation, same corpus
+  Vercel Pro                        $20/mo seat
+   + Active CPU: 5,000 × 2s CPU × 30 nights = 83 CPU-hrs × $0.128 (iad1)          ≈ $11
+   + Provisioned memory: ~240 GB-hrs × $0.0106                                     ≈ $3
+   + Invocations: 150K/month                                                       ≈ $0.09
+   (Pro's $20 monthly usage credit absorbs most of the usage)                    → ~$20–35
+  Neon Launch: 10 GB storage × $0.35 = $3.50; nightly 2h × 2 CU × 30 = 120 CU-hrs × $0.106 = $12.72; 2 PR branches × $1.50 = $3   → ~$20–30
+  Pinecone: corpus size is INDEPENDENT of company count (it is Damodaran's writing). Stays Starter $0 or Builder $20. Only if per-company filings enter RAG does it become Standard ($50 min + $0.33/GB + $16–18/M RU)  → $0–50
+  Fan-out: QStash 150K msgs = $1.50  |  Inngest Pro (1.35M executions) = $99  |  Trigger.dev usage-based
+  OpenRouter: 5,000 × 2 calls × (3K in / 700 out) at open-weight ~$0.30/$1.20 per M = 30M in + 7M out ≈ $17–20; a frontier model is 8–15x that  → $20–250
+  Langfuse: 900K units/month unsampled = Core $29 + ~$64 overage ≈ $93; at 10% sampling = Core $29  → $29–93
+  EODHD                                                                          ~$65
+  ---------------------------------------
+  REALISTIC TOTAL            ~$160–300/mo (QStash + sampled logging + open-weight models)
+  WORST CASE                 ~$550+/mo    (Inngest Pro + Pinecone Standard + unsampled Langfuse + frontier models)
+
+8.3 SINGLE POINTS OF COST (where the bill actually explodes)
+  1. LLM tokens if you call a model PER COMPANY per night. Fix: LLM only on user request or on material change (delta in value/share > threshold); the valuation itself is arithmetic and needs no model.
+  2. Langfuse units if you log every step of every batch run. Fix: sample the batch at 10%, log 100% of interactive chat.
+  3. Neon CU-hours if the nightly job holds a warm compute for hours. Fix: one batched window, let scale-to-zero fire; never disable scale-to-zero on Launch.
+  4. Pinecone READ units if the UI queries per keystroke. Fix: debounce, cache query embeddings, cap top_k (default 16 snippets is plenty).
+  5. Pinecone WRITE units on re-embedding. A full 60k-chunk rebuild is a large chunk of the 2M free WU. Fix: content-hash each chunk, upsert only changed ids.
+  6. Vercel's $150/month Advanced Deployment Protection if he tries to password-protect production. Fix: app-level auth (§5).
+  7. Inngest's run+step execution counting. A 12-step workflow costs 13 executions; collapse steps that cannot fail independently.
+
+=====================================================
+9) REFERENCE ARCHITECTURE
+=====================================================
+
+COMPONENTS
+  Edge/UI      Next.js App Router on Vercel. Server Components read Neon directly; Route Handlers for mutations, chat streaming, and job triggers.
+  Engine       `packages/valuation` — a PURE TypeScript library. No network, no env, no clock. Input: a frozen `ValuationInputs` object (rf, ERP, CRP, sales-to-capital, marginal tax, industry averages, LTM financials, vintage). Output: value/share + a full audit trace. THIS IS WHERE THE ALMARAI 1e-6 GOLDEN TEST LIVES, and it runs in GitHub Actions with zero managed dependencies.
+  System of    Neon Postgres. Tables: company, fact (with source_url, license_class, vintage_date, retrieved_at, sha256), industry_avg (region, industry, n_firms, vintage), country_risk (192 rows, vintage), valuation_run (inputs snapshot JSONB + output + engine_git_sha), watchlist.
+   record      NO CSV, NO SQLite. Raw source bytes live in Vercel Blob, keyed by sha256.
+  Corpus       Pinecone serverless index with integrated embedding (llama-text-embed-v2), namespaces by source_type, metadata {source_type, region, year, license_class, url, title, vintage}. Rerank top-50 → top-8 before the LLM.
+  Models       OpenRouter via `@openrouter/ai-sdk-provider` v3 on AI SDK v7, behind a single `getModel(role)` module. Roles: `chat`, `extract`, `judge`. Model ids chosen from artificialanalysis.ai and pinned in config with the AA index version and date (e.g. AA Intelligence Index v4.3, published 2026-09-07).
+  Jobs         Vercel Cron (daily) → enqueue → QStash/Inngest → Route Handler per company. Vercel Workflows only for the long durable ERP/CRP pipeline.
+  Observ.      Langfuse Cloud on every model call; Vercel Observability for functions; Neon for run history.
+  Auth         Better Auth + GitHub OAuth, single-login allowlist.
+  CI           GitHub Actions: typecheck → golden test (Almarai 1e-6) → Neon branch create → migrate → integration tests → Vercel preview → Neon branch delete on PR close.
+
+DATA FLOW (nightly)
+  cron(daily) → /api/jobs/refresh
+    → for each ticker: enqueue {ticker, vintage_id}
+      → worker: fetch EDGAR companyfacts (or EODHD for India) → build LTM (10-K minus prior interim plus current interim; tolerate a missing InterestExpense line as Apple does) → write `fact` rows WITH source+license_class+vintage
+      → worker: load industry_avg for (region, industry) applying India→emerging→Global fallback at n_firms<10 → call pure engine → write `valuation_run`
+    → monthly: ERP refresh; quarterly: CRP refresh — each creates a NEW vintage row, never mutates an old one. Every run stamps exactly one vintage_id so the 3-risk-free-rate / 3-ERP ambiguity can never silently mix.
+  RAG query → embed-on-query at Pinecone → metadata filter (source_type, region, license_class='redistributable') → rerank → OpenRouter → answer with file/page/snippet citations → Langfuse trace.
+
+WHAT IS STATELESS (and therefore scales horizontally for free)
+  · Every Route Handler and Server Component (Vercel autoscales to 30,000 concurrent on Hobby AND Pro).
+  · The valuation engine — pure function, no shared state, embarrassingly parallel across companies.
+  · Pinecone queries — serverless, scale with read units not with instances.
+  · Queue consumers — add consumer groups without coordination.
+
+WHAT DOES NOT SCALE HORIZONTALLY
+  · Neon's primary write endpoint. Batch writes; use COPY; never one INSERT per fact. Read replicas exist only on Scale.
+  · The nightly batch WINDOW — 5,000 companies against SEC/EODHD rate limits is a throughput problem, not a compute problem. Concurrency must be throttled at the job layer (Inngest concurrency keys / QStash max-concurrency), not by adding functions.
+  · Anything holding a TCP connection pool inside a serverless function (1,024 shared file descriptors). Use `drizzle-orm/neon-http` against the POOLED endpoint.
+  · Vercel Hobby cron granularity (once/day) — this is a plan wall, not a scaling wall.
+
+ON THE UI SCALABILITY DOUBT (company picker → backend → valuation tabs + chat)
+  The UI shape is fine; what does not scale is computing on demand inside the request. Split it: the picker reads a PRE-COMPUTED `valuation_run` row (a cached read, milliseconds, scales to 30K concurrent); a "recompute" button enqueues a job and streams progress. The chat tab is independent — it touches Pinecone + OpenRouter and never the engine. Scaling from 50 to 5,000 companies then changes only the job layer and Neon's compute size; not one line of UI.
+
+
+KEY FACTS:
+ - Vercel Functions with Fluid compute (default on): Hobby max duration 300s (default = max, no extension), Pro 300s default / 800s max GA / 1800s extended beta; Hobby memory 2 GB / 1 vCPU fixed; concurrency autoscales to 30,000 on both Hobby and Pro; request/response body hard cap 4.5 MB; 1,024 file descriptors shared. (vercel.com/docs/functions/limitations, last_updated 2026-08-24)
+ - Vercel Hobby cron is limited to ONCE PER DAY with +/-59 minute precision; sub-daily cron expressions fail at deploy time. Pro gets per-minute. 100 cron jobs per project on all plans. (vercel.com/docs/cron-jobs/usage-and-pricing, 2026-07-15)
+ - Vercel Hobby included usage: 4 Active-CPU-hours, 360 GB-hrs provisioned memory, 1M invocations, 1M edge requests, 200 projects, 100 deploys/day, 1 hour runtime log retention. Hobby is restricted to non-commercial personal use; exceeding a limit pauses the feature for 30 days with no overage billing.
+ - Fluid compute rates iad1: $0.128 per Active-CPU-hour, $0.0106 per GB-hr provisioned memory, $0.60 per million invocations. Mumbai bom1: $0.140 / $0.0116. Active CPU billing pauses during I/O (LLM and DB waits are free CPU).
+ - Vercel Queues is in PUBLIC BETA: billed per API operation (Send/Receive/Delete/Visibility change/Notify) metered in 4 KiB chunks; TTL 60s-7 days (default 24h), visibility timeout max 60 min, max message 100 MB, 1-10 messages per receive, forced backoff after 32 attempts; JS SDK @vercel/queue and Python SDK vercel-queue.
+ - Vercel Workflows: durable execution, JS/TS AND Python, no max run or sleep duration; per-run limits 25,000 events / 10,000 steps / 50 MB payload / 2 GB entity storage / 240s replay. Pricing: $0.02 per 1K Workflow Events (Hobby includes 50,000/mo), $0.50/GB data written (Hobby 1 GB), $0.50/GB-month data retained which is NOT available on Hobby. A normal step emits 3 events, so wide fan-out is expensive.
+ - Vercel Python runtime is GA: 3.12 default, 3.13, 3.14 available; FastAPI/Flask/Django presets; entrypoint app.py/index.py/server.py/main.py/wsgi.py/asgi.py or [tool.vercel] entrypoint; 500 MB bundle (5 GB via Large Functions beta); uv supported zero-config; streaming on by default. Python + Next.js in one project requires Vercel Services.
+ - AI SDK current major version is v7 (ai-sdk.dev shows 'v7 (Latest)'); AI SDK for Python is in beta. @openrouter/ai-sdk-provider is at 3.0.0, supports ai@^7.0.0, requires Node 22+, is ESM-only, and is a COMMUNITY provider (release timing follows the maintainer, not Vercel).
+ - Vercel AI Gateway is GA with ZERO markup and zero platform fee on tokens including BYOK, works from any infrastructure, and supports OpenAI Chat Completions / OpenAI Responses / Anthropic Messages shapes. Free tier covers only a subset of models with lower rate limits, and buying credits ends the monthly free credit. Surcharges: Custom Reporting $0.075/1K writes + $5/1K queries; team-wide provider allowlist $0.10/1K requests; team-wide ZDR $0.10/1K; Trace Drains $0.05/1K traces + $0.50/GB.
+ - OpenRouter fees: 5.5% + $0.80 minimum on Stripe credit purchases (5% crypto); BYOK 5% above a $25,000/month free allowance; no per-request fee; prompts/completions not logged by default (1% discount if you opt in); free models capped at 50 req/day, 1,000/day with >= $10 credits. At $25/month of usage the OpenRouter-vs-AI-Gateway delta is about $1.38/month.
+ - Vercel Deployment Protection: Hobby gets only Vercel Authentication with Standard Protection, which leaves the PRODUCTION domain public. Password Protection is Enterprise-only or a Pro add-on; the 'Advanced Deployment Protection' add-on costs $150/MONTH on Pro with a 30-day minimum before cancellation.
+ - Neon Free plan: 100 projects, 10 branches per project, 0.5 GB storage PER PROJECT, 100 CU-hours per project per month, autoscale to 2 CU, scale-to-zero after 5 min and cannot be disabled, 5 GB egress, 6-hour instant restore, 1 manual snapshot. The 0.5 GB storage cap is the binding constraint, not compute.
+ - Neon Launch: no monthly minimum, $0.106 per CU-hour, $0.35 per GB-month storage, 500 GB egress included then $0.10/GB, autoscaling to 16 CU, 7-day instant restore at $0.20/GB-month, EXTRA BRANCHES $1.50 per branch-month. Scale: $0.222 per CU-hour, 30-day restore, HIPAA/SOC2, private networking $0.01/GB.
+ - Neon GitHub integration sets a NEON_API_KEY secret and NEON_PROJECT_ID variable in the repo and ships four Actions: Create branch, Delete branch, Schema diff (posts a PR comment), Reset branch. Canonical pattern = branch on PR open, delete on PR close; pair with Vercel's per-PR preview deployment.
+ - Neon pgvector: latest version plus one prior; HNSW supported for vector up to 2,000 dims, halfvec up to 4,000, bit up to 64,000, sparsevec up to 1,000 non-zero; maintenance_work_mem should stay under 50-60% of compute RAM. Drizzle has drizzle-orm/neon-http (HTTP, no interactive transactions) and drizzle-orm/neon-serverless (WebSocket); the pooled endpoint runs PgBouncer by default.
+ - Neon Auth is now 'Managed Better Auth', announced July 2026 with Neon Object Storage, Neon Functions and a Neon AI Gateway; all in beta and free during beta. Auth allowance: up to 60,000 MAU on Free, up to 1,000,000 MAU on Launch/Scale.
+ - Pinecone Starter (free): 2 GB storage, 2M write units/month, 1M read units/month, 5 indexes, 100 namespaces. Builder $20/mo: 10 GB, 5M WU, 2M RU, 10 indexes, 1,000 namespaces. Standard $50/mo min: $0.33/GB-month, WU $4-4.50/M, RU $16-18/M, 20 indexes, 100,000 namespaces. Enterprise $500/mo min.
+ - Pinecone hard operation limits on every plan: upsert 1,000 records or 2 MB per batch; upsert_records with integrated embedding MAX 96 RECORDS PER BATCH (so 60k chunks = 625 batches); filterable metadata 40 KB per record; top_k max 10,000; query response capped at 4 MB; $in/$nin limited to 10,000 values; dense vectors up to 20,000 dims.
+ - Pinecone Assistant limits: 5 assistants and 1 GB file storage and 500K chat input + 300K chat output tokens/month and 1K ingestion units on Starter; max input 64K tokens per query on EVERY plan; file types .docx/.json/.md/.pdf/.txt only; file metadata 16 KB per file and IMMUTABLE after upload. Paid rates: chat in $8/M, chat out $15/M, context retrieval $5/M, ingestion $0.0005/unit (~400 tokens), storage $3/GB/month.
+ - Pinecone Assistant Context API supports BYO-LLM: POST with query, top_k (default 16), snippet_size (default 2048 tokens); the response returns snippets with content and score plus a reference containing file id/name/size, a pages[] array, and a signed_url valid for 1 hour. So citations already carry file name + page + snippet and can be handed straight to OpenRouter.
+ - RECOMMENDATION for the ~60k-chunk corpus: use a Pinecone index with integrated embedding (createIndexForModel with llama-text-embed-v2 + fieldMap), NOT Assistant — because the index gives 40 KB of filterable metadata per record versus Assistant's 16 KB immutable per-FILE metadata, keeps chunking control over 1,477 unpunctuated ASR transcripts, and 60k x 1024-dim vectors (~245 MB) fits inside the free 2 GB.
+ - Inngest Hobby free: 50,000 EXECUTIONS/month where an execution = the run itself PLUS each step (a 5-step function costs 6 per run), 5 concurrent steps, 500K events, 3 users. Pro from $99/mo = 1M executions, 100+ concurrent steps, 7-day trace retention.
+ - Trigger.dev free: 20 CONCURRENT RUNS, 10 schedules, 1-day log retention, $5/month usage credits, unlimited tasks; Apache-2.0 and self-hostable; runs REAL Python via the pythonExtension build extension and @trigger.dev/python; batchTrigger/batchTriggerAndWait for fan-out. Best free-tier concurrency of the four options.
+ - Upstash QStash free: 1,000 messages PER DAY, 10 schedules, 1 MB max message, 50 GB bandwidth; pay-as-you-go $1 per 100K messages; fixed plans from $180/mo. Retries are billed as additional messages. Pure HTTP/REST, no Python execution — it only delivers HTTP.
+ - Auth.js / NextAuth v5 has been in MAINTENANCE MODE since early 2026 (security updates only); development moved to Better Auth, which now maintains the project. Clerk's free tier is 50,000 monthly RETAINED users (changed from 10,000 MAU on 2026-02-05), Pro $25/mo.
+ - Langfuse Cloud Hobby free: 50,000 units/month (a unit = one ingested trace, observation, or score), 30-day data access, 2 users, unlimited projects — and datasets + evaluations are included on ALL tiers including free. Core $29/mo (100K units, 90-day retention), Pro $199/mo (3-year retention), overage $8 per 100K. Helicone free is only 10K requests/month ($79/mo paid); Braintrust gives 10K scores then $2.50/1K.
+ - SheetJS Community Edition is at 0.20.3, Apache-2.0, distributed from cdn.sheetjs.com — install by tarball (npm i https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz). The npmjs 'xlsx' package is frozen at 0.18.5 (~4 years old) with 2 unpatched high-severity advisories (prototype pollution, ReDoS). NEVER run npm i xlsx.
+ - ExcelJS reads XLSX/CSV ONLY and cannot parse legacy BIFF8 .xls, so it is not an option for the betaIndia/marginIndia/capexIndia/waccIndia .xls files. SheetJS CE is effectively the only mainstream JS library that parses BIFF8 (an OLE2 compound file); the Python fallback is pandas with the xlrd engine.
+ - GitHub Actions: unlimited free minutes on standard runners for PUBLIC repos; private repos on the Free plan get 2,000 minutes/month plus 500 MB storage shared with Packages. This makes a workflow_dispatch GitHub Action the cheapest and most auditable way to convert 275 .xls files to JSON and COPY them into Neon.
+ - Hobby-scale monthly cost: $10-25 (OpenRouter only) with Vercel Hobby, Neon Free, Pinecone Starter, Langfuse Hobby, Inngest/QStash free and a public GitHub repo all at $0; adding the EODHD Fundamentals Data Feed (EUR 59.99/mo, ~$65) brings the total to $75-90/mo, inside the $60-100 budget only while the platform tiers stay free.
+ - 5,000-company scale: realistically $160-300/month (Vercel Pro ~$20-35 incl. usage, Neon Launch ~$20-30, Pinecone $0-50, QStash $1.50 fan-out, OpenRouter $20 on open-weight models, Langfuse $29 with 10% sampling, EODHD $65); worst case ~$550+ with Inngest Pro, Pinecone Standard, unsampled logging and frontier models.
+ - Cost blow-up points, in order: (1) calling an LLM per company per night, (2) unsampled Langfuse logging of every batch step, (3) Neon compute held warm instead of batched, (4) Pinecone read units from an unthrottled search UI, (5) Pinecone write units on full re-embeds (content-hash chunks and upsert only changes), (6) Vercel's $150/mo Advanced Deployment Protection, (7) Inngest's run+step execution counting.
+ - Artificial Analysis Intelligence Index v4.3 published 2026-09-07: Kimi K3 is the strongest OPEN-WEIGHT model, ranked 3rd overall, 2.8T-parameter MoE with 104B active and a 1,048,576-token context, priced $3.00/$15.00 per million tokens; GLM-5.3 is $1.40/$4.40. Pin the chosen model id together with the AA index version and date in config.
+
+
+#################### RESEARCH 6 (chars 9373) ####################
+## 1) What a bloomberg.com India subscription is — and isn't
+
+**The India product.** Bloomberg Media launched **Bloomberg India** (bloomberg.com/india) on **26 Aug 2026** as a dedicated digital hub, not a separate paywall. India is now bloomberg.com's **second-largest audience market**. India-specific pieces: a Market Snapshot module (domestic equities, FX, global benchmarks, top movers), localised wealth guides, the **"India Edition"** newsletter curated by Menaka Doshi, the **"Markets Daily India"** pre-open brief, the *Emerging* podcast, and — from **Oct 2026** — India editions of Businessweek and Bloomberg Markets. Checkout now accepts **INR on local cards, with UPI added Sept 2026**. ([bloombergmedia.com, 26 Aug 2026](https://www.bloombergmedia.com/press/bloomberg-media-launches-bloomberg-india/); [bestmediainfo, Aug 2026](https://bestmediainfo.com/mediainfo/mediainfo-digital/bloomberg-media-launches-bloomberg-india-as-country-becomes-second-largest-audience-market-12435216))
+
+**Tiers.** Two consumer tiers plus corporate/student: **Digital** (~USD 19.99/mo, ~199/yr) and **All Access** (~USD 34.99/mo, ~415/yr, adds Businessweek print + full newsletter set). Bloomberg does not publish a static INR rate card — it is geo-priced at checkout, so **read the INR figure off your own billing page and stamp it in the plan; do not hardcode a number from a blog**. ([bloomberg.com/subscriptions](https://www.bloomberg.com/subscriptions) — returns 403 to bots; [Subger, 2026](https://subger.com/en/service/bloomberg))
+
+**Not included, at any consumer price:** the **Terminal** (~USD 30k/seat/yr, enterprise contract), **B-PIPE**, **Data License / OneData**, **SAPI**, and the **BLPAPI** SDKs. Those are Bloomberg Professional Services products with separate licensing and per-seat/per-datapoint fees. ([professional.bloomberg.com real-time data feed](https://professional.bloomberg.com/products/data/enterprise-catalog/real-time-data-feed/))
+
+**Official programmatic delivery for a consumer subscriber: none.** No public REST API, no subscriber API key, and bloomberg.com has had **no official RSS feeds for years** (third-party "Bloomberg RSS" generators are unofficial scrapers). The only sanctioned push channel is **email newsletters**; the only sanctioned pull channels are the website and the apps.
+
+**ToS, quoted (Bloomberg.com Terms of Service, §3 "Restrictions on Use"):**
+- *"You shall not use or attempt to use any 'scraper,' 'robot,' 'bot,' 'spider,' 'data mining,' 'computer code,' or any other automate device, program, tool, algorithm, process or methodology to access, acquire, copy, or monitor any portion of the Service"*
+- *"The Service and the information contained therein may not be used to construct a database of any kind. Nor may the Service be stored (in its entirety or in any part) in databases for access by you or any third party"*
+- *"you may download material from the Service and/or make one print copy for your own personal, noncommercial use"*
+- *"You may not recirculate, redistribute or publish the analysis and presentation included in the Service without BLP's prior written consent"*
+([bloomberg.com/notices/tos](https://www.bloomberg.com/notices/tos/))
+
+**Consequence for your build:** Bloomberg content can never be an ingested corpus row. The "no database" clause is the binding one.
+
+## 2) Legitimate uses inside the valuation workflow
+
+- **Manual clipping.** You read the article; you type *your own sentence* of what changed into a `narrative_note` row with `source_url`, `source_name="Bloomberg"`, `published_at`, `retrieved_at`, `license_class="proprietary_personal"`. Store **URL + headline + your paraphrase**, never article body text. Cap any verbatim quote at a sentence fragment. This is note-taking, not database construction.
+- **Newsletters via your Gmail connector.** Bloomberg *sends* the email to you; reading your own mailbox is a Gmail operation and does not touch "the Service" with a scraper. This is the cleanest automated-ish path. The content restrictions still ride along: extract link + headline + date into notes, do not persist full bodies, do not redistribute. For India equities the two that matter are **India Edition** and **Markets Daily India**; add **Markets Daily** and **Money Stuff** for context. (Deep-linking automation into newsletters is a grey zone — keep it read-only and personal.)
+- **Reader-mode / summaries for personal use.** Fine as ephemeral, in-session output. Do not cache the summary as a corpus chunk retrievable by RAG — that is the database clause again.
+- **Hard rule to encode:** `license_class="proprietary_personal"` rows are **excluded from the RAG index and from any shared/published artefact**; they appear only in your own narrative-notes UI.
+
+## 3) Programmatic news layer (the part you can actually index)
+
+Artificial Analysis launched its **Search Index** on **18 Aug 2026**, benchmarking search APIs by agent-usable quality, cost and speed: **Parallel (advanced) 75 @ $0.084/task**, **Exa (auto) 74 @ $0.127**, **Firecrawl 73 @ $0.075**, Parallel (turbo) 67 @ $0.060, Tavily (basic) 66 @ $0.193, Brave 65 @ $0.146. ([artificialanalysis.ai, 18 Aug 2026](https://artificialanalysis.ai/articles/search-api))
+
+Prices (Aug 2026): **Exa** 1,000 free searches/mo, ~$1.50–$7 per 1k depending on tier; **Tavily** 1,000 free/mo then $0.008/credit, plans from $30/mo; **Firecrawl** free tier, $99/mo (100k credits, $83 annual), search = 2 credits/10 results; **Parallel** no free tier, per-query. ([firecrawl.dev, 27 Aug 2026](https://www.firecrawl.dev/blog/best-web-search-apis))
+
+Finance-specific: **EODHD** Fundamentals Feed $59.99/mo; the **Financial News API** is an add-on, bundled in **ALL-IN-ONE $99.99/mo**; standard plans are **personal use** ("for commercial use, choose Startups & Enterprise"). ([eodhd.com/pricing](https://eodhd.com/pricing)) **Marketaux** free 100 req/day, 200k+ entities / 80+ markets, paid tiers with 20% annual discount. **Finnhub** news-sentiment is **US-only** — disqualifying for India. **NewsAPI** free tier is dev-only, 24h delay, no commercial use. **GDELT** free/open, global, weak ticker tagging. **Google News RSS** free, unofficial, no licence to store.
+
+**"What changed this quarter for TRENT" — the stack I'd wire:**
+1. **Primary first (free, licensed, authoritative):** NSE/BSE filings + Trent's IR quarterly results/investor deck. Facts go to `numbers`, not `narrative`.
+2. **Discovery:** **Exa** (semantic, `include_domains` = nseindia, bseindia, trentlimited, moneycontrol, livemint, business-standard; date-filtered to the quarter) — best quality/$ with a free tier for one watchlist.
+3. **Fetch/normalise:** **Firecrawl** for clean markdown of the URLs Exa returns (cheapest per task on the index).
+4. **Breadth backstop:** **GDELT** free, for "did anything happen I missed."
+5. **Skip** Finnhub (US-only), NewsAPI (delay + licence), Tavily (worst cost/quality here).
+6. **Bloomberg** stays manual/newsletter-only, as a `proprietary_personal` note.
+
+## 4) Where news belongs: story → numbers
+
+News never sets value. It moves **one named input**, and the input moves value through the existing fcffsimpleginzu logic — so every narrative note must name its driver:
+
+| News type | Legitimate input moved |
+|---|---|
+| New store/format rollout, price hikes, TAM, market share | `revenue_growth_yr1..5` |
+| Input costs, discounting, competitive entry, mix shift | `operating_margin_target`, `years_to_converge` |
+| Capex plan, acquisition, working-capital change | `sales_to_capital` (remember the 1-yr lag on ΔRevenue) |
+| Debt raise, rating change, interest-coverage shift | synthetic rating → cost of debt → WACC |
+| Sovereign/regulatory, India CRP/ERP revision | `country_risk_premium`, `ERP` (India Jan-2026: Baa3, spread 1.87%, ERP 7.08%, CRP 2.85%) |
+| Litigation, covenant breach, going-concern | failure probability / distress proceeds |
+
+**Audit schema (`narrative_notes` in Neon, not CSV):** `id, ticker, exchange, as_of_date, driver (enum above), direction (+/-/0), old_value, new_value, rationale_text (your words), source_url, source_name, license_class, published_at, retrieved_at, vintage_id, confidence, superseded_by`. Rules: (a) a valuation run is reproducible only if every non-default input has ≥1 note; (b) `vintage_id` pins which rf/ERP snapshot was live (the 2026 file carries 3.95/4.58/4.75% rf and 4.20/4.23/4.46% ERP — always stamp); (c) the **Almarai golden test at 1e-6 must still pass with all notes applied as zero-deltas**, proving the narrative layer is additive and never mutates the engine; (d) notes render as "Story → Input → Δ → Value impact" with no buy/sell language.
+
+Sources: [Bloomberg ToS](https://www.bloomberg.com/notices/tos/) · [Bloomberg India launch, 26 Aug 2026](https://www.bloombergmedia.com/press/bloomberg-media-launches-bloomberg-india/) · [AA Search Index, 18 Aug 2026](https://artificialanalysis.ai/articles/search-api) · [Firecrawl pricing roundup, 27 Aug 2026](https://www.firecrawl.dev/blog/best-web-search-apis) · [EODHD pricing](https://eodhd.com/pricing) · [EODHD news API docs](https://eodhd.com/financial-apis/stock-market-financial-news-api) · [Marketaux pricing](https://www.marketaux.com/pricing) · [Finnhub pricing](https://finnhub.io/pricing) · [Bloomberg India Edition newsletter](https://www.bloomberg.com/account/newsletters/india-edition)
+
+KEY FACTS:
+ - Bloomberg India (bloomberg.com/india) launched 26 Aug 2026 as a digital hub inside the existing bloomberg.com subscription, not a separate paywall; India is bloomberg.com's second-largest audience market.
+ - India-specific assets: Market Snapshot module, 'India Edition' newsletter (Menaka Doshi), 'Markets Daily India' pre-open brief, 'Emerging' podcast, India editions of Businessweek/Markets from Oct 2026.
+ - INR payment via local cards is live; UPI support added Sept 2026. Bloomberg does not publish a static INR rate card - price is geo-set at checkout, so the exact INR figure must be read off the user's own billing page.
+ - Consumer tiers are Digital (~USD 19.99/mo, ~199/yr) and All Access (~USD 34.99/mo, ~415/yr), plus corporate and student.
+ - Not included at any consumer price: Bloomberg Terminal, B-PIPE, Data License/OneData, SAPI, BLPAPI SDKs - all enterprise Bloomberg Professional Services products.
+ - There is no official public API and no official RSS for bloomberg.com content; email newsletters are the only sanctioned push channel.
+ - Bloomberg ToS Sec.3 verbatim: 'You shall not use or attempt to use any "scraper," "robot," "bot," "spider," "data mining," "computer code," or any other automate device, program, tool, algorithm, process or methodology to access, acquire, copy, or monitor any portion of the Service'.
+ - Bloomberg ToS Sec.3 verbatim: 'The Service and the information contained therein may not be used to construct a database of any kind. Nor may the Service be stored (in its entirety or in any part) in databases for access by you or any third party' - this is the binding clause that keeps Bloomberg out of the RAG index.
+ - Bloomberg ToS Sec.3 grants: 'you may download material from the Service and/or make one print copy for your own personal, noncommercial use' and forbids recirculation/redistribution without prior written consent.
+ - Reading one's own Bloomberg newsletters via the Gmail connector does not invoke a scraper against 'the Service' and is the cleanest semi-automated path; content restrictions (no full-body storage, no redistribution) still apply.
+ - Artificial Analysis launched its Search Index on 18 Aug 2026: Parallel advanced 75 @ $0.084/task, Exa auto 74 @ $0.127, Firecrawl 73 @ $0.075 (cheapest but slowest at 55s), Parallel turbo 67 @ $0.060, Tavily basic 66 @ $0.193, Brave 65 @ $0.146.
+ - Search API pricing Aug 2026: Exa 1,000 free searches/mo then ~$1.50-7 per 1k; Tavily 1,000 free/mo then $0.008/credit, plans from $30/mo; Firecrawl free tier then $99/mo for 100k credits ($83/mo annual); Parallel has no free tier.
+ - EODHD: Fundamentals Data Feed $59.99/mo; Financial News API is an add-on bundled into ALL-IN-ONE at $99.99/mo; free tier is 20 calls/day with 1 year of history; each news request costs 5 API calls plus 5 per ticker; standard plans are personal-use only.
+ - Finnhub news-sentiment is US-companies-only, disqualifying it for Indian coverage; Marketaux is free to 100 req/day covering 200k+ entities across 80+ markets; GDELT is free and global but weakly ticker-tagged; Google News RSS is free but unofficial with no storage licence.
+ - Recommended 'what changed this quarter for TRENT' stack: NSE/BSE filings + company IR first, Exa for domain- and date-filtered semantic discovery, Firecrawl for clean fetch, GDELT as free breadth backstop; Bloomberg stays manual/newsletter-only.
+ - News must move a named valuation input, never value directly: revenue growth, operating margin/convergence, sales-to-capital (with the 1-yr lag), synthetic-rating-driven cost of debt, ERP/CRP (India Jan-2026: Baa3, spread 1.87%, ERP 7.08%, CRP 2.85%), or failure probability.
+ - Proposed narrative_notes schema in Neon: id, ticker, exchange, as_of_date, driver enum, direction, old_value, new_value, rationale_text, source_url, source_name, license_class, published_at, retrieved_at, vintage_id, confidence, superseded_by.
+ - Guard rails: license_class='proprietary_personal' rows are excluded from the RAG index and any shared artefact; every non-default input needs at least one note; the Almarai golden test at 1e-6 must still pass with all notes applied as zero-deltas.

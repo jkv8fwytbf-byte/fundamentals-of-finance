@@ -10,7 +10,7 @@ A schedule is a promise about [order, not about speed]{.reading-highlight}. It s
 
 The weeks are grouped into milestones. A milestone is a bundle of work with a named owner and a "done when" line. This project has five: M0 (documents, already delivered), M1 (your accounts and Cursor), M2 (the foundation, built for you), M3 (you take the wheel) and M4 (India, accuracy, ranges, the market panel). A sixth, M5, exists in the plan only if other people ever use the system, and is out of scope here. The milestone map board draws them as a road.
 
-Source: /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md section 5 (2026-09-14); https://www.figma.com/board/LXcGUT7C2ArsRkwsUvRBWt
+Source: /Users/siddharth/Desktop/Valuation/docs/plan.md section 5 (2026-09-14); https://www.figma.com/board/LXcGUT7C2ArsRkwsUvRBWt
 
 ## Why this tool now (for this project)
 
@@ -50,7 +50,7 @@ Source: bkm2kob5x.txt, "12-week evening schedule"; plan section 4; guide chapter
 | 9 to 10 | Buffer | Re-read 0 and 8 | Corporate Life Cycle 8 to 20 | None | Reverse DCF and Monte Carlo review; a first opposing memo | the ratio in chapter 0, rule 8, is trending to zero |
 | 11 to 12 | Buffer | 17 as needed | Investment Philosophies; Document D chapter 5 | None | Prove one engine, three consumers: the same `value_company` answer from Cursor, Cline and Claude | you can teach this chapter to someone else |
 
-Source: plan sections 0, 4 and 5 (2026-09-14); /Users/siddharth/Valuation/docs/read-this-first.md section 10; bkm2kob5x.txt "12-week evening schedule" and section 13; guide chapter 15 week table
+Source: plan sections 0, 4 and 5 (2026-09-14); /Users/siddharth/Desktop/Valuation/docs/read-this-first.md section 10; bkm2kob5x.txt "12-week evening schedule" and section 13; guide chapter 15 week table
 
 The plan schedules work only through week 8. Weeks 9 to 12 exist because things slip and because the Damodaran track runs twelve weeks. The first accuracy score needs 90 days of price history after the first stored valuation, so it lands just after this schedule ends.
 
@@ -75,9 +75,9 @@ Source: bkm2kob5x.txt, "Checkpoints that must be true"; bkdrkpfng.txt (golden va
 ## Learn it
 
 - Damodaran's self-paced class index, https://pages.stern.nyu.edu/~adamodar/New_Home_Page/onlineclass.htm. Web page, 15 minutes to bookmark. Free. It is the master list behind chapter 15's session numbers.
-- The milestone map board, https://www.figma.com/board/LXcGUT7C2ArsRkwsUvRBWt. FigJam board, 20 minutes. Free. It is this chapter as a picture; the PNG is at /Users/siddharth/Valuation/docs/diagrams/png/milestone-map.png.
-- The plan, /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md, sections 0, 4 and 5. Markdown, 30 minutes. It is the contract this chapter is derived from.
-- Document A, /Users/siddharth/Valuation/docs/read-this-first.md, sections 10 and 14. Markdown, 20 minutes. Section 10 is the click-by-click order for week 1's accounts.
+- The milestone map board, https://www.figma.com/board/LXcGUT7C2ArsRkwsUvRBWt. FigJam board, 20 minutes. Free. It is this chapter as a picture; the PNG is at /Users/siddharth/Desktop/Valuation/docs/diagrams/png/milestone-map.png.
+- The plan, /Users/siddharth/Desktop/Valuation/docs/plan.md, sections 0, 4 and 5. Markdown, 30 minutes. It is the contract this chapter is derived from.
+- Document A, /Users/siddharth/Desktop/Valuation/docs/read-this-first.md, sections 10 and 14. Markdown, 20 minutes. Section 10 is the click-by-click order for week 1's accounts.
 - GitHub's two-factor authentication page, https://docs.github.com/en/authentication/securing-your-account-with-two-factor-authentication-2fa/about-two-factor-authentication. Web page, 20 minutes. Free. The first task of week 1, evening 1.
 
 Source: bkm2kob5x.txt sections 13 and 15 (2026-09-14)

@@ -1,0 +1,794 @@
+n: 3
+
+
+#################### CHECK 1 (chars 26593) ####################
+# TASK A — Findings
+
+---
+
+# PART 1 — Bloomberg: what the "API Library" actually is, and whether you can touch it
+
+## 1.1 What is on the API Library page
+
+Source: https://professional.bloomberg.com/support/api-library/ (fetched 2026-09-14)
+
+The page is a plain **download index for the BLPAPI SDK**, currently **v3.26.8.1**:
+
+| Platform | Languages offered |
+|---|---|
+| Windows | Java, C# (.NET), C++ |
+| Linux | Java, C++ |
+| macOS ARM (**marked Experimental**) | Java, C++ |
+| Python | via `pip` — wheels for Windows, macOS ARM, Linux |
+| C# (.NET) **FFI** (**Experimental**) | via NuGet |
+
+Also on the page: BLPAPI Developer's Guide (C++/Java/C#), reference docs, Core User Guide, and a **Schema Downloader** tool (Windows + Linux). Everything ships as `.zip` / `.tar.gz` direct downloads.
+
+**The SDK download is free and unauthenticated. The data behind it is not.** BLPAPI is a proprietary binary transport library; with no entitlement it connects to nothing.
+
+## 1.2 The entitlement statement — verbatim
+
+The page carries this notice (I pulled it from the raw HTML; it appears on **both** the Linux and macOS ARM sections):
+
+> "These Bloomberg API libraries cannot be used by Bloomberg Professional terminal users (which use the Desktop API). They are only compatible with the Bloomberg Server API and B-Pipe data feed products."
+
+Read that carefully — it is **not** saying "anyone can use these." It is saying the Linux/macOS builds are the *server-side* builds, which require **SAPI or B-PIPE**. Terminal users get data through the **Desktop API (DAPI)** instead, which is Windows-only and rides the locally logged-in Terminal.
+
+## 1.3 The four entitlement paths (all require a contract)
+
+| Product | What it is | What it requires | Who it's sold to |
+|---|---|---|---|
+| **Desktop API (DAPI)** | BLPAPI talking to `bbcomm`, the local Terminal process | An **active, logged-in Bloomberg Professional Terminal** on the same machine. The app **inherits the Terminal user's entitlements** automatically. Windows in practice. | Terminal subscribers only |
+| **Server API (SAPI)** | Same data, server-side, no desk attached | An **active Bloomberg Professional service subscription** + signed agreement. Bloomberg's own page: data "is only delivered to Bloomberg users" with an "active Bloomberg Professional service session" and biometric login | Institutions. Sales-led. No published price ([SAPI page](https://professional.bloomberg.com/products/data/data-connectivity/server-api/)) |
+| **B-PIPE** | Consolidated real-time normalized market data feed, incl. non-display use | Enterprise contract; per-exchange redistribution fees | Firms |
+| **Data License / DL REST** | Bulk + reference data, EOD pricing; ~50M securities, ~56k fields; REST surface behind the Bloomberg Enterprise Console | Enterprise contract | Firms |
+
+Every one of these needs **a signed licensing agreement**. There is no self-serve signup, no public trial, no API key you can generate.
+
+## 1.4 Can a bloomberg.com Digital / All Access subscriber use ANY of it?
+
+**No. None of it. Zero programmatic market data.** Evidence, stacked:
+
+1. **The API Library page itself** scopes the libraries to Terminal (DAPI), Server API, and B-PIPE — three enterprise entitlements. A news subscription is none of them.
+2. **The SAPI product page** states data is only delivered to users with an "active Bloomberg Professional service session." A bloomberg.com login is not a Bloomberg Professional session — different product, different identity system.
+3. **The developer surfaces are gated.** `developer.blpprofessional.com` and `console.blpprofessional.com` (where the DL REST API reference lives) require enterprise credentials. There is no consumer developer portal.
+4. **Bloomberg publishes no public machine-readable API spec** — no OpenAPI, no GraphQL schema, no MCP server, no public API catalog entry. Access is contract-based and sales-led with no public trial.
+5. **What bloomberg.com Digital/All Access actually buys** is editorial: unlimited bloomberg.com + app access, Businessweek, subscriber newsletters. Reported 2026 pricing ~**$34.99–$44.99/month** (sources vary; Bloomberg's own pages return HTTP 403 to automated fetches, so treat the exact figure as approximate and check the live page). Nothing in the product description mentions data export, bulk download, or API.
+
+**Verdict: a bloomberg.com subscription is a magazine subscription. It carries no data entitlement whatsoever.**
+
+## 1.5 Prices for the things that DO give programmatic access
+
+- **Bloomberg Terminal (single seat): ~$31,980/user/year** (~$2,665/mo) as of 2026. Multi-terminal: **~$28,320/seat/year**. Typically a **2-year minimum commitment**, billed quarterly in advance. A **6.5% increase** applied to subscriptions renewing on/after Jan 1, 2025. Real first-year cost often quoted at **$33k–$35k** once the keyboard (~$300), install, and data add-ons land.
+  - Sources: [costbench.com](https://costbench.com/software/financial-data-terminals/bloomberg-terminal/), [godeldiscount.com](https://godeldiscount.com/blog/bloomberg-terminal-cost-2026), [NeuGroup on the 6.5% hike](https://connect.neugroup.com/public/blogs/bloomberg-terminals-how-much-more-youll-pay-next-year)
+- **Data License / B-PIPE / SAPI: no list price published.** Contract-negotiated on data fields, exchanges, redistribution rights, and number of consuming applications. The same 6.5% 2025 uplift applied to data licenses and real-time data services. Realistically five-to-six figures annually, plus exchange fees. Bloomberg does publish a real-time data fee schedule PDF ([BDRSL Data Fees Public Disclosure 2025](https://assets.bbhub.io/professional/sites/27/BDRSL-Data-Fees-Public-Disclosure-2025-FINAL.pdf)) but it is exchange-fee detail, not a product price list.
+- **"Bloomberg for individuals" API in 2026: does not exist.** No consumer tier, no hobbyist tier, no student API. Bloomberg Anywhere is a Terminal-license mobility add-on, not a cheaper tier.
+
+## 1.6 What Bloomberg DOES publish for free, consumer-facing
+
+I verified these live today (2026-09-14), unauthenticated:
+
+**RSS — yes, and it works.** `https://feeds.bloomberg.com/<section>/news.rss` returns valid RSS 2.0 XML. Confirmed HTTP 200 with fresh content (`lastBuildDate: Mon, 14 Sep 2026`, `Copyright 2026 BLOOMBERG L.P.`):
+
+| Section | Status |
+|---|---|
+| `markets` | 200, ~15 KB |
+| `technology` | 200, ~15 KB |
+| `politics` | 200, ~16 KB |
+| `economics` | 200, ~7 KB |
+| `industries` | 200, ~7 KB |
+| `bview` (Opinion) | 200, ~11 KB |
+| `wealth` | 200, but only ~1 KB — near-empty |
+| `businessweek` | 200, but only ~1 KB — near-empty |
+| `green` | **404** |
+
+**Caveat that matters:** these are **headline + short description + link only**. No full article text, no structured financial data, no tickers-as-fields. They are undocumented and unversioned — Bloomberg has never formally supported them, and the `green` 404 plus the near-empty `wealth`/`businessweek` feeds show they rot without notice. Fine for a news-sentiment signal; useless as a data source.
+
+**Newsletters — yes, free ones exist.** `bloomberg.com/account/newsletters` offers free newsletters (Morning/Evening Briefing, Markets Daily, Matt Levine's *Money Stuff*). Some are subscriber-gated (e.g. the Odd Lots newsletter is subscribers-only). Email, not a feed — you'd need to parse a mailbox.
+
+**Podcasts — yes.** Standard podcast RSS (Odd Lots etc., served via omnycontent).
+
+Separately, Bloomberg launched **customizable Real-Time News Feeds** (machine-readable news + analytics) in **March 2026** — but that is an *enterprise* product sold alongside Terminal/Enterprise data, not consumer.
+
+## 1.7 Plain conclusion for a consumer subscriber
+
+> **Bloomberg gives you nothing programmatic.** Your bloomberg.com subscription grants read access to a website. The BLPAPI SDK is free to download but is inert without a Terminal (~$32k/yr), SAPI, B-PIPE, or Data License contract — all enterprise, all sales-led, all requiring a signed agreement, none available to an individual at any price you'd consider. There is no 2026 individual-tier Bloomberg API.
+>
+> **Do not design any part of your valuation system around Bloomberg.** The only legitimately free Bloomberg surface is the undocumented `feeds.bloomberg.com/<section>/news.rss` headline feeds and free email newsletters — suitable at most as a *news-event* signal, never as fundamentals. Get your Damodaran inputs from SEC EDGAR (free, structured XBRL, company facts API), Damodaran's own NYU datasets (free, updated each January), FRED (free, risk-free rates), and a paid fundamentals vendor if you need non-US coverage. That is where your ingest budget belongs.
+
+---
+
+# PART 2 — Private CI on GitHub Actions in 2026
+
+## 2.1 GitHub Actions: included minutes, storage, rates (private repos)
+
+Source: [GitHub Docs — Actions billing](https://docs.github.com/en/billing/concepts/product-billing/github-actions) and [Actions minute multipliers reference](https://docs.github.com/en/billing/reference/actions-minute-multipliers)
+
+**Included per month (private repos only — public repos are free on standard runners):**
+
+| Plan | Price | Minutes/mo | Artifact storage | Cache storage |
+|---|---|---|---|---|
+| **Free** | $0 | **2,000** | 500 MB | 10 GB |
+| **Pro** | **$4/mo** | **3,000** | 1 GB | 10 GB |
+| **Team** | **$4/user/mo** | **3,000** | 2 GB | 10 GB |
+| Enterprise Cloud | $21/user/mo | 50,000 | 50 GB | 10 GB |
+
+**Per-minute rates (standard hosted runners, after the Jan 1 2026 cut of "up to 39%"):**
+
+| Runner | $/min |
+|---|---|
+| Linux 1-core (x64) | **$0.002** |
+| Linux 2-core (x64) — `ubuntu-latest` | **$0.006** |
+| Linux 2-core (**arm64**) | **$0.005** |
+| Windows 2-core (x64 or arm64) | **$0.010** |
+| macOS 3–4 core | **$0.062** |
+| Linux GPU 4-core | $0.052 |
+| Windows GPU 4-core | $0.102 |
+
+Larger runners: x64 $0.006→$0.552/min (2–96 cores); arm64 $0.005→$0.194/min (up to 64 cores).
+
+**Storage overage:** artifacts/Packages **$0.25/GB/month**; Actions cache **$0.07/GB/month**.
+
+**Two billing traps:**
+
+1. **Larger runners never use your included minutes.** GitHub docs: *"Larger runners are always charged for, even when used by public repositories or when you have quota available."* The moment you put a 4-core or 8-core label in `runs-on`, you pay from minute one.
+2. **GitHub rounds each job up to the whole minute.** Fifty 20-second jobs cost 50 minutes, not 17. This is the single biggest waste source for matrix-heavy ingest workflows.
+
+**On multipliers — flag as uncertain.** The historical model charged Windows at 2× and macOS at 10× against your included-minute pool. GitHub's current reference page lists explicit per-minute dollar rates and **no longer states multipliers**, while several third-party 2026 pages still cite Windows 2× / macOS 10×. I could not resolve this cleanly. It doesn't affect you — **run everything on Linux x64** and the question disappears.
+
+## 2.2 The self-hosted runner charge: announced, then postponed
+
+- **2025-12-16** — GitHub announced hosted-runner price cuts of up to 39% effective Jan 1 2026, *plus* a new **$0.002/min "cloud platform charge" applying to self-hosted runners** in private repos, effective **March 1 2026**. ([GitHub Changelog](https://github.blog/changelog/2025-12-16-coming-soon-simpler-pricing-and-a-better-experience-for-github-actions/))
+- **Within ~48 hours** — after heavy backlash ([community discussion #182089](https://github.com/orgs/community/discussions/182089), [The Register, 2025-12-17](https://www.theregister.com/2025/12/17/github_charge_dev_own_hardware/)), GitHub appended: *"We're postponing the announced billing change for self-hosted GitHub Actions to take time to re-evaluate our approach."*
+- **Status as of today (2026-09-14): still postponed, indefinitely.** The Jan 1 hosted-runner price cut went ahead. ([GitHub's pricing-changes page](https://github.com/resources/insights/2026-pricing-changes-for-github-actions))
+- **Postponed ≠ cancelled.** If GitHub revives it, third-party runners (Blacksmith, Namespace, Depot) would each get $0.002/min added on top, and RunsOn-on-your-own-AWS would too. Keep that in your risk column.
+
+## 2.3 Do scheduled workflows auto-disable on a PRIVATE repo?
+
+**GitHub's docs say the rule is public-only.** Verbatim from [events-that-trigger-workflows](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows):
+
+> "In a public repository, scheduled workflows are automatically disabled when no repository activity has occurred in 60 days."
+
+Private repositories are **not covered by that sentence**. So on paper: **your scheduled ingest jobs on a private repo will not auto-disable.**
+
+**But treat this as "probably safe, verify empirically."** Community reports conflict — some users report private repos being hit too, and there's a known related bug where scheduled-workflow disabling also disables the workflow's *non-schedule* triggers ([discussion #32197](https://github.com/orgs/community/discussions/32197)). Also note: only **new commits** reset the inactivity clock — releases, tags, issues, and merged PRs do **not** count.
+
+**Two other schedule gotchas that will actually bite you:**
+
+- **Minimum interval is 5 minutes.**
+- **`schedule` runs get delayed — and dropped — under load, worst at the top of every hour.** GitHub's docs explicitly advise scheduling at a different minute. Use `17 6 * * *`, never `0 6 * * *`. For a nightly ingest pipeline this is the difference between "runs every day" and "silently skips a day a month."
+
+**Recommendation regardless:** add a dead-man's-switch. Have the ingest job write a `last_run_at` row to Neon on success, and have a separate cheap check alert you if it goes stale. Never trust a cron you can't observe.
+
+## 2.4 Blacksmith (blacksmith.sh)
+
+**What it is:** drop-in replacement GitHub Actions runners on faster bare-metal hardware — you change one label and nothing else. They claim ~2× faster compute and 4× faster cache downloads, plus CI observability (run history, log search, SSH-into-running-job, metrics, test analytics). They also sell `[code]smith`, a cloud coding agent — ignore that for your purposes.
+
+**Free tier: 3,000 minutes/month per organization** (priced as x64 2vCPU minutes). Higher-vCPU runners burn the free pool proportionally faster.
+
+**Per-minute pricing** ([blacksmith.sh/pricing](https://www.blacksmith.sh/pricing), fetched 2026-09-14):
+
+| Runner | $/min | vs GitHub |
+|---|---|---|
+| **Ubuntu x64 (2 vCPU)** | **$0.004** | 67% cheaper |
+| **Ubuntu ARM** | **$0.0025** | 75% cheaper |
+| Windows x64 | $0.008 | 60% cheaper |
+| macOS M4 | $0.08 | 35% cheaper |
+
+Add-ons: Docker layer caching **$0.50/GB/mo**, sticky disks **$0.50/GB/mo**, static IPs **$100/IP/mo**. Startup program (<100 employees, <$50M raised, or <5 years old) and a free OSS program exist.
+
+**How to switch:** install the GitHub App at `app.blacksmith.sh`, then change `runs-on`. Their migration wizard opens the PR for you.
+
+```yaml
+jobs:
+  build:
+    runs-on: ubuntu-latest                  # before
+    runs-on: blacksmith-2vcpu-ubuntu-2404   # after
+```
+
+Common mappings: `ubuntu-latest` → `blacksmith-2vcpu-ubuntu-2404`; `windows-latest` → `blacksmith-2vcpu-windows-2025`; `macos-latest` → `blacksmith-6vcpu-macos-latest`. **Update every job in the file** — partial migration silently leaves jobs on GitHub's meter.
+
+**Full label set:** `blacksmith-{2,4,8,16,32}vcpu-ubuntu-{2404,2204}` and `-arm` variants (2–32 vCPU, 6–128 GB RAM); Windows `blacksmith-{2..32}vcpu-windows-2025` (**public beta**); macOS `blacksmith-{6,12}vcpu-macos-{latest,26,15}`.
+
+### ⚠️ The blocker for you
+
+From Blacksmith's own quickstart docs, verbatim (fetched 2026-09-14):
+
+> "Blacksmith is limited to GitHub organizations and not available for personal repositories."
+
+Your private valuation repo under a personal account **cannot use Blacksmith at all**. Their permission model inherits entirely from GitHub *org* structure (org admins, repo roles) — there's no personal-account path.
+
+**The fix is free and takes two minutes: create a GitHub organization** (free tier), and put the private repo inside it. A Free *organization* also gets 2,000 Actions minutes/month for private repos. Do this on day one even if you never use Blacksmith — it costs nothing and keeps every third-party runner option open. Also note: if you later enable an org IP allowlist, you must allowlist Blacksmith's control-plane IPs.
+
+**2026 changes:** nothing announced on their pricing page. Their public commentary focused on GitHub's Dec-2025 control-plane charge announcement.
+
+## 2.5 Alternatives — one-line prices
+
+| Service | Price | Note |
+|---|---|---|
+| **[Namespace](https://namespace.so/pricing)** | Linux x64: **$0.002/min** (2 vCPU prepaid, $0.003 overage), $0.004 (4 vCPU), $0.008 (8 vCPU), up to $0.32 (64 vCPU). **ARM64 in early access.** Developer plan **$0/mo PAYG**; Team $100/mo (100k unit-min); 30-day free trial | **Cheapest per-minute x64 listed.** Cache snapshots $0.002/GB-hr, cache storage $0.0048/GB-day, registry $0.20/GB-mo |
+| **[Depot](https://depot.dev/pricing)** | **$0.006/min flat** across Linux x86, ARM **and macOS**; Developer **$20/mo** (2,000 GHA min incl.), Startup $200/mo (20,000 incl.); cache $0.20/GB/mo; 7-day trial | Flat-rate macOS is the standout. Monthly floor makes it poor value at your volume |
+| **[RunsOn](https://runs-on.com/pricing/)** | **Flat annual licence, zero per-minute markup** — Starter **from €300/yr** (<50k runners/mo) → Enterprise €3,600/yr. Compute billed by **your own AWS account** at spot/on-demand, per-second. **Free non-commercial tier** (nonprofits, OSS, education, **personal projects**) with attribution | Runs in your AWS via CloudFormation. Free tier could fit a personal project — but you own the AWS ops. Too much for a v1 beginner |
+| **[BuildJet](https://buildjet.com/for-github-actions/pricing)** | AMD: $0.004/min (2 vCPU), $0.008 (4), $0.016 (8), $0.032 (16), $0.048 (32). ARM: $0.004 (2 vCPU) → $0.064 (32). **One-time $5 credit**, no recurring free tier. Concurrency extensions $300/mo per 100 vCPU | Same $0.004 as Blacksmith but **no 3,000 free min/mo**. Strictly worse for your volume |
+
+## 2.6 Cost math for 3,000–6,000 min/month (all Linux x64, private repo)
+
+| Setup | @ 3,000 min | @ 6,000 min |
+|---|---|---|
+| GitHub **Free** (2,000 incl.) | 1,000 × $0.006 = **$6.00** | 4,000 × $0.006 = **$24.00** |
+| GitHub **Pro** $4/mo (3,000 incl.) | **$4.00** | $4 + 3,000×$0.006 = **$22.00** |
+| **Blacksmith** in a free org (3,000 free, $0.004) | **$0.00** | 3,000 × $0.004 = **$12.00** |
+| **Blacksmith + ~2× speed** (6,000 GH-min of work ≈ 3,000 BS-min) | **$0.00** | **$0.00** |
+| **Namespace** 2 vCPU PAYG ($0.002, no free tier) | **$6.00** | **$12.00** |
+| BuildJet ($0.004, no free tier) | **$12.00** | **$24.00** |
+| Depot Developer ($20/mo + 2,000 incl.) | $20 + 1,000×$0.006 = **$26.00** | $20 + 4,000×$0.006 = **$44.00** |
+
+Note the Pro break-even: **$4/mo buys 1,000 extra minutes**, which would cost $6 as Free-plan overage. Pro pays for itself the moment you exceed **~2,667 min/month**.
+
+## 2.7 Recommendation — cheapest reliable setup
+
+**Do this, in order:**
+
+**1. Put the private repo in a free GitHub organization from day one.** Costs $0. Free orgs get 2,000 private Actions minutes/month, same as a personal Free account. This is the single decision that keeps Blacksmith (and most alternatives) available to you later — and it's a painful migration to do after you've wired up secrets, environments, and OIDC.
+
+**2. Start on GitHub-hosted `ubuntu-latest`, GitHub Free plan, $0/mo.** Don't optimise a bill you haven't received. Watch actual usage for 3–4 weeks in Settings → Billing.
+
+**3. Add Blacksmith once you're consistently over ~3,000 min/month.** Install the app, run the migration wizard, change `runs-on: blacksmith-2vcpu-ubuntu-2404` everywhere. Their 3,000 free minutes plus ~2× speed means your realistic bill at 6,000 GitHub-equivalent minutes is **$0–$12/month**. Keep GitHub Free underneath as an instant fallback — reverting is a one-line label change, which is exactly why this is the low-risk choice.
+
+**4. If you'd rather avoid a third party entirely:** GitHub **Pro at $4/mo** and stay on `ubuntu-latest`. Worst case $22/mo at 6,000 minutes. That is 11% of your $200 budget and requires zero extra vendors, zero extra secrets, zero extra failure modes. For a beginner, this is a completely defensible choice — the simplicity is worth more than the $10.
+
+**Expected CI line item either way: $0–$25/month.** Your budget is not at risk from CI; it's at risk from model tokens and data vendors.
+
+**Guardrails to set up now (these save more than any runner choice):**
+
+- **Set a hard Actions spending limit** ($25) in org billing settings. A runaway retry loop in an ingest job is the realistic way you blow the budget. Do this before your first scheduled workflow.
+- **`timeout-minutes` on every job.** Default is 360 minutes — a hung API call costs you ~$2.16 in silence.
+- **`concurrency: { group: ..., cancel-in-progress: true }`** so pushes cancel superseded runs.
+- **Cache the pnpm/npm store**, not `node_modules`. Cache storage is 10 GB free, then $0.07/GB/mo — cheap relative to minutes.
+- **Beware per-job minute rounding.** A 20-job matrix of 15-second jobs bills 20 minutes. For ingest fan-out, batch inside one job rather than fanning out across matrix entries.
+- **Schedule off the hour** (`17 6 * * *`, not `0 6 * * *`) — GitHub explicitly warns queued scheduled jobs can be *dropped* under top-of-hour load.
+- **Don't burn CI minutes waiting on rate limits.** If an ingest job sleeps against a vendor's rate limiter, you're paying $0.006/min to do nothing. Chunk the work across runs, or move that specific job off Actions.
+- **Add a staleness alarm.** Write `last_run_at` to Neon on each successful ingest; alert if it goes stale >36h. This covers you against the schedule-drop and any auto-disable ambiguity at once.
+
+**Skip for v1:** RunsOn (you'd own AWS CloudFormation + spot capacity — real ops burden), Depot (monthly floor kills it at your volume), BuildJet (no free tier, otherwise identical to Blacksmith).
+
+---
+
+## Open items / uncertainties I could not resolve
+
+1. **Minute multipliers post-Jan-2026** — GitHub's reference page now lists dollar rates without stating Windows-2× / macOS-10× multipliers; third-party 2026 pages still cite them. Irrelevant if you stay on Linux x64, which I recommend.
+2. **Linux 1-core at $0.002/min** — listed under standard runners in GitHub's rate table, but I could not confirm whether a public `runs-on` label exists for it or whether included minutes apply. If it is usable, it halves your Linux bill. Worth a five-minute check in the runner settings before optimising anything else.
+3. **60-day auto-disable on private repos** — docs say public-only; community reports conflict. Mitigate with the staleness alarm above rather than trusting either.
+4. **Namespace personal-account support** — not verified. Namespace's docs are org-oriented like Blacksmith's; assume you need the org.
+5. **bloomberg.com subscription list price** — Bloomberg's own pages return HTTP 403 to automated fetches; the $34.99–$44.99/mo figure is from third-party aggregators and should be confirmed on the live page.
+6. **Self-hosted runner charge** — "postponed," not cancelled. If revived at $0.002/min it applies on top of every third-party runner, shifting the math toward GitHub-hosted.
+
+## Sources
+
+- [Bloomberg API Library](https://professional.bloomberg.com/support/api-library/) — fetched 2026-09-14
+- [Bloomberg Server API (SAPI)](https://professional.bloomberg.com/products/data/data-connectivity/server-api/)
+- [Bloomberg Data License](https://professional.bloomberg.com/products/data/data-license/)
+- [BLPAPI Core Developer Guide (PDF)](https://data.bloomberglp.com/professional/sites/10/2017/03/BLPAPI-Core-Developer-Guide.pdf)
+- [Bloomberg BDRSL Data Fees Public Disclosure 2025 (PDF)](https://assets.bbhub.io/professional/sites/27/BDRSL-Data-Fees-Public-Disclosure-2025-FINAL.pdf)
+- [Bloomberg Terminal pricing 2026 — costbench](https://costbench.com/software/financial-data-terminals/bloomberg-terminal/)
+- [Bloomberg Terminal cost 2026 — godeldiscount](https://godeldiscount.com/blog/bloomberg-terminal-cost-2026)
+- [NeuGroup — Bloomberg 6.5% price increase](https://connect.neugroup.com/public/blogs/bloomberg-terminals-how-much-more-youll-pay-next-year)
+- [Bloomberg Real-Time News Feeds press release (Mar 2026)](https://www.bloomberg.com/company/press/bloomberg-launches-customizable-real-time-news-feeds-for-enhanced-systematic-workflows/)
+- [Bloomberg free newsletters](https://www.bloomberg.com/help/question/newsletters/) · [Bloomberg newsletter signup](https://www.bloomberg.com/account/newsletters)
+- Bloomberg RSS endpoints verified live 2026-09-14: `https://feeds.bloomberg.com/{markets,technology,politics,economics,industries,bview}/news.rss`
+- [GitHub Docs — Actions billing](https://docs.github.com/en/billing/concepts/product-billing/github-actions)
+- [GitHub Docs — Actions minute multipliers & rates](https://docs.github.com/en/billing/reference/actions-minute-multipliers)
+- [GitHub Docs — events that trigger workflows (schedule)](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows)
+- [GitHub Changelog — Actions pricing update, 2025-12-16 + postponement](https://github.blog/changelog/2025-12-16-coming-soon-simpler-pricing-and-a-better-experience-for-github-actions/)
+- [GitHub — 2026 pricing changes for GitHub Actions](https://github.com/resources/insights/2026-pricing-changes-for-github-actions)
+- [GitHub community discussion #182089 — self-hosted charge backlash](https://github.com/orgs/community/discussions/182089) · [#32197 — schedule disabling bug](https://github.com/orgs/community/discussions/32197)
+- [The Register, 2025-12-17 — GitHub walks back self-hosted charge](https://www.theregister.com/2025/12/17/github_charge_dev_own_hardware/)
+- [Blacksmith pricing](https://www.blacksmith.sh/pricing) · [Blacksmith quickstart](https://docs.blacksmith.sh/introduction/quickstart) · [Blacksmith instance types](https://docs.blacksmith.sh/blacksmith-runners/overview) · [Blacksmith permissions](https://docs.blacksmith.sh/blacksmith-administration/permissions) — all fetched 2026-09-14
+- [Namespace pricing](https://namespace.so/pricing) · [Depot pricing](https://depot.dev/pricing) · [RunsOn pricing](https://runs-on.com/pricing/) · [BuildJet pricing](https://buildjet.com/for-github-actions/pricing)
+
+KEY FACTS:
+ - Bloomberg's API Library page offers BLPAPI SDK v3.26.8.1: Windows (Java, C#, C++), Linux (Java, C++), macOS ARM experimental (Java, C++), Python via pip, and an experimental C# FFI via NuGet.
+ - Verbatim from professional.bloomberg.com/support/api-library/: 'These Bloomberg API libraries cannot be used by Bloomberg Professional terminal users (which use the Desktop API). They are only compatible with the Bloomberg Server API and B-Pipe data feed products.'
+ - A bloomberg.com Digital/All Access subscription (~$34.99-$44.99/mo) grants NO API, NO data entitlement, and NO developer portal access — it is a news product only; SAPI requires an 'active Bloomberg Professional service session'.
+ - Bloomberg Terminal single seat is ~$31,980/user/year (~$2,665/mo); multi-seat ~$28,320/seat/year; 2-year minimum commitment; a 6.5% increase applied to renewals on/after Jan 1 2025.
+ - Bloomberg Data License, B-PIPE and SAPI have no published list price — all contract-negotiated, sales-led, no public trial, no OpenAPI/GraphQL/MCP spec. No 'Bloomberg for individuals' API exists in 2026.
+ - Bloomberg DOES publish free undocumented RSS at https://feeds.bloomberg.com/<section>/news.rss — verified live 2026-09-14 (markets, technology, politics, economics, industries, bview return HTTP 200; wealth/businessweek near-empty; green 404). Headlines + summaries only, no full text or data.
+ - Bloomberg offers free email newsletters (Morning/Evening Briefing, Markets Daily, Matt Levine's Money Stuff) at bloomberg.com/account/newsletters; some (e.g. Odd Lots newsletter) are subscriber-gated.
+ - GitHub Actions private-repo included minutes/month in 2026: Free 2,000; Pro ($4/mo) 3,000; Team ($4/user/mo) 3,000; Enterprise Cloud 50,000.
+ - GitHub Actions storage: Free 500 MB artifacts, Pro 1 GB, Team 2 GB, Enterprise 50 GB; 10 GB cache on all plans. Overage: artifacts $0.25/GB/mo, cache $0.07/GB/mo.
+ - GitHub Actions per-minute rates after the Jan 1 2026 cut (up to 39%): Linux 1-core $0.002, Linux 2-core x64 $0.006, Linux 2-core arm64 $0.005, Windows 2-core $0.010, macOS 3-4 core $0.062.
+ - Larger GitHub runners never consume included minutes — 'Larger runners are always charged for, even when used by public repositories or when you have quota available.' GitHub also rounds every job up to a whole minute.
+ - GitHub's $0.002/min self-hosted runner charge was announced 2025-12-16 for March 1 2026, then postponed within ~48 hours after backlash; still postponed indefinitely as of 2026-09-14. The hosted-runner price cut proceeded.
+ - GitHub docs state the 60-day scheduled-workflow auto-disable applies to PUBLIC repositories only ('In a public repository, scheduled workflows are automatically disabled when no repository activity has occurred in 60 days'); private repos are not covered, though community reports conflict. Only new commits reset the timer.
+ - Scheduled workflows have a 5-minute minimum interval and can be delayed or DROPPED under high load, worst at the top of the hour — GitHub advises scheduling at an off-hour minute (e.g. '17 6 * * *').
+ - Blacksmith gives 3,000 free minutes/month per organization, then $0.004/min Ubuntu x64 2vCPU, $0.0025/min Ubuntu ARM, $0.008/min Windows x64, $0.08/min macOS M4; add-ons: Docker layer cache $0.50/GB/mo, sticky disks $0.50/GB/mo, static IPs $100/IP/mo.
+ - Switching to Blacksmith = install the GitHub App at app.blacksmith.sh and change runs-on: ubuntu-latest to runs-on: blacksmith-2vcpu-ubuntu-2404 (every job in the file). ARM labels exist as blacksmith-{2..32}vcpu-ubuntu-2404-arm; Windows is public beta.
+ - BLOCKER: Blacksmith docs state verbatim 'Blacksmith is limited to GitHub organizations and not available for personal repositories.' Fix is to create a free GitHub organization and host the private repo there — free orgs also get 2,000 private Actions minutes/month.
+ - Alternatives: Namespace $0.002/min 2vCPU x64 prepaid (ARM early access, $0/mo Developer plan, 30-day trial); Depot $0.006/min flat across Linux x86/ARM/macOS with a $20/mo Developer floor; RunsOn flat licence from €300/yr with zero per-minute markup but runs on your own AWS (free non-commercial tier for personal projects); BuildJet $0.004/min 2vCPU with only a one-time $5 credit.
+ - Cost math for Linux x64 private CI: at 6,000 min/mo — GitHub Free $24, GitHub Pro $22, Blacksmith $12 (or $0 if its ~2x speed halves wall-clock), Namespace $12, BuildJet $24, Depot $44. GitHub Pro pays for itself above ~2,667 min/mo.
+ - Recommendation: create a free GitHub org day one, start on GitHub Free + ubuntu-latest ($0), add Blacksmith above ~3,000 min/mo for a $0-$12/mo bill; or stay on GitHub Pro at $4/mo for max simplicity ($22/mo worst case). Expected CI cost $0-$25/mo against a $200 budget.
+ - Essential guardrails: set a hard Actions spending limit ($25), timeout-minutes on every job (default is 360), concurrency cancel-in-progress, cache the pnpm store not node_modules, batch ingest work instead of matrix fan-out (per-job minute rounding), and write last_run_at to Neon with a staleness alarm.
+
+
+#################### CHECK 2 (chars 34614) ####################
+# TASK B — VENDOR SCORECARD (as of 2026-09-14)
+
+**How to read this.** Each table ranks by *fitness for your specific job* — a private, no-UI, batch-driven Damodaran valuation pipeline in TypeScript, ~60k vectors, nightly/weekly cron, ≤$200/month, India-focused equities. "Best at what they do" in the abstract sometimes loses to "best for a solo builder on $200."
+
+**Source-quality warning (read once, applies throughout).** A large share of 2026 "X vs Y" pages are SEO affiliate content with numbers that drift from vendor rate cards. Where a number came from a **primary source** (vendor docs, vendor status page, the benchmark publisher itself) I mark it **[P]**. Everything else is secondary and should be re-checked on the vendor's own pricing page before you enter a card. Prices change monthly in this category.
+
+---
+
+## Role 1 — Managed Postgres for a serverless/TS app
+
+| Vendor | Branching | Scale-to-zero | Price for your load | pgvector | Reliability signal | Verdict |
+|---|---|---|---|---|---|---|
+| **Neon** (PICK) | Copy-on-write branches = instant full-data clones; 7-day time travel | Yes, native; suspends after ~5 min idle, $0 compute while idle | Free: 100 CU-hr/mo, 0.5 GB. Launch: $0.106/CU-hr + $0.35/GB-mo; ~$19–26/mo typical | Included, no surcharge | Mixed: acknowledged outages 2026-08-10, 2026-07-11, 2026-05-08 (72 min, us-east-1 Cell 6); StatusGator logs 232+ events since Oct 2023. 99.95% SLA only on Scale | **Pick.** Scale-to-zero is worth more than 3 nines for a cron-driven batch job. A nightly job that runs 40 min/day costs cents. |
+| Supabase (RU1) | DB branching exists but heavier; branch = preview env | No true scale-to-zero on Pro; free tier pauses after inactivity | Pro $25/mo flat, includes Storage+CDN, Edge Functions, Realtime, Auth | Yes | 2026-09-11 stale-time-cache incident (resolved); 2026-06-08 DNS failures on .co TLDs | Best if you later want auth + file storage + realtime in one bill. You need none of that in v1. |
+| PlanetScale Postgres (RU2) | Postgres branches require **restore-from-backup** to carry data — not instant CoW | No | ~$39/mo entry (Scaler Pro); no free tier since 2024 | Yes (GA Sept 2025) | Strong ops reputation (Vitess heritage) | Most operationally serious of the three, worst economics for an idle hobby workload. |
+| Turso | Edge SQLite/libSQL, not Postgres | Yes | Cheap | No pgvector (own vector impl) | — | Wrong database family. Rejected: you want Postgres SQL + pgvector, and SQLite complicates numeric/financial work. |
+| Railway Postgres | No branching | No | Hobby $5/mo incl. $5 credit; a real Postgres service burns ~$18/mo alone | Yes (you install) | — | It's a container you babysit, not a managed serverless DB. |
+| Xata | CoW branching at storage layer, Apache-2.0 core | Yes | **Free tier retired** with the 2024-25 pivot; $100 credit for 14 days, then per-compute-hour + $0.28/GB-mo | Yes | $35M raised, 27 staff — thinnest balance sheet here | Technically closest Neon competitor, but a $35M company with no free tier is the wrong longevity bet for a beginner. |
+
+**Verdict: Neon Launch.** Scale-to-zero + CoW branching is the exact shape of a batch valuation pipeline, and it's the only vendor here where an idle database costs ~$0. Accept the reliability record — a failed cron run retries; you are not serving users.
+
+---
+
+## Role 2 — Vector database
+
+| Vendor | Free tier | Cost at ~60k vectors | Cost at ~1M vectors | Hybrid/sparse | Verdict |
+|---|---|---|---|---|---|
+| **pgvector on Neon** (PICK) | Free (already paying for Neon) | **$0 marginal** | ~$0–5 marginal | Native: combine with Postgres FTS/`tsvector` + `ts_rank`, or `pg_search`/BM25 ext. Full SQL joins to your fundamentals tables | **Pick for v1.** 60k vectors is ~0.4 GB at 1536-dim — trivially inside one Postgres table. One DB, one connection string, joinable to your financials. |
+| Pinecone (RU1) | Starter: 2 GB storage, 2M write units/mo, 1M read units/mo, $0, no card | **$0** (fits free tier) | ~$180–260/mo storage + $150–400/mo read units at 8M scale; ~$0.33/GB storage, $0.33/1M reads, egress $0.10/GB | Sparse+dense hybrid, integrated reranking | Genuinely free at your scale and zero-ops. Keep it as the fallback. Outages 2026-05-13 (us-east-1 5xx on reads/writes) and 2026-07-21. |
+| Qdrant Cloud (RU2) | Permanent free: 0.5 vCPU, 1 GB RAM, 4 GB disk | $0 | ~$40–80/mo | Best-in-class filtered search; native sparse vectors, BM25, RRF + weighted-sum fusion | Best pure vector engine if filtered retrieval becomes the hard part. p50 ~4ms, p99 ~25ms in 2026 comparisons. |
+| Turbopuffer | **No free tier**; $16/mo minimum (cut from $64 in June 2026) | $16/mo floor | Very cheap: ~$0.02/GB-mo storage, $1/PB queried (cut from $5 in Feb 2026), 80% discount 32–128 GB, 96% above 128 GB | Yes | The cost champion above ~10M vectors (Notion cut search cost ~60% vs Pinecone; Cursor ~95% on storage/retrieval). Latency 30–120ms. You will never reach the scale where it pays. |
+| Weaviate Cloud | 14-day sandbox only; free tier caps at 100k objects | Sandbox expires | Flex $45/mo min (repriced up from $25 in Oct 2025) | Strong hybrid | Repriced *upward* in 2025 — a negative signal for a budget build. |
+| Milvus / Zilliz Cloud | Free under 5 GB / 2.5M compute units; 2 collections, 1M vectors | $0 | ~$197/mo Enterprise Dedicated | Yes | Heaviest to operate; overkill. |
+
+**Benchmark note [P-ish]:** 2026 VectorDBBench-style runs at 50M vectors show pgvectorscale at 471 QPS @99% recall and p95 28ms vs Qdrant 41 QPS / p95 200ms — but rankings *flip* across 1M/10M/50M/100M scales, so treat any single headline as scale-specific. At 60k vectors every engine here is fast enough; the differentiator is operational surface area, and pgvector's is zero.
+
+**Verdict: pgvector on Neon; open a free Pinecone Starter as insurance.** Do not pay for a vector DB in v1. Revisit Qdrant or Turbopuffer only if you cross ~5M vectors.
+
+---
+
+## Role 3 — Embeddings + reranking APIs
+
+| Vendor | Quality signal | Price | Free tier | Context | Verdict |
+|---|---|---|---|---|---|
+| **Voyage (MongoDB)** (PICK) | Voyage 4 Large beats OpenAI text-embedding-3-large by 14% and Cohere embed-v4 by 8.2% NDCG@10 on Voyage's own RTEB (**vendor-run — discount accordingly**). voyage-context-4 (2026-06-29) removes chunking headaches [P] | voyage-4-lite $0.02/M, voyage-4 $0.06/M, voyage-4-large $0.12/M, voyage-context-4 $0.12/M | **First 200M tokens free per account**, across all voyage-4 models [P] | 32k tokens on large | **Pick.** 200M free tokens covers your entire corpus (Damodaran decks + filings) many times over. Effectively $0 for v1. |
+| Google Gemini Embedding (RU1) | gemini-embedding-001 held #1 on MTEB Multilingual at GA (mid-2025) | $0.15/M (embedding-001); Embedding 2 $0.20/M; batch = 50% off | Free via AI Studio | Long | Best *independent-leaderboard* evidence of the commercial options. Use if you want a second opinion vector space. |
+| OpenAI (RU2) | text-embedding-3-large solid but now mid-pack | 3-small $0.02/M, 3-large $0.13/M ($0.065/M batch), ada-002 $0.10/M | No standing free grant | 8k | The safe boring default. No reason to pay 6.5× for 3-large here. |
+| Cohere | embed-v4 competitive; **Rerank is the real product** | Embed v3 $0.10/M; **Rerank 3.5 $0.001/search**, Rerank 4 Fast $0.002, Rerank 4 Pro $0.0025 (1 search = query + up to 100 docs) | Trial key | — | **Use Cohere for reranking specifically.** Rerank 3.5 at $0.001/search is the price-performance floor. |
+| Jina | Reranker v3: 81.33% Hit@1 at **188ms** — only top-tier sub-200ms model, 131k context, listwise over 64 docs | ~$0.05/M for most models; v4 embeddings licensing is muddled (FAQ says free/non-commercial base, catalog lists a price) | 10M free tokens on signup, 1M/mo ongoing | 131k (reranker) | Fastest reranker, but licensing ambiguity on v4 is a real risk for a private commercial-ish build. |
+
+**Open-weight leaderboard context:** Qwen3-Embedding-8B scored 70.58 on MTEB Multilingual (mid-2025, #1 at the time). If you ever want fully-open embeddings for cost reasons, that's the family to look at — but at $0 marginal cost via Voyage's free grant, don't bother in v1.
+
+**Verdict: Voyage voyage-4-lite (or voyage-context-4) for embeddings + Cohere Rerank 3.5 for reranking.** Reranking matters more than embedding choice for a Damodaran corpus, because your queries ("what discount rate does he use for emerging-market banks?") are semantically diffuse and need a second-pass scorer.
+
+---
+
+## Role 4 — Model router
+
+| Vendor | Fee | Breadth | Privacy controls | Verdict |
+|---|---|---|---|---|
+| **OpenRouter** (PICK) | 5.5% on credit purchases ($0.80 min); **no inference markup**. BYOK: first 1M requests/mo free, then 5% | 337 models across 58 creator prefixes (2026 count) | **Best in class.** Enforceable ZDR routing — global, per-model-group, per-guardrail, or per-request. Doesn't store prompts/responses unless you opt in to logging [P] | **Pick.** ZDR enforcement is the single feature that makes "everything private" achievable through a router. |
+| Vercel AI Gateway (RU1) | **Zero markup**, BYOK free | 313 models | **Weak: no provider restrictions.** You can filter the catalog display but cannot control which provider actually serves a request | Cheaper, but privacy-blind. Disqualified on your "everything private" requirement. |
+| Fireworks (RU2) | Direct provider | Open-weight focused | **Zero-data-retention on open models**; fixed 6,000 RPM ceiling you can plan against; 50% input-cache discount | Best *direct* fallback for open-weight models. DeepSeek V4 Pro ~17% cheaper input / 21% cheaper output than Together; Kimi K2.6 21% cheaper input. |
+| Together | Direct provider | Widest open-model catalog | — | Can queue rather than provision when GPU inventory is short for your model/region. Cheaper for fine-tuning >16B and lets you download weights. |
+| Direct provider keys | 0% | 1 vendor each | Varies | Cheapest in theory; you'd manage N keys, N SDKs, N failover paths. Not worth it for a solo beginner. |
+
+**CRITICAL privacy warning, quoted from the research:** OpenRouter's privacy policy states that enabling prompt logging "grants OpenRouter an irrevocable right to commercial use" of those inputs and outputs — broader than most providers. **Keep logging OFF.** Also: ZDR enforcement covers *inference routing only*, not plugins/tools like OpenRouter's web-search plugin, which run under third-party retention policies. If you use OpenRouter web search, that traffic is outside your ZDR guarantee — use a separate search vendor (Role 9) instead.
+
+**Verdict: OpenRouter with `data_collection: deny` / ZDR enforced globally, logging off, Fireworks as the direct-key fallback.** Budget the 5.5% top-up fee as a line item — on $100 of inference that's $5.50.
+
+---
+
+## Role 5 — LLM observability / evals
+
+| Vendor | Free tier | Evals | Status | Verdict |
+|---|---|---|---|---|
+| **Langfuse** (PICK) | Hobby: **50k units/mo, 2 seats, 30-day retention, $0**. Self-host free forever, no per-seat pricing | Yes — evals, prompt management, datasets | Acquired by **ClickHouse 2026-01-16** alongside a $400M Series D (ClickHouse to $15B). No pricing/licensing/self-hosting changes announced [P] | **Pick.** Open source, TS-native SDK, free tier fits a solo batch pipeline, and the acquisition *de-risks* longevity rather than threatening it. Core $29/mo when you outgrow Hobby. |
+| Braintrust (RU1) | Most generous: **1M spans/mo, unlimited users, 10k evals** | Strongest CI/CD eval-gated deploy workflow | Pro $249/mo | If evals-as-a-gate is your priority (it should eventually be — you want to regression-test valuation outputs), Braintrust's free tier is objectively the biggest. Serious runner-up. |
+| Arize Phoenix (RU2) | 1 GB processed data/mo, unlimited users, 10k eval runs; self-host with no licence cost | Yes | Pro $249/mo | Best OTel-native open-source option. Pick if you want vendor-neutral tracing. |
+| Helicone | Hobby free: 10k requests/mo, 7-day retention; Pro $79 | **No evals** | **Acquired by Mintlify March 2026 → maintenance mode** | **Avoid.** Maintenance mode is disqualifying for a system you'll run for years. |
+
+**Verdict: Langfuse Hobby (free), with Braintrust free tier opened in parallel for eval runs.** These two are complementary and both free at your scale. Langfuse for traces/costs, Braintrust for the "did my DCF prompt regress?" eval suite.
+
+---
+
+## Role 6 — Managed job runner
+
+| Vendor | Free tier | Fit for a valuation cron | Verdict |
+|---|---|---|---|
+| **GitHub Actions** (PICK) | **Public repos: unlimited, free.** Private: Free plan 2,000 min/mo + 500 MB; Pro 3,000 min + 1 GB; Team 3,000 min; Enterprise 50,000 min. Post-2026-01-01 repricing: Linux x86 **$0.006/min**, Linux ARM $0.005, Windows $0.010, macOS $0.062 | Cron triggers, secrets management, artifacts, your code already lives there. Self-hosted runners remain **free** — GitHub announced a $0.002/min platform charge for self-hosted on private repos from 2026-03-01, then postponed within 48h after backlash; it never took effect | **Pick.** Zero new vendor, zero new SDK, native to your repo. 2,000 free min/mo = 66 min/day of compute, which is plenty for nightly valuations. |
+| Inngest (RU1) | 25k–50k runs/mo free (sources conflict; some cite 100k free executions with durable step functions). Pro from $75/mo with 1M executions | Event-driven durable step functions in TS; each step retried independently; local dev server | **Best upgrade path** when a single valuation becomes a 12-step fan-out (fetch → OCR → embed → extract → DCF → sensitivity → write-up) and you want per-step retry without re-running the expensive LLM calls. |
+| Trigger.dev (RU2) | $5 free usage/mo, 10 concurrent runs; some sources cite 50k runs free | Long-running plain async TS; deploys workers to their infra; OTel trace views; realtime progress | Closest to "just write TypeScript." Good if your jobs exceed Actions' 6-hour limit. |
+| Upstash QStash | Pay per message: **$1 per 100k** published ($10/M) | HTTP message queue with scheduling + guaranteed delivery | Cheapest and most lightweight, but it's a queue, not a workflow engine. No durable step semantics. |
+| Temporal Cloud | — | Assumes a long-running worker fleet **you** deploy and keep alive | Wrong shape entirely. Enterprise durability tax you don't need. |
+
+**Verdict: GitHub Actions now; Inngest when you need durable steps.** Do not pay for orchestration in v1. Keep the repo **private** and stay under 2,000 min/mo, or accept ~$0.006/min overage — 1,000 extra minutes is $6.
+
+---
+
+## Role 7 — Object storage for raw files
+
+| Vendor | Storage | Egress | Free tier | Verdict |
+|---|---|---|---|---|
+| **Cloudflare R2** (PICK) | $0.015/GB-mo | **$0.00** | 10 GB/mo storage free | **Pick.** Zero egress is structurally different from everyone else, and S3-compatible so any AWS SDK works. Your OCR pipeline will re-read PDFs repeatedly — egress-free matters. |
+| Backblaze B2 (RU1) | **$0.006/GB** (cheapest storage) | Free up to 3× avg monthly stored data, then $0.01/GB; **unlimited free egress via Cloudflare/Fastly** (Bandwidth Alliance) | 10 GB free | Cheapest raw storage. Pick if you're archiving hundreds of GB of scanned decks. |
+| AWS S3 (RU2) | ~$0.023/GB | **$0.09/GB** — 15× the cheapest alternative on a 10 TB/5 TB workload | 5 GB (12-month) | Only if you need an AWS-native feature. The egress meter is the whole story. |
+| Vercel Blob | $0.023/GB-mo | **$0.05/GB**, billed on a meter *separate from* Vercel bandwidth — one page load can hit two meters | Hobby: 1 GB storage + 10 GB transfer/mo | Convenient only if already deep in Vercel. You have no web UI in v1, so you have no reason to be. |
+| GitHub Releases | Free | Free | — | Fine for a handful of static reference PDFs, but 2 GB per-file cap, no programmatic lifecycle, and it makes your repo the database. Don't. |
+
+**Verdict: Cloudflare R2.** At your volume (a few GB of PDFs) you stay inside the 10 GB free tier indefinitely. Budget $0–2/month.
+
+---
+
+## Role 8 — OCR for image-only PDFs (scanned lecture decks)
+
+| Vendor | Price/page | Quality evidence | Tables / math | Verdict |
+|---|---|---|---|---|
+| **Mistral Document AI (OCR 4.1)** (PICK) | **$4/1k pages** standard, **$2/1k via Batch API** (50% off), $5/1k annotated [P] | **74.9%** overall on an independent 223-assertion olmOCR-Bench run (2026-06-28) — beating Qwen3-VL 72.6%, GPT-5.5 71.3%, Claude Opus 4.8 71.3%, Gemini 3.1 Pro 70.4%, **Marker 55.2%, Docling 37.7%, LlamaParse 32.7%** | **Tables 94.3%**, reading order 73.3%, **math 68.4%**. Scanned docs 57.4% (Qwen3-VL better at 61.7%). OCR 4.1 adds paragraph-level bounding boxes + block confidence scores [P] | **Pick.** Best independent score, cheapest credible option, and the bbox grounding lets you cite page numbers in your valuation write-ups. |
+| Reducto (RU1) | $0.015/page ($0.012 batch) after 15k free credits — **~3.75× Mistral** | **90.2%** avg table accuracy on RD-TableBench (1,000 complex tables) vs Azure DI 82.7%, AWS Textract 80.9%, Google Doc AI 64.6% — **note: vendor-published benchmark** | Best-in-class tables | Pay for this only if a wrong number costs real money with no human review. For a personal valuation system where you eyeball outputs, Mistral gives ~90% of the quality at ~27% of the price. |
+| Azure Document Intelligence (RU2) | ~$1.50/1k basic OCR, 5–40× that for structured extraction | 82.7% RD-TableBench | Strong tables | Best of the hyperscalers, worst pricing model (the structured-extraction multiplier is the trap). |
+| Google Document AI | ~$5/1k | **64.6%** RD-TableBench — weakest of the majors on complex tables | Weak tables | Skip. |
+| LlamaParse | $0.00125/page Fast → **$0.056/page Agentic Plus** (45× spread) | 32.7% olmOCR-Bench | — | The cheap mode is bad and the good mode is the most expensive thing on this table. |
+| Marker / Docling (open source) | $0 + compute | Marker 55.2%, Docling 37.7% | Docling runs on CPU but is slow; Marker needs a GPU to be fast | Both are ~20–37 points behind Mistral. At $2/1k pages, self-hosting OCR is a false economy for a solo builder. |
+
+**Verdict: Mistral Document AI 4.1 via Batch API.** 5,000 pages of Damodaran decks costs **$10 one-time**. Feed the bbox output into your citation layer so every valuation assumption links back to a slide.
+
+---
+
+## Role 9 — Web search + crawl APIs
+
+**Artificial Analysis Search Index, published 2026-08-18 [P — fetched from artificialanalysis.ai].** Same agent (GPT-5.6 Luna, medium) across DeepSearchQA, BrowseComp, and AA-Omniscience; only the search provider varies.
+
+| Provider | Index score | Cost / 1k tasks | Time / task | Verdict |
+|---|---|---|---|---|
+| **Parallel Search (advanced)** | **75** | $83.51 | 35.9s | **Highest quality on the board.** |
+| Exa Search (auto) | 74 | $127.15 | 26.2s | Near-tied quality, 52% more expensive. |
+| Firecrawl Search | 73 | **$75.42** | **55.0s** (slowest) | Cheapest of the top tier; pay in latency. |
+| Parallel Search (basic) | 73 | $114.83 | 20.4s | — |
+| **Parallel Search (turbo)** (PICK) | 67 | **$60.21** | **18.8s** | **Cheapest and near-fastest on the board.** |
+| Exa (fast) | 68 | $158.64 | 20.7s | Worst value on the list. |
+| You.com | 68 | $127.21 | 33.7s | — |
+| Keenable (realtime) | 67 | $90.54 | **15.1s** (fastest) | — |
+| Tavily (basic) | 66 | **$192.58** (most expensive tested) | 36.3s | Second-worst quality at the highest price. |
+| Brave | 65 | $146.13 | 26.6s | Lowest quality tested. |
+
+Not in the index: **Apify** (actor marketplace — right tool for bespoke scrapers of Indian filing portals, wrong tool for agent search) and **Bright Data** (enterprise proxy/unblocking infrastructure; the right answer when a target site actively blocks you, at enterprise pricing).
+
+**Verdict: Parallel — turbo for routine lookups, advanced for the few queries that matter.** Parallel occupies the top of the quality curve *and* the bottom of the cost curve depending on tier, which no other vendor does. Exa is the runner-up if you specifically want neural/semantic "find pages like this" retrieval. **Reject Tavily on this evidence** — worst price on the board at below-median quality. Note this index is one benchmark from one publisher on one agent scaffold; treat ±3 points as noise.
+
+---
+
+## Role 10 — India fundamentals data vendor
+
+**Structural reality first:** NSE and BSE do not publish public REST APIs the way US exchanges do. Everything flows through licensed vendors, broker APIs, or aggregators — each with different coverage, latency, licence terms, and redistribution restrictions. There is no clean winner here; this is the weakest link in your stack.
+
+| Vendor | India coverage | Price | Licence / limits | Verdict |
+|---|---|---|---|---|
+| **EODHD** (PICK) | BSE + NSE confirmed; 70+ exchanges, 120k+ securities; deep history | Fundamentals Data Feed **€59.99/mo**; All-In-One €99.99/mo; EOD All-World €19.99/mo; free plan 20 calls/day (US-only fundamentals) | Commercial pricing tier exists separately — **you must read their redistribution terms before any sharing**; I could not verify 2026 redistribution language | **Pick for structured fundamentals.** The only vendor here with credible, documented, long-history India fundamentals in a normalized schema. €59.99 is ~30% of your budget — that's the price of the one thing you can't build yourself. |
+| indianapi.in (RU1) | BSE + NSE: company profiles, prices, technicals, **financials, key metrics, analyst views, shareholding patterns, corporate actions, news** | Cheaper than EODHD (verify current tiers on site) | Aggregator — verify data provenance and terms | **Best India-specific depth**, especially shareholding patterns and corporate actions, which matter enormously for Indian valuation (promoter pledging, cross-holdings). Cheapest path to India-native fields. Smallest vendor = highest continuity risk. |
+| Financial Modeling Prep (RU2) | APAC covered; India not called out specifically — **verify ticker-level coverage before paying** | ~$22–59/mo fundamentals; Basic 250 calls/day, 5y history; bandwidth caps 500 MB free / 20 GB Starter / 50 GB Premium | Rolling 30-day limit | Good normalized global schema; India depth unproven. Test with 10 NSE tickers on the free tier before committing. |
+| Alpha Vantage | India (IN) listed in coverage; 200k+ tickers, 20+ exchanges | **Free: 25 req/day.** Premium $49.99 (75 rpm) / $99.99 (150 rpm) / $149.99 / $199.99 / $249.99 | Free tier has normalized statements | Fine for learning and spot checks. 25 req/day is unusable for a real pipeline; $49.99 buys rate limit, not India depth. |
+| Kite Connect (Zerodha) | NSE/BSE prices + historical, authoritative | **₹500/mo (~$6)** for data APIs; order/account APIs free since March 2025 | Requires an active Zerodha account; **broker data licence — redistribution prohibited** | Unbeatable for **prices and historical OHLC**. Not a fundamentals source. Use it for market data, not financials. |
+
+**Verdict: EODHD Fundamentals (€59.99) as the backbone + Kite Connect (₹500) for prices, with indianapi.in evaluated as a cheaper substitute for EODHD.** Before committing €60/month, spend one evening testing indianapi.in against 20 NSE tickers you know well — if its financials are clean, it saves you ~$50/month, which is 25% of your budget. **Check redistribution terms on whichever you pick**; a private single-user system is almost certainly fine, but "almost certainly" is doing work there.
+
+---
+
+# What $200/month actually buys
+
+| Line item | Vendor / plan | Monthly $ |
+|---|---|---|
+| Postgres | Neon Launch (usage-based, scale-to-zero) | $19 |
+| Vector DB | pgvector on Neon | $0 |
+| Embeddings | Voyage (200M free tokens) | $0 → ~$2 |
+| Reranking | Cohere Rerank 3.5 @ $0.001/search, ~3k searches | $3 |
+| LLM inference | OpenRouter, open-weight models + 5.5% top-up fee | $80 |
+| Observability | Langfuse Hobby + Braintrust free | $0 |
+| Job runner | GitHub Actions (private repo, 2,000 free min) | $0 |
+| Object storage | Cloudflare R2 (under 10 GB free) | $0 |
+| OCR | Mistral Batch @ $2/1k pages (~$10 one-time for 5k pages, then trickle) | $2 |
+| Web search | Parallel turbo @ $60.21/1k tasks, ~300 tasks/mo | $18 |
+| India fundamentals | EODHD Fundamentals €59.99 | $70 |
+| India prices | Kite Connect ₹500 | $6 |
+| **TOTAL** | | **~$198** |
+
+**Headroom levers, in the order you should pull them:** (1) swap EODHD → indianapi.in, frees ~$50; (2) cut LLM spend by routing routine extraction to cheap open-weight models and reserving frontier models for the final write-up; (3) make the repo public if nothing sensitive is in it — GitHub Actions becomes unlimited and free. Pulling (1) and (3) gets you to ~$145 with room for a Langfuse Core upgrade.
+
+**What NOT to spend on in v1:** a paid vector DB ($0 → $45–180 saved), a paid job orchestrator ($75 saved), Reducto OCR ($0.015 vs $0.002/page), Tavily search ($192/1k tasks), and Vercel anything (you have no UI).
+
+---
+
+# Accounts-to-create checklist
+
+Order matters — each row's secret is needed before the next stage of the pipeline works.
+
+| # | Vendor | Plan | $/mo | Copy into `.env` | 2FA note |
+|---|---|---|---|---|---|
+| 1 | **GitHub** | Free (or Pro $4 for 3,000 min) | $0–4 | `GITHUB_TOKEN` (fine-grained PAT, repo-scoped, 90-day expiry) | **Passkey or TOTP mandatory** — GitHub requires 2FA. Store recovery codes offline. This account is your root of trust; compromise here = everything. |
+| 2 | **Neon** | Launch | ~$19 | `DATABASE_URL` (pooled), `DATABASE_URL_UNPOOLED` (for migrations) | Enable TOTP. Don't sign up via "Continue with GitHub" alone — a GitHub compromise then cascades. Use email + separate password. |
+| 3 | **OpenRouter** | Pay-as-you-go credits | ~$80 | `OPENROUTER_API_KEY` | Enable TOTP. **In settings: turn prompt logging OFF, enable ZDR-only routing, set a hard monthly spend limit.** Do not use the built-in web-search plugin (outside ZDR scope). |
+| 4 | **Voyage AI** | Free (200M tokens) | $0 | `VOYAGE_API_KEY` | TOTP. Set a billing alert before the free grant expires so you don't silently start paying. |
+| 5 | **Cohere** | Production key, pay-as-you-go | ~$3 | `COHERE_API_KEY` | TOTP. Trial keys are rate-limited — you need a production key. |
+| 6 | **Mistral AI** | La Plateforme, pay-as-you-go | ~$2 | `MISTRAL_API_KEY` | TOTP. Use the **Batch API** endpoint for OCR (50% discount) — it's a different call, not a flag. |
+| 7 | **Cloudflare** | Free (R2 10 GB) | $0 | `R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET` | **Hardware key or TOTP strongly recommended** — Cloudflare accounts often control DNS too. Scope the R2 token to one bucket, read+write only. |
+| 8 | **Langfuse** | Hobby (free) | $0 | `LANGFUSE_PUBLIC_KEY`, `LANGFUSE_SECRET_KEY`, `LANGFUSE_BASEURL` | TOTP. Now a ClickHouse subsidiary; self-hosting remains free if you ever want to pull it in-house. |
+| 9 | **Parallel** | Pay-as-you-go | ~$18 | `PARALLEL_API_KEY` | TOTP. Start on `turbo` tier; only promote specific queries to `advanced`. |
+| 10 | **EODHD** *(or indianapi.in)* | Fundamentals Feed | ~$70 | `EODHD_API_TOKEN` | TOTP if offered. **Read the redistribution clause.** Test coverage on 20 NSE tickers during any trial before the first full charge. |
+| 11 | **Zerodha Kite Connect** | Data APIs | ~$6 | `KITE_API_KEY`, `KITE_API_SECRET`, `KITE_ACCESS_TOKEN` | Requires an active Zerodha trading account with its own 2FA. **Access token expires daily** — your cron must re-auth; budget a step for it. Broker licence: do not redistribute. |
+| 12 | **Pinecone** *(optional insurance)* | Starter (free) | $0 | `PINECONE_API_KEY` | TOTP. Create it, leave it idle; free tier costs nothing and gives you a migration path off pgvector. |
+| 13 | **Braintrust** *(optional)* | Free (1M spans) | $0 | `BRAINTRUST_API_KEY` | TOTP. |
+
+**Secrets hygiene for this build:**
+- Never commit `.env`. Put real secrets in **GitHub Actions repository secrets**; keep a committed `.env.example` with keys and empty values.
+- Use a distinct email alias per vendor (`you+neon@`, `you+voyage@`) so a breach at one vendor doesn't let an attacker enumerate the others.
+- Set hard spend caps at **OpenRouter, Mistral, Parallel, and Cohere** — those four are the only ones that can run away with your budget.
+- Rotate the GitHub PAT and the OpenRouter key on a 90-day calendar reminder.
+- With `pi` + an agentic harness: never give the agent a key with write access to anything you can't restore. Neon branching is your undo button — create a branch before any schema migration the agent proposes.
+
+---
+
+## Three honest caveats
+
+1. **Neon's reliability record is the weakest link in the recommended stack.** I'm recommending it anyway because your workload is retryable batch work, not user-facing serving. If that changes — if you ever put a UI on this — re-evaluate against Supabase Pro or PlanetScale.
+2. **The Artificial Analysis Search Index is one benchmark, published 2026-08-18, using one agent scaffold.** I found secondary sources reporting materially different orderings for the same index (e.g. "Firecrawl 73, Exa 70, Parallel 68"). I used the numbers fetched directly from the publisher. Re-check before committing annual spend.
+3. **Vendor-run benchmarks are marketing.** Voyage's RTEB result (beats OpenAI by 14%) and Reducto's RD-TableBench result (90.2%) are both published by the vendor being measured. The Mistral OCR olmOCR-Bench numbers are the one genuinely independent, reproducible OCR comparison I found (public repo, 223 assertions, 2026-06-28) — which is why I weighted them heavily.
+
+---
+
+## Sources
+
+- [Artificial Analysis Search Index (2026-08-18)](https://artificialanalysis.ai/articles/search-api) · [The Decoder coverage](https://the-decoder.com/new-benchmark-ranks-search-apis-for-ai-agents-on-quality-cost-and-speed/)
+- [Mistral OCR 4 independent benchmark, Utkarsh Kanwat (2026-06-28)](https://utkarshkanwat.com/writing/mistral-ocr-4-frontier) · [benchmark repo](https://github.com/ukanwat/ocr4-structure-benchmark) · [Mistral OCR 4.1 docs](https://docs.mistral.ai/models/ocr-4-1) · [Mistral OCR 4 announcement](https://mistral.ai/news/ocr-4/)
+- [Neon plans](https://neon.com/docs/introduction/plans) · [Neon status via StatusGator](https://statusgator.com/services/neon) · [Neon outage tracker](https://apistatuscheck.com/api/neon) · [May 2025 postmortem](https://www.ilert.com/postmortems/neon-outage-may-2025)
+- [Neon vs PlanetScale vs Supabase 2026](https://apiscout.dev/guides/supabase-vs-neon-vs-planetscale-serverless-db-2026) · [Database pricing comparison](https://www.buildmvpfast.com/api-costs/database) · [Supabase status](https://status.supabase.com/) · [Xata](https://xata.io/) · [Xata alternatives](https://layerbase.com/blog/xata-alternatives) · [Railway pricing](https://docs.railway.com/pricing/plans)
+- [Pinecone pricing 2026](https://pecollective.com/tools/pinecone-pricing/) · [Pinecone status](https://statusgator.com/services/pinecone) · [Qdrant pricing](https://qdrant.tech/pricing/) · [turbopuffer pricing](https://turbopuffer.com/pricing) · [turbopuffer pricing changelog](https://turbopuffer.com/docs/pricing-log) · [Weaviate pricing 2026](https://pecollective.com/tools/weaviate-pricing/) · [pgvector vs Pinecone vs Turbopuffer vs Qdrant](https://daily.dev/posts/pgvector-vs-pinecone-vs-turbopuffer-vs-qdrant-2026--m1dot7ras) · [Vector DB benchmarks 2026](https://lushbinary.com/blog/vector-database-benchmarks-production-selection-guide-2026/)
+- [Voyage pricing docs](https://docs.voyageai.com/docs/pricing) · [voyage-context-4 (2026-06-29)](https://blog.voyageai.com/2026/06/29/voyage-context-4/) · [OpenAI embedding pricing](https://embeddingcost.com/openai) · [Cohere pricing 2026](https://pecollective.com/tools/cohere-pricing/) · [Cohere Rerank 4 Pro](https://openrouter.ai/cohere/rerank-4-pro) · [Jina embeddings](https://jina.ai/embeddings/) · [Gemini Embedding GA](https://developers.googleblog.com/gemini-embedding-available-gemini-api/) · [Reranker comparison](https://agentset.ai/rerankers) · [Best embedding models for RAG 2026](https://www.premai.io/blog/best-embedding-models-for-rag-2026-ranked-by-mteb-score-cost-and-self-hosting/)
+- [OpenRouter ZDR docs](https://openrouter.ai/docs/guides/features/zdr) · [OpenRouter data retention analysis](https://anarlog.so/blog/openrouter-data-retention-policy/) · [OpenRouter vs Vercel AI Gateway](https://api7.ai/openrouter-vs-vercel-ai-gateway) · [Vercel comparison page](https://vercel.com/i/vercel-ai-gateway-vs-openrouter) · [Fireworks vs Together pricing](https://www.morphllm.com/comparisons/fireworks-vs-together)
+- [ClickHouse acquires Langfuse (2026-01-16)](https://clickhouse.com/blog/clickhouse-acquires-langfuse-open-source-llm-observability) · [Orrick deal note](https://www.orrick.com/en/News/2026/01/Open-source-LLM-Observability-Langfuse-Acquired-by-ClickHouse-Inc) · [Langfuse pricing](https://coverge.ai/blog/langfuse-pricing) · [LLM observability free tiers compared](https://www.morphllm.com/llm-observability-tools) · [Helicone pricing](https://www.truefoundry.com/blog/helicone-pricing)
+- [GitHub Actions pricing changes 2026](https://github.com/resources/insights/2026-pricing-changes-for-github-actions) · [GitHub changelog](https://github.blog/changelog/2025-12-16-coming-soon-simpler-pricing-and-a-better-experience-for-github-actions/) · [Actions free tier limits](https://cicdcalculator.com/github-actions-free-tier) · [Durable workflow engines 2026](https://upstash.com/blog/durable-workflow-engines-compared-every-major-option-in-2026) · [Background jobs pricing](https://www.buildmvpfast.com/api-costs/background-jobs)
+- [Object storage pricing 2026](https://cloudzat.com/object-storage/) · [R2 vs S3 vs B2](https://tech-insider.org/cloudflare-r2-vs-s3-vs-backblaze-b2-2026/) · [Vercel Blob pricing](https://vercel.com/docs/vercel-blob/usage-and-pricing)
+- [Reducto: best document processing APIs 2026](https://llms.reducto.ai/best-document-processing-apis-2026) · [OmniDocBench](https://github.com/opendatalab/OmniDocBench)
+- [EODHD fundamentals API](https://eodhd.com/financial-apis/stock-etfs-fundamental-data-feeds) · [EODHD pricing](https://eodhd.com/pricing) · [indianapi.in](https://indianapi.in/indian-stock-market) · [Kite Connect fee revision to ₹500/mo](https://kite.trade/forum/discussion/15015/revising-kite-connect-fees-from-2000-to-500-per-month) · [Zerodha API](https://zerodha.com/products/api/) · [FMP pricing](https://site.financialmodelingprep.com/pricing-plans) · [Alpha Vantage premium](https://www.alphavantage.co/premium/) · [Best financial data API for Indian stocks 2026](https://dalalai.com/blog/best-financial-data-api-india)
+
+KEY FACTS:
+ - Artificial Analysis Search Index (published 2026-08-18, primary source) scores: Parallel advanced 75 ($83.51/1k tasks, 35.9s), Exa auto 74 ($127.15, 26.2s), Firecrawl 73 ($75.42, 55.0s), Parallel basic 73 ($114.83, 20.4s), Exa fast 68 ($158.64), You.com 68, Parallel turbo 67 ($60.21, 18.8s), Keenable realtime 67 ($90.54, 15.1s), Tavily basic 66 ($192.58 — most expensive tested), Brave 65 ($146.13). Tested with GPT-5.6 Luna on DeepSearchQA, BrowseComp, AA-Omniscience.
+ - Independent olmOCR-Bench run (2026-06-28, 223 assertions across 40 docs): Mistral OCR 4 74.9%, Qwen3-VL 72.6%, GPT-5.5 71.3%, Claude Opus 4.8 71.3%, Gemini 3.1 Pro 70.4%, Marker 55.2%, Docling 37.7%, LlamaParse 32.7%. Mistral tables 94.3%, reading order 73.3%, math 68.4%, scanned docs 57.4% (Qwen3-VL better at 61.7%).
+ - Mistral Document AI / OCR 4.1 pricing: $4 per 1,000 pages standard, $2 per 1,000 via Batch API (50% discount), $5 per 1,000 annotated pages. OCR 4.1 adds paragraph-level bounding boxes and block-level confidence scores.
+ - Reducto reports 90.2% avg table accuracy on RD-TableBench vs Azure Document Intelligence 82.7%, AWS Textract 80.9%, Google Cloud Document AI 64.6% — but this is a vendor-published benchmark. Reducto costs $0.015/page ($0.012 batch), ~7.5x Mistral's batch price.
+ - Neon pricing 2026: Free = 100 CU-hours/mo + 0.5 GB storage; Launch = $0.106/CU-hour; Scale = $0.222/CU-hour; storage $0.35/GB-month. pgvector included at no extra charge. Scale-to-zero suspends after ~5 min idle with $0 compute while suspended. 99.95% SLA only on Scale plan.
+ - Neon reliability: acknowledged outages on 2026-08-10, 2026-07-11, and 2026-05-08 (us-east-1 Cell 6, 1h12m). StatusGator has logged 232+ outage events since October 2023.
+ - Pinecone Starter free tier = 2 GB storage, 2M write units/mo, 1M read units/mo, $0, no credit card — which fully covers a 60k-vector workload. Paid: $0.33/GB storage, $0.33/1M reads, $0.10/GB egress. Pinecone outages 2026-05-13 (us-east-1 5xx on reads/writes) and 2026-07-21.
+ - Qdrant Cloud has a permanent free tier (0.5 vCPU, 1 GB RAM, 4 GB disk) with native sparse vectors, BM25, and RRF/weighted-sum hybrid fusion. Turbopuffer has NO free tier — $16/mo minimum (cut from $64 in June 2026); storage ~$0.02/GB, queries $1/PB (cut from $5/PB in Feb 2026).
+ - Voyage AI gives the first 200 million tokens FREE per account across voyage-4-large, voyage-4, voyage-4-lite, voyage-context-4, and voyage-code-3. Then voyage-4-lite $0.02/M, voyage-4 $0.06/M, voyage-4-large $0.12/M, voyage-context-4 $0.12/M.
+ - Reranking prices: Cohere Rerank 3.5 $0.001/search, Rerank 4 Fast $0.002, Rerank 4 Pro $0.0025 (1 search = query + up to 100 docs). Jina Reranker v3 is fastest at 188ms with 81.33% Hit@1 and 131k context, but v4 embedding licensing is ambiguous (FAQ says non-commercial base model, catalog lists a price).
+ - OpenRouter charges 5.5% on credit purchases ($0.80 min) with no inference markup; BYOK is free for the first 1M requests/month then 5%. It offers enforceable Zero Data Retention routing (global, per-model-group, per-guardrail, or per-request) — Vercel AI Gateway has zero markup but NO provider restrictions, making it unsuitable for privacy-critical work.
+ - OpenRouter privacy warning: enabling prompt logging grants OpenRouter an irrevocable right to commercial use of inputs/outputs — broader than most providers. Keep logging OFF. ZDR enforcement covers inference routing only, NOT plugins like the built-in web search, which run under third-party retention policies.
+ - Langfuse was acquired by ClickHouse on 2026-01-16 alongside a $400M Series D (ClickHouse valued at $15B); no pricing, licensing, or self-hosting changes announced. Hobby tier free = 50k units/mo, 2 seats, 30-day retention; Core $29/mo; Pro $199/mo.
+ - Helicone was acquired by Mintlify in March 2026 and has transitioned to maintenance mode — disqualifying for a long-lived system. Braintrust has the most generous free tier (1M spans/mo, unlimited users, 10k evals); Arize Phoenix free = 1 GB/mo + 10k eval runs.
+ - GitHub Actions: public repos are unlimited and free; private repos get 2,000 min/mo on Free plan, 3,000 on Pro/Team, 50,000 on Enterprise. On 2026-01-01 GitHub cut hosted-runner rates up to 39% — Linux x86 now $0.006/min, Linux ARM $0.005, Windows $0.010, macOS $0.062. A planned $0.002/min self-hosted platform charge (2026-03-01) was postponed within 48 hours after backlash and never took effect.
+ - Object storage: Cloudflare R2 = $0.015/GB-month storage with $0.00 egress and 10 GB free. Backblaze B2 = $0.006/GB storage (cheapest) with free egress up to 3x stored data then $0.01/GB, plus unlimited free egress via Cloudflare/Fastly Bandwidth Alliance. AWS S3 egress is $0.09/GB. Vercel Blob = $0.023/GB-month + $0.05/GB transfer billed on a meter separate from Vercel bandwidth.
+ - India data reality: NSE and BSE publish no public REST APIs; data flows through licensed vendors, broker APIs, and aggregators. EODHD covers BSE+NSE with Fundamentals Data Feed at EUR 59.99/mo. Kite Connect (Zerodha) is now Rs 500/mo for data APIs (reduced from Rs 2000) but is prices/historical only, not fundamentals, and its access token expires daily. indianapi.in offers India-native fields including shareholding patterns and corporate actions.
+ - Alpha Vantage free tier is 25 requests/day (5/min) — unusable for a real pipeline; premium tiers are $49.99/$99.99/$149.99/$199.99/$249.99 for 75/150/300/600/1200 requests per minute. FMP Basic is capped at 250 calls/day with ~5 years of history and a 500 MB free / 20 GB Starter trailing-30-day bandwidth limit.
+ - Xata retired its free tier during its 2024-25 pivot to a Postgres platform with copy-on-write branching; now $100 credit for 14 days then usage-based ($0.28/GB/month storage). It has raised only $35M with 27 employees — the thinnest longevity profile among the Postgres options.
+ - Recommended stack totals ~$198/month: Neon Launch $19, pgvector $0, Voyage $0-2, Cohere Rerank $3, OpenRouter inference $80, Langfuse $0, GitHub Actions $0, Cloudflare R2 $0, Mistral OCR $2, Parallel search $18, EODHD $70, Kite Connect $6. Swapping EODHD for indianapi.in frees ~$50/month.
+
+
+#################### CHECK 3 (chars 34532) ####################
+# TASK C — Beginner Explainers + Resources
+
+*All prices current as of Sept 2026. Vendor pages marked (official); the rest are secondary trackers — re-check before you commit budget.*
+
+---
+
+## 1. "Fine-tuning" at three levels
+
+### 1a. Fine-tuning the HARNESS (pi) — this is the level you actually need
+
+Think of pi as a new employee who is brilliant but has amnesia every morning. You cannot retrain their brain, but you can leave them a desk: a job description on the wall (AGENTS.md), a filing cabinet of procedures they open only when relevant (skills), a set of custom power tools (extensions), some pre-written memos (prompt templates), a locked room so they can't break the office (sandbox), and a phone to delegate to temps (sub-agents). None of this changes the model's weights — it changes what lands in the context window and what the model is allowed to do. For a valuation system this is where 95% of your quality comes from, and it costs $0. pi loads `AGENTS.md` (or `CLAUDE.md`) at startup from `~/.pi/agent/AGENTS.md`, then every parent directory, then the current directory; `AGENTS.override.md` in a directory replaces that directory's file, and `.pi/SYSTEM.md` / `APPEND_SYSTEM.md` replaces or appends the system prompt entirely. Skills live in `~/.pi/agent/skills/`, `~/.agents/skills/`, `.pi/skills/`, `.agents/skills/`, each as `<name>/SKILL.md` with required frontmatter `name` (≤64 chars, lowercase/hyphens) and `description` (≤1024 chars) — pi reads only names and descriptions at startup and loads the body on demand ("progressive disclosure"), so 40 skills cost you almost no tokens. Extensions are TypeScript modules in `.pi/extensions/*.ts` that call `pi.registerTool({ name, label, description, parameters, execute, renderCall, renderResult, promptSnippet })` and subscribe to events (`session_start`, `tool_call`, `before_provider_request`, `model_select`, `agent_end`, …). Model routing is per-session via `/model`, plus `defaultProvider`/`defaultModel`/`enabledModels`/`modelThinkingLevels` in `~/.pi/agent/settings.json` or `.pi/settings.json` (project overrides global, nested objects merge).
+
+Practical mapping for your build: AGENTS.md = the Damodaran house rules (always separate operating from financing, never mix a licence class, every number cites a row id). Skills = `dcf-build`, `edgar-fetch`, `ocr-deck`, `wacc-estimate`. Extensions = `registerTool` wrappers for Neon SQL, Pinecone query, and the SEC EDGAR API so the model can't free-hand HTTP. Sandbox = Docker Sandboxes or Gondolin so a scraped page can never exfiltrate your keys.
+
+| # | Resource | Format | Hours | Why |
+|---|---|---|---|---|
+| 1 | https://pi.dev/docs/latest/usage.md (official) | Docs | 1 | AGENTS.md load order, SYSTEM.md override, `--no-context-files`, `/compact` |
+| 2 | https://pi.dev/docs/latest/skills.md (official) | Docs | 1 | Exact SKILL.md frontmatter + the four discovery directories |
+| 3 | https://pi.dev/docs/latest/extensions.md (official) | Docs | 2 | Full `registerTool` signature and the event-hook list |
+| 4 | https://pi.dev/docs/latest/prompt-templates.md (official) | Docs | 0.5 | `/name` slash commands, `$1`/`$@`/`${1:-default}` substitution |
+| 5 | https://pi.dev/docs/latest/containerization.md (official) | Docs | 1.5 | Gondolin micro-VM vs plain Docker vs OpenShell vs Docker Sandboxes; **warning: never authenticate inside a Docker Sandbox** |
+| 6 | https://pi.dev/docs/latest/providers.md + /settings.md (official) | Docs | 1 | `/login openrouter` OAuth, auth.json shell-command key resolution, per-model thinking levels |
+
+### 1b. Prompt / context engineering
+
+Prompt engineering is writing one good instruction; context engineering is deciding what the model sees at all — which is the harder and more valuable skill. The analogy: a prompt is the question on the exam; context is which textbooks, notes and past papers are on the desk. Anthropic's framing (29 Sep 2025) is "what configuration of context is most likely to generate the desired behaviour?", and it names **context rot**: as token count climbs, recall of any individual fact degrades. The discipline is to curate the smallest set of high-signal tokens, not to dump everything in. For valuation this means: never paste a 200-page 10-K; extract the eight line items you need into a DB row, then put the row in context with its citation.
+
+| # | Resource | Format | Hours | Why |
+|---|---|---|---|---|
+| 1 | https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents | Article | 1 | The canonical 2025-26 reference; context rot, tool-result compaction, just-in-time retrieval |
+| 2 | https://github.com/anthropics/prompt-eng-interactive-tutorial | Notebooks | 4–6 | Free, hands-on, 9 chapters; updated for Claude 4.5 |
+| 3 | https://www.promptingguide.ai/ (DAIR.AI) | Site | 3 | Broad, model-agnostic, good on CoT/ReAct/self-consistency |
+| 4 | https://www.anthropic.com/engineering/building-effective-agents | Article | 0.75 | Workflow vs agent decision tree — tells you when NOT to use an agent |
+| 5 | https://cookbook.openai.com/ | Recipes | 2 | Structured-output and evals recipes you can port to open models |
+
+### 1c. Fine-tuning an open-weight MODEL (fully outsourced)
+
+Fine-tuning changes the model's weights so it *behaves* differently by default. The right analogy: you are not teaching the analyst new facts, you are teaching them your firm's memo template so hard they can't write it wrong. **Form, not facts.** Facts belong in Postgres and Pinecone, where they can be updated, audited and cited; baked-in facts go stale and cannot be cited. LoRA (Low-Rank Adaptation) trains a small adapter on top of a frozen base model, which is why it is cheap. You need roughly **500–1,000 high-quality examples** for a form task; quality and consistency matter far more than volume, and every example must be exactly the output you want. FinLoRA (arXiv 2505.19819, May 2025) is the best evidence for your domain: 19 financial datasets including four novel XBRL-analysis sets built from 150 SEC filings, five LoRA methods and five base LLMs, with LoRA delivering **+36% average** over base models and vanilla LoRA (8-bit, rank 8) scoring 74.74 vs 37.05 for base Llama 3.1 8B — a 37.7-point lift on tasks like XBRL tagging.
+
+**2026 prices per run.** Together AI LoRA SFT is about **$0.48/M training tokens on ≤16B**, ~$1.50/M for 17–69B, ~$2.90/M for 70–100B. Fireworks publishes **$0.50/M for <16B LoRA SFT**, $3.00/M for 16–80B, $6.00/M for 80–300B, $10.00/M for >300B (DPO ≈ 2× SFT). Google Vertex supervised tuning bills training tokens = dataset tokens × epochs, and the tuned endpoint costs the same as the base model at inference. Unsloth is free on a Colab T4 (4-bit + LoRA fits a 7–8B model in 6–8 GB; 1k–10k examples ≈ 15–60 min). Do the arithmetic: 800 examples × ~1,500 tokens × 3 epochs ≈ **3.6M training tokens ≈ $1.80 on a ≤16B LoRA**. Ten experiments cost under $20. **The training run is never the expense — data curation and serving are.** A dedicated GPU endpoint left running at $2–10/hr will eat your entire $200/month in a weekend; insist on serverless LoRA inference billed at the base-model rate, or shut the endpoint down.
+
+Deployment: OpenRouter's **BYOK** lets you plug your Together/Fireworks/Vertex key in and route through one API, charged at **5% of the equivalent OpenRouter cost, waived for the first 1M BYOK requests/month**. Routing a truly *private* custom endpoint through OpenRouter is an **Enterprise-plan** feature — so for a solo build, call the vendor's OpenAI-compatible endpoint directly and keep OpenRouter for the off-the-shelf models. Note the consolidation: Predibase was acquired by Rubrik (Jun 2025) and OpenPipe by CoreWeave (Sep 2025), so neither is the low-friction solo-dev option it was.
+
+**Verdict for you: don't fine-tune in v1.** Do it only when you have 500+ logged, hand-corrected outputs from the running system and a measurable, repeated format failure (e.g. the model keeps mislabelling operating leases, or won't emit your DCF JSON schema). Then it's a $2 experiment.
+
+| # | Resource | Format | Hours | Why |
+|---|---|---|---|---|
+| 1 | https://arxiv.org/abs/2505.19819 + https://github.com/Open-Finance-Lab/FinLoRA | Paper + code | 3 | Only rigorous benchmark of LoRA on SEC/XBRL/CFA tasks; reports GPU-hours and memory, not just accuracy |
+| 2 | https://unsloth.ai/docs/get-started/fine-tuning-llms-guide | Docs + free Colab | 3–4 | Cheapest way to run one end-to-end and understand rank/alpha/epochs; α=r=16, `target_modules="all-linear"` |
+| 3 | https://docs.together.ai/docs/fine-tuning-overview + https://www.together.ai/pricing (official) | Docs | 1 | JSONL format spec, LoRA vs full-FT flags, serverless LoRA serving |
+| 4 | https://docs.fireworks.ai/fine-tuning/fine-tuning-models (official) | Docs | 1 | Per-size training price table; multi-LoRA serving on one base |
+| 5 | https://openrouter.ai/docs/use-cases/byok (official) | Docs | 0.5 | The 5% BYOK fee and what Enterprise gates |
+
+---
+
+## 2. OCR
+
+OCR (Optical Character Recognition) turns a picture of text into text. Analogy: a PDF can be either a Word document or a photograph of a Word document — they look identical on screen, but you can select and copy text in one and not the other. Damodaran's lecture decks (e.g. `darksideextended13.pdf`) are largely exported slides: some pages carry a real text layer, but tables, chart labels and scanned inserts often do not, so a naïve `pdftotext` returns headings and loses the numbers you actually want. **Always check before you pay:** run `pdffonts file.pdf` (no fonts listed = image-only) and `pdftotext -layout file.pdf -` on a few pages; if the text is there, skip OCR entirely. Modern "OCR" services are vision-language models that also reconstruct layout, tables and reading order into Markdown — that structure matters more than raw character accuracy for RAG, because a table flattened into a word soup destroys the row/column relationship that makes a number meaningful.
+
+**2026 prices:** Mistral OCR **$4 / 1,000 pages**, Mistral Document AI **$5 / 1,000 pages**, both roughly halved via the Batch API (official pricing page). Google Document AI runs ~**$1.50 / 1,000 pages** for basic OCR (dropping to ~$0.60 above 5M pages/month) but **$30 / 1,000** for Form Parser and custom extractors. AWS Textract is ~**$1.50 / 1,000** for plain text detection, **$15 / 1,000** for tables and **$50 / 1,000** for forms. A 100-page Damodaran deck therefore costs ~$0.40 on Mistral — irrelevant to your budget, so choose on output quality, not price.
+
+**Checking quality:** the standard metrics are Character Error Rate and Word Error Rate (edit distance ÷ reference length); OmniDocBench uses normalised edit distance across text, formulas, tables and reading order. For a solo build, do three cheap checks instead: (1) hand-key ground truth for 3–5 representative pages and compute CER; (2) **arithmetic round-trip** — if an OCR'd table's columns don't sum to its stated total, the OCR is wrong, and this catches the failures that matter (a misread `8` as `3`); (3) confirm page count and detect silently-dropped pages. Research in 2026 shows OCR that scores well on character accuracy can still wreck downstream retrieval when structure is lost, so test the pipeline end-to-end, not the OCR in isolation.
+
+| # | Resource | Format | Hours | Why |
+|---|---|---|---|---|
+| 1 | https://mistral.ai/pricing/api/ + https://mistral.ai/news/mistral-ocr (official) | Pricing + announcement | 0.5 | Exact $/1,000 pages and Markdown output format |
+| 2 | https://cloud.google.com/document-ai/pricing (official) | Pricing | 0.5 | Shows the 20× jump from OCR to Form Parser — the classic budget surprise |
+| 3 | https://aws.amazon.com/textract/pricing/ (official) | Pricing | 0.5 | Per-feature (text/tables/forms/queries) billing, and the free tier |
+| 4 | https://github.com/opendatalab/OmniDocBench | Repo + paper | 2 | Ready-made eval harness and metric definitions if you want a real number |
+| 5 | https://arxiv.org/html/2605.00911v1 | Paper | 1.5 | "When Good OCR Is Not Enough" — why to benchmark OCR *through* your RAG pipeline |
+
+---
+
+## 3. Web crawling vs search APIs vs scraping
+
+Three different jobs. **Search API**: you ask a question, you get back ranked URLs (and often the page text) — like asking a librarian. **Crawling**: you start at one URL and follow links breadth-first to enumerate a whole site — like walking every aisle of the library and noting every book. **Scraping**: you fetch one known page and extract specific fields from its HTML — like opening a known book to page 42 and copying the table. You almost always want search → crawl only when you must enumerate → scrape only when the data isn't in an API.
+
+**Legality, plainly.** In the US, scraping *publicly accessible* pages is generally not a Computer Fraud and Abuse Act violation: *hiQ Labs v. LinkedIn* (9th Cir.) held that where a page is open without credentials there is no authorisation gate to breach, and *Van Buren v. United States* (2021) narrowed "exceeds authorized access" to data you were never entitled to see. But hiQ won the CFAA point and still **lost on breach of LinkedIn's User Agreement** (Nov 2022, ending in a consent judgment), and *Meta v. Bright Data* confirmed contract claims survive where CFAA claims fail. So: CFAA is rarely your risk; **ToS, copyright, and privacy law (GDPR/CCPA) are**. `robots.txt` (standardised as RFC 9309) is voluntary and no statute criminalises ignoring it, but courts cite non-compliance as evidence of bad faith — honour it. For your project the good news is that you mostly don't need to scrape: **SEC EDGAR publishes free official JSON APIs and full-text search** (you must send a descriptive `User-Agent` with contact info and stay under ~10 req/s), and Damodaran's NYU Stern pages are static files you may fetch directly. Reserve the paid tools for news, transcripts and one-off gaps — and record a `licence_class` on every row you ingest (see topic 7).
+
+**2026 prices.** Firecrawl (official): free 1,000 credits/month; Hobby $16/mo annual (5,000); Standard $83/mo (100,000); Growth $333/mo (500,000); Scale $599/mo (1,000,000) — 1 credit per page for scrape/crawl/map, **+4 credits for JSON extraction**, Stealth Mode 5×. Exa (official): $7 / 1,000 searches, $1 / 1,000 pages of content per content type, $5 / 1,000 answer calls, $12–15 / 1,000 deep-search, **$20 free credits plus $10/month free**. Parallel: Search ~$1–5 / 1,000, Extract $0.001/request, Responses $0.01–0.25/request, **$5 free credits monthly**. Apify: Free plan with $5 of usage; Starter $29/mo; Scale $199/mo; compute unit ≈ $0.20 (Starter) → $0.13 (Business), where 1 CU = 1 GB of RAM for 1 hour. Bright Data Web Unlocker: ~**$1.50 / 1,000 successful requests** pay-as-you-go (lower on commitment; failures not billed) — this is the anti-bot heavyweight you use only when a site blocks you. Playwright is free and open source; you pay only in compute (GitHub Actions minutes) and maintenance, and it's the right tool for login-gated or JS-heavy pages you're licensed to access. For a $200/month private build: Exa or Parallel free tiers + Firecrawl free/Hobby + Playwright in Actions covers v1.
+
+| # | Resource | Format | Hours | Why |
+|---|---|---|---|---|
+| 1 | https://www.sec.gov/search-filings/edgar-application-programming-interfaces (official) | Docs | 1 | Free, legal, structured — kills most of your scraping need |
+| 2 | https://www.rfc-editor.org/rfc/rfc9309.html | Spec | 0.5 | The actual Robots Exclusion Protocol, 30 pages, definitive |
+| 3 | https://exa.ai/pricing + https://docs.parallel.ai/getting-started/pricing (official) | Pricing | 0.5 | Per-request economics of the two search APIs that lead the AA Search Index |
+| 4 | https://www.firecrawl.dev/pricing (official) | Pricing | 0.5 | Credit model incl. the +4-credit JSON-extract trap |
+| 5 | https://playwright.dev/docs/intro (official) | Docs + tutorial | 3 | Free fallback; also the right tool for headless PDF/render checks |
+| 6 | https://www.browserless.io/blog/is-web-scraping-legal | Article (2026) | 1 | Readable survey of hiQ / Van Buren / Meta v. Bright Data — secondary, not legal advice |
+
+---
+
+## 4. Sub-agents / multi-agent
+
+A sub-agent is a second LLM session your main agent spawns: its own context window, its own system prompt, its own restricted tool set. It does a job and hands back a short summary — the parent never sees the 200,000 tokens the sub-agent burned. Analogy: hiring a research assistant who reads the entire 10-K in a separate room and returns a one-page memo; your desk stays clean. Three real benefits: **parallelism** (ten filings processed at once instead of sequentially), **fresh context** (each sub-agent starts clean, dodging context rot), and **cheap routing** (a fast small model does grep-and-summarise work while the expensive model does the reasoning). The cost is straightforward and easy to underestimate: each sub-agent pays for its own system prompt and tool definitions, so a 5-way fan-out is roughly 5× the token spend of one call, plus the parent's cost to fan out and merge.
+
+**pi-subagents specifics.** Install with `pi install npm:@tintinweb/pi-subagents`; requires pi ≥ 0.84.0. Custom agent types are Markdown files at `.pi/agents/<name>.md` with YAML frontmatter: `tools` (built-in names or `ext:` selectors), `model` (fuzzy `"haiku"`/`"sonnet"` or `provider/model-id`), `thinking` (off→max), `max_turns`, `memory` (project/local/user), `isolation: worktree` for git-isolated runs, and `allowed_subagents` for nested delegation. Three defaults ship: `general-purpose` (all tools, parent's model), `Explore` (read-only, haiku, fast codebase scans) and `Plan` (read-only, parent's model). Persistent settings live in `~/.pi/agent/subagents.json` or `.pi/subagents.json`: `maxConcurrent` defaults to 10 with excess queued, `backgroundByDefault: true`, nested agents capped at depth 2. Agents run in the background with a live widget, support mid-run steering and session resumption, and there's a `SubagentWorkflow` tool for deterministic JS orchestration (`agent()`, `parallel()`, `pipeline()`, `phase()`) in a sandboxed `node:vm`. **Turn on `showCost` and `reportUsage` immediately — both default to off**, and on a $200/month budget you want sub-agent spend rolled into your session totals from day one.
+
+**When NOT to use them.** (1) Sequentially dependent work — step 2 needs step 1's full output, and summarisation loses it. (2) Shared mutable state — sub-agents can't see each other, so two agents writing the same DCF row will silently conflict. (3) Small tasks where the handoff overhead exceeds the work. (4) **Anything whose numbers you must audit** — a prose summary is lossy; make sub-agents write structured rows to Postgres with citations and return only row ids, so the parent reads facts from the DB, not from a paraphrase. (5) When you're debugging: one linear session is far easier to read than ten interleaved transcripts.
+
+| # | Resource | Format | Hours | Why |
+|---|---|---|---|---|
+| 1 | https://github.com/tintinweb/pi-subagents | README | 1 | The only complete spec of frontmatter fields, concurrency and workflow API |
+| 2 | https://www.anthropic.com/engineering/built-multi-agent-research-system | Article | 1 | Honest on token economics (~15× a single chat) and when orchestration pays |
+| 3 | https://www.anthropic.com/engineering/building-effective-agents | Article | 0.75 | The orchestrator-workers vs simple-chain decision tree |
+| 4 | https://pi.dev/docs/latest/extensions.md (official) | Docs | 1 | Needed to understand how the extension registers tools and listens on `pi.events` |
+
+---
+
+## 5. Benchmark literacy for artificialanalysis.ai
+
+Benchmarks are standardised exams for models. The site's headline **Intelligence Index (v4.3)** is a weighted composite of 10 evaluations in four groups: **Agents 30%** (AA-Briefcase 15%, GDPval-AA v2 10%, AutomationBench-AA 5%), **Coding 20%** (Terminal-Bench v4.0 10%, SciCode 10%), **General 30%** (AA-Omniscience 15%, GDP.pdf 10%, AA-LCR v1.1 long-context 5%), and **Scientific Reasoning 20%** (Humanity's Last Exam 10%, CritPt 10%). The **Coding Agent Index (v1.5)** is different in kind: it is the equal-weighted mean of DeepSWE v1.1, Terminal-Bench 4.0 and SWE-Atlas-QnA, each scored as pass@1 averaged over three attempts per task — and critically it benchmarks **harness + model pairs**, not models alone, because the scaffold matters as much as the weights. **AA-Omniscience** is a 6,000-question knowledge-and-hallucination benchmark over 42 topics in six domains; its Omniscience Index runs **−100 to +100**, rewarding correct answers, penalising confident wrong ones, and crediting abstention — at launch, 33 of 36 models scored below zero, i.e. were more likely to hallucinate than to be right on hard questions. The **Search Index** benchmarks *search API providers*, not models: a fixed "Stirrup" agent harness with `web_search` and `web_fetch`, 25 turns, a fixed candidate model, scoring the equal-weighted mean of DeepSearchQA (F1), BrowseComp and an AA-Omniscience subset.
+
+Speed and money: **time to first token (TTFT)** is seconds from request to the first token — and for reasoning models that's the first *reasoning* token, so a model can have a fast TTFT and still make you wait 40s for a useful word. **Output tokens per second** is throughput after the first token. **Cost per task** is the weighted-average USD to complete one Intelligence Index task, computed from provider-reported token counts and live cache-hit rates — this is the number that actually maps to your bill. **Blended price** is a single $/M figure assuming a **7:2:1 ratio of cache-hit : input : output tokens**.
+
+**Traps.** (1) *Index inflation* — labs optimise for the composite; ignore the headline and read the sub-benchmark matching your job. For valuation that's AA-Omniscience (does it make up numbers?) and AA-LCR (can it hold a 10-K?), not HLE. (2) *Provider vs model pricing* — the same open-weight model on OpenRouter is served by many providers at different prices, speeds, context limits and **quantizations**; the leaderboard row is often the reference endpoint, not the one you'll be routed to. Pin the provider. (3) *Reasoning tokens are billed as output* — a "cheap" $0.30/M model that emits 8,000 thinking tokens per answer costs more than a $3/M model emitting 300. Always compare **cost per task**, never $/M. (4) *Blended price assumes a cache-hit ratio you may not achieve* — if your prompts change every call, your real cost can be several times the blended figure; keep a stable prefix. (5) *Harness dependence* — a model topping the Coding Agent Index under one scaffold may underperform under pi.
+
+**Picking per job**, as a routing table in `settings.json`: cheap/fast model for OCR post-clean, classification and skill triage; high AA-Omniscience + AA-LCR model for filings extraction and any step that emits a number; top Coding Agent Index model for writing your TypeScript; the Search Index leader for the web tool.
+
+| # | Resource | Format | Hours | Why |
+|---|---|---|---|---|
+| 1 | https://artificialanalysis.ai/methodology/intelligence-benchmarking (official) | Methodology | 1 | The exact v4.3 weights and how token counts/cache rates feed cost |
+| 2 | https://artificialanalysis.ai/methodology/coding-agents-benchmarking (official) | Methodology | 0.5 | Why the index scores harness+model pairs, and the pass@1×3 rule |
+| 3 | https://artificialanalysis.ai/evaluations/omniscience + https://arxiv.org/pdf/2511.13029 | Leaderboard + paper | 1.5 | Hallucination rate and abstention — the single most relevant axis for valuation |
+| 4 | https://artificialanalysis.ai/methodology/search-api (official) | Methodology | 0.5 | How to choose between Exa / Parallel / Firecrawl / Tavily on evidence |
+| 5 | https://openrouter.ai/docs/features/provider-routing (official) | Docs | 1 | Pin providers, exclude quantizations, set price/latency ceilings |
+
+---
+
+## 6. Vector search / RAG in plain words — a 10-minute mental model
+
+Imagine a library where every paragraph has been assigned coordinates in a 1,500-dimensional space, positioned so that paragraphs *about the same thing* sit near each other regardless of wording. That's the whole idea. A **chunk** is one paragraph-sized slice of a document (256–512 tokens with ~15% overlap is the 2026 default; overlap stops a sentence being cut in half). An **embedding** is that chunk's coordinates — a list of numbers produced by an embedding model. **Cosine similarity** measures the angle between two coordinate arrows: 1.0 means "pointing the same way" (same meaning), 0 means unrelated; you embed the question the same way and grab the nearest chunks. But nearest-in-space ≠ most useful, so you over-fetch (say top 50) and run a **reranker** — a slower, smarter model that reads the question and each candidate *together* and re-scores them, keeping the best 5–8. **Hybrid search** runs keyword search (BM25 — literally "does the word 'goodwill impairment' appear?") alongside vector search and fuses the results, which matters enormously in finance where exact tickers, tags and line-item names must match literally and embeddings are fuzzy about them. A **citation** is the document id + page + character offset you store as metadata on every chunk, so every claim the model makes can be traced back to a source you can open.
+
+For this project, one rule above all: **retrieval finds the paragraph; the database holds the number.** Never let a figure travel from a retrieved chunk into a valuation without being written to a Postgres row alongside its citation and licence class. RAG is for narrative and context (risk factors, segment commentary, Damodaran's reasoning); Postgres is the system of record for anything you multiply.
+
+| # | Resource | Format | Hours | Why |
+|---|---|---|---|---|
+| 1 | https://www.pinecone.io/learn/series/rag/ | Course/series | 3 | Best free plain-English sequence: embeddings → chunking → retrieval → generation |
+| 2 | https://www.pinecone.io/learn/series/rag/rerankers/ | Article + notebook | 1 | Shows the recall lift from two-stage retrieval, with code |
+| 3 | https://docs.pinecone.io/guides/search/hybrid-search (official) | Docs | 1 | Sparse+dense in one index — the exact pattern you need for tickers/XBRL tags |
+| 4 | https://github.com/pgvector/pgvector | Repo + README | 1.5 | The alternative: vectors inside Neon Postgres, one system instead of two — worth pricing before committing to Pinecone |
+| 5 | https://www.coursera.org/learn/rag-systems-agentic-workflows-with-pinecone-and-langgraph | Course (free to audit) | 6–8 | Structured end-to-end build if you prefer video |
+
+---
+
+## 7. Databases for a beginner
+
+**Postgres** (PostgreSQL) is a free, open-source relational database: a program that stores data in tables and answers questions in SQL. A **table** is a spreadsheet with a fixed, enforced schema; a **row** is one record (one company-year, one assumption, one source document); a **column** has one type. **NOT NULL** means the column can never be empty — the database itself refuses the write. A **CHECK constraint** is a rule the database enforces on every insert, e.g. `CHECK (tax_rate >= 0 AND tax_rate <= 1)` or `CHECK (licence_class IN ('public','vendor_redistributable','internal_only','prohibited'))`. Analogy: constraints are the guard rails on a mountain road — annoying while you drive, and the reason you're alive. In an LLM-driven system they are essential, because the model *will* eventually try to write a 340% tax rate, and you want that rejected by the database rather than discovered in a valuation.
+
+**System of record** means: for any given fact, exactly one place is the truth, and everything else is a copy or a cache. Your Postgres rows are the system of record; Pinecone, model context and Markdown reports are derived views that can be rebuilt. **Migration** is a versioned script that changes the schema (add a column, add a constraint), checked into git and applied in order, so every environment has the same shape — the database equivalent of a commit. A Neon **branch** is a copy-on-write clone of your entire database created in seconds without duplicating storage, exactly like a git branch: test a migration on `dev`, let a CI run get its own throwaway database, drop it after. Neon's free tier gives 0.5 GB storage, 100 compute-hours/month, scale-to-zero and one project; paid compute is ~$0.106/CU-hour (Launch) or $0.222/CU-hour (Scale), storage $0.35/GB-month, with extra branches ~$1.50/branch-month prorated — comfortably inside $200/month for this workload.
+
+**Why a licence class on every row.** Different data carries different redistribution rights, and rights attach to *facts*, not to files. Bloomberg's terminal agreements license data to the individual subscriber for their own use; extracting it into a downstream store, redistributing it, or feeding it into models requires a separate data licence (B-PIPE / Data License), and the terminal's own terms prohibit bulk extraction. So if a single Bloomberg-derived beta lands in your `assumptions` table with no label, and that table later feeds a report you share or a model you fine-tune, you cannot prove which numbers were safe — and the practical consequence is that the *entire table* becomes unshareable. Analogy: allergen labels belong on every ingredient, not just the finished dish; once the cake is baked you can't tell which flour had nuts. So: `licence_class TEXT NOT NULL CHECK (licence_class IN (...))` on every fact table, plus `source_url`, `retrieved_at`. Now `WHERE licence_class = 'public'` produces a provably shareable output, and SEC/EDGAR (public domain) and Damodaran's freely published datasets flow through cleanly.
+
+| # | Resource | Format | Hours | Why |
+|---|---|---|---|---|
+| 1 | https://www.postgresql.org/docs/current/tutorial.html (official) | Tutorial | 3 | Tables, queries, joins from zero; authoritative and short |
+| 2 | https://www.postgresql.org/docs/current/ddl-constraints.html (official) | Docs | 1 | NOT NULL, CHECK, foreign keys — the chapter that saves your valuations |
+| 3 | https://neon.com/docs/introduction/branching (official) | Docs | 1 | What a branch is, how to make one per CI run, cost model |
+| 4 | https://neon.com/docs/introduction/plans (official) | Pricing | 0.5 | Free-tier limits and CU-hour maths against your $200 budget |
+| 5 | https://www.bloomberg.com/professional/support/api-library/ + terminal ToS | Vendor docs | 0.5 | Read the actual redistribution language once so the licence_class column has teeth |
+| 6 | https://www.sec.gov/about/privacy-information#dissemination (official) | Policy | 0.25 | Confirms EDGAR content is public domain — your clean baseline class |
+
+---
+
+## 8. TypeScript for someone who knows Python — the 8 things that bite
+
+1. **`null` AND `undefined`.** Python has one `None`; JS has two empties — `undefined` (never set) and `null` (explicitly nothing). Turn on `strictNullChecks` (included in `strict`), use `?.` for optional chaining and **`??` not `||`** for defaults, because `||` also fires on `0` and `""` — which in a valuation system silently turns a real 0% growth rate into your fallback.
+2. **`===` not `==`.** `==` coerces types (`'' == 0` is `true`, `'1' == 1` is `true`). Use `===` always; there is no reason to use `==` except `x == null` to catch both empties.
+3. **`number` is IEEE-754 float64. There is no int and no Decimal.** `0.1 + 0.2 !== 0.3`. Never hold money or share counts in `number` for accumulation — use integers in minor units, or `decimal.js`. Related gotcha: `node-postgres` returns Postgres `NUMERIC` and `BIGINT` as **strings** on purpose, to avoid exactly this precision loss. Don't "fix" it with `Number()`.
+4. **`async`/`await` is everywhere and not optional.** Nearly all I/O returns a Promise. Forgetting `await` doesn't error — it gives you a `Promise` object that looks fine until it's `NaN` three functions later; enable `@typescript-eslint/no-floating-promises`. Use `Promise.all` for parallel fetches (no GIL, but also only one thread — it's an event loop, not threads).
+5. **Modules: ESM vs CommonJS.** Set `"type": "module"` and you're in ESM: `import`/`export`, no `require`, no `__dirname` (use `import.meta.url`), and under `moduleResolution: "NodeNext"` **relative imports must carry a `.js` extension even when the file is `.ts`**. This one detail causes most first-week build failures.
+6. **`strict` mode, and the fact that types vanish at runtime.** TypeScript erases all types when compiling — a typed API response is a *promise*, not a check. `strict: true` (on by default in TS 6.0) plus `noUncheckedIndexedAccess` gets you Python-plus-mypy-level safety; validate every external input (API JSON, OCR output, LLM output) with **Zod** at the boundary so runtime reality matches the types.
+7. **pnpm workspaces instead of venvs.** There is no per-project interpreter; you get a `node_modules` folder. A monorepo is a `pnpm-workspace.yaml` listing package globs, with internal deps written `"@you/core": "workspace:*"`. pnpm's strict, symlinked layout means an undeclared dependency fails loudly — good, but surprising if you're used to a flat site-packages.
+8. **Vitest is pytest.** `describe`/`it`/`expect` instead of `test_*` functions and bare `assert`; `vi.mock()` for monkeypatching; `--coverage` built in. It runs TypeScript natively — you do not need ts-jest or a build step for tests.
+
+| # | Resource | Format | Hours | Why |
+|---|---|---|---|---|
+| 1 | https://www.typescriptlang.org/docs/handbook/intro.html (official) | Handbook | 6 | Definitive; read "Everyday Types", "Narrowing", "Modules" first |
+| 2 | https://www.totaltypescript.com/books/total-typescript-essentials | Free book + exercises | 8–10 | Best 2025-26 hands-on path; the ESM/`.js`-extension and `tsconfig` chapters alone repay the time |
+| 3 | https://www.typescriptlang.org/tsconfig/ + https://github.com/tsconfig/bases (official) | Reference | 1 | Every flag explained; `bases` gives a correct Node config to copy rather than invent |
+| 4 | https://vitest.dev/guide/ (official) | Docs | 2 | Getting started, mocking, coverage — direct pytest analogies |
+| 5 | https://pnpm.io/workspaces (official) | Docs | 1 | `workspace:*` protocol, filtering (`pnpm -F pkg test`), CI setup |
+| 6 | https://zod.dev/ (official) | Docs | 1.5 | Runtime validation = pydantic; the boundary layer that makes LLM output safe to store |
+
+---
+
+*Word count ≈ 3,430.*
+
+KEY FACTS:
+ - pi loads AGENTS.md/CLAUDE.md from ~/.pi/agent/AGENTS.md, then parent dirs, then cwd; AGENTS.override.md replaces a directory's file; .pi/SYSTEM.md or APPEND_SYSTEM.md overrides/appends the system prompt (https://pi.dev/docs/latest/usage.md)
+ - pi skills load from ~/.pi/agent/skills/, ~/.agents/skills/, .pi/skills/, .agents/skills/ as <name>/SKILL.md; required frontmatter is name (<=64 chars) and description (<=1024 chars); progressive disclosure means only names+descriptions load at startup (https://pi.dev/docs/latest/skills.md)
+ - pi extensions are TypeScript in .pi/extensions/*.ts calling pi.registerTool({name,label,description,parameters,execute,renderCall,renderResult,promptSnippet}) with event hooks session_start, tool_call, before_provider_request, model_select, agent_end (https://pi.dev/docs/latest/extensions.md)
+ - pi model routing: settings.json (global ~/.pi/agent/settings.json, project .pi/settings.json, project overrides global) with defaultProvider, defaultModel, defaultThinkingLevel, modelThinkingLevels, enabledModels; OpenRouter via /login openrouter OAuth (https://pi.dev/docs/latest/settings.md, /providers.md)
+ - pi sandbox options: Gondolin micro-VM (Node 23.6+, QEMU), plain Docker, OpenShell policy sandbox, Docker Sandboxes with credential sentinel substitution; never authenticate from inside a Docker Sandbox (https://pi.dev/docs/latest/containerization.md)
+ - pi-subagents: pi install npm:@tintinweb/pi-subagents, requires pi >=0.84.0; agent types in .pi/agents/<name>.md with frontmatter tools/model/thinking/max_turns/memory/isolation:worktree/allowed_subagents; defaults general-purpose, Explore (haiku), Plan; subagents.json maxConcurrent default 10, nested depth cap 2; showCost and reportUsage default OFF (https://github.com/tintinweb/pi-subagents)
+ - FinLoRA (arXiv 2505.19819, May 2025): 19 financial datasets incl. 4 novel XBRL sets from 150 SEC filings; LoRA gave +36% average over base; vanilla LoRA 8-bit rank 8 scored 74.74 vs 37.05 for base Llama 3.1 8B (+37.7 pts)
+ - 2026 fine-tuning prices: Together LoRA SFT ~$0.48/M tokens on <=16B, ~$1.50/M for 17-69B, ~$2.90/M for 70-100B; Fireworks $0.50/M (<16B LoRA SFT), $3.00/M (16-80B), $6.00/M (80-300B), $10.00/M (>300B); Vertex bills training tokens = dataset tokens x epochs and tuned endpoints cost the same as base at inference
+ - Worked fine-tune cost: 800 examples x ~1,500 tokens x 3 epochs = ~3.6M training tokens = ~$1.80 per run on a <=16B LoRA. The real cost is data curation and dedicated GPU serving ($2-10/hr), not training
+ - OpenRouter BYOK costs 5% of the equivalent OpenRouter cost, waived for the first 1M BYOK requests/month; routing truly private/custom fine-tuned endpoints is Enterprise-plan only (https://openrouter.ai/docs/use-cases/byok)
+ - Predibase was acquired by Rubrik (Jun 2025); OpenPipe was acquired by CoreWeave (Sep 3, 2025) — neither is the low-friction solo-dev fine-tuning option it once was
+ - OCR prices 2026: Mistral OCR $4/1,000 pages and Mistral Document AI $5/1,000 (batch ~half price, official mistral.ai/pricing/api); Google Document AI ~$1.50/1,000 basic OCR but $30/1,000 for Form Parser/custom extractors; AWS Textract ~$1.50/1,000 text, $15/1,000 tables, $50/1,000 forms
+ - Before paying for OCR, check with pdffonts (no fonts = image-only) and pdftotext -layout; verify OCR quality with CER/WER, OmniDocBench edit distance, and an arithmetic round-trip (do the table columns sum to the stated total?)
+ - Scraping law: hiQ v LinkedIn (9th Cir.) says public pages are not a CFAA violation and Van Buren (2021) narrowed 'exceeds authorized access', but hiQ still lost on breach of ToS (Nov 2022 consent judgment) and Meta v Bright Data showed contract claims survive; robots.txt (RFC 9309) is voluntary but cited as evidence of bad faith
+ - Web tool prices 2026: Firecrawl free 1,000 credits/mo, Hobby $16/mo (5k), Standard $83/mo (100k), Growth $333/mo (500k), Scale $599/mo (1M), 1 credit/page +4 for JSON extract; Exa $7/1k searches, $1/1k content pages, $5/1k answer, $12-15/1k deep search, $20 free + $10/mo free; Parallel Search $1-5/1k, Extract $0.001/req, $5 free credits/mo; Apify Free $5 usage, Starter $29, Scale $199, CU $0.13-0.20 (1 CU = 1 GB-RAM-hour); Bright Data Web Unlocker ~$1.50/1k successful requests; Playwright free/OSS
+ - SEC EDGAR publishes free official JSON APIs and full-text search (descriptive User-Agent required, ~10 req/s cap) — this removes most of the need to scrape for filings
+ - Artificial Analysis Intelligence Index v4.3 = 10 evals: Agents 30% (AA-Briefcase 15, GDPval-AA v2 10, AutomationBench-AA 5), Coding 20% (Terminal-Bench v4.0 10, SciCode 10), General 30% (AA-Omniscience 15, GDP.pdf 10, AA-LCR v1.1 5), Scientific Reasoning 20% (HLE 10, CritPt 10)
+ - Coding Agent Index v1.5 = equal-weighted mean of DeepSWE v1.1, Terminal-Bench 4.0 and SWE-Atlas-QnA, pass@1 averaged over 3 attempts per task; it scores harness+model PAIRS, not models alone
+ - AA-Omniscience: 6,000 questions, 42 topics, 6 domains; Omniscience Index bounded -100 to +100, penalises hallucination and rewards abstention; at launch 33 of 36 models scored below zero. Hallucination rate = wrong answers as a share of non-correct answers
+ - AA blended price assumes a 7:2:1 ratio of cache-hit : input : output tokens; cost per task uses provider-reported token counts plus live cache-hit rates; TTFT for reasoning models is the first REASONING token
+ - AA Search Index: fixed 'Stirrup' agent harness with web_search + web_fetch, 25 turns, one fixed candidate model; equal-weighted mean of DeepSearchQA (F1), BrowseComp and an AA-Omniscience subset — benchmarks search API providers, not models
+ - RAG defaults 2026: 256-512 token chunks with ~15% overlap, over-fetch top ~50 by vector then rerank to top 5-8 (Cohere Rerank 3.5, Voyage rerank-2.5, BGE reranker-v2, Jina Reranker v2), hybrid = BM25 + dense fused, citation = doc id + page + char offset stored as metadata
+ - Neon 2026: free tier 0.5 GB storage, 100 compute-hours/mo, scale-to-zero, 1 project; Launch $0.106/CU-hour, Scale $0.222/CU-hour, storage $0.35/GB-month, extra branches ~$1.50/branch-month prorated; branches are copy-on-write clones created in seconds
+ - Licence class on every row: Bloomberg terminal data is licensed per-subscriber for own use and redistribution/downstream storage requires a separate B-PIPE/Data License — one unlabelled Bloomberg-derived number makes the whole table unshareable. Use licence_class TEXT NOT NULL CHECK (...) plus source_url and retrieved_at on every fact table
+ - TypeScript bites for Pythonistas: (1) null AND undefined, use ?? not || (|| fires on 0 and ''); (2) always ===; (3) number is float64, no int/Decimal, node-postgres returns NUMERIC/BIGINT as strings on purpose; (4) missing await is silent, enable no-floating-promises; (5) ESM needs "type":"module", .js extension on relative imports under NodeNext, no __dirname; (6) types erase at runtime so validate with Zod, strict is default in TS 6.0, add noUncheckedIndexedAccess; (7) pnpm-workspace.yaml + "workspace:*"; (8) Vitest = pytest, runs TS natively
