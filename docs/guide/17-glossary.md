@@ -1,4 +1,8 @@
-# Chapter 17. Glossary: every term in the guide and Document A, in plain words
+# Chapter 17. Glossary: every term in the guide and Document A, in plain words {#r4-glossary}
+
+::: {.reading-only .optional}
+**Your lookup chapter.** When a term interrupts your reading, find it here and return to the passage. No need to read the glossary straight through.
+:::
 
 ## What it is (plain words and an analogy)
 
@@ -106,6 +110,10 @@ Source: /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-77
 
 ## 10-minute exercise
 
+::: {.reading-only .optional}
+**For the practical stage.** Use this exercise when working on this chapter's tool. The following "Done when" checklist tells you how to judge completion.
+:::
+
 1. Open the valuation chain board, https://www.figma.com/board/SNaMV0lrKHeDRQgelrbPsp, or the PNG at /Users/siddharth/Valuation/docs/diagrams/png/valuation-chain.png.
 2. Pick five boxes on the board. Without opening this file, write one sentence for each term in your decisions log from chapter 0.
 3. Open this file and compare. Mark each of your five as "same meaning", "close" or "wrong".
@@ -113,7 +121,9 @@ Source: /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-77
 
 ## Done when
 
+::: {.reading-emphasis .key-idea}
 - You can say what vintage, licence class and golden test mean, out loud, in under fifteen seconds each.
 - You can explain the difference between pricing and valuing, and between bias and variance, without the file open.
 - At least one term you found missing has been merged into this chapter through a PR with passing checks.
 - You have not written any sentence that tells a reader what to do with a stock in any entry you added.
+:::

@@ -1,4 +1,8 @@
-# Chapter 8. "Fine-tuning" at three levels: the harness, the context, and the model
+# Chapter 8. "Fine-tuning" at three levels: the harness, the context, and the model {#r4-tuning}
+
+::: {.reading-only .optional}
+**For improving the assistant later.** Keep the three meanings of tuning distinct before choosing a change or reading the deeper examples.
+:::
 
 ## What it is (plain words and an analogy)
 
@@ -136,6 +140,10 @@ Source: /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-77
 
 ## 10-minute exercise
 
+::: {.reading-only .optional}
+**For the practical stage.** Use this exercise when working on this chapter's tool. The following "Done when" checklist tells you how to judge completion.
+:::
+
 Rewrite one prompt and compare two answers. Use Cursor's chat with Privacy Mode on, or any chat model you already pay for. The material is public Damodaran text, so nothing private leaves your machine.
 
 1. Prompt A, no context: "Why is the terminal cost of capital equal to the risk-free rate plus the mature-market ERP?" Save the answer.
@@ -148,7 +156,9 @@ Source: /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-77
 
 ## Done when
 
+::: {.reading-emphasis .key-idea}
 - You can state the three levels, each in one sentence, with its cost.
 - You can name the six harness files from the table above and say what tuning each one means.
 - Your decisions log holds the A and B answers from the exercise, and you can say which one you would cite.
 - You can recite the two conditions under which level 3 gets revisited, and the serving trap that goes with it.
+:::

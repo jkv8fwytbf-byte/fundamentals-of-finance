@@ -1,4 +1,8 @@
-# The Other Side, Chapter 3: Academic and Practitioner Critiques
+# The Other Side, Chapter 3: Academic and Practitioner Critiques {#r3-critiques}
+
+::: {.reading-only .read-first}
+**For each critique, connect the claim to the proposed response.** Start with input sensitivity, reverse DCF, forecasting tests, and the final critique-to-feature map.
+:::
 
 This chapter collects the formal attacks on the method your engine copies. An academic critic publishes in a journal and argues from theory. A practitioner critic runs money and argues from results. Both appear here, because both have been right about something. Every entry has four parts: the claim in one sentence, why it matters, his reply if any, and what the app will do about it. Chapter 2 covers his misses company by company. Chapter 4 keeps the scoreboard.
 
@@ -52,7 +56,11 @@ Source: the Report, Part 3.2 (2026-09-14); /Users/siddharth/.claude/projects/-Us
 
 Source: the Report, Part 3.3 (2026-09-14); /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md, section 10.5 (2026-09-14)
 
-## 3.4 Terminal value dominance and input sensitivity: his own published ranges
+## 3.4 Terminal value dominance and input sensitivity: his own published ranges {#r3-sensitivity}
+
+::: {.reading-only .watch-out}
+**The same company can produce very different values under different inputs.** Read the numerical examples and the proposed response together.
+:::
 
 **The claim.** One or two inputs, especially those feeding the terminal value, can swing a DCF (discounted cash flow model) result tenfold.
 
@@ -73,7 +81,11 @@ Terminal value is the value of every cash flow beyond the forecast years, folded
 
 Source: the Report, Part 3.4 and Part 6 item 5 (2026-09-14); /Users/siddharth/Downloads/financeMD/damodaran/blog/2014/03/return-to-firing-line-revisiting-tesla.md (2014-03-25); /Users/siddharth/Downloads/financeMD/damodaran/blog/2018/04/amazon-glimpses-of-shoeless-joe.md (2018-04-26); /Users/siddharth/Downloads/financeMD/damodaran/blog/2020/02/a-do-it-yourself-diy-valuation-of-tesla.md (2020-02-06); /Users/siddharth/Downloads/financeMD/damodaran/blog/2014/12/up-up-and-away-crowd-valuation-of-uber.md (2014-12); /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bkdrkpfng.txt (2026-09-14)
 
-## 3.5 Mauboussin and Rappaport: run the model backwards
+## 3.5 Mauboussin and Rappaport: run the model backwards {#r3-reverse}
+
+::: {.reading-only .key-idea}
+**Start from the price and ask what it requires.** This gives you assumptions to debate alongside a forward valuation.
+:::
 
 **The claim.** Forecasting cash flows is the weakest link, so start from the price, extract the expectations it implies, and judge whether those are achievable.
 
@@ -87,7 +99,11 @@ Source: the Report, Part 3.4 and Part 6 item 5 (2026-09-14); /Users/siddharth/Do
 
 Source: the Report, Part 3.5 and Part 6 item 1 (2026-09-14); /Users/siddharth/Downloads/financeMD/damodaran/blog/2021/11/teslas-trillion-dollar-moment-valuation.md (2021-11); /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md, section 10.5 (2026-09-14)
 
-## 3.6 Marcos López de Prado: discretionary valuation is not science
+## 3.6 Marcos López de Prado: discretionary valuation is not science {#r3-testing}
+
+::: {.reading-only .watch-out}
+**Distinguish an arithmetic test from a forecasting record.** Read what would make a valuation claim testable after it is published.
+:::
 
 **The claim.** A valuation built by hand cannot be falsified, so it is not a scientific claim.
 
@@ -210,7 +226,11 @@ His usual reply to a critique is "I know, and here is my workaround." Fairness r
 
 Source: the Report, Parts 3.1 to 3.11 (2026-09-14)
 
-## The map from critique to feature
+## The map from critique to feature {#r3-feature-map}
+
+::: {.reading-only .key-idea}
+**Use this table to connect the argument to the build.** It is the shortest route from the critiques to their practical consequences.
+:::
 
 | Critique | App response | Milestone |
 |---|---|---|

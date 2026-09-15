@@ -1,0 +1,83 @@
+% Shared reading-edition typography. Original wrapping fixes stay in header.tex.
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{needspace}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{float}
+\floatplacement{figure}{H}
+\usepackage[most]{tcolorbox}
+\setmainfont{Helvetica Neue}[Ligatures=NoCommon,BoldFont=HelveticaNeue-Bold,ItalicFont=HelveticaNeue-Italic,BoldItalicFont=HelveticaNeue-BoldItalic]
+\setsansfont{Helvetica Neue}[Ligatures=NoCommon,BoldFont=HelveticaNeue-Bold,ItalicFont=HelveticaNeue-Italic,BoldItalicFont=HelveticaNeue-BoldItalic]
+\definecolor{ReadingInk}{HTML}{243447}
+\definecolor{ReadingBlue}{HTML}{245EAF}
+\definecolor{ReadingTeal}{HTML}{087F83}
+\definecolor{ReadingOrange}{HTML}{AA4D18}
+\definecolor{ReadingPurple}{HTML}{73549A}
+\definecolor{ReadingYellow}{HTML}{FFF0AA}
+\definecolor{ReadingTable}{HTML}{E8EFF7}
+\definecolor{ReadingSource}{HTML}{526174}
+\providecommand{\ReadingNumber}{01}
+\newcommand{\ReadingHighlight}[1]{{\setlength{\fboxsep}{1pt}\colorbox{ReadingYellow}{\strut #1}}}
+\newenvironment{readingbox}[2]{%
+  \begin{tcolorbox}[enhanced,unbreakable,colback=#1!6!white,colframe=#1!28!white,
+    colbacktitle=#1!6!white,coltitle=#1,title={#2},fonttitle=\sffamily\bfseries\footnotesize,
+    fontupper=\small,boxrule=0.4pt,arc=2mm,left=3mm,right=3mm,top=1.5mm,bottom=2mm,
+    toptitle=2mm,bottomtitle=0mm,before skip=9pt,after skip=11pt,
+    borderline west={2pt}{0pt}{#1},pad at break*=2mm]}{\end{tcolorbox}}
+\newenvironment{readingcomment}{%
+  \begin{tcolorbox}[enhanced,breakable,colback=ReadingBlue!4!white,colframe=ReadingBlue!22!white,
+    boxrule=0.4pt,arc=1.5mm,left=3mm,right=3mm,top=2mm,bottom=2mm,
+    fontupper=\small,before skip=8pt,after skip=10pt,pad at break*=2mm]}{\end{tcolorbox}}
+\titleformat{\section}{\color{ReadingBlue}\LARGE\bfseries}{}{0pt}{}[\vspace{2pt}\color{ReadingTeal!40!white}\titlerule]
+\titleformat{\subsection}{\color{ReadingTeal}\large\bfseries}{}{0pt}{}
+\titleformat{\subsubsection}{\color{ReadingInk}\normalsize\bfseries}{}{0pt}{}
+\titlespacing*{\section}{0pt}{20pt}{12pt}
+\titlespacing*{\subsection}{0pt}{16pt}{6pt}
+\titlespacing*{\subsubsection}{0pt}{11pt}{4pt}
+\setlength{\parskip}{6pt plus 1pt minus 1pt}
+\linespread{1.06}
+\setlength{\tabcolsep}{5pt}
+\renewcommand{\arraystretch}{1.12}
+\setcounter{tocdepth}{2}
+\renewcommand{\contentsname}{Find a section}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\scriptsize\color{ReadingSource}VALUATION / READING EDITION}
+\fancyhead[R]{\scriptsize\color{ReadingTeal}\ReadingNumber}
+\fancyfoot[L]{\scriptsize\color{ReadingSource}Full text + reading guidance}
+\fancyfoot[R]{\small\color{ReadingBlue}\thepage}
+\renewcommand{\headrulewidth}{0.3pt}
+\renewcommand{\footrulewidth}{0pt}
+\setlength{\headheight}{14pt}
+\fancypagestyle{plain}{\fancyhf{}\fancyfoot[R]{\small\color{ReadingBlue}\thepage}\renewcommand{\headrulewidth}{0pt}}
+\makeatletter
+\renewcommand{\@pnumwidth}{2.4em}
+\renewcommand{\@tocrmarg}{3.4em}
+\renewcommand{\maketitle}{%
+  \thispagestyle{empty}
+  \vspace*{7mm}
+  {\color{ReadingTeal}\small\bfseries VALUATION / YOUR READING SERIES\par}
+  \vspace{12mm}
+  {\color{ReadingBlue!14!white}\fontsize{72}{76}\selectfont\bfseries\ReadingNumber\par}
+  \vspace{7mm}
+  {\color{ReadingBlue}\fontsize{31}{37}\selectfont\bfseries\raggedright\@title\par}
+  \vspace{10mm}
+  {\color{ReadingTeal}\rule{45mm}{2pt}\par}
+  \vspace{9mm}
+  {\large\color{ReadingInk}Understand the project.\par Know what deserves your attention.\par}
+  \vfill
+  \begin{tcolorbox}[colback=ReadingTable,colframe=ReadingTable,boxrule=0pt,arc=2mm,left=4mm,right=4mm,top=4mm,bottom=4mm]
+  {\small\bfseries COLORFUL READING EDITION}\par\smallskip
+  {\small The complete original text, with reading maps, priority labels and selective highlights. Start with the map on the next page.}
+  \end{tcolorbox}
+  \vspace{6mm}
+  {\small\color{ReadingSource}\@author\par Original document: \@date\quad /\quad Reading edition: 15 September 2026\par}
+  \clearpage
+}
+\makeatother
+\AtBeginDocument{\color{ReadingInk}\raggedbottom}
+\widowpenalty=10000
+\clubpenalty=10000
+\displaywidowpenalty=10000
+\RecustomVerbatimEnvironment{verbatim}{Verbatim}{breaklines=true,breakanywhere=false,breakbefore={=+},breakafter={/._-},fontsize=\small,breakindent=1em}

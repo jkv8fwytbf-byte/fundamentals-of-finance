@@ -1,4 +1,8 @@
-# Chapter 13. Figma and FigJam: the whiteboard where the system is drawn
+# Chapter 13. Figma and FigJam: the whiteboard where the system is drawn {#r4-figma}
+
+::: {.reading-only .optional}
+**For exploring the diagrams.** The pictures in PDF 1 already explain the system; use this chapter when you want to move the boxes yourself.
+:::
 
 ## What it is (plain words and an analogy)
 
@@ -84,6 +88,10 @@ Source: /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md, M
 
 ## 10-minute exercise
 
+::: {.reading-only .optional}
+**For the practical stage.** Use this exercise when working on this chapter's tool. The following "Done when" checklist tells you how to judge completion.
+:::
+
 Do this on the architecture board. Work on your own copy so the original stays as delivered.
 
 1. Open https://www.figma.com/board/DtFTvDZeSQpuKLM5tavDUT in your browser while signed in to Figma.
@@ -99,8 +107,10 @@ Source: /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md, "
 
 ## Done when
 
+::: {.reading-emphasis .key-idea}
 - You can say in one sentence what Figma is for and what FigJam is for.
 - All five board links open in your Figma account, or you have written down which ones do not.
 - You have a duplicated architecture board with one question per box and one box renamed in your own words.
 - You can name the four things the connector can do without looking.
 - You have not drawn a single screen, and you know why that is correct for M0.
+:::

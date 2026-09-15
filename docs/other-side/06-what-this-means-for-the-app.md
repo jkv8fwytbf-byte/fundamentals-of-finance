@@ -1,4 +1,8 @@
-# The Other Side, Chapter 6: What This Means for the App
+# The Other Side, Chapter 6: What This Means for the App {#r3-app}
+
+::: {.reading-only .read-first}
+**This is the payoff of the critics reader.** Trace each criticism into a concrete rule: reverse DCF, an opposing story, recorded assumptions, ranges, and later scoring.
+:::
 
 Chapters 1 to 5 collected the case against the method your system copies. This chapter turns that case into rules for the build. Each rule names the critique it answers. Think of the critiques as crash reports and the rules as the seat belts fitted afterwards. Nothing beyond the documents is built yet, so every rule says "will".
 
@@ -24,7 +28,7 @@ Source: Report, Part 6 (2026-09-14).
 
 ## Rule 1: the reverse DCF comes first
 
-A forward DCF forecasts cash flows and turns them into a value. A reverse DCF starts from today's price and solves for the assumptions that price needs. Mauboussin and Rappaport call the result "price-implied expectations". Forecasting is the weakest link, so start from the one thing you know, the price.
+A forward DCF forecasts cash flows and turns them into a value. A reverse DCF starts from today's price and solves for the assumptions that price needs. Mauboussin and Rappaport call the result "[price-implied expectations]{.reading-highlight}". Forecasting is the weakest link, so start from the one thing you know, the price.
 
 The Report says this turns an unfalsifiable number into a testable claim. "Tesla is worth $427" cannot be checked today. "The price requires $600 to 800 billion of revenue at margins above 20%" can be argued about now. Damodaran did this himself in his November 2021 Tesla post.
 
@@ -36,7 +40,7 @@ Source: Report, Parts 3.5 and 6, item 1 (2026-09-14); Expectations Investing, re
 
 López de Prado's charge has three parts. A discretionary DCF has no out-of-sample test. It keeps no record of how many input sets were tried. And "the price will converge eventually" cannot be proven wrong on any finite horizon. Damodaran's partial answer is that he publishes every valuation before the outcome and reports his own losses. The Report calls that closer to preregistration than most of the industry. Preregistration means writing your prediction down before you see the result.
 
-The Report puts it bluntly: the most credible thing in his 803 posts is the habit of publishing first and grading later. The app copies it. A `valuation_run` table will store the as-of date, every input, the output and the three vintage ids. After 90, 180 and 365 days a job will record the realized price. The scoreboard will then show bias (average signed error) and variance (its spread).
+The Report puts it bluntly: the most credible thing in his 803 posts is the habit of publishing first and grading later. The app copies it. A `valuation_run` table will store the as-of date, every input, the output and the [three vintage ids]{.reading-highlight}. After 90, 180 and 365 days a job will record the realized price. The scoreboard will then show bias (average signed error) and variance (its spread).
 
 Source: Report, Parts 3.6 and 6, item 2 (2026-09-14); Document A, section 6; Plan, sections 10.3 and 10.6.
 
@@ -44,7 +48,7 @@ Source: Report, Parts 3.6 and 6, item 2 (2026-09-14); Document A, section 6; Pla
 
 On 9 June 2014 Damodaran valued Uber's equity at $5.895 billion, on a $100 billion taxi market. On 11 July 2014 Bill Gurley published "How to Miss By a Mile", arguing the market was $1.3 trillion of car ownership. On 16 July 2014 Damodaran re-ran his own model on Gurley's story and got $54 billion. He wrote that Gurley's story "has the advantage over mine". The pair taught more than either number alone.
 
-So every company will carry two memos, a base story and an opposing one, marked `story_kind = opposing`. The pipeline will refuse to finish without it. Two stories, two values, one screen.
+So every company will carry [two memos]{.reading-highlight}, a base story and an opposing one, marked `story_kind = opposing`. The pipeline will refuse to finish without it. Two stories, two values, one screen.
 
 Source: Report, Parts 2.5 and 6, item 3 (2026-09-14); blog/2014/07/possible-plausible-and-probable-big.md (2014-07-16); https://abovethecrowd.com/2014/07/11/how-to-miss-by-a-mile-an-alternative-look-at-ubers-potential-market-size/ (2014-07-11); Plan, section 1, item 4.
 
@@ -73,6 +77,10 @@ Every run will store three vintage ids, market, country risk and industry. The d
 Source: Report, Parts 3.11 and 6, item 6 (2026-09-14); Document A, section 3.2; Plan, section 10.1.
 
 ## Rule 7: the banner
+
+::: {.reading-only .watch-out}
+**Keep this distinction visible.** Matching the workbook validates the implementation; forecasting quality still needs evidence over time.
+:::
 
 The Almarai golden test is the engineering answer to López de Prado. The engine must reproduce 7.187840270062114 per share within 0.000001 before any code merges. That makes the implementation falsifiable even though the forecast is not. The scoreboard page will carry one banner: "The engine is tested (Almarai 1e-6). The forecast is not."
 

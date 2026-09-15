@@ -86,6 +86,25 @@ local function wrap_path(s, code)
   return pandoc.RawInline('latex', '\\nolinkurl{' .. arg .. '}')
 end
 
+-- Code spans that contain spaces (commands, "value_company AAPL US") must keep
+-- their spaces, which \nolinkurl drops. Typeset them as plain \texttt with a
+-- break opportunity after path punctuation instead.
+local function latex_text_escape(s)
+  s = s:gsub('\\', '\1')
+  s = s:gsub('([{}#%%&%$_])', '\\%1')
+  s = s:gsub('~', '\\textasciitilde{}')
+  s = s:gsub('%^', '\\textasciicircum{}')
+  s = s:gsub('\1', '\\textbackslash{}')
+  return s
+end
+
+local function wrap_code_tt(s)
+  local esc = latex_text_escape(s)
+  esc = esc:gsub('([/%-%.])', '%1\\allowbreak{}')
+  esc = esc:gsub('(\\_)', '%1\\allowbreak{}')
+  return pandoc.RawInline('latex', '\\texttt{' .. esc .. '}')
+end
+
 local function emit_path(s, code, trail)
   local out = wrap_path(s, code)
   if trail ~= '' then
@@ -144,7 +163,11 @@ local function fix_body(el)
       return el
     end
   elseif el.t == 'Code' then
-    if long or (raw ~= el.text and pathish(raw)) then
+    if raw:find(' ', 1, true) then
+      if long or pathish(raw) then
+        return wrap_code_tt(raw)
+      end
+    elseif long or (raw ~= el.text and pathish(raw)) then
       return wrap_path(raw, true)
     end
     local z = zwnj_break(raw)

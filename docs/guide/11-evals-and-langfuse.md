@@ -1,4 +1,8 @@
-# Chapter 11. Evals and Langfuse: how you find out whether the model is right
+# Chapter 11. Evals and Langfuse: how you find out whether the model is right {#r4-evals}
+
+::: {.reading-only .optional}
+**For checking model quality.** Start with what an evaluation measures, then use the examples when building the project's checks.
+:::
 
 ## What it is (plain words and an analogy)
 
@@ -139,6 +143,10 @@ Source: /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-77
 
 ## 10-minute exercise
 
+::: {.reading-only .optional}
+**For the practical stage.** Use this exercise when working on this chapter's tool. The following "Done when" checklist tells you how to judge completion.
+:::
+
 You can start the golden question set today, with no code. It feeds M2 item 5 directly.
 
 1. Open a blank file called `eval-questions.md` in your notes, not in the repo yet.
@@ -161,8 +169,10 @@ Ten minutes gives you five rows. Fifty is the goal for M2. Nobody but you can wr
 
 ## Done when
 
+::: {.reading-emphasis .key-idea}
 - You can say, in one sentence each, what error analysis, LLM-as-judge and tracing are.
 - You can explain why the two suites use different runners, and which one blocks a merge.
 - You can name the generator and the judge here, and say why they must differ.
 - You can say what bias and variance mean on the scoreboard, and why nothing is scored before 90 days.
 - You have five golden questions written, each with an expected answer, a corpus path and a rubric line.
+:::

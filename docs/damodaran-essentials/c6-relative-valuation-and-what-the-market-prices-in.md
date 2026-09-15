@@ -1,4 +1,8 @@
-# Chapter 6: Relative Valuation and What the Market Prices In
+# Chapter 6: Relative Valuation and What the Market Prices In {#r2-pricing}
+
+::: {.reading-only .key-idea}
+**Keep pricing and valuing separate.** Read the beginning of each part and the final takeaways, then return to the detailed multiple and market-premium examples.
+:::
 
 Quick orientation before the dump. This chapter covers two things that look different but share one idea. First, pricing a single company against similar companies using multiples. Second, pricing the whole stock market using the implied equity risk premium. In both cases you are reading what the market is paying, not deciding what something is worth. Damodaran keeps those two activities apart, and so will your calculator. Corpus paths below are relative to /Users/siddharth/Downloads/financeMD/damodaran/ unless they start with a slash.
 
@@ -197,6 +201,8 @@ Source: blog/2020/03/a-viral-market-meltdown-iii-pricing-or.md (2020-03-16); blo
 
 ## Three things to remember
 
-1. A multiple is a price with a ruler on it. Define it, describe its distribution, find its companion variable, then apply it only to firms with similar fundamentals.
-2. Pricing is not valuing. Your calculator produces value; the pricing panel shows what the market pays, side by side, never blended.
+::: {.reading-emphasis .key-idea}
+1. A multiple is a price with a ruler on it. Define it, describe its distribution, find its companion variable, then apply it only to firms with [similar fundamentals]{.reading-highlight}.
+2. [Pricing is not valuing.]{.reading-highlight} Your calculator produces value; the pricing panel shows what the market pays, side by side, never blended.
 3. The implied ERP (4.09% in September 2026, expected return 8.84%) tells you what the market is pricing in. Damodaran reads it as a state, refuses to time the market with it, and never lets news sentiment touch the arithmetic.
+:::

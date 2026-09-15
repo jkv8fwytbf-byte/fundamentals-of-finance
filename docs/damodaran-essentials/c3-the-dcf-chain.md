@@ -1,8 +1,12 @@
-# Chapter 3: The DCF Chain, Exactly As the Workbook Does It
+# Chapter 3: The DCF Chain, Exactly As the Workbook Does It {#r2-dcf}
+
+::: {.reading-only .read-first}
+**Follow Almarai through all nine stations.** First trace the sequence; then return to the formulas. The closing three points give you a compact way to check your understanding.
+:::
 
 ## What this chapter is
 
-A DCF (discounted cash flow) valuation is a way of putting a number on a business today. You forecast the cash the business will throw off each year. Then you shrink each year's cash to allow for waiting and for risk. The fcffsimpleginzu workbook does this in one fixed chain of steps. This chapter walks that chain in the order the spreadsheet computes it. Think of a conveyor belt with nine stations. Revenue goes in at one end. A value per share comes out at the other.
+A DCF (discounted cash flow) valuation is a way of putting a number on a business today. You forecast the cash the business will throw off each year. Then you shrink each year's cash to allow for waiting and for risk. The fcffsimpleginzu workbook does this in one fixed chain of steps. This chapter walks that chain in the order the spreadsheet computes it. Think of a conveyor belt with [nine stations]{.reading-highlight}. Revenue goes in at one end. A value per share comes out at the other.
 
 We follow one company through every station: Almarai, a Saudi food company, valued on 2026-02-01. It is the example that ships inside the workbook. Its answer, 7.187840270062114 per share against a share price of 72.28, is the golden test for your calculator. The calculator must reproduce that number to six decimals before it is trusted with anything else. All Almarai figures below are in millions of Saudi riyals, except the share count and the per-share numbers.
 
@@ -83,6 +87,10 @@ Source: bkdrkpfng.txt, section 2.4; fcffsimpleginzu.md, "Valuation output" rows 
 
 ## Station 4: reinvestment, or why growth is not free
 
+::: {.reading-only .key-idea}
+**Growth needs funding.** Follow how extra revenue becomes reinvestment before it becomes free cash flow.
+:::
+
 Reinvestment is the money a company plows back to grow: new plants, more inventory, more credit extended to customers. Invested capital is the money already tied up in the business, measured as book equity plus book debt minus cash. The sales to capital ratio is revenue produced per unit of invested capital. A ratio of 2 means one riyal of capital supports two riyals of sales.
 
 The workbook does not forecast capital spending line by line. It asks how much extra revenue you want next year, then divides by the sales to capital ratio. That is the capital you must put in this year. The one-year lag is the point: you build the shop before you sell from it.
@@ -93,7 +101,7 @@ InvCap_t = InvCap_(t-1) + Reinv_t
 ROIC_t   = EBIT(1-t)_t / InvCap_(t-1)
 ```
 
-Almarai year 1: (23,996.4 minus 22,853.7) divided by 1.7085 gives 668.8. By year 10 the figure is 939.0. Invested capital rises from 36,730.8 to 44,796.6. ROIC (return on invested capital, after-tax operating income divided by the prior year's capital) rises from 6.875% in the base year to 8.42% in year 10.
+Almarai year 1: (23,996.4 minus 22,853.7) divided by 1.7085 gives 668.8. By year 10 the figure is 939.0. Invested capital rises from 36,730.8 to 44,796.6. ROIC (return on invested capital, [after-tax operating income]{.reading-highlight} divided by the prior year's capital) rises from 6.875% in the base year to 8.42% in year 10.
 
 Now the catch. The default sales to capital ratio, 1.7085, is the Global industry average for Food Processing, pulled from a lookup table. Almarai's own ratio is 21,765.4 divided by 36,730.8, which is 0.59. The Diagnostics sheet prints both side by side. If you believed the company's own history, each unit of growth would cost nearly three times the capital the default assumes. Damodaran's own words on this: "Growth is not free and it has to be paid for with reinvestment".
 
@@ -129,7 +137,11 @@ Source: bkdrkpfng.txt, sections 1.6 and 2.6; fcffsimpleginzu.md, "Valuation outp
 
 ## Station 7: terminal value
 
-Terminal value is one number that stands for every cash flow after year 10. The workbook uses the perpetuity formula: terminal cash flow divided by (terminal cost of capital minus terminal growth). Three defaults feed it.
+::: {.reading-only .watch-out}
+**Slow down at the terminal year.** Read the three defaults and how terminal reinvestment is recomputed; the final column carries long-lived assumptions.
+:::
+
+Terminal value is one number that stands for every cash flow after year 10. The workbook uses the perpetuity formula: terminal cash flow divided by (terminal cost of capital minus [terminal growth]{.reading-highlight}). Three defaults feed it.
 
 First, terminal growth equals the risk-free rate. The packet's rule: "The stable growth rate cannot exceed the growth rate of the economy, but it can be lower." The risk-free rate is expected inflation plus an expected real interest rate. Nominal economic growth is expected inflation plus expected real growth. So the risk-free rate is a handy ceiling, in the same currency as the cash flows.
 
@@ -157,6 +169,10 @@ Source: valpacket1spr25.md, slide 310 (Spring 2025); bkdrkpfng.txt, sections 1.6
 
 ## Station 9: the equity bridge to value per share
 
+::: {.reading-only .key-idea}
+**Finish the bridge.** Operating value becomes equity value only after the other claims and non-operating assets are accounted for. Follow every row of this worked example.
+:::
+
 The DCF sum values the operating business. Shareholders own what is left after other claims, plus assets the operations did not use. The bridge for Almarai:
 
 | Step | Almarai |
@@ -181,6 +197,10 @@ Why it matters for the calculator: the golden test is this exact bridge, to six 
 Source: bkdrkpfng.txt, sections 2.7 and 2.8; fcffsimpleginzu.md, "Valuation output", "Stories to Numbers" and "Diagnostics" step 6 (2026-02-01); /Users/siddharth/Downloads/financeMD/damodaran/blog/2018/07/share-count-confusion-dilution-employee.md (2018-07-25)
 
 ## The nine default assumptions you can override
+
+::: {.reading-only .optional}
+**Implementation reference.** After you understand the nine stations, return here to inspect the switches and exact overrides.
+:::
 
 Each override is a Yes/No switch plus a value cell that is read only when the switch says Yes.
 
@@ -236,6 +256,8 @@ Source: bkdrkpfng.txt, section 5 (2026-09)
 
 ## Three things to remember
 
+::: {.reading-emphasis .key-idea}
 1. The chain is revenue, margin, tax, reinvestment, FCFF, discount, terminal value, failure, bridge. Nine stations, in that order, and station 4 needs station 1 finished one year ahead.
-2. Growth is not free. Every riyal of extra revenue costs one divided by the sales to capital ratio, and in the terminal year the cost becomes g divided by ROC.
+2. [Growth is not free.]{.reading-highlight} Every riyal of extra revenue costs one divided by the sales to capital ratio, and in the terminal year the cost becomes g divided by ROC.
 3. Three terminal defaults do most of the work: growth equals the risk-free rate, stable ROC equals the cost of capital, and the terminal cost of capital equals risk-free plus the mature-market premium. Code the formulas, not the labels.
+:::

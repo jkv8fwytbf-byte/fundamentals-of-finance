@@ -1,4 +1,8 @@
-# Chapter 7: India and the Rules of Thumb
+# Chapter 7: India and the Rules of Thumb {#r2-india}
+
+::: {.reading-only .key-idea}
+**Notice what changes when the country changes.** Use the six steps and the rules-of-thumb page to keep currency, risk, tax and peer-table choices straight.
+:::
 
 ## What this chapter is
 
@@ -137,6 +141,10 @@ Source: /Users/siddharth/Downloads/financeMD/damodaran/pdfiles/country/val2dayIn
 
 ## Rules of thumb, one page
 
+::: {.reading-only .key-idea}
+**Use this as your recap.** Return to the earlier chapters for the reasoning behind each rule.
+:::
+
 Each rule below is his, with where it comes from and what it becomes in the calculator.
 
 | Rule | Where he says it | In the calculator (planned) |
@@ -170,8 +178,10 @@ Source: /Users/siddharth/Downloads/financeMD/valpacket1spr25.md (Spring 2025); /
 
 ## Three things to remember
 
-1. Five inputs change for India, nothing else does: the currency, a risk-free rate found by subtracting the default spread from the G-sec yield, an ERP of mature plus country, a chosen marginal tax rate, and peer tables that fall back to emerging then Global below 10 firms.
-2. Rates carry inflation and ratios do not. Convert dollar costs of capital and growth rates with the inflation differential before they enter a rupee run. Margins, betas and sales to capital pass through as they are.
+::: {.reading-emphasis .key-idea}
+1. [Five inputs change for India]{.reading-highlight}, nothing else does: the currency, a risk-free rate found by subtracting the default spread from the G-sec yield, an ERP of mature plus country, a chosen marginal tax rate, and peer tables that fall back to emerging then Global below 10 firms.
+2. [Rates carry inflation]{.reading-highlight} and ratios do not. Convert dollar costs of capital and growth rates with the inflation differential before they enter a rupee run. Margins, betas and sales to capital pass through as they are.
 3. His Indian cases are templates, not verdicts. Zomato at 41 INR against an IPO price of 76, Paytm near 2,000 INR against 2,950, both published with ranges, both revisited in print. Store the estimate, the price and the vintages, then let the scoreboard judge.
 
 Source: recap of figures sourced in Steps 2, 5 and the Indian cases above (bafb6h9rb.txt; blog 2021/07 Zomato IPO; blog 2021/10 Paytm).
+:::

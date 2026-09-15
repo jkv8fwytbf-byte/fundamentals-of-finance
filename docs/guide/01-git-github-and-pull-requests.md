@@ -1,4 +1,8 @@
-# Chapter 1. Git, GitHub, branches, pull requests and CI checks
+# Chapter 1. Git, GitHub, branches, pull requests and CI checks {#r4-git}
+
+::: {.reading-only .optional}
+**For the code-work stage.** Start with the vocabulary and history model; return to the commands and exercises when working on code.
+:::
 
 ## What it is (plain words and an analogy)
 
@@ -114,6 +118,10 @@ Source: /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-77
 
 ## 10-minute exercise
 
+::: {.reading-only .optional}
+**For the practical stage.** Use this exercise when working on this chapter's tool. The following "Done when" checklist tells you how to judge completion.
+:::
+
 Create and resolve a merge conflict on a throwaway repo. No AI tool. This is the first item on the M3 exercise list, done early on scratch files so the real repo is safe.
 
 ```
@@ -144,9 +152,11 @@ Source: /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md, s
 
 ## Done when
 
+::: {.reading-emphasis .key-idea}
 - You can draw `main`, a branch, a PR and a merge on paper and explain each word without notes.
 - You have resolved one merge conflict by hand in the drill above.
 - 2FA is on, the recovery codes are saved offline, and push protection is on for the `valuation` repo.
 - You have run each of the six `gh` commands at least once (the merge one on a real PR).
 - Your first PR is merged by you, with CI green, and you explained every changed file out loud first.
 - The Skills courses "Introduction to GitHub" and "Resolve merge conflicts" show as completed in your GitHub account.
+:::

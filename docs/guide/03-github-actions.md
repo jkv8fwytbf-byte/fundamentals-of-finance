@@ -1,4 +1,8 @@
-# Chapter 3. GitHub Actions: the robot that tests your code and runs it at night
+# Chapter 3. GitHub Actions: the robot that tests your code and runs it at night {#r4-actions}
+
+::: {.reading-only .optional}
+**For the foundation stage.** Learn why scheduled jobs and checks exist, then return to the YAML examples when inspecting those jobs.
+:::
 
 ## What it is (plain words and an analogy)
 
@@ -151,6 +155,10 @@ Source: bkm2kob5x.txt, learning path section 2 (all URLs verified 2026-09-14).
 
 ## 10-minute exercise
 
+::: {.reading-only .optional}
+**For the practical stage.** Use this exercise when working on this chapter's tool. The following "Done when" checklist tells you how to judge completion.
+:::
+
 This assumes the repo from milestone M2 exists, with the golden test green in CI.
 
 1. Create a branch: `git switch -c break-golden`.
@@ -165,8 +173,10 @@ Source: plan sections 5 (M2 "Done when" and M3 exercises) and 10.1 (2026-09-14);
 
 ## Done when
 
+::: {.reading-emphasis .key-idea}
 - You can read the YAML above and say what every keyword does without looking at the table.
 - You have watched one pull request go red and one go green.
 - A `$25` spending limit is set on the organization, and every job in the repo has `timeout-minutes`.
 - Every schedule in the repo uses an off-hour minute.
 - You can point at the `job_heartbeat` table and explain why it exists.
+:::

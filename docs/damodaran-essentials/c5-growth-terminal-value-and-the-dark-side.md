@@ -1,4 +1,8 @@
-# Chapter 5: Growth, Terminal Value, and the Dark Side
+# Chapter 5: Growth, Terminal Value, and the Dark Side {#r2-growth}
+
+::: {.reading-only .read-first}
+**Read growth, terminal value, and ranges carefully.** These sections explain why an exact spreadsheet answer can still be highly sensitive to the assumptions.
+:::
 
 ## What this chapter is
 
@@ -28,7 +32,7 @@ Source: bkdrkpfng.txt, section 1.7 (feedback block, rows 25 to 31)
 
 ### Growth that destroys value
 
-Growth is not automatically good. If the return on new capital is below the cost of capital, every unit reinvested is worth less than it cost, and growth shrinks value. The packet's table shows this. When return on capital equals cost of capital, terminal value sits at 1,000 whatever the growth rate. With a 6% return, raising growth from 0% to 3% drops it to 714. With a 14% return, the same change lifts it to 1,122. In his words, "It is not growth per se that creates value but growth with excess returns."
+[Growth is not automatically good.]{.reading-highlight} If the return on new capital is below the cost of capital, every unit reinvested is worth less than it cost, and growth shrinks value. The packet's table shows this. When return on capital equals cost of capital, terminal value sits at 1,000 whatever the growth rate. With a 6% return, raising growth from 0% to 3% drops it to 714. With a 14% return, the same change lifts it to 1,122. In his words, "It is not growth per se that creates value but growth with excess returns."
 
 Source: /Users/siddharth/Downloads/financeMD/valpacket1spr25.md, slides 206 to 208 (Spring 2025); /Users/siddharth/Downloads/financeMD/damodaran/blog/2016/11/myth-53-growth-is-good-more-growth-is.md (2016-11-30)
 
@@ -58,9 +62,13 @@ Why it matters for the calculator: every override of a convergence default is a 
 
 ## Terminal value discipline
 
+::: {.reading-only .watch-out}
+**Keep all three rules together.** Growth, return on capital, and reinvestment must tell a consistent long-run story.
+:::
+
 ### The three rules
 
-Terminal value is one number standing in for every cash flow after year ten. Chapter 3, station 7, has the formula and the Almarai numbers. Three rules keep it honest.
+[Terminal value]{.reading-highlight} is one number standing in for every cash flow after year ten. Chapter 3, station 7, has the formula and the Almarai numbers. Three rules keep it honest.
 
 | Rule | What it says | Why |
 |---|---|---|
@@ -141,6 +149,10 @@ Why it matters for the calculator: the guard rail is not a smarter formula. It i
 
 ## Ranges instead of points
 
+::: {.reading-only .key-idea}
+**This is how the reader sees uncertainty.** Follow the link between varying the inputs, the sensitivity table, and the range of results.
+:::
+
 ### Monte Carlo over his industry quartiles
 
 His answer to input uncertainty is to stop pretending you know the number. If a key variable is uncertain, "why not quantify the uncertainty in a distribution (rather than a single price) and use that distribution in your valuation." That is a Monte Carlo simulation. You draw each uncertain input from a distribution many times, run the model each time, and look at the spread of values. The output is a value distribution, plus the probability that value sits below price. The plan commits the system to this from M2, with distributions from his industry quartiles, and the dashboard will show the ranges.
@@ -180,6 +192,8 @@ Source: bafb6h9rb.txt and the approved plan (three vintage ids per run)
 
 ## Three things to remember
 
+::: {.reading-emphasis .key-idea}
 1. Growth is reinvestment times return, so every growth story has a bill. Sales to capital is where the bill is set, and a ratio above the industry's third quartile needs a sentence of defense before it enters a base case.
 2. Terminal value follows three rules: growth at or below the risk-free rate, excess returns fading to zero by default, reinvestment equal to growth divided by return on capital. A large terminal share is normal and means the ten-year path matters more, not less.
-3. The dark side is the same model with less data. Name the company's uncertainty type, state the failure probability and recovery rule, and report a range from his industry quartiles. A point estimate with no range hides the uncertainty; it does not remove it.
+3. The dark side is the same model with less data. Name the company's uncertainty type, state the failure probability and recovery rule, and report [a range]{.reading-highlight} from his industry quartiles. A point estimate with no range hides the uncertainty; it does not remove it.
+:::

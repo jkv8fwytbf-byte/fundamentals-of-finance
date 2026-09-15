@@ -1,4 +1,8 @@
-# Chapter 7. OpenRouter and benchmark literacy: one door to every model, and how to read the scoreboard
+# Chapter 7. OpenRouter and benchmark literacy: one door to every model, and how to read the scoreboard {#r4-models}
+
+::: {.reading-only .optional}
+**For model configuration and comparison.** Separate what a model does from how its price and benchmark score are measured.
+:::
 
 ## What it is (plain words and an analogy)
 
@@ -148,6 +152,10 @@ Source: bj0fbejiq.txt, section 5 resource table; bcy86uopa.txt, section 0
 
 ## 10-minute exercise
 
+::: {.reading-only .optional}
+**For the practical stage.** Use this exercise when working on this chapter's tool. The following "Done when" checklist tells you how to judge completion.
+:::
+
 Pick a model for one job and defend the pick in writing.
 
 1. The job: tag 60,000 corpus passages with a topic label each. Not urgent. Finance jargon such as "sales-to-capital" and "Baa3" must survive. Every passage sends about 600 tokens and gets 150 back.
@@ -163,9 +171,11 @@ Source: bcy86uopa.txt, section 7
 
 ## Done when
 
+::: {.reading-emphasis .key-idea}
 - You can say, in one sentence each, what OpenRouter is and what Artificial Analysis is.
 - You can explain why Cursor never sees an OpenRouter key, and where the open-weight models actually run.
 - Your OpenRouter account has a $75 monthly limit, logging off, and ZDR routing on, and you can say why each.
 - You can name the four pinned model ids and give one number that justifies each.
 - You can list the five traps without looking, and say which one the bulk job guards against.
 - Your decisions log holds the five-line note from the exercise, with a cost per task in it.
+:::

@@ -2,3 +2,6 @@
 docs/_build/*.err
 docs/_build/t.pdf
 docs/_build/t.md
+
+# Reading-edition build intermediates and visual QA
+tmp/pdfs/

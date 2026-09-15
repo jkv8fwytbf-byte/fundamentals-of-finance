@@ -1,8 +1,12 @@
-# Chapter 16. The schedule: twelve evenings-only weeks, from "go" to a working system
+# Chapter 16. The schedule: twelve evenings-only weeks, from "go" to a working system {#r4-schedule}
+
+::: {.reading-only .read-first}
+**Use the order and checkpoints to orient yourself.** Start with the weekly budget and milestone table; return to individual weeks when they become relevant.
+:::
 
 ## What it is (plain words and an analogy)
 
-A schedule is a promise about order, not about speed. It says what you read, watch and touch each week, and what must be true before the next week starts. Think of a school term. Each week has classes, and a few weeks end in an exam you must pass before the next term. Here the "exams" are called checkpoints. A checkpoint is one sentence that is either true or false about the system, such as "the golden test is green".
+A schedule is a promise about [order, not about speed]{.reading-highlight}. It says what you read, watch and touch each week, and what must be true before the next week starts. Think of a school term. Each week has classes, and a few weeks end in an exam you must pass before the next term. Here the "exams" are called [checkpoints]{.reading-highlight}. A checkpoint is one sentence that is either true or false about the system, such as "the golden test is green".
 
 The weeks are grouped into milestones. A milestone is a bundle of work with a named owner and a "done when" line. This project has five: M0 (documents, already delivered), M1 (your accounts and Cursor), M2 (the foundation, built for you), M3 (you take the wheel) and M4 (India, accuracy, ranges, the market panel). A sixth, M5, exists in the plan only if other people ever use the system, and is out of scope here. The milestone map board draws them as a road.
 
@@ -80,6 +84,10 @@ Source: bkm2kob5x.txt sections 13 and 15 (2026-09-14)
 
 ## 10-minute exercise
 
+::: {.reading-only .optional}
+**For the practical stage.** Use this exercise when working on this chapter's tool. The following "Done when" checklist tells you how to judge completion.
+:::
+
 1. Open the milestone map board and the calendar side by side.
 2. Write a go date, or write "not yet" in your decisions log (chapter 0, rule 6). Both are valid.
 3. Counting from that date, put three 1.5-hour blocks in week 1 and label them "evening 1, 2, 3" with the accounts from the table.
@@ -88,7 +96,9 @@ Source: bkm2kob5x.txt sections 13 and 15 (2026-09-14)
 
 ## Done when
 
+::: {.reading-emphasis .key-idea}
 - A go date exists, or "not yet" is written down on purpose.
 - Week 1's three evenings are on your calendar with their account lists.
 - You can name the checkpoint that gates each week without looking.
 - You can say in one sentence why the report's week 4 became your week 2.
+:::

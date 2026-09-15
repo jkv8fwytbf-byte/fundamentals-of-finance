@@ -1,4 +1,8 @@
-# Chapter 5. Postgres and Neon: the one place the numbers live
+# Chapter 5. Postgres and Neon: the one place the numbers live {#r4-database}
+
+::: {.reading-only .optional}
+**For the database stage.** The central idea is that the numbers and their labels live in the database. Save the SQL and connection details for that work.
+:::
 
 ## What it is (plain words and an analogy)
 
@@ -160,6 +164,10 @@ Read 1 and 2 before the exercise. Do 3 to 6 in the week Document A's schedule op
 
 ## 10-minute exercise
 
+::: {.reading-only .optional}
+**For the practical stage.** Use this exercise when working on this chapter's tool. The following "Done when" checklist tells you how to judge completion.
+:::
+
 This needs the Neon account from Document A, section 10, item 4, opened in M1. Until then, read the SQL and predict each result. With the account, open your project in the Neon Console, create a branch called `scratch` so nothing touches `main`, then open the SQL Editor (the SQL Editor is in the left sidebar of the Neon Console) and run the blocks one at a time.
 
 Block 1 builds a tiny fact table with the two rules from this chapter.
@@ -216,8 +224,10 @@ Source for the numbers: /Users/siddharth/.claude/projects/-Users-siddharth-Downl
 
 ## Done when
 
-- You can explain table, row, column, NOT NULL and CHECK to a friend in one minute, and say why the Postgres rows are the system of record and the search index is not.
+::: {.reading-emphasis .key-idea}
+- You can explain table, row, column, NOT NULL and CHECK to a friend in one minute, and say why the Postgres rows are the [system of record]{.reading-highlight} and the search index is not.
 - You ran the exercise and saw two refusals and one surviving row, or you predicted all three outcomes correctly while reading.
 - You can name the three 2026 risk-free rates, say which file each comes from, and explain why a run must store three vintage ids.
 - You can state which two connection strings go in `.env`, which one the migrations use, and what SNI has to do with a failed connection.
 - You know that a Bloomberg reading note is `proprietary_personal`, that a book is `link_only`, and that neither ever reaches the index.
+:::

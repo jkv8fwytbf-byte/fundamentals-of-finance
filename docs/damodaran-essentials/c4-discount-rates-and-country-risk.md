@@ -1,10 +1,14 @@
-# Chapter 4: Discount Rates and Country Risk
+# Chapter 4: Discount Rates and Country Risk {#r2-rates}
+
+::: {.reading-only .read-first}
+**Understand the parts of the discount rate.** Start with the map, then the risk-free rate, equity premium and country risk. Pay particular attention to matching dates and currency.
+:::
 
 This chapter is about one number: the cost of capital. Chapter 3 showed where it sits in the DCF chain and how it glides toward a terminal rate. This chapter opens the number up and shows the parts inside it. Each part has a source table, a formula in the workbook, and a trap. Every concept ends with one line on why it matters for the calculator.
 
 ## The map in one block
 
-The cost of capital is the blended return that lenders and owners together demand from a company. Damodaran calls it a hurdle rate, because a project must clear it to add value. It mixes a cost of equity and a cost of debt by market-value weights.
+The cost of capital is the [blended return]{.reading-highlight} that lenders and owners together demand from a company. Damodaran calls it a hurdle rate, because a project must clear it to add value. It mixes a cost of equity and a cost of debt by market-value weights.
 
 ```
 Cost of equity      = risk-free rate + levered beta x equity risk premium
@@ -19,7 +23,11 @@ Source: /Users/siddharth/Downloads/financeMD/damodaran/blog/2026/02/data-update-
 
 ## The risk-free rate
 
-A risk-free rate is the return on an investment whose payoff you know for certain. In practice it is the yield on a long-term government bond. Damodaran's rule is that the bond must be in the currency of your cash flows, and the government must be close to default-free. A currency is a unit of measurement, like meters versus feet. Pick one, and the risk-free rate, the growth rate and the cash flows all live in it.
+::: {.reading-only .watch-out}
+**Match the currency and inspect default risk.** This section explains why a government bond yield may need an adjustment before it is used here.
+:::
+
+A risk-free rate is the return on an investment whose payoff you know for certain. In practice it is the yield on a long-term government bond. Damodaran's rule is that the bond must be in the [currency of your cash flows]{.reading-highlight}, and the government must be close to default-free. A currency is a unit of measurement, like meters versus feet. Pick one, and the risk-free rate, the growth rate and the cash flows all live in it.
 
 Source: /Users/siddharth/Downloads/financeMD/damodaran/pdfiles/country/val2dayIndia2025.md, slides 28 to 30 (2025); bkdrkpfng.txt section 6
 
@@ -185,7 +193,7 @@ Why it matters for the calculator: the rating module is three banded tables plus
 
 ## Weights, and the four approaches
 
-Weights must be market values, not book values. Book value is the accounting record of what was raised long ago. Market value is what the claims are worth today, which is what a discount rate is about. Equity is shares times price. Most debt does not trade, so the workbook treats book debt as one bond: interest expense is an annuity over the average maturity, book value is the final repayment, both discounted at the pre-tax cost of debt.
+Weights must be [market values, not book values]{.reading-highlight}. Book value is the accounting record of what was raised long ago. Market value is what the claims are worth today, which is what a discount rate is about. Equity is shares times price. Most debt does not trade, so the workbook treats book debt as one bond: interest expense is an annuity over the average maturity, book value is the final repayment, both discounted at the pre-tax cost of debt.
 
 Almarai's pieces come together like this. Cost of equity is 4.58% plus 0.515 times 5.58%, or 7.45%. After-tax cost of debt is 5.2803% times 0.75, or 3.96%. Market equity is 311,888 and market debt is 39,954, so the weights are 88.6% and 11.4%. The cost of capital is 7.055%, the rate Chapter 3 carried through years 1 to 5.
 
@@ -238,6 +246,8 @@ Go deeper in this order. Paths are under /Users/siddharth/Downloads/financeMD/ u
 
 ## Three things to remember
 
+::: {.reading-emphasis .key-idea}
 1. The cost of capital is five inputs, and four of them come from dated tables: the risk-free rate, the mature ERP, the country spread and the industry beta. A run without its three vintage ids is not a run.
 2. Strip default risk out of the risk-free rate and add it back only in the cost of debt and the country premium. Counting it twice is the most common India error.
 3. Do not polish the number; check it. Bottom-up betas beat regressions, the implied ERP beats history, and a result outside his deciles is a signal to reread the inputs, not a discovery.
+:::

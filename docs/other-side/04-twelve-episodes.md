@@ -1,4 +1,8 @@
-# The Other Side, Chapter 4: Twelve Episodes
+# The Other Side, Chapter 4: Twelve Episodes {#r3-episodes}
+
+::: {.reading-only .optional}
+**A deeper evidence table.** Read the notes and what the scoreboard says before comparing winners and losers across the twelve episodes.
+:::
 
 This chapter is a scoreboard. It lists twelve times someone took the opposite view from Damodaran and the record shows who was closer. It also lists the times he was right, because a list of defeats alone would be propaganda, not research.
 
@@ -100,7 +104,11 @@ Cathie Wood's projections for Tesla beat his values from 2018 to 2021. From 2022
 
 Source: /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bkm2kob5x.txt (Part 3.8, compiled 2026-09-14)
 
-## What the scoreboard actually says
+## What the scoreboard actually says {#r3-scoreboard}
+
+::: {.reading-only .watch-out}
+**Read the interpretation with the results.** A scoreboard needs context about the question, time horizon, and what was being compared.
+:::
 
 Three patterns run through the twelve rows.
 

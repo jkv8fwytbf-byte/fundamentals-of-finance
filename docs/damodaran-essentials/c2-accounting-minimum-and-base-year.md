@@ -1,4 +1,8 @@
-# Chapter 2: The Accounting Minimum and the Base Year
+# Chapter 2: The Accounting Minimum and the Base Year {#r2-accounting}
+
+::: {.reading-only .read-first}
+**Focus on where the starting numbers come from.** Learn the three statements, the expense categories, and the updating rule before worrying about every accounting adjustment.
+:::
 
 ## What this chapter is
 
@@ -60,7 +64,7 @@ Source: /Users/siddharth/Downloads/financeMD/valpacket1spr25.md, slides 123 to 1
 
 ## Effective versus marginal tax rate, and NOLs
 
-The effective tax rate is taxes divided by taxable income, as reported in the statements. It is an average across everything the company earned, including low-tax foreign profits and deferrals. The marginal tax rate is the statutory rate on the next unit of profit, found in the tax code of the home country. Most companies report an effective rate below their marginal rate.
+The effective tax rate is taxes divided by taxable income, as reported in the statements. It is an average across everything the company earned, including low-tax foreign profits and deferrals. The [marginal tax rate]{.reading-highlight} is the statutory rate on the next unit of profit, found in the tax code of the home country. Most companies report an effective rate below their marginal rate.
 
 Damodaran's rule is to start with the effective rate and drift toward the marginal rate over the forecast. Using only the marginal rate understates early cash flows. Using only the effective rate assumes the tax deferral lasts forever. The marginal rate is the right one for the tax benefit of interest, because interest is deducted from the last dollars of income. In his January 2026 country data, India shows an average effective rate of 22.33% against a marginal rate of 30%.
 
@@ -74,7 +78,11 @@ Source: /Users/siddharth/Downloads/financeMD/valpacket1spr25.md, slides 138 to 1
 
 ## The base-year inputs, and where each one lives
 
-The workbook's Input sheet asks for these numbers, in two columns: the most recent twelve months, and the last annual report before that. Units must be consistent all the way through, including the share count. Apple's 2025 10-K reports in millions of dollars; Trent's Indian results report in rupees crore, where one crore is ten million.
+::: {.reading-only .watch-out}
+**Check the units as well as the source.** The table links each starting input to the financial statements; the share count must use compatible units.
+:::
+
+The workbook's Input sheet asks for these numbers, in two columns: the most recent twelve months, and the last annual report before that. [Units must be consistent]{.reading-highlight} all the way through, including the share count. Apple's 2025 10-K reports in millions of dollars; Trent's Indian results report in rupees crore, where one crore is ten million.
 
 The table below shows where each item sits. The Apple figures come from the fiscal year ended September 27, 2025. The Trent figures come from the standalone results for the year ended March 31, 2024, which is the annual column inside a quarterly filing.
 
@@ -108,7 +116,7 @@ Source: /Users/siddharth/Downloads/financeMD/valpacket1spr25.md, slides 227 to 2
 
 ## The trailing-twelve-month rule
 
-Annual reports go stale. A company valued in April is working from numbers that ended the previous September. The fix is trailing-twelve-month data, meaning the most recent twelve months built from one annual report and one interim report. The rule is: last annual figure, minus the same interim period of the prior year, plus the current interim period.
+Annual reports go stale. A company valued in April is working from numbers that ended the previous September. The fix is [trailing-twelve-month data]{.reading-highlight}, meaning the most recent twelve months built from one annual report and one interim report. The rule is: last annual figure, minus the same interim period of the prior year, plus the current interim period.
 
 Damodaran's own Apple example makes it concrete. Annual revenue to September 2023 was 383,285. The six months to March 2023 were 211,990 and the six months to March 2024 were 210,328. Trailing revenue is 383,285 minus 211,990 plus 210,328, which is 381,623. Operating income by the same rule went from 114,301 to 118,240. The workbook ships a small "Trailing 12 month Worksheet" that does this for revenues, operating income, interest expense and the effective tax rate, but it is not wired to the Input sheet; you paste the results by hand.
 
@@ -133,6 +141,8 @@ Source: /Users/siddharth/Downloads/financeMD/Aswath Damodaran - Investment Valua
 
 ## Three things to remember
 
+::: {.reading-emphasis .key-idea}
 1. Sort every expense into operating, financing or capital, then fix the two that accountants mis-bin: capitalize R&D, and treat lease commitments as debt unless the filing already does.
 2. Start at the effective tax rate and fade to the marginal rate; use the marginal rate for the tax benefit of debt; give loss-makers an NOL bank.
 3. Flows are trailing twelve months, last annual minus prior interim plus current interim; stocks are the latest balance; units stay consistent through the share count.
+:::

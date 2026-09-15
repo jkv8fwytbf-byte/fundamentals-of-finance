@@ -1,4 +1,8 @@
-# Chapter 12. Hex: a private dashboard over Neon
+# Chapter 12. Hex: a private dashboard over Neon {#r4-dashboard}
+
+::: {.reading-only .optional}
+**For the dashboard stage.** Understand the connection between stored data and the chart, then return to the notebook exercises.
+:::
 
 ## What it is (plain words and an analogy)
 
@@ -87,6 +91,10 @@ Source: URLs 4 and 6 are from btzaixzyh.txt CHECK 2 (September 2026); URLs 1, 3 
 
 ## 10-minute exercise
 
+::: {.reading-only .optional}
+**For the practical stage.** Use this exercise when working on this chapter's tool. The following "Done when" checklist tells you how to judge completion.
+:::
+
 This assumes the M2 dashboard project exists in your Hex workspace. The plan lists "add a chart in Hex" as one of the M3 exercises.
 
 1. Open the project and add a SQL cell. Write a query that counts rows in `valuation_run` by the sector of the company, joined through `company`.
@@ -101,8 +109,10 @@ Source: plan section 5, M3 exercises; plan section 7, accounts row 10 (2026-09-1
 
 ## Done when
 
+::: {.reading-emphasis .key-idea}
 - You can say the difference between a notebook and a published app, and which Hex plan gives you each.
 - Your Hex project connects to Neon through the pooled host with SSL on, and a `select 1` returns.
 - You have made one SQL cell, one chart cell and one input widget that change together.
 - You can name the four dashboards and the Neon table each one reads.
 - You can list three of the six reasons to build a custom web app, and say why none applies yet.
+:::

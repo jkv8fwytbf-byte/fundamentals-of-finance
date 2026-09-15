@@ -1,8 +1,12 @@
-# Chapter 2. Cursor and Cline: the tool you type into, and the free bench beside it
+# Chapter 2. Cursor and Cline: the tool you type into, and the free bench beside it {#r4-cursor}
+
+::: {.reading-only .read-first}
+**Understand the everyday workflow.** Learn how the editor, assistant, modes, and review of changes fit together; use the setup details when needed.
+:::
 
 ## What it is (plain words and an analogy)
 
-Cursor is a code editor with an AI agent built in. A code editor is a program for writing code files, the way Word is a program for writing letters. An agent is a model that can read your files, edit them, and run commands when you ask in plain English. Cursor is a modified copy (a "fork") of VS Code, the most common free editor, so it keeps the built-in terminal, the Source Control panel, and side-by-side diffs.
+Cursor is a code editor with an AI agent built in. A code editor is a program for writing code files, the way Word is a program for writing letters. An agent is a model that can read your files, edit them, and run commands when you ask in plain English. Cursor is a modified copy (a "fork") of VS Code, the most common free editor, so it keeps the built-in terminal, the Source Control panel, and [side-by-side diffs]{.reading-highlight}.
 
 Source: btzaixzyh.txt, CHECK 1, "Terminal, git panel, diff review" (2026-09-14)
 
@@ -132,6 +136,10 @@ Source: URLs from btzaixzyh.txt, CHECK 1, Sources list (verified 2026-09-14); MC
 
 ## 10-minute exercise
 
+::: {.reading-only .optional}
+**For the practical stage.** Use this exercise when working on this chapter's tool. The following "Done when" checklist tells you how to judge completion.
+:::
+
 You can do this today, before the repo exists.
 
 1. Open Cursor. Settings, then General, then Privacy Mode: on. Two minutes.
@@ -145,9 +153,11 @@ Source: plan, M1 steps 4 and 5 (2026-09-14)
 
 ## Done when
 
+::: {.reading-emphasis .key-idea}
 - Privacy Mode shows as on, and you checked it yourself.
 - You can switch modes with Shift+Tab and explain in one sentence what Plan mode cannot do.
 - You have rejected a hunk and seen the file unchanged in Source Control.
 - You can say where an API key goes (`.env`, GitHub secrets, Cline's provider setting) and where it never goes (Cursor's settings).
 - You can say why the nightly pipeline runs on GitHub Actions and not on Cursor Automations.
 - After M2: the agent panel lists the six tools from `.cursor/mcp.json`, and Cline runs with different models for Plan and Act.
+:::

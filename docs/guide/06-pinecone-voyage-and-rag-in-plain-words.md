@@ -1,4 +1,8 @@
-# Chapter 6. Pinecone, Voyage and RAG in plain words
+# Chapter 6. Pinecone, Voyage and RAG in plain words {#r4-rag}
+
+::: {.reading-only .optional}
+**For the librarian stage.** Understand the retrieval analogy first; return to embeddings, reranking, and configuration when checking the librarian.
+:::
 
 ## What it is (plain words and an analogy)
 
@@ -143,6 +147,10 @@ Source: /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-77
 
 ## 10-minute exercise
 
+::: {.reading-only .optional}
+**For the practical stage.** Use this exercise when working on this chapter's tool. The following "Done when" checklist tells you how to judge completion.
+:::
+
 The point is to feel the difference between exact words and meaning, on the real corpus.
 
 1. Run the three keyword searches below and note the counts. A keyword engine treats these as three different things.
@@ -168,9 +176,11 @@ sed -n '172p' damodaran/blog/2026/07/country-risk-drivers-measures-and.md
 
 ## Done when
 
+::: {.reading-emphasis .key-idea}
 - You can explain chunk, embedding, cosine similarity, reranker and hybrid search using the librarian, without notes.
 - You can say why the corpus cannot be read in one call, and what a RAG answer costs on GLM-5.3-Flash versus stuffing a packet.
 - You can name the four license classes that enter the index and the three that never do, and you know the fence is a database rule.
 - You can state which Voyage model embeds, which reranks, and what the free allowance is.
-- You can repeat "retrieval finds the paragraph; the database holds the number" and give one example of each.
+- You can repeat "retrieval finds the paragraph; [the database holds the number]{.reading-highlight}" and give one example of each.
 - You have done the exercise and kept the paper.
+:::

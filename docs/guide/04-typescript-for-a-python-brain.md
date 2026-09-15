@@ -1,4 +1,8 @@
-# Chapter 4. TypeScript for a Python brain
+# Chapter 4. TypeScript for a Python brain {#r4-typescript}
+
+::: {.reading-only .optional}
+**For reading and editing the code.** Use the Python comparisons and the eight traps as a reference when TypeScript appears in your work.
+:::
 
 ## What it is (plain words and an analogy)
 
@@ -144,6 +148,10 @@ Source: bkm2kob5x.txt, learning path section 3 (URLs verified 2026-09-14); bj0fb
 
 ## 10-minute exercise
 
+::: {.reading-only .optional}
+**For the practical stage.** Use this exercise when working on this chapter's tool. The following "Done when" checklist tells you how to judge completion.
+:::
+
 Inside the repo, or in a scratch folder with `pnpm init` and `pnpm add -D typescript vitest`:
 
 1. Create `terminal.ts` containing one exported pure function, `terminalCostOfCapital(rf: number, matureErp: number): number`, that returns `rf + matureErp`. Terminal cost of capital is the discount rate the model uses for the years after the explicit forecast, and the workbook sets it to the risk-free rate plus the mature-market equity risk premium.
@@ -157,8 +165,10 @@ Source: bkdrkpfng.txt, the stable cost of capital row (rf 4.58% + mature ERP 4.2
 
 ## Done when
 
+::: {.reading-emphasis .key-idea}
 - You can explain, without notes, why `||` is dangerous for a growth rate and `??` is not.
 - You can say in one sentence why a float64 language can still match the spreadsheet to 1e-6.
 - You have seen the missing `.js` error once and fixed it.
 - You can name the Zod schema that guards each external input the engine consumes.
 - You have run `pnpm -F engine test` and read the output.
+:::

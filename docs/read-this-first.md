@@ -4,7 +4,11 @@ subtitle: "Your private, outsourced Damodaran valuation system, explained in pla
 author: "Prepared for Siddharth"
 ---
 
-# How to use this document
+# How to use this document {#r1-start}
+
+::: {.reading-only .read-first}
+**Your route:** understand the seven parts, the trust rules, the valuation and memo flows, then the budget and next steps. Keep the setup chapters for when you need them.
+:::
 
 Read it once, front to back, before you open Cursor or create any account. It is written for
 someone who is new to software tooling and is relearning valuation. Every term is defined the
@@ -32,7 +36,11 @@ drag boxes around, add notes. They are yours.
 | The memo pipeline (story to numbers) | https://www.figma.com/board/LGcrXp6yT3fh4O2IV3mEY8 |
 | The milestone map | https://www.figma.com/board/LXcGUT7C2ArsRkwsUvRBWt |
 
-# 1. What we are building, in one page
+# 1. What we are building, in one page {#r1-system}
+
+::: {.reading-only .read-first}
+**Start here.** Be able to explain the job of each of the seven parts. Focus on the calculator, the evidence behind its inputs, and your review of the memo.
+:::
 
 You used to value one company at a time in Damodaran's spreadsheet. You want a machine that does
 that for many companies, in India and the United States, with his lectures on tap, private to you,
@@ -43,10 +51,10 @@ and with nothing running on your Mac except an editor. It has seven parts.
    risk-free rate) and computes value per share exactly the way his spreadsheet does. His
    spreadsheet ships with a worked example: Almarai, a Saudi food company, value 7.187840270062114
    per share against a price of 72.28. Our program must reproduce that number to six decimal
-   places before it is allowed to value anything else. We call that the **golden test**.
+   places before it is allowed to value anything else. We call that the **[golden test]{.reading-highlight}**.
 2. **A database in the cloud (Neon).** Every number the calculator uses is stored with three
-   labels: where it came from (source), whether you may show it to other people (licence class),
-   and which snapshot of Damodaran's data it belongs to (vintage). The database refuses to save a
+   labels: where it came from ([source]{.reading-highlight}), whether you may show it to other people (licence class),
+   and which snapshot of Damodaran's data it belongs to ([vintage]{.reading-highlight}). The database refuses to save a
    number that is missing any of the three.
 3. **A librarian in the cloud (Pinecone and Voyage).** His 609 blog posts, lecture packets,
    book, datasets and transcripts are cut into about 60,000 passages. Each passage is turned into
@@ -59,7 +67,7 @@ and with nothing running on your Mac except an editor. It has seven parts.
    names the kind of uncertainty the company carries (young, distressed, cyclical, financial,
    complex, emerging market) and proposes a value for every calculator input, with a citation to a
    filing page or a Damodaran passage. You review it, change what you disagree with, and approve.
-   Only then does the calculator run. A second, opposing memo is required for every company.
+   [Only then does the calculator run.]{.reading-highlight} A second, opposing memo is required for every company.
 5. **Robots that run at night (GitHub Actions).** Scheduled jobs pull new filings from the US
    regulator (SEC EDGAR, free), later from a paid Indian data feed (EODHD), re-value your
    watchlist, check whether Damodaran posted a new risk-premium file, pull licensed news
@@ -77,7 +85,11 @@ and with nothing running on your Mac except an editor. It has seven parts.
 
 ![System architecture](diagrams/png/architecture.png)
 
-# 2. Where the pieces live and who runs them
+# 2. Where the pieces live and who runs them {#r1-vendors}
+
+::: {.reading-only .optional}
+**Use this as a lookup table.** Learn each service's job when it comes up; you do not need to memorize the vendor list to understand the system.
+:::
 
 Everything except your editor runs on a managed service. You are the client; they are the
 contractors. Here is each contractor, what it does in one line, and why it was chosen.
@@ -96,11 +108,19 @@ contractors. Here is each contractor, what it does in one line, and why it was c
 | **EODHD** | Indian statements (from milestone 4) | Income statements, balance sheets and cash flows for NSE and BSE companies | Only vendor with documented long-history India data |
 | **Cursor** | Your editor and agent | A VS Code with an AI that plans, edits and shows you every change as a diff | Already paid; safest for a beginner |
 
-# 3. The six rules that make the numbers trustworthy
+# 3. The six rules that make the numbers trustworthy {#r1-trust}
+
+::: {.reading-only .read-first}
+**These rules explain what makes a result inspectable.** Pay attention to the golden test, dated inputs, source labels, India adjustments, and the distinction between an estimate and a decision.
+:::
 
 These are the rules that survive every redesign. They are about correctness, not style.
 
 ## 3.1 The golden test
+
+::: {.reading-only .watch-out}
+**A correct calculation still depends on its inputs.** Read the paragraph explaining what the golden test proves before trusting the precision of the result.
+:::
 
 Damodaran's spreadsheet contains a finished example (Almarai). Our calculator must reproduce its
 value per share, 7.187840270062114, within 0.000001. The expected numbers are pulled out of the
@@ -108,11 +128,15 @@ workbook by a script, never typed by hand, and the file that holds them is prote
 tool cannot "fix" the test instead of the code. Every code change runs this test automatically.
 If it fails, the change is refused.
 
-What it does and does not prove: it proves the *arithmetic* is faithful, including how an
+What it does and does not prove: it proves the *[arithmetic]{.reading-highlight}* is faithful, including how an
 industry beta is re-levered for the company's debt. It says nothing about whether the *inputs*
 are right. That is why every valuation also carries a range (part 3.5).
 
 ## 3.2 Vintage
+
+::: {.reading-only .key-idea}
+**The date belongs to the number.** The example below shows why using tables from different snapshots can change a valuation.
+:::
 
 Damodaran refreshes his tables every January. Two of them refresh more often: the country risk
 premiums quarterly, the implied equity risk premium monthly. So a single year contains several
@@ -151,7 +175,7 @@ without an audit: "can I show this?" becomes a query.
 
 ## 3.5 Ranges, not points
 
-Every valuation also produces a sensitivity table and a Monte Carlo range drawn from Damodaran's
+Every valuation also produces a [sensitivity table]{.reading-highlight} and a Monte Carlo range drawn from Damodaran's
 own industry quartiles. The scoreboard (part 6) later measures the bias and the spread of those
 estimates against realised prices. Exact engine, uncertain inputs, measured error.
 
@@ -161,7 +185,11 @@ A test scans every report, memo and chat answer for buy, sell, hold or target pr
 prints estimates (value, price as a percentage of value, the probability that value is below
 price, what the price already requires, and how past calls did). It never tells you what to do.
 
-# 4. The two places an AI model is used
+# 4. The two places an AI model is used {#r1-ai}
+
+::: {.reading-only .read-first}
+**Keep these two roles clear:** the assistant used while writing software, and the models called by the finished product. The following section explains which is which.
+:::
 
 This confused you, so here it is slowly.
 
@@ -185,6 +213,10 @@ pipeline.
 
 ## 4.1 The model table, explained line by line
 
+::: {.reading-only .optional}
+**Reference for model selection.** On this pass, understand the jobs in the left column. Return to the exact identifiers and prices when configuring the system.
+:::
+
 | Job | Model (OpenRouter id) | Price per million tokens, in / out | Why |
 |---|---|---|---|
 | Write memos, answer questions | `z-ai/glm-5.3` | about $0.92–1.40 / $3.14–4.40 | Best open-weight model on the index (45) and the lowest hallucination rate among strong open weights |
@@ -198,7 +230,11 @@ How to read the columns: "tokens" are word pieces (roughly 4 characters). "In" i
 back, so it costs about $0.0143 on GLM-5.3. The model ids and prices are re-checked monthly and
 pinned in one file; a swap is one line.
 
-# 5. What "scales", in plain words
+# 5. What "scales", in plain words {#r1-scale}
+
+::: {.reading-only .optional}
+**Return here for capacity questions.** You can follow the main project story without memorizing the size and throughput details.
+:::
 
 You asked whether this design scales. Here is what scales for free and what does not.
 
@@ -215,7 +251,11 @@ Indian data vendor's call budget (weekly refresh, keyed on their "last updated" 
 Going from 50 companies to 5,000 changes the shape of the nightly job and the database tier. It
 does not change the calculator, the librarian, the memo writer or the dashboard.
 
-# 6. Estimates, not advice: what the scoreboard shows
+# 6. Estimates, not advice: what the scoreboard shows {#r1-scoreboard}
+
+::: {.reading-only .key-idea}
+**Read this to judge the output.** The scoreboard records how estimates behave after they are made; it is part of learning how reliable the system is.
+:::
 
 Every valuation is stored with a timestamp, its inputs, its memo version and its three vintages.
 After 90, 180 and 365 days a job records the realised price. The scoreboard then shows, by sector,
@@ -227,7 +267,11 @@ On "is it working for the next month": Damodaran's own data says no valuation me
 next year's return well, and one month is noise. The honest monthly question is "is the method
 working so far", and that is what the scoreboard answers as valuations age.
 
-# 7. The nightly robots
+# 7. The nightly robots {#r1-robots}
+
+::: {.reading-only .optional}
+**Later: operational detail.** Remember the purpose of the nightly work, then return to its individual jobs when reviewing the schedule.
+:::
 
 ![Nightly data flow](diagrams/png/nightly-data-flow.png)
 
@@ -241,7 +285,11 @@ whether Damodaran posted a new risk-premium or country-risk file; if the file's 
 changed, it loads it as a *new* vintage and opens a GitHub issue for you to decide whether to
 adopt it. A third job pulls licensed headlines and stores them as annotations only.
 
-# 8. The valuation chain
+# 8. The valuation chain {#r1-valuation}
+
+::: {.reading-only .read-first}
+**Follow the calculation from inputs to value per share.** This is the overview to keep in mind when reading the nine-station example in PDF 2.
+:::
 
 ![The valuation chain](diagrams/png/valuation-chain.png)
 
@@ -255,7 +303,11 @@ probability truncates the going-concern value; then debt, minorities, cash, non-
 and options are added or removed to reach equity and value per share. The full walk-through with
 Almarai's numbers is chapter 3 of "Damodaran, the important parts".
 
-# 9. The memo pipeline
+# 9. The memo pipeline {#r1-memo}
+
+::: {.reading-only .read-first}
+**Follow the evidence into the inputs.** Notice the review step: the proposed story and assumptions need your attention before the calculator runs.
+:::
 
 ![The memo pipeline](diagrams/png/memo-pipeline.png)
 
@@ -268,7 +320,11 @@ reject an uncited claim or an input outside Damodaran's published plausibility b
 in Cursor. Numbers are written as rows, never parsed from prose, so the calculator is never
 touched by the model.
 
-# 10. The accounts you will create, in order
+# 10. The accounts you will create, in order {#r1-accounts}
+
+::: {.reading-only .optional}
+**A checklist for the setup stage.** Read it when you are ready for that stage; it is not a prerequisite for reading these PDFs.
+:::
 
 Create them in this order, because each one's key is needed before the next part works. Use a
 different email alias for each vendor (`you+neon@gmail.com`, `you+voyage@gmail.com`) so a breach
@@ -293,9 +349,13 @@ Where the keys go: a file called `.env` in the repo (never committed; GitHub's p
 refuses a commit that contains a key) and the "Secrets" page of the repo for the robots. A
 committed `.env.example` lists the names with empty values.
 
-# 11. Setting up Cursor for this repo
+# 11. Setting up Cursor for this repo {#r1-setup}
 
-1. Settings → General → **Privacy Mode: on**. Your code is then not used for training, and
+::: {.reading-only .optional}
+**Return when setting up the editor.** The configuration detail belongs with the practical setup work.
+:::
+
+1. Settings, then General, then **Privacy Mode: on**. Your code is then not used for training, and
    Cursor's zero-data-retention agreements with the model providers apply.
 2. Open the repo folder. The file `.cursor/mcp.json` (shipped with the repo) registers the
    system's tools. **MCP** stands for Model Context Protocol: a standard plug that lets an AI tool
@@ -312,7 +372,11 @@ committed `.env.example` lists the names with empty values.
    different models for its Plan and Act modes. That is your bench for feeling what an open-weight
    model does before its name goes into a robot.
 
-# 12. Budget at up to $200 a month
+# 12. Budget at up to $200 a month {#r1-budget}
+
+::: {.reading-only .read-first}
+**Read the total and the timing.** Distinguish the already-paid subscription, later services, recurring costs, and one-off work in the original budget below.
+:::
 
 | Line | Now | Notes |
 |---|---|---|
@@ -327,7 +391,11 @@ committed `.env.example` lists the names with empty values.
 | Mistral OCR | about $10 once | |
 | **Total** | **about $120–200** | Bloomberg Digital is your own subscription outside this |
 
-# 13. Bloomberg, INDmoney and news, honestly
+# 13. Bloomberg, INDmoney and news, honestly {#r1-news}
+
+::: {.reading-only .watch-out}
+**Access to a reading product and access to its data are different questions.** Read these limits before assuming a subscription supplies the system with data.
+:::
 
 - Your **bloomberg.com** subscription is a reading product. The "API library" page you found is
   the software kit for Terminal, Server API and Data License customers (the Terminal alone is
@@ -344,7 +412,11 @@ committed `.env.example` lists the names with empty values.
   August 2026), Parallel and Exa beat both on quality per dollar, so if we add news discovery it
   will be one of those.
 
-# 14. What happens next
+# 14. What happens next {#r1-next}
+
+::: {.reading-only .read-first}
+**Finish here.** Connect the reading, setup, foundation, and later stages to the milestone explanation in PDF 5.
+:::
 
 ![Milestone map](diagrams/png/milestone-map.png)
 
@@ -356,7 +428,11 @@ committed `.env.example` lists the names with empty values.
 4. You work in Cursor, one guide chapter and one small change at a time. I am on call.
 5. India, the accuracy scoreboard, ranges and the market panel follow.
 
-# 15. Glossary
+# 15. Glossary {#r1-glossary}
+
+::: {.reading-only .optional}
+**Keep this available as a reference.** Look up unfamiliar terms as you meet them; there is no need to memorize the glossary.
+:::
 
 - **Agent (AI).** An AI model given tools (read files, run commands) and a loop, so it can carry
   out multi-step tasks rather than answer one question.

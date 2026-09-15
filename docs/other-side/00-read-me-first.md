@@ -1,6 +1,10 @@
-# The Other Side: Read Me First
+# The Other Side: Read Me First {#r3-orientation}
 
-This folder is the critics reader. It collects the best arguments against Aswath Damodaran and against the valuation method your system copies. It also collects his own admissions, with the numbers. The point is not to knock him down. The point is to make sure you never mistake a model for the truth.
+::: {.reading-only .read-first}
+**Read this after the essentials.** The aim is to understand where the method can mislead you and how to recognize the limits of its evidence.
+:::
+
+This folder is the critics reader. It collects the best arguments against Aswath Damodaran and against the valuation method your system copies. It also collects his own admissions, with the numbers. The point is not to knock him down. The point is to make sure you [never mistake a model for the truth]{.reading-highlight}.
 
 A note on sources. Every paragraph in this folder ends with a "Source" line. "Report" means the local research file at /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bkm2kob5x.txt, compiled 2026-09-14. "blog/" means the folder /Users/siddharth/Downloads/financeMD/damodaran/blog/. "Survey" means the corpus survey at /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bfxevcj1s.txt. Where the Report used the live web, the chapter says so.
 

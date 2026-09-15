@@ -1,4 +1,8 @@
-# The Other Side, Chapter 5: Reading Order
+# The Other Side, Chapter 5: Reading Order {#r3-reading}
+
+::: {.reading-only .optional}
+**An extended reading list.** Use the suggested order when you want to go beyond this PDF; it need not delay understanding the project.
+:::
 
 This chapter is the reading list for the critics' side, arranged for a beginner. It has 17 items. Every item is free unless the table says otherwise. The lengths are the research report's estimates for a careful first pass.
 

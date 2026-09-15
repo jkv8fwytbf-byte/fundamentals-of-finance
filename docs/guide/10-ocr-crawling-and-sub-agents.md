@@ -1,4 +1,8 @@
-# Chapter 10. OCR, web crawling and sub-agents: three helpers, and when to leave them in the drawer
+# Chapter 10. OCR, web crawling and sub-agents: three helpers, and when to leave them in the drawer {#r4-helpers}
+
+::: {.reading-only .optional}
+**For corpus preparation.** Read the problem each helper solves before using the OCR, crawling, or delegation details.
+:::
 
 This chapter covers three tools that sound advanced and are mostly optional. Each solves a narrow problem here. Knowing the problem matters more than knowing the tool. Read it after Chapter 3 and before you touch the corpus ingest code in milestone M2.
 
@@ -161,6 +165,10 @@ Source: bj0fbejiq.txt, CHECK 3 sections 2 to 4 resource tables; b31x0pyot.txt, s
 
 ## 10-minute exercise
 
+::: {.reading-only .optional}
+**For the practical stage.** Use this exercise when working on this chapter's tool. The following "Done when" checklist tells you how to judge completion.
+:::
+
 The goal is to tell a text PDF from an image PDF with your own hands.
 
 1. Download the short core deck, `darkside.pdf`, from https://pages.stern.nyu.edu/~adamodar/pdfiles/country/darkside.pdf (the link Document D also lists). Save it in your Downloads folder.
@@ -175,9 +183,11 @@ Source: bkm2kob5x.txt, learning path, Dark Side table (2026-09-14); bj0fbejiq.tx
 
 ## Done when
 
+::: {.reading-emphasis .key-idea}
 - You can say in one sentence why a PDF can look normal yet contain no text.
 - You have run `pdffonts` and `pdftotext` on one deck and written down which class it is.
 - You can name the three quality checks for OCR output without looking: hand-typed pages, column sums, page count.
 - You can explain the difference between search, crawl and scrape with the library analogy.
 - You can state why terms of service, not computer-crime law, are the real scraping risk, and why every row carries a `license_class`.
 - You can name two cases where a sub-agent is the wrong tool, and say where the sub-agent machinery already lives in Cursor.
+:::

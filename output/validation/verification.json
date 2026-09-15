@@ -1,0 +1,249 @@
+{
+  "original_checkout": {
+    "branch_unchanged": true,
+    "refs_unchanged": true,
+    "files_unchanged": true,
+    "status_unchanged": true,
+    "index_unchanged": true
+  },
+  "source_comparison": {
+    "docs/read-this-first.md": true,
+    "docs/guide/14-security-hygiene.md": true,
+    "docs/guide/11-evals-and-langfuse.md": true,
+    "docs/guide/10-ocr-crawling-and-sub-agents.md": true,
+    "docs/guide/00-how-to-learn-with-an-ai-tool.md": true,
+    "docs/guide/15-damodaran-watch-order.md": true,
+    "docs/guide/08-fine-tuning-at-three-levels.md": true,
+    "docs/guide/03-github-actions.md": true,
+    "docs/guide/12-hex-dashboards.md": true,
+    "docs/guide/16-the-schedule.md": true,
+    "docs/guide/09-data-sources.md": true,
+    "docs/guide/13-figma-and-figjam.md": true,
+    "docs/guide/17-glossary.md": true,
+    "docs/guide/06-pinecone-voyage-and-rag-in-plain-words.md": true,
+    "docs/guide/02-cursor-and-cline.md": true,
+    "docs/guide/00-preface.md": true,
+    "docs/guide/05-postgres-and-neon-for-a-beginner.md": true,
+    "docs/guide/04-typescript-for-a-python-brain.md": true,
+    "docs/guide/07-openrouter-and-benchmark-literacy.md": true,
+    "docs/guide/01-git-github-and-pull-requests.md": true,
+    "docs/plan-explained/01-scope.md": true,
+    "docs/plan-explained/02-s0-five-steps.md": true,
+    "docs/plan-explained/04-s2-decisions.md": true,
+    "docs/plan-explained/12-s10-technical-appendix.md": true,
+    "docs/plan-explained/03-s1-one-page.md": true,
+    "docs/plan-explained/11-s9-risks.md": true,
+    "docs/plan-explained/06-s4-who-does-what.md": true,
+    "docs/plan-explained/05-s3-documents.md": true,
+    "docs/plan-explained/08-s6-budget.md": true,
+    "docs/plan-explained/00-preface.md": true,
+    "docs/plan-explained/09-s7-vendors-and-accounts.md": true,
+    "docs/plan-explained/10-s8-bloomberg-and-friends.md": true,
+    "docs/plan-explained/07-s5-milestones.md": true,
+    "docs/other-side/05-reading-order.md": true,
+    "docs/other-side/01-his-own-dark-side.md": true,
+    "docs/other-side/06-what-this-means-for-the-app.md": true,
+    "docs/other-side/00-read-me-first.md": true,
+    "docs/other-side/02-his-misses-with-numbers.md": true,
+    "docs/other-side/04-twelve-episodes.md": true,
+    "docs/other-side/00-preface.md": true,
+    "docs/other-side/03-academic-and-practitioner-critiques.md": true,
+    "docs/damodaran-essentials/c2-accounting-minimum-and-base-year.md": true,
+    "docs/damodaran-essentials/c3-the-dcf-chain.md": true,
+    "docs/damodaran-essentials/c7-india-and-the-rules-of-thumb.md": true,
+    "docs/damodaran-essentials/c1-why-value-story-and-the-3p-test.md": true,
+    "docs/damodaran-essentials/c4-discount-rates-and-country-risk.md": true,
+    "docs/damodaran-essentials/c5-growth-terminal-value-and-the-dark-side.md": true,
+    "docs/damodaran-essentials/c6-relative-valuation-and-what-the-market-prices-in.md": true,
+    "docs/damodaran-essentials/00-preface.md": true
+  },
+  "pdfs": {
+    "1-read-this-first.pdf": {
+      "pages": 19,
+      "landscape_pages": [
+        14,
+        15
+      ],
+      "original_pdf_preserved": true,
+      "map_targets": 7,
+      "map_links_resolve": true,
+      "map_destinations": [
+        "section*.2",
+        "section*.5",
+        "section*.12",
+        "section*.18",
+        "section*.20",
+        "section*.24",
+        "section*.26"
+      ],
+      "broken_internal_links": [],
+      "outside_page_characters": [],
+      "critical_checks": {
+        "cover_number": true,
+        "reading_map": true
+      },
+      "contents_present": true,
+      "label_occurrences": {
+        "READ FIRST": 9,
+        "KEY IDEA": 3,
+        "WATCH OUT": 3,
+        "OPTIONAL - FIRST PASS": 8
+      },
+      "warnings": [],
+      "sha256": "e023bfd92a8685561c8bec999466ea3dbf0cfd11d5507dc504d2adf61d737aaf"
+    },
+    "2-damodaran-essentials.pdf": {
+      "pages": 56,
+      "landscape_pages": [
+        10,
+        51
+      ],
+      "original_pdf_preserved": true,
+      "map_targets": 7,
+      "map_links_resolve": true,
+      "map_destinations": [
+        "section*.2",
+        "section*.12",
+        "section*.26",
+        "section*.43",
+        "section*.69",
+        "section*.94",
+        "section*.111"
+      ],
+      "broken_internal_links": [],
+      "outside_page_characters": [],
+      "critical_checks": {
+        "cover_number": true,
+        "reading_map": true
+      },
+      "contents_present": true,
+      "label_occurrences": {
+        "READ FIRST": 6,
+        "KEY IDEA": 15,
+        "WATCH OUT": 5,
+        "OPTIONAL - FIRST PASS": 2
+      },
+      "warnings": [],
+      "sha256": "bee3b6b0f9f054b85bc99345d86824f404fd943b9b49a31cc497a702a1761114"
+    },
+    "3-the-other-side.pdf": {
+      "pages": 46,
+      "landscape_pages": [
+        32,
+        33,
+        34,
+        38,
+        39,
+        40
+      ],
+      "original_pdf_preserved": true,
+      "map_targets": 7,
+      "map_links_resolve": true,
+      "map_destinations": [
+        "section*.2",
+        "section*.10",
+        "subsection*.45",
+        "subsection*.46",
+        "subsection*.47",
+        "subsection*.56",
+        "section*.78"
+      ],
+      "broken_internal_links": [],
+      "outside_page_characters": [],
+      "critical_checks": {
+        "cover_number": true,
+        "reading_map": true
+      },
+      "contents_present": true,
+      "label_occurrences": {
+        "READ FIRST": 5,
+        "KEY IDEA": 5,
+        "WATCH OUT": 5,
+        "OPTIONAL - FIRST PASS": 4
+      },
+      "warnings": [],
+      "sha256": "6202b8370a4f8aab4d7759a2bab230227cdc1d729fc3d772ccf29425dab3a639"
+    },
+    "4-the-guide.pdf": {
+      "pages": 104,
+      "landscape_pages": [
+        60,
+        84,
+        96,
+        97
+      ],
+      "original_pdf_preserved": true,
+      "map_targets": 5,
+      "map_links_resolve": true,
+      "map_destinations": [
+        "section*.2",
+        "section*.34",
+        "section*.210",
+        "section*.218",
+        "section*.229"
+      ],
+      "broken_internal_links": [],
+      "outside_page_characters": [],
+      "critical_checks": {
+        "cover_number": true,
+        "reading_map": true
+      },
+      "contents_present": true,
+      "label_occurrences": {
+        "READ FIRST": 5,
+        "KEY IDEA": 19,
+        "WATCH OUT": 1,
+        "OPTIONAL - FIRST PASS": 33
+      },
+      "warnings": [
+        "warning: 4-the-guide.tex:4579: Overfull \\hbox (0.91653pt too wide) in paragraph at lines 4572--4579"
+      ],
+      "sha256": "b5ae9aa96111cc56998310c21d1380c4867d93bf8b8f8041440ca956b1ae35dd"
+    },
+    "5-the-plan-explained.pdf": {
+      "pages": 37,
+      "landscape_pages": [
+        23
+      ],
+      "original_pdf_preserved": true,
+      "map_targets": 7,
+      "map_links_resolve": true,
+      "map_destinations": [
+        "section*.2",
+        "section*.3",
+        "section*.5",
+        "section*.11",
+        "section*.12",
+        "section*.19",
+        "section*.34"
+      ],
+      "broken_internal_links": [],
+      "outside_page_characters": [],
+      "critical_checks": {
+        "cover_number": true,
+        "reading_map": true
+      },
+      "contents_present": true,
+      "label_occurrences": {
+        "READ FIRST": 8,
+        "KEY IDEA": 2,
+        "WATCH OUT": 1,
+        "OPTIONAL - FIRST PASS": 5
+      },
+      "warnings": [],
+      "sha256": "d698065fbc247d05ed12d9af3940e4e84ca27d7b4f4e1a0bdca0220fb50db0a9"
+    }
+  },
+  "visual_review": {
+    "pages_rendered_and_reviewed": 262,
+    "method": "Every page rendered with Poppler and reviewed in contact sheets. Selected formulas, dense tables, callouts, covers, maps and complete vector diagrams inspected at larger size.",
+    "final_observation": "No clipped or overlapping text observed. Original diagram exports were replaced in the reading output with the complete original SVGs rendered as vector PDFs; source SVGs and original PDFs remain unchanged.",
+    "minor_build_warning": "PDF 4 reports one 0.91653pt overfull horizontal box in an existing Figma URL paragraph. The paragraph was visually reviewed and stays on the page without clipping or overlap."
+  },
+  "annotation_counts": {
+    "guidance_boxes": 97,
+    "highlighted_phrases": 45,
+    "emphasized_takeaways_and_checkpoints": 27,
+    "reading_map_links": 33
+  }
+}

@@ -1,4 +1,8 @@
-# Chapter 9. Data sources: where every number comes from, and what you may do with it
+# Chapter 9. Data sources: where every number comes from, and what you may do with it {#r4-data}
+
+::: {.reading-only .optional}
+**For connecting data sources.** Focus on where numbers come from and their usage labels; look up individual endpoints when implementing them.
+:::
 
 ## What it is (plain words and an analogy)
 
@@ -172,6 +176,10 @@ Source: bkm2kob5x.txt, section 12; btzaixzyh.txt, CHECK 2 and CHECK 3 (2026-09-1
 
 ## 10-minute exercise
 
+::: {.reading-only .optional}
+**For the practical stage.** Use this exercise when working on this chapter's tool. The following "Done when" checklist tells you how to judge completion.
+:::
+
 Pull Apple's `companyfacts` file and find its revenue tag. Apple's CIK is 320193, padded to `CIK0000320193`. Replace the name and email in the User-Agent with your own.
 
 ```bash
@@ -201,6 +209,7 @@ Source: https://data.sec.gov/api/xbrl/companyfacts/CIK0000320193.json (fetched 2
 
 ## Done when
 
+::: {.reading-emphasis .key-idea}
 - You can say, without looking, which three EDGAR endpoints exist and what each returns.
 - You can write the LTM formula in one line and name the three filings it needs.
 - You can explain why a zero interest expense produces a perfect synthetic rating, and what flag replaces the zero.
@@ -211,3 +220,4 @@ Source: https://data.sec.gov/api/xbrl/companyfacts/CIK0000320193.json (fetched 2
 - You can name the two FRED series the regime panel uses.
 - You can explain, in two sentences, why Bloomberg is reading only and where your reading notes go.
 - The exercise printed Apple's FY2025 revenue and the 2023-09-30 interest-expense cutoff.
+:::

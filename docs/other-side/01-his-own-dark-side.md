@@ -1,4 +1,8 @@
-# The Other Side, Chapter 1: His Own Dark Side
+# The Other Side, Chapter 1: His Own Dark Side {#r3-dark-side}
+
+::: {.reading-only .read-first}
+**Focus on the ten claims and what changes in the app.** The final three takeaways are your checkpoint before moving to the outside critiques.
+:::
 
 Damodaran wrote a whole book about where his own method breaks. It is called The Dark Side of Valuation. This chapter turns it into ten claims. Each claim gets one sentence, a plain explanation, and a note on where it will show up in your app. Source names follow Chapter 0. "Report" is the critics research file. "Preface" is the local copy of his third-edition preface. "Survey" is the corpus survey. "Schema" is the model schema report for the fcffsimpleginzu workbook.
 
@@ -47,7 +51,7 @@ Source: Report, Part 1, bullet 1 (2026-09-14); blog/2014/06/a-disruptive-cab-rid
 
 Chapter 6 is titled "A Shaky Base: A Risky Risk free Rate". A risk-free rate is the return on a bond that cannot default. Governments can default, and some bonds carry negative yields. His fix is to subtract the default spread, the extra yield that pays for default risk. He now does this to the United States. His July 2026 post starts from an implied premium of 4.42%, with the S&P 500 at 7,499.36 on 1 July 2026. He nets out the 0.22% Aa1 default spread to reach a 4.20% mature-market premium.
 
-In the app: the risk-free rate will be a labeled input with a vintage id, never a hard-coded number. One 2026 US snapshot holds three different risk-free rates (3.95%, 4.58% and 4.75%) and three different premiums (4.46%, 4.23% and 4.20%), depending on which of his files you open; the guide's database chapter shows which goes with which. For India the rate will be the 10-year G-sec (Indian government bond) yield minus the India default spread.
+In the app: the risk-free rate will be [a labeled input]{.reading-highlight} with a vintage id, never a hard-coded number. One 2026 US snapshot holds three different risk-free rates (3.95%, 4.58% and 4.75%) and three different premiums (4.46%, 4.23% and 4.20%), depending on which of his files you open; the guide's database chapter shows which goes with which. For India the rate will be the 10-year G-sec (Indian government bond) yield minus the India default spread.
 
 Source: Report, Part 1, bullet 2 (2026-09-14); blog/2026/07/country-risk-drivers-measures-and.md (2026-07); datasets catalog bafb6h9rb.txt; plan, M4 item 1.
 
@@ -140,8 +144,10 @@ Source: Report, Parts 1, 2.1 and 4 (2026-09-14); /Users/siddharth/Valuation/docs
 
 ## Three things to remember
 
+::: {.reading-emphasis .key-idea}
 - The dark side is a behavior, not a company type. It is abandoning the model when the model gets hard.
-- Every one of the ten claims becomes a labeled input, a range, or a required field in your app. None becomes a bare point estimate.
+- Every one of the ten claims becomes a labeled input, [a range]{.reading-highlight}, or a required field in your app. None becomes a bare point estimate.
 - The three free decks need OCR before the librarian can quote them. Until then, quote the preface.
 
 Source: Report, Part 1 (2026-09-14); plan, items 1, 2 and 4.
+:::

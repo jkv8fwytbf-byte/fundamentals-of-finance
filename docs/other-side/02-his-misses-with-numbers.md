@@ -1,6 +1,10 @@
-# The Other Side, Chapter 2: His Misses with the Numbers
+# The Other Side, Chapter 2: His Misses with the Numbers {#r3-misses}
 
-This chapter lists the times Damodaran published a value and the market went the other way. Every number comes from his own posts, as gathered in the critics research report. The chapter ends with two cases he got right, because a list of defeats alone would be propaganda. Chapter 4 covers who bet against him and what they won. This chapter covers only his numbers and his own words.
+::: {.reading-only .optional}
+**Case-study reference.** Read how the tables work and the closing pattern first. Return to individual company histories when you want a concrete example.
+:::
+
+This chapter lists the times Damodaran published a value and the market went the other way. Every number comes from his own posts, as gathered in the critics research report. The chapter ends with two cases he got right, because a list of defeats alone would be propaganda. Chapter 4 covers who bet against him and what they won. This chapter covers only his numbers and [his own words]{.reading-highlight}.
 
 Source: /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bkm2kob5x.txt, Part 2 introduction and Part 4 honourable mention (2026-09-14)
 
@@ -175,6 +179,7 @@ Source: /Users/siddharth/Downloads/financeMD/damodaran/blog/2019/09/insights-on-
 
 ## The pattern, in three lines
 
+::: {.reading-emphasis .key-idea}
 - He is usually right about the short run and wrong about the decade. Facebook, Amazon and Tesla share this shape.
 - His errors are story errors, not arithmetic errors. Tesla's factory, Uber's market and Blinkit's worth were all narrative calls.
 - He publishes every value before the outcome, then publishes the scorecard, including the losses.
@@ -182,3 +187,4 @@ Source: /Users/siddharth/Downloads/financeMD/damodaran/blog/2019/09/insights-on-
 Your engine inherits the first two weaknesses. From M1 onward it will store every value with its date and its vintage ids, so that you can grade it later the way he grades himself. Chapter 6 turns that into design rules.
 
 Source: /Users/siddharth/.claude/projects/-Users-siddharth-Downloads/edcdeb19-7793-4e1b-9e73-4cf6186716bf/tool-results/bkm2kob5x.txt, Parts 2 and 6 (2026-09-14); /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md (2026-09-14)
+:::

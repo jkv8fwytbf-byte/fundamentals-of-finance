@@ -1,4 +1,8 @@
-# Chapter 14. Security hygiene for a solo builder
+# Chapter 14. Security hygiene for a solo builder {#r4-security}
+
+::: {.reading-only .optional}
+**Read before opening accounts or handling keys.** These are practical setup habits; keep the checklist beside you during that stage.
+:::
 
 ## What it is (plain words and an analogy)
 
@@ -92,6 +96,10 @@ Source: bkm2kob5x.txt, section 15; btzaixzyh.txt, CHECK 1 (both 2026-09-14).
 
 ## 10-minute exercise
 
+::: {.reading-only .optional}
+**For the practical stage.** Use this exercise when working on this chapter's tool. The following "Done when" checklist tells you how to judge completion.
+:::
+
 Turn on 2FA for GitHub and store the recovery codes offline. No AI tool.
 
 1. Install an authenticator app on your phone if you do not have one.
@@ -105,12 +113,14 @@ Source: bkm2kob5x.txt, section 15; bj0fbejiq.txt, CHECK 2, row 1.
 
 ## Done when
 
+::: {.reading-emphasis .key-idea}
 - GitHub asks you for a code at sign-in, and you can name the offline place where the recovery codes sit.
 - Every vendor account in Document A, section 10, has 2FA on and its own email alias.
 - The repo has `.env*` in `.gitignore`, a committed `.env.example`, and push protection on, or gitleaks in a pre-commit hook if the toggle is not offered.
-- OpenRouter shows a $75 monthly limit, prompt logging off, and ZDR routing on. GitHub shows a $25 Actions spending cap. Voyage has a billing alert.
+- OpenRouter shows a $75 monthly limit, prompt logging off, and ZDR routing on. GitHub shows a $25 Actions [spending cap]{.reading-highlight}. Voyage has a billing alert.
 - You have rotated the OpenRouter key once on purpose, and the nightly job still ran afterward.
 - Two calendar reminders exist, 90 days out, for the GitHub token and the OpenRouter key.
 - You can explain to someone else why a key never goes into a chat or into Cursor's BYOK box.
 
 Source: read-this-first.md sections 10 and 12; bkm2kob5x.txt, section 15; bj0fbejiq.txt, CHECK 2.
+:::

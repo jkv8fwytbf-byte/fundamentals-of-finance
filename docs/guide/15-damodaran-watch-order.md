@@ -1,4 +1,8 @@
-# Chapter 15. The Damodaran watch and read order for this project
+# Chapter 15. The Damodaran watch and read order for this project {#r4-watch}
+
+::: {.reading-only .read-first}
+**Use this to choose the next lesson.** Read the watch-order structure and match a topic to the input or concept you are learning.
+:::
 
 ## What it is (plain words and an analogy)
 
@@ -43,13 +47,24 @@ All free. Page URLs were verified on 2026-09-14 by the learning-path report. Pla
 | Resource | URL | Format | Hours | Why |
 |---|---|---|---|---|
 | Self-paced classes index | https://pages.stern.nyu.edu/~adamodar/New_Home_Page/onlineclass.htm | Web page | 0.2 | One page that links every class below |
-| Accounting (minimalist) | https://pages.stern.nyu.edu/~adamodar/New_Home_Page/webcastacctg.htm and playlist https://www.youtube.com/playlist?list=PLUkh9m2BorqmKaLrNBjKtFDhpdFdi8f7C | Webcasts, slides, tests | 3 to 4 | Read a 10-K before you parse one |
-| Valuation (online) | https://pages.stern.nyu.edu/~adamodar/New_Home_Page/webcastvalonline.htm and playlist https://www.youtube.com/playlist?list=PLUkh9m2BorqnKWu0g5ZUps_CbQ-JGtbI9 | 25 webcasts | 5 to 6 for the DCF half, 3 for terminal value and multiples | The engine's input sheet, in prose |
-| Corporate Finance (online) | https://pages.stern.nyu.edu/~adamodar/New_Home_Page/webcastcfonline.htm and playlist https://www.youtube.com/playlist?list=PLUkh9m2BorqnDenjSLZ2DHIXrdxoN4Bn_ | 36 webcasts | 3 for hurdle rates, 2 for debt and taxes | Cost of capital and synthetic ratings |
+| Accounting (minimalist) | https://pages.stern.nyu.edu/~adamodar/New_Home_Page/webcastacctg.htm (YouTube playlist listed under the table) | Webcasts, slides, tests | 3 to 4 | Read a 10-K before you parse one |
+| Valuation (online) | https://pages.stern.nyu.edu/~adamodar/New_Home_Page/webcastvalonline.htm (YouTube playlist listed under the table) | 25 webcasts | 5 to 6 for the DCF half, 3 for terminal value and multiples | The engine's input sheet, in prose |
+| Corporate Finance (online) | https://pages.stern.nyu.edu/~adamodar/New_Home_Page/webcastcfonline.htm (YouTube playlist listed under the table) | 36 webcasts | 3 for hurdle rates, 2 for debt and taxes | Cost of capital and synthetic ratings |
 | 2026 Data Update posts | Listed below | Blog posts, 3,100 to 6,200 words each | 2 for posts 4 and 5 | The provenance of every vintage |
 | The Corporate Life Cycle | https://pages.stern.nyu.edu/~adamodar/New_Home_Page/webcastCLC.htm | 20 sessions of 25 to 35 minutes | 10 | Narratives by stage |
 | Investment Philosophies | https://pages.stern.nyu.edu/~adamodar/New_Home_Page/webcastinvphil2025.htm | Self-paced | 8 | The framing for The Other Side |
-| Statistics 101 | https://pages.stern.nyu.edu/~adamodar/New_Home_Page/webcaststatistics.htm and playlist https://www.youtube.com/playlist?list=PLUkh9m2BorqmXcRzWFbzcjMd7fYErVexF | Webcasts | 3 to 4 | Only for the cross-sectional industry regressions |
+| Statistics 101 | https://pages.stern.nyu.edu/~adamodar/New_Home_Page/webcaststatistics.htm (YouTube playlist listed under the table) | Webcasts | 3 to 4 | Only for the cross-sectional industry regressions |
+
+YouTube playlists for the rows above (moved out of the table so the links stay whole on the page):
+
+- Accounting (minimalist):\
+  https://www.youtube.com/playlist?list=PLUkh9m2BorqmKaLrNBjKtFDhpdFdi8f7C
+- Valuation (online):\
+  https://www.youtube.com/playlist?list=PLUkh9m2BorqnKWu0g5ZUps_CbQ-JGtbI9
+- Corporate Finance (online):\
+  https://www.youtube.com/playlist?list=PLUkh9m2BorqnDenjSLZ2DHIXrdxoN4Bn_
+- Statistics 101:\
+  https://www.youtube.com/playlist?list=PLUkh9m2BorqmXcRzWFbzcjMd7fYErVexF
 
 The eight 2026 Data Update posts, all in the local corpus under blog/2026:
 
@@ -89,6 +104,10 @@ Source: bkm2kob5x.txt section 13 (2026-09-14); /Users/siddharth/.claude/plans/he
 
 ## 10-minute exercise
 
+::: {.reading-only .optional}
+**For the practical stage.** Use this exercise when working on this chapter's tool. The following "Done when" checklist tells you how to judge completion.
+:::
+
 1. In Cursor's terminal, run `grep -l "Data Update" /Users/siddharth/Downloads/financeMD/damodaran/blog/2026/*/*.md`. You should see eight posts plus two monthly index files.
 2. Open the Data Update 1 file and search for "Damodaran Bot".
 3. In your decisions log (chapter 0, rule 6), write two sentences. One says what he expects bots to do better. One says what he keeps for himself.
@@ -98,7 +117,9 @@ Source: /Users/siddharth/Downloads/financeMD/damodaran/blog/2026/01 and /02 dire
 
 ## Done when
 
+::: {.reading-emphasis .key-idea}
 - The eight Data Update posts, with dates, are listed in your reading log.
 - You can point to the webcast that explains each input row of the fcffsimpleginzu sheet.
 - You can say in one sentence how a country risk premium is built: sovereign rating, then default spread, then scaled up.
 - Week 1 is on the calendar, and the accounting playlist is bookmarked.
+:::

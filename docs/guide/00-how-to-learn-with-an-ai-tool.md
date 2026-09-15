@@ -1,4 +1,8 @@
-# Chapter 0. How to learn with an AI coding tool without becoming dependent on it
+# Chapter 0. How to learn with an AI coding tool without becoming dependent on it {#r4-learning}
+
+::: {.reading-only .read-first}
+**Read this before the tools manual.** Focus on the attempt-then-ask habit, explaining changes in your own words, and the learning checkpoints.
+:::
 
 ## What it is (plain words and an analogy)
 
@@ -18,7 +22,7 @@ Source: /Users/siddharth/Downloads/financeMD/damodaran/blog/2026/01/data-update-
 
 This project's whole value is being right about numbers that other people may one day trust. The one thing a harness cannot supply is the instinct that a number is off by a factor you have not found yet. That instinct is built by doing the arithmetic yourself, many times. Nothing in the tooling will budget for that on your behalf, so you must.
 
-The approved plan lists "dependence on the AI tool" as a named risk. Its mitigations are the rules below: attempt-then-ask, own the tests, one no-AI evening a week, and a decisions log.
+The approved plan lists "dependence on the AI tool" as a named risk. Its mitigations are the rules below: [attempt-then-ask]{.reading-highlight}, own the tests, one no-AI evening a week, and a decisions log.
 
 Source: /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md, section 9 (2026-09-14)
 
@@ -125,6 +129,10 @@ All free. Hours marked "my estimate" are not from any report; they are reading-t
 
 ## 10-minute exercise
 
+::: {.reading-only .optional}
+**For the practical stage.** Use this exercise when working on this chapter's tool. The following "Done when" checklist tells you how to judge completion.
+:::
+
 This is the day-one exercise from the plan, with rule 1 added.
 
 1. In the attempts file, write two sentences: why you think the cost of capital after year 10 is the risk-free rate plus a mature-market premium.
@@ -136,8 +144,10 @@ Source: /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md, s
 
 ## Done when
 
+::: {.reading-emphasis .key-idea}
 - `~/Valuation/scratch/attempts.md` exists with at least one attempt-then-ask entry and the week-1 ratio row.
 - `~/Valuation/docs/decisions/001-daily-tool-is-cursor.md` exists and is under fifteen lines.
 - The no-AI evening is on your calendar for twelve weeks.
 - You can list the ten rules from memory, in any order, in your own words.
 - You have found one answer in the corpus with grep before asking the tool about it.
+:::

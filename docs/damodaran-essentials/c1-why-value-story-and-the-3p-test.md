@@ -1,4 +1,8 @@
-# Chapter 1: Why value, the story, and the 3P test
+# Chapter 1: Why value, the story, and the 3P test {#r2-story}
+
+::: {.reading-only .read-first}
+**Start with price versus value, the five-step story, and the 3P test.** These explain what the system is trying to estimate and which assumptions belong in its base case.
+:::
 
 This is the first chapter of "Damodaran, the important parts". It is a revision brain-dump from a friend, not a textbook. Every concept ends with one line on why it matters for the calculator we are building. Terms are defined the first time they appear.
 
@@ -18,7 +22,7 @@ Source: /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md (2
 
 ## Price versus value
 
-Price and value are two different things that people use as one word. Value is driven by the cash flows an asset produces, the growth in those cash flows, and the risk that they do not show up. Price is driven by demand and supply, which in practice means mood and momentum. Damodaran's line is that markets are pricing mechanisms, not value mechanisms. Think of a house: the value is what the rent stream is worth, the price is what the neighbor paid last week.
+[Price and value]{.reading-highlight} are two different things that people use as one word. Value is driven by the cash flows an asset produces, the growth in those cash flows, and the risk that they do not show up. Price is driven by demand and supply, which in practice means mood and momentum. Damodaran's line is that markets are pricing mechanisms, not value mechanisms. Think of a house: the value is what the rent stream is worth, the price is what the neighbor paid last week.
 
 Source: /Users/siddharth/Downloads/financeMD/damodaran/blog/2020/03/a-viral-market-meltdown-iii-pricing-or.md (2020-03-16)
 
@@ -48,7 +52,7 @@ Why it matters for the calculator: the engine is an intrinsic model, so it will 
 
 ## Story to numbers: the five steps
 
-Damodaran describes two tribes. Number crunchers build spreadsheets and distrust stories; storytellers pitch visions and distrust spreadsheets. Numbers without a story are just modeling, and a story without numbers is just storytelling. Numbers-only models suffer from three illusions: precision, objectivity, and control. Story-only pitches drift into fantasy and give you no yardstick for progress. A good valuation binds the numbers to one coherent story.
+Damodaran describes two tribes. Number crunchers build spreadsheets and distrust stories; storytellers pitch visions and distrust spreadsheets. Numbers without a story are just modeling, and a story without numbers is just storytelling. Numbers-only models suffer from three illusions: precision, objectivity, and control. Story-only pitches drift into fantasy and give you no yardstick for progress. A good valuation binds the numbers to [one coherent story]{.reading-highlight}.
 
 Source: /Users/siddharth/Downloads/financeMD/damodaran/blog/2014/06/numbers-and-narrative-modeling-story.md (2014-06-24); /Users/siddharth/Downloads/financeMD/damodaran/New_Home_Page/NNPreface.md (no date in file)
 
@@ -80,6 +84,10 @@ Why it matters for the calculator: his workbook has a sheet called "Stories to N
 Source: /Users/siddharth/Downloads/financeMD/damodaran/pc/fcffsimpleginzu.md (valuation date 2026-02-01 in sheet); /Users/siddharth/.claude/plans/help-me-out-here-abstract-wilkinson.md (2026-09)
 
 ## The 3P test: possible, plausible, probable
+
+::: {.reading-only .key-idea}
+**This is the filter for the story.** Read the definitions and the example before treating a possibility as an input.
+:::
 
 The 3P test is the filter for step 2. A possible story could happen. A plausible story could reasonably happen, given how businesses and people behave. A probable story is one you would put weight on today. In his words, "not everything that is possible is plausible, and not all plausible opportunities make the transition to the probable." Picture three nested circles: the outer one is huge and nearly worthless, the inner one is small and carries the value.
 
@@ -161,6 +169,8 @@ Go deeper in this order. Paths are under /Users/siddharth/Downloads/financeMD/ u
 
 ## Three things to remember
 
+::: {.reading-emphasis .key-idea}
 1. Value comes from cash flows, growth, and risk; price comes from demand and supply. The calculator computes the first, reports the gap to the second, and never turns that gap into advice.
-2. Every number must be tied to a sentence in a story, and every sentence must pass the 3P test. Only the probable sets the base case; the plausible gets a scenario; the possible is written down at zero.
+2. Every number must be tied to a sentence in a story, and every sentence must pass the 3P test. [Only the probable sets the base case]{.reading-highlight}; the plausible gets a scenario; the possible is written down at zero.
 3. The model does not change with a company's age, but the inputs you fight over do. Young companies live or die on growth and failure risk, mature ones on financing and dividend policy, declining ones on the path management takes.
+:::
