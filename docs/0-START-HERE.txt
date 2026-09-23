@@ -1,3 +1,24 @@
+STATUS, 23 SEPTEMBER 2026 (read this first if you feel lost)
+
+Done: all five PDFs below are finished. No computer job is running or waiting.
+This folder is /Users/siddharth/Desktop/Valuation. It moved here from ~/Valuation
+on 15 September, at your request. Only Claude Code works here now.
+
+Your next step, and the only one: read output/pdf/1-read-this-first.pdf (about
+40 minutes). Then output/pdf/2-damodaran-essentials.pdf, one chapter an evening. When you have read both,
+say "go" or "page X confused me". Until then nothing else starts: no accounts,
+no code, no money.
+
+Safe to ignore for this project: Docker and Open WebUI, the "diversify" folder
+on the Desktop, the "remaining" learning kit on the Desktop. They are separate.
+
+One thing to know: the folder of Damodaran's own writing and data (financeMD,
+once in Downloads) is no longer on this Mac. The PDFs do not need it. It is
+needed only later, when the accounts and the code start, and it was all free
+public downloads, so it can be fetched again then.
+
+----------------------------------------------------------------------
+
 COLORFUL READING EDITIONS
 
 Open output/pdf/ (next to this docs/ folder) for all five numbered reading editions.

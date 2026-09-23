@@ -4,13 +4,19 @@ Live state for Claude Code. Chat history is not kept between sessions; only file
 
 ## Now
 
-Nothing in flight. Milestone M0, reading stage. Waiting for Siddharth.
+Nothing in flight. Milestone M0, reading stage. Waiting for Siddharth. (Re-confirmed 2026-09-23.)
 
 - He reads the colorful editions in `output/pdf/`, in the order given by `docs/0-START-HERE.txt`: PDF 1 tonight, then PDF 2 one chapter an evening.
 - After PDF 1 and PDF 2 he may say "go" (or "page X confused me"). Until "go", M1 (accounts) and M2 (code) stay parked.
+- If he arrives saying "haywire" or "resume": there is nothing to resume. Point him at the status block at the top of `docs/0-START-HERE.txt`. Do not restart the Sep-14 document workflow (`wf_7ed9a348-8ce`); its journal records 14 writers started, 11 failed and none completed, so a resume would rerun all of them and overwrite finished chapters.
 
 ## Done recently
 
+- Orientation (2026-09-23, Claude Code): Siddharth came back after nine days lost. Checked the folder, the PDFs, the old workflow and the corpus. Findings written down where the next session sees them:
+  - A dated status block at the top of `docs/0-START-HERE.txt` (what is done, the one next step, what to ignore).
+  - `CLAUDE.md` "Outside this folder": the Damodaran corpus is missing from the Mac; needed only at M2; re-mirror then to the same path. Citations left as they are.
+  - Side projects he started on 2026-09-16/17 are outside this folder and outside this plan: `~/Desktop/diversify` (a Next.js app: one scaffold commit plus uncommitted pages for audit, library, map and portfolio), `~/Desktop/remaining` (an eight-week AI learning kit, holds an OpenRouter key in its `.env`), Open WebUI in Docker (installed, torn down, partly uninstalled; leftovers in `~/Docker/open-webui`, `~/Backups/open-webui`, `/Applications/Docker.app`, `~/Downloads/Docker.dmg`). Nothing there touches this repo. Leave them alone unless he asks.
+  - The five PDFs were not rebuilt (no source changed). Page counts, plain copies in `docs/`: 18, 53, 47, 104, 31; colorful editions in `output/pdf/`: 19, 56, 46, 103, 37. A stray 28-byte junk file named `0"` that appeared in `output/pdf/` during this session was removed.
 - Round 2 (2026-09-15, Claude Code): only `main`, and the repo made self-contained.
   - `dev` and `dev2` deleted. `main` is the only branch.
   - The full plan (v4) copied in as `docs/plan.md` (original left at `~/.claude/plans/help-me-out-here-abstract-wilkinson.md`). The nine research reports the documents cite copied in as `docs/sources/*.txt`, with a `README.md` that maps the short names the documents use.
@@ -45,4 +51,5 @@ Nothing in flight. Milestone M0, reading stage. Waiting for Siddharth.
 ## Blocked / wait-for-Siddharth
 
 - "Go" (after he has read PDF 1 and PDF 2).
+- Before M1: the Damodaran corpus has to be mirrored again (it is gone from the Mac, see `CLAUDE.md`). M1's day-one exercise opens the workbook; M2 needs all of it. His call whether it goes back to `~/Downloads/financeMD/` (keeps the citations valid) or somewhere else.
 - Watchlist names and free-account yes/no are later (M2 and M1). Not now.
