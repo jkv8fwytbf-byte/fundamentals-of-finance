@@ -1,0 +1,944 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Demo · Model comparison report</title><style>
+:root{--ink:#172e2a;--muted:#5f706b;--line:#d9e0d8;--paper:#f7f8f3;--accent:#086b54}*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.65 system-ui,sans-serif}main{max-width:1200px;margin:auto;padding:50px 32px 90px}h1{font-size:clamp(32px,5vw,54px);line-height:1.08;letter-spacing:-2px;margin:12px 0 20px}h2{font-size:26px;margin-top:48px}h4{margin:22px 0 7px}.eyebrow{letter-spacing:.16em;font-size:12px;font-weight:800;color:var(--accent)}.banner{padding:16px 20px;background:#fff2cd;border:1px solid #e3c56b;border-radius:10px;margin:25px 0}.muted,.metadata{color:var(--muted);font-size:14px}.stats{display:flex;gap:15px;flex-wrap:wrap}.stat{padding:20px;border:1px solid var(--line);border-radius:12px;min-width:175px;background:white}.stat b{display:block;font-size:28px}.table-wrap{overflow-x:auto;background:white;border:1px solid var(--line);border-radius:12px}table{width:100%;border-collapse:collapse;text-align:left;font-size:14px}th,td{padding:16px;border-bottom:1px solid var(--line)}thead{background:#e9eee6}tbody th{font-weight:600}.filters,.review-grid{display:flex;gap:12px;flex-wrap:wrap;margin:18px 0}label{display:grid;gap:6px;font-size:13px;font-weight:650}select,button,textarea{font:inherit;border:1px solid #b4c4ba;border-radius:7px;padding:10px;background:white;color:var(--ink)}button{background:var(--accent);color:white;cursor:pointer;font-weight:650}button:hover{background:#064c3c}button:focus-visible,select:focus-visible,textarea:focus-visible,summary:focus-visible{outline:3px solid #df9500;outline-offset:3px}textarea{width:100%;min-height:90px}.result{background:white;border:1px solid var(--line);border-radius:10px;margin:10px 0}.result>summary{display:flex;align-items:center;gap:16px;padding:16px;cursor:pointer;flex-wrap:wrap}.result>summary strong{flex:1}.taskid{font:12px ui-monospace,monospace;color:var(--muted)}.badge{font-size:12px;padding:4px 9px;border-radius:5px}.passed{background:#dcf1e6}.failed{background:#fde4d8}.pending{background:#eaf0f5}.detail{padding:0 22px 24px}.preserve{white-space:pre-wrap}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#f0f3ef;padding:18px;border-radius:8px;font:13px/1.65 ui-monospace,monospace}.review{background:#f0f5f2;padding:20px;border-radius:8px;margin-top:20px}.failure{color:#982e13}#visible-count{font-size:14px;color:var(--muted)}[hidden]{display:none!important}@media(max-width:600px){main{padding:24px 16px}th,td{padding:10px}.result>summary{gap:10px}.result>summary strong{flex-basis:60%}}@media print{button,.filters{display:none}main{padding:0}.result{break-inside:avoid}}
+</style>
+<main><div class="eyebrow">AI LEARNING LAB / EXPERIMENT REPORT</div><h1>Read the answers.<br>Then read the scores.</h1><p class="muted">Created 2026-09-16T09:16:26.746196+00:00 · Run state: complete</p><div class="banner">OFFLINE DEMONSTRATION · All model identities, answers, timings and token counts are fictional fixtures. No API calls or charges occurred.</div>
+<div class="stats"><div class="stat"><b>3</b>models / fixtures</div><div class="stat"><b>20</b>distinct tasks</div><div class="stat"><b>75</b>attempts across conditions</div><div class="stat"><b>15</b>summaries awaiting review</div></div>
+<h2>Baseline comparison</h2><p>Automatic passes cover passage questions, extraction and arithmetic. Summary scores use a separate human rubric. Failed requests count as unsuccessful; missing usage remains unavailable.</p>
+<div class="table-wrap"><table><thead><tr><th>Model</th><th>Automatic passes</th><th>Summary review</th><th>Median successful time</th><th>Total reported cost</th><th>Errors</th></tr></thead><tbody><tr><th scope='row'>demo/cedar</th><td>15/15</td><td>0/5 reviewed · Unavailable</td><td>0.30 s</td><td>$0.000000</td><td>0</td></tr><tr><th scope='row'>demo/maple</th><td>12/15</td><td>0/5 reviewed · Unavailable</td><td>0.47 s</td><td>$0.000000</td><td>0</td></tr><tr><th scope='row'>demo/willow</th><td>13/15</td><td>0/5 reviewed · Unavailable</td><td>0.64 s</td><td>Unavailable / incomplete</td><td>1</td></tr></tbody></table></div>
+<p class="muted">Time is end-to-end elapsed time, including all calls in a task. Cost totals cover baseline attempts only and require usage for every included attempt. Demo figures are synthetic. Token totals and per-call usage are in the saved JSON.</p>
+<h2>Calculator experiment</h2><p>Compare only task IDs present in both conditions. “Calculator available” allows tool use; inspect whether the model actually used it.</p>
+<div class="table-wrap"><table><thead><tr><th>Model</th><th>Baseline passes</th><th>Calculator available</th><th>Difference</th><th>Actually called tool</th></tr></thead><tbody><tr><th scope='row'>demo/cedar</th><td>5/5</td><td>5/5</td><td>+0 tasks</td><td>5/5</td></tr><tr><th scope='row'>demo/maple</th><td>3/5</td><td>5/5</td><td>+2 tasks</td><td>5/5</td></tr><tr><th scope='row'>demo/willow</th><td>5/5</td><td>5/5</td><td>+0 tasks</td><td>5/5</td></tr></tbody></table></div>
+<h2>What this run supports</h2><p>This sample teaches you how to inspect a report. Its fictional model differences provide no evidence about any real AI model. Review the summaries and inspect the deliberate JSON-format mistake and simulated timeout.</p><p>Twenty custom learning tasks, one attempt per condition. Not a public benchmark or proof of general superiority. Summary quality requires human review. Provider and network differences affect elapsed time.</p>
+<h2>Inspect each result</h2><div class="filters"><label>Model<select data-filter="model"><option value="">All models</option><option>demo/cedar</option><option>demo/maple</option><option>demo/willow</option></select></label><label>Task type<select data-filter="category"><option value="">All types</option><option value="qa">Passage questions</option><option value="extraction">Extraction</option><option value="arithmetic">Arithmetic</option><option value="summary">Summaries</option></select></label><label>Condition<select data-filter="mode"><option value="">Both conditions</option><option value="baseline">Baseline</option><option value="calculator">Calculator</option></select></label><label>Outcome<select data-filter="status"><option value="">All outcomes</option><option value="passed">Full credit</option><option value="failed">Errors / lost credit</option><option value="pending">Awaiting review</option></select></label></div><p id="visible-count" aria-live="polite"></p>
+<details class="result" data-model="demo/cedar" data-category="qa" data-mode="baseline" data-status="passed">
+<summary><span class="taskid">qa-01</span><strong>demo/cedar</strong><span>baseline</span><span class="badge passed">100% credit</span></summary>
+<div class="detail"><h4>Task</h4><p class="preserve">Read only this passage. Return only the shortest answer. If the passage does not state the answer, return exactly NOT STATED.
+
+Passage: Cedar Library opens at 09:00 on weekdays and 11:00 on Sundays. Saturday hours are 10:00 to 16:00.
+
+Question: What time does the library open on Sunday?</p><h4>Answer</h4><pre>11:00</pre>
+
+<p><b>Grade:</b> Exact accepted answer after case/whitespace/end-punctuation normalization.</p><details><summary>Reference answer / required points</summary><pre>[
+  &quot;11:00&quot;,
+  &quot;11:00 AM&quot;,
+  &quot;11 am&quot;
+]</pre></details>
+<p class="metadata">End-to-end: 0.30 s · Input tokens: 100 · Output tokens: 25 · Cost: $0.000000</p>
+<p class="metadata">Provider: fictional offline provider · Returned model: demo/cedar</p></div></details><details class="result" data-model="demo/cedar" data-category="qa" data-mode="baseline" data-status="passed">
+<summary><span class="taskid">qa-02</span><strong>demo/cedar</strong><span>baseline</span><span class="badge passed">100% credit</span></summary>
+<div class="detail"><h4>Task</h4><p class="preserve">Read only this passage. Return only the shortest answer. If the passage does not state the answer, return exactly NOT STATED.
+
+Passage: A workshop has twelve participants. Eight bring laptops. All four remaining participants use borrowed tablets.
+
+Question: How many participants use borrowed tablets?</p><h4>Answer</h4><pre>4</pre>
+
+<p><b>Grade:</b> Exact accepted answer after case/whitespace/end-punctuation normalization.</p><details><summary>Reference answer / required points</summary><pre>[
+  &quot;4&quot;,
+  &quot;four&quot;
+]</pre></details>
+<p class="metadata">End-to-end: 0.30 s · Input tokens: 100 · Output tokens: 25 · Cost: $0.000000</p>
+<p class="metadata">Provider: fictional offline provider · Returned model: demo/cedar</p></div></details><details class="result" data-model="demo/cedar" data-category="qa" data-mode="baseline" data-status="passed">
+<summary><span class="taskid">qa-03</span><strong>demo/cedar</strong><span>baseline</span><span class="badge passed">100% credit</span></summary>
+<div class="detail"><h4>Task</h4><p class="preserve">Read only this passage. Return only the shortest answer. If the passage does not state the answer, return exactly NOT STATED.
+
+Passage: The first prototype uses local files. The second prototype uses a database. Both versions run on the same computer.
+
+Question: Which prototype uses a database?</p><h4>Answer</h4><pre>the second prototype</pre>
+
+<p><b>Grade:</b> Exact accepted answer after case/whitespace/end-punctuation normalization.</p><details><summary>Reference answer / required points</summary><pre>[
+  &quot;the second prototype&quot;,
+  &quot;second prototype&quot;,
+  &quot;second&quot;,
+  &quot;2&quot;
+]</pre></details>
+<p class="metadata">End-to-end: 0.30 s · Input tokens: 100 · Output tokens: 25 · Cost: $0.000000</p>
+<p class="metadata">Provider: fictional offline provider · Returned model: demo/cedar</p></div></details><details class="result" data-model="demo/cedar" data-category="qa" data-mode="baseline" data-status="passed">
+<summary><span class="taskid">qa-04</span><strong>demo/cedar</strong><span>baseline</span><span class="badge passed">100% credit</span></summary>
+<div class="detail"><h4>Task</h4><p class="preserve">Read only this passage. Return only the shortest answer. If the passage does not state the answer, return exactly NOT STATED.
+
+Passage: Mira manages the garden. Arun repairs the fence. The passage gives no information about who owns the land.
+
+Question: Who owns the land?</p><h4>Answer</h4><pre>NOT STATED</pre>
+
+<p><b>Grade:</b> Exact accepted answer after case/whitespace/end-punctuation normalization.</p><details><summary>Reference answer / required points</summary><pre>[
+  &quot;NOT STATED&quot;
+]</pre></details>
+<p class="metadata">End-to-end: 0.30 s · Input tokens: 100 · Output tokens: 25 · Cost: $0.000000</p>
+<p class="metadata">Provider: fictional offline provider · Returned model: demo/cedar</p></div></details><details class="result" data-model="demo/cedar" data-category="qa" data-mode="baseline" data-status="passed">
+<summary><span class="taskid">qa-05</span><strong>demo/cedar</strong><span>baseline</span><span class="badge passed">100% credit</span></summary>
+<div class="detail"><h4>Task</h4><p class="preserve">Read only this passage. Return only the shortest answer. If the passage does not state the answer, return exactly NOT STATED.
+
+Passage: A test used 20 prompts. The system answered 16 correctly and returned errors on 4. Every prompt was attempted once.
+
+Question: How many prompts returned errors?</p><h4>Answer</h4><pre>4</pre>
+
+<p><b>Grade:</b> Exact accepted answer after case/whitespace/end-punctuation normalization.</p><details><summary>Reference answer / required points</summary><pre>[
+  &quot;4&quot;,
+  &quot;four&quot;
+]</pre></details>
+<p class="metadata">End-to-end: 0.30 s · Input tokens: 100 · Output tokens: 25 · Cost: $0.000000</p>
+<p class="metadata">Provider: fictional offline provider · Returned model: demo/cedar</p></div></details><details class="result" data-model="demo/cedar" data-category="extraction" data-mode="baseline" data-status="passed">
+<summary><span class="taskid">extract-01</span><strong>demo/cedar</strong><span>baseline</span><span class="badge passed">100% credit</span></summary>
+<div class="detail"><h4>Task</h4><p class="preserve">Extract from the text. Return only a valid JSON object, with exactly the requested fields and types. Do not use Markdown fences.
+
+Text: Order Q17 contains 3 notebooks. Delivery date: 2026-10-04.
+
+Schema/instructions: order_id (string), quantity (integer), delivery_date (ISO date string).</p><h4>Answer</h4><pre>{&quot;order_id&quot;: &quot;Q17&quot;, &quot;quantity&quot;: 3, &quot;delivery_date&quot;: &quot;2026-10-04&quot;}</pre>
+
+<p><b>Grade:</b> Strict JSON: exact fields, values and types; no prose, fences or duplicate keys.</p><details><summary>Reference answer / required points</summary><pre>{
+  &quot;order_id&quot;: &quot;Q17&quot;,
+  &quot;quantity&quot;: 3,
+  &quot;delivery_date&quot;: &quot;2026-10-04&quot;
+}</pre></details>
+<p class="metadata">End-to-end: 0.30 s · Input tokens: 100 · Output tokens: 25 · Cost: $0.000000</p>
+<p class="metadata">Provider: fictional offline provider · Returned model: demo/cedar</p></div></details><details class="result" data-model="demo/cedar" data-category="extraction" data-mode="baseline" data-status="passed">
+<summary><span class="taskid">extract-02</span><strong>demo/cedar</strong><span>baseline</span><span class="badge passed">100% credit</span></summary>
+<div class="detail"><h4>Task</h4><p class="preserve">Extract from the text. Return only a valid JSON object, with exactly the requested fields and types. Do not use Markdown fences.
+
+Text: The plan is called Starter. Its monthly price is 9 dollars. It is not a trial.
+
+Schema/instructions: name (string), monthly_usd (integer), trial (boolean).</p><h4>Answer</h4><pre>{&quot;name&quot;: &quot;Starter&quot;, &quot;monthly_usd&quot;: 9, &quot;trial&quot;: false}</pre>
+
+<p><b>Grade:</b> Strict JSON: exact fields, values and types; no prose, fences or duplicate keys.</p><details><summary>Reference answer / required points</summary><pre>{
+  &quot;name&quot;: &quot;Starter&quot;,
+  &quot;monthly_usd&quot;: 9,
+  &quot;trial&quot;: false
+}</pre></details>
+<p class="metadata">End-to-end: 0.30 s · Input tokens: 100 · Output tokens: 25 · Cost: $0.000000</p>
+<p class="metadata">Provider: fictional offline provider · Returned model: demo/cedar</p></div></details><details class="result" data-model="demo/cedar" data-category="extraction" data-mode="baseline" data-status="passed">
+<summary><span class="taskid">extract-03</span><strong>demo/cedar</strong><span>baseline</span><span class="badge passed">100% credit</span></summary>
+<div class="detail"><h4>Task</h4><p class="preserve">Extract from the text. Return only a valid JSON object, with exactly the requested fields and types. Do not use Markdown fences.
+
+Text: Speaker: Nila Rao. Venue: Hall B. A start time has not been announced.
+
+Schema/instructions: speaker (string), venue (string), start_time (null if absent).</p><h4>Answer</h4><pre>{&quot;speaker&quot;: &quot;Nila Rao&quot;, &quot;venue&quot;: &quot;Hall B&quot;, &quot;start_time&quot;: null}</pre>
+
+<p><b>Grade:</b> Strict JSON: exact fields, values and types; no prose, fences or duplicate keys.</p><details><summary>Reference answer / required points</summary><pre>{
+  &quot;speaker&quot;: &quot;Nila Rao&quot;,
+  &quot;venue&quot;: &quot;Hall B&quot;,
+  &quot;start_time&quot;: null
+}</pre></details>
+<p class="metadata">End-to-end: 0.30 s · Input tokens: 100 · Output tokens: 25 · Cost: $0.000000</p>
+<p class="metadata">Provider: fictional offline provider · Returned model: demo/cedar</p></div></details><details class="result" data-model="demo/cedar" data-category="extraction" data-mode="baseline" data-status="passed">
+<summary><span class="taskid">extract-04</span><strong>demo/cedar</strong><span>baseline</span><span class="badge passed">100% credit</span></summary>
+<div class="detail"><h4>Task</h4><p class="preserve">Extract from the text. Return only a valid JSON object, with exactly the requested fields and types. Do not use Markdown fences.
+
+Text: Tasks in order: read, test, publish. The owner is Dev.
+
+Schema/instructions: owner (string), tasks (array of strings, in the stated order).</p><h4>Answer</h4><pre>{&quot;owner&quot;: &quot;Dev&quot;, &quot;tasks&quot;: [&quot;read&quot;, &quot;test&quot;, &quot;publish&quot;]}</pre>
+
+<p><b>Grade:</b> Strict JSON: exact fields, values and types; no prose, fences or duplicate keys.</p><details><summary>Reference answer / required points</summary><pre>{
+  &quot;owner&quot;: &quot;Dev&quot;,
+  &quot;tasks&quot;: [
+    &quot;read&quot;,
+    &quot;test&quot;,
+    &quot;publish&quot;
+  ]
+}</pre></details>
+<p class="metadata">End-to-end: 0.30 s · Input tokens: 100 · Output tokens: 25 · Cost: $0.000000</p>
+<p class="metadata">Provider: fictional offline provider · Returned model: demo/cedar</p></div></details><details class="result" data-model="demo/cedar" data-category="extraction" data-mode="baseline" data-status="passed">
+<summary><span class="taskid">extract-05</span><strong>demo/cedar</strong><span>baseline</span><span class="badge passed">100% credit</span></summary>
+<div class="detail"><h4>Task</h4><p class="preserve">Extract from the text. Return only a valid JSON object, with exactly the requested fields and types. Do not use Markdown fences.
+
+Text: Ticket K8 is closed. Ticket K9 is open. This request concerns K9 only.
+
+Schema/instructions: ticket_id (string), open (boolean).</p><h4>Answer</h4><pre>{&quot;ticket_id&quot;: &quot;K9&quot;, &quot;open&quot;: true}</pre>
+
+<p><b>Grade:</b> Strict JSON: exact fields, values and types; no prose, fences or duplicate keys.</p><details><summary>Reference answer / required points</summary><pre>{
+  &quot;ticket_id&quot;: &quot;K9&quot;,
+  &quot;open&quot;: true
+}</pre></details>
+<p class="metadata">End-to-end: 0.30 s · Input tokens: 100 · Output tokens: 25 · Cost: $0.000000</p>
+<p class="metadata">Provider: fictional offline provider · Returned model: demo/cedar</p></div></details><details class="result" data-model="demo/cedar" data-category="arithmetic" data-mode="baseline" data-status="passed">
+<summary><span class="taskid">math-01</span><strong>demo/cedar</strong><span>baseline</span><span class="badge passed">100% credit</span></summary>
+<div class="detail"><h4>Task</h4><p class="preserve">Three items cost 249 each. A 10% discount applies to the total. What is the amount paid? Return only the numeric answer, without units, prose, or separators.</p><h4>Answer</h4><pre>672.3</pre>
+
+<p><b>Grade:</b> Number-only answer within 0.000001 of the reference value.</p><details><summary>Reference answer / required points</summary><pre>&quot;672.3&quot;</pre></details>
+<p class="metadata">End-to-end: 0.30 s · Input tokens: 100 · Output tokens: 25 · Cost: $0.000000</p>
+<p class="metadata">Provider: fictional offline provider · Returned model: demo/cedar</p></div></details><details class="result" data-model="demo/cedar" data-category="arithmetic" data-mode="calculator" data-status="passed">
+<summary><span class="taskid">math-01</span><strong>demo/cedar</strong><span>calculator</span><span class="badge passed">100% credit</span></summary>
+<div class="detail"><h4>Task</h4><p class="preserve">Three items cost 249 each. A 10% discount applies to the total. What is the amount paid? Return only the numeric answer, without units, prose, or separators.</p><h4>Answer</h4><pre>672.3</pre>
+
+<p><b>Grade:</b> Number-only answer within 0.000001 of the reference value.</p><details><summary>Reference answer / required points</summary><pre>&quot;672.3&quot;</pre></details>
+<p class="metadata">End-to-end: 0.80 s · Input tokens: 100 · Output tokens: 25 · Cost: $0.000000</p>
+<p class="metadata">Provider: fictional offline provider · Returned model: demo/cedar</p><h4>Calculator actions</h4><pre>[
+  {
+    &quot;tool&quot;: &quot;calculate&quot;,
+    &quot;arguments&quot;: &quot;{\&quot;expression\&quot;: \&quot;3*249*(1-10/100)\&quot;}&quot;,
+    &quot;result&quot;: {
+      &quot;result&quot;: &quot;672.3&quot;
+    }
+  }
+]</pre></div></details><details class="result" data-model="demo/cedar" data-category="arithmetic" data-mode="baseline" data-status="passed">
+<summary><span class="taskid">math-02</span><strong>demo/cedar</strong><span>baseline</span><span class="badge passed">100% credit</span></summary>
+<div class="detail"><h4>Task</h4><p class="preserve">A count rises from 125 to 160. What is the percentage increase? Return only the numeric answer, without units, prose, or separators.</p><h4>Answer</h4><pre>28</pre>
+
+<p><b>Grade:</b> Number-only answer within 0.000001 of the reference value.</p><details><summary>Reference answer / required points</summary><pre>&quot;28&quot;</pre></details>
+<p class="metadata">End-to-end: 0.30 s · Input tokens: 100 · Output tokens: 25 · Cost: $0.000000</p>
+<p class="metadata">Provider: fictional offline provider · Returned model: demo/cedar</p></div></details><details class="result" data-model="demo/cedar" data-category="arithmetic" data-mode="calculator" data-status="passed">
+<summary><span class="taskid">math-02</span><strong>demo/cedar</strong><span>calculator</span><span class="badge passed">100% credit</span></summary>
+<div class="detail"><h4>Task</h4><p class="preserve">A count rises from 125 to 160. What is the percentage increase? Return only the numeric answer, without units, prose, or separators.</p><h4>Answer</h4><pre>28</pre>
+
+<p><b>Grade:</b> Number-only answer within 0.000001 of the reference value.</p><details><summary>Reference answer / required points</summary><pre>&quot;28&quot;</pre></details>
+<p class="metadata">End-to-end: 0.80 s · Input tokens: 100 · Output tokens: 25 · Cost: $0.000000</p>
+<p class="metadata">Provider: fictional offline provider · Returned model: demo/cedar</p><h4>Calculator actions</h4><pre>[
+  {
+    &quot;tool&quot;: &quot;calculate&quot;,
+    &quot;arguments&quot;: &quot;{\&quot;expression\&quot;: \&quot;(160-125)/125*100\&quot;}&quot;,
+    &quot;result&quot;: {
+      &quot;result&quot;: &quot;28&quot;
+    }
+  }
+]</pre></div></details><details class="result" data-model="demo/cedar" data-category="arithmetic" data-mode="baseline" data-status="passed">
+<summary><span class="taskid">math-03</span><strong>demo/cedar</strong><span>baseline</span><span class="badge passed">100% credit</span></summary>
+<div class="detail"><h4>Task</h4><p class="preserve">Eight batches take 10 minutes each and twelve batches take 20 minutes each. What is the mean time per batch? Return only the numeric answer, without units, prose, or separators.</p><h4>Answer</h4><pre>16</pre>
+
+<p><b>Grade:</b> Number-only answer within 0.000001 of the reference value.</p><details><summary>Reference answer / required points</summary><pre>&quot;16&quot;</pre></details>
+<p class="metadata">End-to-end: 0.30 s · Input tokens: 100 · Output tokens: 25 · Cost: $0.000000</p>
+<p class="metadata">Provider: fictional offline provider · Returned model: demo/cedar</p></div></details><details class="result" data-model="demo/cedar" data-category="arithmetic" data-mode="calculator" data-status="passed">
+<summary><span class="taskid">math-03</span><strong>demo/cedar</strong><span>calculator</span><span class="badge passed">100% credit</span></summary>
+<div class="detail"><h4>Task</h4><p class="preserve">Eight batches take 10 minutes each and twelve batches take 20 minutes each. What is the mean time per batch? Return only the numeric answer, without units, prose, or separators.</p><h4>Answer</h4><pre>16</pre>
+
+<p><b>Grade:</b> Number-only answer within 0.000001 of the reference value.</p><details><summary>Reference answer / required points</summary><pre>&quot;16&quot;</pre></details>
+<p class="metadata">End-to-end: 0.80 s · Input tokens: 100 · Output tokens: 25 · Cost: $0.000000</p>
+<p class="metadata">Provider: fictional offline provider · Returned model: demo/cedar</p><h4>Calculator actions</h4><pre>[
+  {
+    &quot;tool&quot;: &quot;calculate&quot;,
+    &quot;arguments&quot;: &quot;{\&quot;expression\&quot;: \&quot;(8*10+12*20)/(8+12)\&quot;}&quot;,
+    &quot;result&quot;: {
+      &quot;result&quot;: &quot;16&quot;
+    }
+  }
+]</pre></div></details><details class="result" data-model="demo/cedar" data-category="arithmetic" data-mode="baseline" data-status="passed">
+<summary><span class="taskid">math-04</span><strong>demo/cedar</strong><span>baseline</span><span class="badge passed">100% credit</span></summary>
+<div class="detail"><h4>Task</h4><p class="preserve">Hypothetical API prices are $0.20 per million input tokens and $0.80 per million output tokens. What is the dollar cost for 12,000 input and 3,000 output tokens? Return only the numeric answer, without units, prose, or separators.</p><h4>Answer</h4><pre>0.0048</pre>
+
+<p><b>Grade:</b> Number-only answer within 0.000001 of the reference value.</p><details><summary>Reference answer / required points</summary><pre>&quot;0.0048&quot;</pre></details>
+<p class="metadata">End-to-end: 0.30 s · Input tokens: 100 · Output tokens: 25 · Cost: $0.000000</p>
+<p class="metadata">Provider: fictional offline provider · Returned model: demo/cedar</p></div></details><details class="result" data-model="demo/cedar" data-category="arithmetic" data-mode="calculator" data-status="passed">
+<summary><span class="taskid">math-04</span><strong>demo/cedar</strong><span>calculator</span><span class="badge passed">100% credit</span></summary>
+<div class="detail"><h4>Task</h4><p class="preserve">Hypothetical API prices are $0.20 per million input tokens and $0.80 per million output tokens. What is the dollar cost for 12,000 input and 3,000 output tokens? Return only the numeric answer, without units, prose, or separators.</p><h4>Answer</h4><pre>0.0048</pre>
+
+<p><b>Grade:</b> Number-only answer within 0.000001 of the reference value.</p><details><summary>Reference answer / required points</summary><pre>&quot;0.0048&quot;</pre></details>
+<p class="metadata">End-to-end: 0.80 s · Input tokens: 100 · Output tokens: 25 · Cost: $0.000000</p>
+<p class="metadata">Provider: fictional offline provider · Returned model: demo/cedar</p><h4>Calculator actions</h4><pre>[
+  {
+    &quot;tool&quot;: &quot;calculate&quot;,
+    &quot;arguments&quot;: &quot;{\&quot;expression\&quot;: \&quot;(12000*0.20+3000*0.80)/1000000\&quot;}&quot;,
+    &quot;result&quot;: {
+      &quot;result&quot;: &quot;0.0048&quot;
+    }
+  }
+]</pre></div></details><details class="result" data-model="demo/cedar" data-category="arithmetic" data-mode="baseline" data-status="passed">
+<summary><span class="taskid">math-05</span><strong>demo/cedar</strong><span>baseline</span><span class="badge passed">100% credit</span></summary>
+<div class="detail"><h4>Task</h4><p class="preserve">A device has 2048 MB of space. Its system uses 320 MB and its logs use 256 MB. How many 64 MB files fit in the remaining space? Return only the numeric answer, without units, prose, or separators.</p><h4>Answer</h4><pre>23</pre>
+
+<p><b>Grade:</b> Number-only answer within 0.000001 of the reference value.</p><details><summary>Reference answer / required points</summary><pre>&quot;23&quot;</pre></details>
+<p class="metadata">End-to-end: 0.30 s · Input tokens: 100 · Output tokens: 25 · Cost: $0.000000</p>
+<p class="metadata">Provider: fictional offline provider · Returned model: demo/cedar</p></div></details><details class="result" data-model="demo/cedar" data-category="arithmetic" data-mode="calculator" data-status="passed">
+<summary><span class="taskid">math-05</span><strong>demo/cedar</strong><span>calculator</span><span class="badge passed">100% credit</span></summary>
+<div class="detail"><h4>Task</h4><p class="preserve">A device has 2048 MB of space. Its system uses 320 MB and its logs use 256 MB. How many 64 MB files fit in the remaining space? Return only the numeric answer, without units, prose, or separators.</p><h4>Answer</h4><pre>23</pre>
+
+<p><b>Grade:</b> Number-only answer within 0.000001 of the reference value.</p><details><summary>Reference answer / required points</summary><pre>&quot;23&quot;</pre></details>
+<p class="metadata">End-to-end: 0.80 s · Input tokens: 100 · Output tokens: 25 · Cost: $0.000000</p>
+<p class="metadata">Provider: fictional offline provider · Returned model: demo/cedar</p><h4>Calculator actions</h4><pre>[
+  {
+    &quot;tool&quot;: &quot;calculate&quot;,
+    &quot;arguments&quot;: &quot;{\&quot;expression\&quot;: \&quot;(2048-320-256)/64\&quot;}&quot;,
+    &quot;result&quot;: {
+      &quot;result&quot;: &quot;23&quot;
+    }
+  }
+]</pre></div></details><details class="result" data-model="demo/cedar" data-category="summary" data-mode="baseline" data-status="pending">
+<summary><span class="taskid">summary-01</span><strong>demo/cedar</strong><span>baseline</span><span class="badge pending">Awaiting review</span></summary>
+<div class="detail"><h4>Task</h4><p class="preserve">Summarize this passage in no more than 35 words. Preserve the main result and its limitation; use only facts from the passage.
+
+A team tried a search assistant with 15 staff members for one week. Participants found documents faster, but the team did not measure accuracy. The next trial will include an accuracy test.</p><h4>Answer</h4><pre>A one-week trial with 15 staff found faster document retrieval, but did not measure accuracy. The next trial will test accuracy.</pre>
+
+<p><b>Grade:</b> Awaiting human rubric review (faithfulness 0–2, coverage 0–2, brevity 0–1).</p><details><summary>Reference answer / required points</summary><pre>[
+  &quot;15 staff; one week&quot;,
+  &quot;faster document finding&quot;,
+  &quot;accuracy unmeasured; next trial will test it&quot;
+]</pre></details>
+<p class="metadata">End-to-end: 0.30 s · Input tokens: 100 · Output tokens: 25 · Cost: $0.000000</p>
+<p class="metadata">Provider: fictional offline provider · Returned model: demo/cedar</p><div class='review' data-review='demo/cedar|baseline|summary-01'><h4>Your review</h4><p>Faithfulness: 2 = no unsupported or contradicted claims; 1 = minor distortion; 0 = major invention/contradiction. Coverage: 2 = all required points below; 1 = some; 0 = misses the main point. Brevity: 1 = at most 35 whitespace-separated words; 0 = longer. Total / 5. Check facts before rewarding fluent wording.</p><div class='review-grid'><label>Faithfulness (0–2)<select data-score='faithfulness'><option value=''>Unscored</option><option value='0' >0</option><option value='1' >1</option><option value='2' >2</option></select></label><label>Coverage (0–2)<select data-score='coverage'><option value=''>Unscored</option><option value='0' >0</option><option value='1' >1</option><option value='2' >2</option></select></label><label>Brevity (0–1)<select data-score='brevity'><option value=''>Unscored</option><option value='0' >0</option><option value='1' >1</option></select></label></div><label>Reason for your scores<textarea data-notes placeholder='Cite a factual omission, unsupported claim, or a strength.'></textarea></label></div></div></details><details class="result" data-model="demo/cedar" data-category="summary" data-mode="baseline" data-status="pending">
+<summary><span class="taskid">summary-02</span><strong>demo/cedar</strong><span>baseline</span><span class="badge pending">Awaiting review</span></summary>
+<div class="detail"><h4>Task</h4><p class="preserve">Summarize this passage in no more than 35 words. Preserve the main result and its limitation; use only facts from the passage.
+
+A library moved its catalogue online. Remote searches increased, while visits to the building stayed unchanged. The report covered only the first month after launch.</p><h4>Answer</h4><pre>After the catalogue moved online, remote searches increased while building visits stayed unchanged. The report covers only the first month.</pre>
+
+<p><b>Grade:</b> Awaiting human rubric review (faithfulness 0–2, coverage 0–2, brevity 0–1).</p><details><summary>Reference answer / required points</summary><pre>[
+  &quot;online catalogue; remote searches increased&quot;,
+  &quot;building visits unchanged&quot;,
+  &quot;first month only&quot;
+]</pre></details>
+<p class="metadata">End-to-end: 0.30 s · Input tokens: 100 · Output tokens: 25 · Cost: $0.000000</p>
+<p class="metadata">Provider: fictional offline provider · Returned model: demo/cedar</p><div class='review' data-review='demo/cedar|baseline|summary-02'><h4>Your review</h4><p>Faithfulness: 2 = no unsupported or contradicted claims; 1 = minor distortion; 0 = major invention/contradiction. Coverage: 2 = all required points below; 1 = some; 0 = misses the main point. Brevity: 1 = at most 35 whitespace-separated words; 0 = longer. Total / 5. Check facts before rewarding fluent wording.</p><div class='review-grid'><label>Faithfulness (0–2)<select data-score='faithfulness'><option value=''>Unscored</option><option value='0' >0</option><option value='1' >1</option><option value='2' >2</option></select></label><label>Coverage (0–2)<select data-score='coverage'><option value=''>Unscored</option><option value='0' >0</option><option value='1' >1</option><option value='2' >2</option></select></label><label>Brevity (0–1)<select data-score='brevity'><option value=''>Unscored</option><option value='0' >0</option><option value='1' >1</option></select></label></div><label>Reason for your scores<textarea data-notes placeholder='Cite a factual omission, unsupported claim, or a strength.'></textarea></label></div></div></details><details class="result" data-model="demo/cedar" data-category="summary" data-mode="baseline" data-status="pending">
+<summary><span class="taskid">summary-03</span><strong>demo/cedar</strong><span>baseline</span><span class="badge pending">Awaiting review</span></summary>
+<div class="detail"><h4>Task</h4><p class="preserve">Summarize this passage in no more than 35 words. Preserve the main result and its limitation; use only facts from the passage.
+
+A sensor prototype used half as much energy as the earlier design in a laboratory test. It has not been tested outdoors. Engineers plan to examine performance in rain.</p><h4>Answer</h4><pre>The prototype used half the earlier design’s energy in a laboratory test. Outdoor performance is untested, and engineers plan rain tests.</pre>
+
+<p><b>Grade:</b> Awaiting human rubric review (faithfulness 0–2, coverage 0–2, brevity 0–1).</p><details><summary>Reference answer / required points</summary><pre>[
+  &quot;half the energy of earlier design&quot;,
+  &quot;laboratory result only; outdoors untested&quot;,
+  &quot;rain testing planned&quot;
+]</pre></details>
+<p class="metadata">End-to-end: 0.30 s · Input tokens: 100 · Output tokens: 25 · Cost: $0.000000</p>
+<p class="metadata">Provider: fictional offline provider · Returned model: demo/cedar</p><div class='review' data-review='demo/cedar|baseline|summary-03'><h4>Your review</h4><p>Faithfulness: 2 = no unsupported or contradicted claims; 1 = minor distortion; 0 = major invention/contradiction. Coverage: 2 = all required points below; 1 = some; 0 = misses the main point. Brevity: 1 = at most 35 whitespace-separated words; 0 = longer. Total / 5. Check facts before rewarding fluent wording.</p><div class='review-grid'><label>Faithfulness (0–2)<select data-score='faithfulness'><option value=''>Unscored</option><option value='0' >0</option><option value='1' >1</option><option value='2' >2</option></select></label><label>Coverage (0–2)<select data-score='coverage'><option value=''>Unscored</option><option value='0' >0</option><option value='1' >1</option><option value='2' >2</option></select></label><label>Brevity (0–1)<select data-score='brevity'><option value=''>Unscored</option><option value='0' >0</option><option value='1' >1</option></select></label></div><label>Reason for your scores<textarea data-notes placeholder='Cite a factual omission, unsupported claim, or a strength.'></textarea></label></div></div></details><details class="result" data-model="demo/cedar" data-category="summary" data-mode="baseline" data-status="pending">
+<summary><span class="taskid">summary-04</span><strong>demo/cedar</strong><span>baseline</span><span class="badge pending">Awaiting review</span></summary>
+<div class="detail"><h4>Task</h4><p class="preserve">Summarize this passage in no more than 35 words. Preserve the main result and its limitation; use only facts from the passage.
+
+A model answered 18 of 20 arithmetic questions correctly with a calculator and 14 without it. Both conditions used the same questions. Only one attempt was made per question in each condition.</p><h4>Answer</h4><pre>On the same 20 arithmetic questions, calculator access increased correct answers from 14 to 18. Each question had only one attempt per condition.</pre>
+
+<p><b>Grade:</b> Awaiting human rubric review (faithfulness 0–2, coverage 0–2, brevity 0–1).</p><details><summary>Reference answer / required points</summary><pre>[
+  &quot;18/20 with calculator vs 14/20 without&quot;,
+  &quot;same questions&quot;,
+  &quot;one attempt per question per condition&quot;
+]</pre></details>
+<p class="metadata">End-to-end: 0.30 s · Input tokens: 100 · Output tokens: 25 · Cost: $0.000000</p>
+<p class="metadata">Provider: fictional offline provider · Returned model: demo/cedar</p><div class='review' data-review='demo/cedar|baseline|summary-04'><h4>Your review</h4><p>Faithfulness: 2 = no unsupported or contradicted claims; 1 = minor distortion; 0 = major invention/contradiction. Coverage: 2 = all required points below; 1 = some; 0 = misses the main point. Brevity: 1 = at most 35 whitespace-separated words; 0 = longer. Total / 5. Check facts before rewarding fluent wording.</p><div class='review-grid'><label>Faithfulness (0–2)<select data-score='faithfulness'><option value=''>Unscored</option><option value='0' >0</option><option value='1' >1</option><option value='2' >2</option></select></label><label>Coverage (0–2)<select data-score='coverage'><option value=''>Unscored</option><option value='0' >0</option><option value='1' >1</option><option value='2' >2</option></select></label><label>Brevity (0–1)<select data-score='brevity'><option value=''>Unscored</option><option value='0' >0</option><option value='1' >1</option></select></label></div><label>Reason for your scores<textarea data-notes placeholder='Cite a factual omission, unsupported claim, or a strength.'></textarea></label></div></div></details><details class="result" data-model="demo/cedar" data-category="summary" data-mode="baseline" data-status="pending">
+<summary><span class="taskid">summary-05</span><strong>demo/cedar</strong><span>baseline</span><span class="badge pending">Awaiting review</span></summary>
+<div class="detail"><h4>Task</h4><p class="preserve">Summarize this passage in no more than 35 words. Preserve the main result and its limitation; use only facts from the passage.
+
+A company shortened onboarding from five sessions to three. New hires reported greater satisfaction, but managers did not test whether they retained the material. The survey received responses from nine hires.</p><h4>Answer</h4><pre>Nine new hires reported greater satisfaction after onboarding fell from five sessions to three. Managers did not test retention of the material.</pre>
+
+<p><b>Grade:</b> Awaiting human rubric review (faithfulness 0–2, coverage 0–2, brevity 0–1).</p><details><summary>Reference answer / required points</summary><pre>[
+  &quot;five sessions reduced to three&quot;,
+  &quot;greater reported satisfaction; nine respondents&quot;,
+  &quot;retention untested&quot;
+]</pre></details>
+<p class="metadata">End-to-end: 0.30 s · Input tokens: 100 · Output tokens: 25 · Cost: $0.000000</p>
+<p class="metadata">Provider: fictional offline provider · Returned model: demo/cedar</p><div class='review' data-review='demo/cedar|baseline|summary-05'><h4>Your review</h4><p>Faithfulness: 2 = no unsupported or contradicted claims; 1 = minor distortion; 0 = major invention/contradiction. Coverage: 2 = all required points below; 1 = some; 0 = misses the main point. Brevity: 1 = at most 35 whitespace-separated words; 0 = longer. Total / 5. Check facts before rewarding fluent wording.</p><div class='review-grid'><label>Faithfulness (0–2)<select data-score='faithfulness'><option value=''>Unscored</option><option value='0' >0</option><option value='1' >1</option><option value='2' >2</option></select></label><label>Coverage (0–2)<select data-score='coverage'><option value=''>Unscored</option><option value='0' >0</option><option value='1' >1</option><option value='2' >2</option></select></label><label>Brevity (0–1)<select data-score='brevity'><option value=''>Unscored</option><option value='0' >0</option><option value='1' >1</option></select></label></div><label>Reason for your scores<textarea data-notes placeholder='Cite a factual omission, unsupported claim, or a strength.'></textarea></label></div></div></details><details class="result" data-model="demo/maple" data-category="qa" data-mode="baseline" data-status="passed">
+<summary><span class="taskid">qa-01</span><strong>demo/maple</strong><span>baseline</span><span class="badge passed">100% credit</span></summary>
+<div class="detail"><h4>Task</h4><p class="preserve">Read only this passage. Return only the shortest answer. If the passage does not state the answer, return exactly NOT STATED.
+
+Passage: Cedar Library opens at 09:00 on weekdays and 11:00 on Sundays. Saturday hours are 10:00 to 16:00.
+
+Question: What time does the library open on Sunday?</p><h4>Answer</h4><pre>11:00</pre>
+
+<p><b>Grade:</b> Exact accepted answer after case/whitespace/end-punctuation normalization.</p><details><summary>Reference answer / required points</summary><pre>[
+  &quot;11:00&quot;,
+  &quot;11:00 AM&quot;,
+  &quot;11 am&quot;
+]</pre></details>
+<p class="metadata">End-to-end: 0.47 s · Input tokens: 110 · Output tokens: 30 · Cost: $0.000000</p>
+<p class="metadata">Provider: fictional offline provider · Returned model: demo/maple</p></div></details><details class="result" data-model="demo/maple" data-category="qa" data-mode="baseline" data-status="passed">
+<summary><span class="taskid">qa-02</span><strong>demo/maple</strong><span>baseline</span><span class="badge passed">100% credit</span></summary>
+<div class="detail"><h4>Task</h4><p class="preserve">Read only this passage. Return only the shortest answer. If the passage does not state the answer, return exactly NOT STATED.
+
+Passage: A workshop has twelve participants. Eight bring laptops. All four remaining participants use borrowed tablets.
+
+Question: How many participants use borrowed tablets?</p><h4>Answer</h4><pre>4</pre>
+
+<p><b>Grade:</b> Exact accepted answer after case/whitespace/end-punctuation normalization.</p><details><summary>Reference answer / required points</summary><pre>[
+  &quot;4&quot;,
+  &quot;four&quot;
+]</pre></details>
+<p class="metadata">End-to-end: 0.47 s · Input tokens: 110 · Output tokens: 30 · Cost: $0.000000</p>
+<p class="metadata">Provider: fictional offline provider · Returned model: demo/maple</p></div></details><details class="result" data-model="demo/maple" data-category="qa" data-mode="baseline" data-status="failed">
+<summary><span class="taskid">qa-03</span><strong>demo/maple</strong><span>baseline</span><span class="badge failed">0% credit</span></summary>
+<div class="detail"><h4>Task</h4><p class="preserve">Read only this passage. Return only the shortest answer. If the passage does not state the answer, return exactly NOT STATED.
+
+Passage: The first prototype uses local files. The second prototype uses a database. Both versions run on the same computer.
+
+Question: Which prototype uses a database?</p><h4>Answer</h4><pre>42</pre>
+
+<p><b>Grade:</b> Exact accepted answer after case/whitespace/end-punctuation normalization.</p><details><summary>Reference answer / required points</summary><pre>[
+  &quot;the second prototype&quot;,
+  &quot;second prototype&quot;,
+  &quot;second&quot;,
+  &quot;2&quot;
+]</pre></details>
+<p class="metadata">End-to-end: 0.47 s · Input tokens: 110 · Output tokens: 30 · Cost: $0.000000</p>
+<p class="metadata">Provider: fictional offline provider · Returned model: demo/maple</p></div></details><details class="result" data-model="demo/maple" data-category="qa" data-mode="baseline" data-status="passed">
+<summary><span class="taskid">qa-04</span><strong>demo/maple</strong><span>baseline</span><span class="badge passed">100% credit</span></summary>
+<div class="detail"><h4>Task</h4><p class="preserve">Read only this passage. Return only the shortest answer. If the passage does not state the answer, return exactly NOT STATED.
+
+Passage: Mira manages the garden. Arun repairs the fence. The passage gives no information about who owns the land.
+
+Question: Who owns the land?</p><h4>Answer</h4><pre>NOT STATED</pre>
+
+<p><b>Grade:</b> Exact accepted answer after case/whitespace/end-punctuation normalization.</p><details><summary>Reference answer / required points</summary><pre>[
+  &quot;NOT STATED&quot;
+]</pre></details>
+<p class="metadata">End-to-end: 0.47 s · Input tokens: 110 · Output tokens: 30 · Cost: $0.000000</p>
+<p class="metadata">Provider: fictional offline provider · Returned model: demo/maple</p></div></details><details class="result" data-model="demo/maple" data-category="qa" data-mode="baseline" data-status="passed">
+<summary><span class="taskid">qa-05</span><strong>demo/maple</strong><span>baseline</span><span class="badge passed">100% credit</span></summary>
+<div class="detail"><h4>Task</h4><p class="preserve">Read only this passage. Return only the shortest answer. If the passage does not state the answer, return exactly NOT STATED.
+
+Passage: A test used 20 prompts. The system answered 16 correctly and returned errors on 4. Every prompt was attempted once.
+
+Question: How many prompts returned errors?</p><h4>Answer</h4><pre>4</pre>
+
+<p><b>Grade:</b> Exact accepted answer after case/whitespace/end-punctuation normalization.</p><details><summary>Reference answer / required points</summary><pre>[
+  &quot;4&quot;,
+  &quot;four&quot;
+]</pre></details>
+<p class="metadata">End-to-end: 0.47 s · Input tokens: 110 · Output tokens: 30 · Cost: $0.000000</p>
+<p class="metadata">Provider: fictional offline provider · Returned model: demo/maple</p></div></details><details class="result" data-model="demo/maple" data-category="extraction" data-mode="baseline" data-status="passed">
+<summary><span class="taskid">extract-01</span><strong>demo/maple</strong><span>baseline</span><span class="badge passed">100% credit</span></summary>
+<div class="detail"><h4>Task</h4><p class="preserve">Extract from the text. Return only a valid JSON object, with exactly the requested fields and types. Do not use Markdown fences.
+
+Text: Order Q17 contains 3 notebooks. Delivery date: 2026-10-04.
+
+Schema/instructions: order_id (string), quantity (integer), delivery_date (ISO date string).</p><h4>Answer</h4><pre>{&quot;order_id&quot;: &quot;Q17&quot;, &quot;quantity&quot;: 3, &quot;delivery_date&quot;: &quot;2026-10-04&quot;}</pre>
+
+<p><b>Grade:</b> Strict JSON: exact fields, values and types; no prose, fences or duplicate keys.</p><details><summary>Reference answer / required points</summary><pre>{
+  &quot;order_id&quot;: &quot;Q17&quot;,
+  &quot;quantity&quot;: 3,
+  &quot;delivery_date&quot;: &quot;2026-10-04&quot;
+}</pre></details>
+<p class="metadata">End-to-end: 0.47 s · Input tokens: 110 · Output tokens: 30 · Cost: $0.000000</p>
+<p class="metadata">Provider: fictional offline provider · Returned model: demo/maple</p></div></details><details class="result" data-model="demo/maple" data-category="extraction" data-mode="baseline" data-status="passed">
+<summary><span class="taskid">extract-02</span><strong>demo/maple</strong><span>baseline</span><span class="badge passed">100% credit</span></summary>
+<div class="detail"><h4>Task</h4><p class="preserve">Extract from the text. Return only a valid JSON object, with exactly the requested fields and types. Do not use Markdown fences.
+
+Text: The plan is called Starter. Its monthly price is 9 dollars. It is not a trial.
+
+Schema/instructions: name (string), monthly_usd (integer), trial (boolean).</p><h4>Answer</h4><pre>{&quot;name&quot;: &quot;Starter&quot;, &quot;monthly_usd&quot;: 9, &quot;trial&quot;: false}</pre>
+
+<p><b>Grade:</b> Strict JSON: exact fields, values and types; no prose, fences or duplicate keys.</p><details><summary>Reference answer / required points</summary><pre>{
+  &quot;name&quot;: &quot;Starter&quot;,
+  &quot;monthly_usd&quot;: 9,
+  &quot;trial&quot;: false
+}</pre></details>
+<p class="metadata">End-to-end: 0.47 s · Input tokens: 110 · Output tokens: 30 · Cost: $0.000000</p>
+<p class="metadata">Provider: fictional offline provider · Returned model: demo/maple</p></div></details><details class="result" data-model="demo/maple" data-category="extraction" data-mode="baseline" data-status="passed">
+<summary><span class="taskid">extract-03</span><strong>demo/maple</strong><span>baseline</span><span class="badge passed">100% credit</span></summary>
+<div class="detail"><h4>Task</h4><p class="preserve">Extract from the text. Return only a valid JSON object, with exactly the requested fields and types. Do not use Markdown fences.
+
+Text: Speaker: Nila Rao. Venue: Hall B. A start time has not been announced.
+
+Schema/instructions: speaker (string), venue (string), start_time (null if absent).</p><h4>Answer</h4><pre>{&quot;speaker&quot;: &quot;Nila Rao&quot;, &quot;venue&quot;: &quot;Hall B&quot;, &quot;start_time&quot;: null}</pre>
+
+<p><b>Grade:</b> Strict JSON: exact fields, values and types; no prose, fences or duplicate keys.</p><details><summary>Reference answer / required points</summary><pre>{
+  &quot;speaker&quot;: &quot;Nila Rao&quot;,
+  &quot;venue&quot;: &quot;Hall B&quot;,
+  &quot;start_time&quot;: null
+}</pre></details>
+<p class="metadata">End-to-end: 0.47 s · Input tokens: 110 · Output tokens: 30 · Cost: $0.000000</p>
+<p class="metadata">Provider: fictional offline provider · Returned model: demo/maple</p></div></details><details class="result" data-model="demo/maple" data-category="extraction" data-mode="baseline" data-status="passed">
+<summary><span class="taskid">extract-04</span><strong>demo/maple</strong><span>baseline</span><span class="badge passed">100% credit</span></summary>
+<div class="detail"><h4>Task</h4><p class="preserve">Extract from the text. Return only a valid JSON object, with exactly the requested fields and types. Do not use Markdown fences.
+
+Text: Tasks in order: read, test, publish. The owner is Dev.
+
+Schema/instructions: owner (string), tasks (array of strings, in the stated order).</p><h4>Answer</h4><pre>{&quot;owner&quot;: &quot;Dev&quot;, &quot;tasks&quot;: [&quot;read&quot;, &quot;test&quot;, &quot;publish&quot;]}</pre>
+
+<p><b>Grade:</b> Strict JSON: exact fields, values and types; no prose, fences or duplicate keys.</p><details><summary>Reference answer / required points</summary><pre>{
+  &quot;owner&quot;: &quot;Dev&quot;,
+  &quot;tasks&quot;: [
+    &quot;read&quot;,
+    &quot;test&quot;,
+    &quot;publish&quot;
+  ]
+}</pre></details>
+<p class="metadata">End-to-end: 0.47 s · Input tokens: 110 · Output tokens: 30 · Cost: $0.000000</p>
+<p class="metadata">Provider: fictional offline provider · Returned model: demo/maple</p></div></details><details class="result" data-model="demo/maple" data-category="extraction" data-mode="baseline" data-status="passed">
+<summary><span class="taskid">extract-05</span><strong>demo/maple</strong><span>baseline</span><span class="badge passed">100% credit</span></summary>
+<div class="detail"><h4>Task</h4><p class="preserve">Extract from the text. Return only a valid JSON object, with exactly the requested fields and types. Do not use Markdown fences.
+
+Text: Ticket K8 is closed. Ticket K9 is open. This request concerns K9 only.
+
+Schema/instructions: ticket_id (string), open (boolean).</p><h4>Answer</h4><pre>{&quot;ticket_id&quot;: &quot;K9&quot;, &quot;open&quot;: true}</pre>
+
+<p><b>Grade:</b> Strict JSON: exact fields, values and types; no prose, fences or duplicate keys.</p><details><summary>Reference answer / required points</summary><pre>{
+  &quot;ticket_id&quot;: &quot;K9&quot;,
+  &quot;open&quot;: true
+}</pre></details>
+<p class="metadata">End-to-end: 0.47 s · Input tokens: 110 · Output tokens: 30 · Cost: $0.000000</p>
+<p class="metadata">Provider: fictional offline provider · Returned model: demo/maple</p></div></details><details class="result" data-model="demo/maple" data-category="arithmetic" data-mode="baseline" data-status="passed">
+<summary><span class="taskid">math-01</span><strong>demo/maple</strong><span>baseline</span><span class="badge passed">100% credit</span></summary>
+<div class="detail"><h4>Task</h4><p class="preserve">Three items cost 249 each. A 10% discount applies to the total. What is the amount paid? Return only the numeric answer, without units, prose, or separators.</p><h4>Answer</h4><pre>672.3</pre>
+
+<p><b>Grade:</b> Number-only answer within 0.000001 of the reference value.</p><details><summary>Reference answer / required points</summary><pre>&quot;672.3&quot;</pre></details>
+<p class="metadata">End-to-end: 0.47 s · Input tokens: 110 · Output tokens: 30 · Cost: $0.000000</p>
+<p class="metadata">Provider: fictional offline provider · Returned model: demo/maple</p></div></details><details class="result" data-model="demo/maple" data-category="arithmetic" data-mode="calculator" data-status="passed">
+<summary><span class="taskid">math-01</span><strong>demo/maple</strong><span>calculator</span><span class="badge passed">100% credit</span></summary>
+<div class="detail"><h4>Task</h4><p class="preserve">Three items cost 249 each. A 10% discount applies to the total. What is the amount paid? Return only the numeric answer, without units, prose, or separators.</p><h4>Answer</h4><pre>672.3</pre>
+
+<p><b>Grade:</b> Number-only answer within 0.000001 of the reference value.</p><details><summary>Reference answer / required points</summary><pre>&quot;672.3&quot;</pre></details>
+<p class="metadata">End-to-end: 0.97 s · Input tokens: 110 · Output tokens: 30 · Cost: $0.000000</p>
+<p class="metadata">Provider: fictional offline provider · Returned model: demo/maple</p><h4>Calculator actions</h4><pre>[
+  {
+    &quot;tool&quot;: &quot;calculate&quot;,
+    &quot;arguments&quot;: &quot;{\&quot;expression\&quot;: \&quot;3*249*(1-10/100)\&quot;}&quot;,
+    &quot;result&quot;: {
+      &quot;result&quot;: &quot;672.3&quot;
+    }
+  }
+]</pre></div></details><details class="result" data-model="demo/maple" data-category="arithmetic" data-mode="baseline" data-status="failed">
+<summary><span class="taskid">math-02</span><strong>demo/maple</strong><span>baseline</span><span class="badge failed">0% credit</span></summary>
+<div class="detail"><h4>Task</h4><p class="preserve">A count rises from 125 to 160. What is the percentage increase? Return only the numeric answer, without units, prose, or separators.</p><h4>Answer</h4><pre>42</pre>
+
+<p><b>Grade:</b> Number-only answer within 0.000001 of the reference value.</p><details><summary>Reference answer / required points</summary><pre>&quot;28&quot;</pre></details>
+<p class="metadata">End-to-end: 0.47 s · Input tokens: 110 · Output tokens: 30 · Cost: $0.000000</p>
+<p class="metadata">Provider: fictional offline provider · Returned model: demo/maple</p></div></details><details class="result" data-model="demo/maple" data-category="arithmetic" data-mode="calculator" data-status="passed">
+<summary><span class="taskid">math-02</span><strong>demo/maple</strong><span>calculator</span><span class="badge passed">100% credit</span></summary>
+<div class="detail"><h4>Task</h4><p class="preserve">A count rises from 125 to 160. What is the percentage increase? Return only the numeric answer, without units, prose, or separators.</p><h4>Answer</h4><pre>28</pre>
+
+<p><b>Grade:</b> Number-only answer within 0.000001 of the reference value.</p><details><summary>Reference answer / required points</summary><pre>&quot;28&quot;</pre></details>
+<p class="metadata">End-to-end: 0.97 s · Input tokens: 110 · Output tokens: 30 · Cost: $0.000000</p>
+<p class="metadata">Provider: fictional offline provider · Returned model: demo/maple</p><h4>Calculator actions</h4><pre>[
+  {
+    &quot;tool&quot;: &quot;calculate&quot;,
+    &quot;arguments&quot;: &quot;{\&quot;expression\&quot;: \&quot;(160-125)/125*100\&quot;}&quot;,
+    &quot;result&quot;: {
+      &quot;result&quot;: &quot;28&quot;
+    }
+  }
+]</pre></div></details><details class="result" data-model="demo/maple" data-category="arithmetic" data-mode="baseline" data-status="passed">
+<summary><span class="taskid">math-03</span><strong>demo/maple</strong><span>baseline</span><span class="badge passed">100% credit</span></summary>
+<div class="detail"><h4>Task</h4><p class="preserve">Eight batches take 10 minutes each and twelve batches take 20 minutes each. What is the mean time per batch? Return only the numeric answer, without units, prose, or separators.</p><h4>Answer</h4><pre>16</pre>
+
+<p><b>Grade:</b> Number-only answer within 0.000001 of the reference value.</p><details><summary>Reference answer / required points</summary><pre>&quot;16&quot;</pre></details>
+<p class="metadata">End-to-end: 0.47 s · Input tokens: 110 · Output tokens: 30 · Cost: $0.000000</p>
+<p class="metadata">Provider: fictional offline provider · Returned model: demo/maple</p></div></details><details class="result" data-model="demo/maple" data-category="arithmetic" data-mode="calculator" data-status="passed">
+<summary><span class="taskid">math-03</span><strong>demo/maple</strong><span>calculator</span><span class="badge passed">100% credit</span></summary>
+<div class="detail"><h4>Task</h4><p class="preserve">Eight batches take 10 minutes each and twelve batches take 20 minutes each. What is the mean time per batch? Return only the numeric answer, without units, prose, or separators.</p><h4>Answer</h4><pre>16</pre>
+
+<p><b>Grade:</b> Number-only answer within 0.000001 of the reference value.</p><details><summary>Reference answer / required points</summary><pre>&quot;16&quot;</pre></details>
+<p class="metadata">End-to-end: 0.97 s · Input tokens: 110 · Output tokens: 30 · Cost: $0.000000</p>
+<p class="metadata">Provider: fictional offline provider · Returned model: demo/maple</p><h4>Calculator actions</h4><pre>[
+  {
+    &quot;tool&quot;: &quot;calculate&quot;,
+    &quot;arguments&quot;: &quot;{\&quot;expression\&quot;: \&quot;(8*10+12*20)/(8+12)\&quot;}&quot;,
+    &quot;result&quot;: {
+      &quot;result&quot;: &quot;16&quot;
+    }
+  }
+]</pre></div></details><details class="result" data-model="demo/maple" data-category="arithmetic" data-mode="baseline" data-status="failed">
+<summary><span class="taskid">math-04</span><strong>demo/maple</strong><span>baseline</span><span class="badge failed">0% credit</span></summary>
+<div class="detail"><h4>Task</h4><p class="preserve">Hypothetical API prices are $0.20 per million input tokens and $0.80 per million output tokens. What is the dollar cost for 12,000 input and 3,000 output tokens? Return only the numeric answer, without units, prose, or separators.</p><h4>Answer</h4><pre>42</pre>
+
+<p><b>Grade:</b> Number-only answer within 0.000001 of the reference value.</p><details><summary>Reference answer / required points</summary><pre>&quot;0.0048&quot;</pre></details>
+<p class="metadata">End-to-end: 0.47 s · Input tokens: 110 · Output tokens: 30 · Cost: $0.000000</p>
+<p class="metadata">Provider: fictional offline provider · Returned model: demo/maple</p></div></details><details class="result" data-model="demo/maple" data-category="arithmetic" data-mode="calculator" data-status="passed">
+<summary><span class="taskid">math-04</span><strong>demo/maple</strong><span>calculator</span><span class="badge passed">100% credit</span></summary>
+<div class="detail"><h4>Task</h4><p class="preserve">Hypothetical API prices are $0.20 per million input tokens and $0.80 per million output tokens. What is the dollar cost for 12,000 input and 3,000 output tokens? Return only the numeric answer, without units, prose, or separators.</p><h4>Answer</h4><pre>0.0048</pre>
+
+<p><b>Grade:</b> Number-only answer within 0.000001 of the reference value.</p><details><summary>Reference answer / required points</summary><pre>&quot;0.0048&quot;</pre></details>
+<p class="metadata">End-to-end: 0.97 s · Input tokens: 110 · Output tokens: 30 · Cost: $0.000000</p>
+<p class="metadata">Provider: fictional offline provider · Returned model: demo/maple</p><h4>Calculator actions</h4><pre>[
+  {
+    &quot;tool&quot;: &quot;calculate&quot;,
+    &quot;arguments&quot;: &quot;{\&quot;expression\&quot;: \&quot;(12000*0.20+3000*0.80)/1000000\&quot;}&quot;,
+    &quot;result&quot;: {
+      &quot;result&quot;: &quot;0.0048&quot;
+    }
+  }
+]</pre></div></details><details class="result" data-model="demo/maple" data-category="arithmetic" data-mode="baseline" data-status="passed">
+<summary><span class="taskid">math-05</span><strong>demo/maple</strong><span>baseline</span><span class="badge passed">100% credit</span></summary>
+<div class="detail"><h4>Task</h4><p class="preserve">A device has 2048 MB of space. Its system uses 320 MB and its logs use 256 MB. How many 64 MB files fit in the remaining space? Return only the numeric answer, without units, prose, or separators.</p><h4>Answer</h4><pre>23</pre>
+
+<p><b>Grade:</b> Number-only answer within 0.000001 of the reference value.</p><details><summary>Reference answer / required points</summary><pre>&quot;23&quot;</pre></details>
+<p class="metadata">End-to-end: 0.47 s · Input tokens: 110 · Output tokens: 30 · Cost: $0.000000</p>
+<p class="metadata">Provider: fictional offline provider · Returned model: demo/maple</p></div></details><details class="result" data-model="demo/maple" data-category="arithmetic" data-mode="calculator" data-status="passed">
+<summary><span class="taskid">math-05</span><strong>demo/maple</strong><span>calculator</span><span class="badge passed">100% credit</span></summary>
+<div class="detail"><h4>Task</h4><p class="preserve">A device has 2048 MB of space. Its system uses 320 MB and its logs use 256 MB. How many 64 MB files fit in the remaining space? Return only the numeric answer, without units, prose, or separators.</p><h4>Answer</h4><pre>23</pre>
+
+<p><b>Grade:</b> Number-only answer within 0.000001 of the reference value.</p><details><summary>Reference answer / required points</summary><pre>&quot;23&quot;</pre></details>
+<p class="metadata">End-to-end: 0.97 s · Input tokens: 110 · Output tokens: 30 · Cost: $0.000000</p>
+<p class="metadata">Provider: fictional offline provider · Returned model: demo/maple</p><h4>Calculator actions</h4><pre>[
+  {
+    &quot;tool&quot;: &quot;calculate&quot;,
+    &quot;arguments&quot;: &quot;{\&quot;expression\&quot;: \&quot;(2048-320-256)/64\&quot;}&quot;,
+    &quot;result&quot;: {
+      &quot;result&quot;: &quot;23&quot;
+    }
+  }
+]</pre></div></details><details class="result" data-model="demo/maple" data-category="summary" data-mode="baseline" data-status="pending">
+<summary><span class="taskid">summary-01</span><strong>demo/maple</strong><span>baseline</span><span class="badge pending">Awaiting review</span></summary>
+<div class="detail"><h4>Task</h4><p class="preserve">Summarize this passage in no more than 35 words. Preserve the main result and its limitation; use only facts from the passage.
+
+A team tried a search assistant with 15 staff members for one week. Participants found documents faster, but the team did not measure accuracy. The next trial will include an accuracy test.</p><h4>Answer</h4><pre>A one-week trial with 15 staff found faster document retrieval, but did not measure accuracy. The next trial will test accuracy.</pre>
+
+<p><b>Grade:</b> Awaiting human rubric review (faithfulness 0–2, coverage 0–2, brevity 0–1).</p><details><summary>Reference answer / required points</summary><pre>[
+  &quot;15 staff; one week&quot;,
+  &quot;faster document finding&quot;,
+  &quot;accuracy unmeasured; next trial will test it&quot;
+]</pre></details>
+<p class="metadata">End-to-end: 0.47 s · Input tokens: 110 · Output tokens: 30 · Cost: $0.000000</p>
+<p class="metadata">Provider: fictional offline provider · Returned model: demo/maple</p><div class='review' data-review='demo/maple|baseline|summary-01'><h4>Your review</h4><p>Faithfulness: 2 = no unsupported or contradicted claims; 1 = minor distortion; 0 = major invention/contradiction. Coverage: 2 = all required points below; 1 = some; 0 = misses the main point. Brevity: 1 = at most 35 whitespace-separated words; 0 = longer. Total / 5. Check facts before rewarding fluent wording.</p><div class='review-grid'><label>Faithfulness (0–2)<select data-score='faithfulness'><option value=''>Unscored</option><option value='0' >0</option><option value='1' >1</option><option value='2' >2</option></select></label><label>Coverage (0–2)<select data-score='coverage'><option value=''>Unscored</option><option value='0' >0</option><option value='1' >1</option><option value='2' >2</option></select></label><label>Brevity (0–1)<select data-score='brevity'><option value=''>Unscored</option><option value='0' >0</option><option value='1' >1</option></select></label></div><label>Reason for your scores<textarea data-notes placeholder='Cite a factual omission, unsupported claim, or a strength.'></textarea></label></div></div></details><details class="result" data-model="demo/maple" data-category="summary" data-mode="baseline" data-status="pending">
+<summary><span class="taskid">summary-02</span><strong>demo/maple</strong><span>baseline</span><span class="badge pending">Awaiting review</span></summary>
+<div class="detail"><h4>Task</h4><p class="preserve">Summarize this passage in no more than 35 words. Preserve the main result and its limitation; use only facts from the passage.
+
+A library moved its catalogue online. Remote searches increased, while visits to the building stayed unchanged. The report covered only the first month after launch.</p><h4>Answer</h4><pre>After the catalogue moved online, remote searches increased while building visits stayed unchanged. The report covers only the first month.</pre>
+
+<p><b>Grade:</b> Awaiting human rubric review (faithfulness 0–2, coverage 0–2, brevity 0–1).</p><details><summary>Reference answer / required points</summary><pre>[
+  &quot;online catalogue; remote searches increased&quot;,
+  &quot;building visits unchanged&quot;,
+  &quot;first month only&quot;
+]</pre></details>
+<p class="metadata">End-to-end: 0.47 s · Input tokens: 110 · Output tokens: 30 · Cost: $0.000000</p>
+<p class="metadata">Provider: fictional offline provider · Returned model: demo/maple</p><div class='review' data-review='demo/maple|baseline|summary-02'><h4>Your review</h4><p>Faithfulness: 2 = no unsupported or contradicted claims; 1 = minor distortion; 0 = major invention/contradiction. Coverage: 2 = all required points below; 1 = some; 0 = misses the main point. Brevity: 1 = at most 35 whitespace-separated words; 0 = longer. Total / 5. Check facts before rewarding fluent wording.</p><div class='review-grid'><label>Faithfulness (0–2)<select data-score='faithfulness'><option value=''>Unscored</option><option value='0' >0</option><option value='1' >1</option><option value='2' >2</option></select></label><label>Coverage (0–2)<select data-score='coverage'><option value=''>Unscored</option><option value='0' >0</option><option value='1' >1</option><option value='2' >2</option></select></label><label>Brevity (0–1)<select data-score='brevity'><option value=''>Unscored</option><option value='0' >0</option><option value='1' >1</option></select></label></div><label>Reason for your scores<textarea data-notes placeholder='Cite a factual omission, unsupported claim, or a strength.'></textarea></label></div></div></details><details class="result" data-model="demo/maple" data-category="summary" data-mode="baseline" data-status="pending">
+<summary><span class="taskid">summary-03</span><strong>demo/maple</strong><span>baseline</span><span class="badge pending">Awaiting review</span></summary>
+<div class="detail"><h4>Task</h4><p class="preserve">Summarize this passage in no more than 35 words. Preserve the main result and its limitation; use only facts from the passage.
+
+A sensor prototype used half as much energy as the earlier design in a laboratory test. It has not been tested outdoors. Engineers plan to examine performance in rain.</p><h4>Answer</h4><pre>The prototype used half the earlier design’s energy in a laboratory test. Outdoor performance is untested, and engineers plan rain tests.</pre>
+
+<p><b>Grade:</b> Awaiting human rubric review (faithfulness 0–2, coverage 0–2, brevity 0–1).</p><details><summary>Reference answer / required points</summary><pre>[
+  &quot;half the energy of earlier design&quot;,
+  &quot;laboratory result only; outdoors untested&quot;,
+  &quot;rain testing planned&quot;
+]</pre></details>
+<p class="metadata">End-to-end: 0.47 s · Input tokens: 110 · Output tokens: 30 · Cost: $0.000000</p>
+<p class="metadata">Provider: fictional offline provider · Returned model: demo/maple</p><div class='review' data-review='demo/maple|baseline|summary-03'><h4>Your review</h4><p>Faithfulness: 2 = no unsupported or contradicted claims; 1 = minor distortion; 0 = major invention/contradiction. Coverage: 2 = all required points below; 1 = some; 0 = misses the main point. Brevity: 1 = at most 35 whitespace-separated words; 0 = longer. Total / 5. Check facts before rewarding fluent wording.</p><div class='review-grid'><label>Faithfulness (0–2)<select data-score='faithfulness'><option value=''>Unscored</option><option value='0' >0</option><option value='1' >1</option><option value='2' >2</option></select></label><label>Coverage (0–2)<select data-score='coverage'><option value=''>Unscored</option><option value='0' >0</option><option value='1' >1</option><option value='2' >2</option></select></label><label>Brevity (0–1)<select data-score='brevity'><option value=''>Unscored</option><option value='0' >0</option><option value='1' >1</option></select></label></div><label>Reason for your scores<textarea data-notes placeholder='Cite a factual omission, unsupported claim, or a strength.'></textarea></label></div></div></details><details class="result" data-model="demo/maple" data-category="summary" data-mode="baseline" data-status="pending">
+<summary><span class="taskid">summary-04</span><strong>demo/maple</strong><span>baseline</span><span class="badge pending">Awaiting review</span></summary>
+<div class="detail"><h4>Task</h4><p class="preserve">Summarize this passage in no more than 35 words. Preserve the main result and its limitation; use only facts from the passage.
+
+A model answered 18 of 20 arithmetic questions correctly with a calculator and 14 without it. Both conditions used the same questions. Only one attempt was made per question in each condition.</p><h4>Answer</h4><pre>On the same 20 arithmetic questions, calculator access increased correct answers from 14 to 18. Each question had only one attempt per condition.</pre>
+
+<p><b>Grade:</b> Awaiting human rubric review (faithfulness 0–2, coverage 0–2, brevity 0–1).</p><details><summary>Reference answer / required points</summary><pre>[
+  &quot;18/20 with calculator vs 14/20 without&quot;,
+  &quot;same questions&quot;,
+  &quot;one attempt per question per condition&quot;
+]</pre></details>
+<p class="metadata">End-to-end: 0.47 s · Input tokens: 110 · Output tokens: 30 · Cost: $0.000000</p>
+<p class="metadata">Provider: fictional offline provider · Returned model: demo/maple</p><div class='review' data-review='demo/maple|baseline|summary-04'><h4>Your review</h4><p>Faithfulness: 2 = no unsupported or contradicted claims; 1 = minor distortion; 0 = major invention/contradiction. Coverage: 2 = all required points below; 1 = some; 0 = misses the main point. Brevity: 1 = at most 35 whitespace-separated words; 0 = longer. Total / 5. Check facts before rewarding fluent wording.</p><div class='review-grid'><label>Faithfulness (0–2)<select data-score='faithfulness'><option value=''>Unscored</option><option value='0' >0</option><option value='1' >1</option><option value='2' >2</option></select></label><label>Coverage (0–2)<select data-score='coverage'><option value=''>Unscored</option><option value='0' >0</option><option value='1' >1</option><option value='2' >2</option></select></label><label>Brevity (0–1)<select data-score='brevity'><option value=''>Unscored</option><option value='0' >0</option><option value='1' >1</option></select></label></div><label>Reason for your scores<textarea data-notes placeholder='Cite a factual omission, unsupported claim, or a strength.'></textarea></label></div></div></details><details class="result" data-model="demo/maple" data-category="summary" data-mode="baseline" data-status="pending">
+<summary><span class="taskid">summary-05</span><strong>demo/maple</strong><span>baseline</span><span class="badge pending">Awaiting review</span></summary>
+<div class="detail"><h4>Task</h4><p class="preserve">Summarize this passage in no more than 35 words. Preserve the main result and its limitation; use only facts from the passage.
+
+A company shortened onboarding from five sessions to three. New hires reported greater satisfaction, but managers did not test whether they retained the material. The survey received responses from nine hires.</p><h4>Answer</h4><pre>Nine new hires reported greater satisfaction after onboarding fell from five sessions to three. Managers did not test retention of the material.</pre>
+
+<p><b>Grade:</b> Awaiting human rubric review (faithfulness 0–2, coverage 0–2, brevity 0–1).</p><details><summary>Reference answer / required points</summary><pre>[
+  &quot;five sessions reduced to three&quot;,
+  &quot;greater reported satisfaction; nine respondents&quot;,
+  &quot;retention untested&quot;
+]</pre></details>
+<p class="metadata">End-to-end: 0.47 s · Input tokens: 110 · Output tokens: 30 · Cost: $0.000000</p>
+<p class="metadata">Provider: fictional offline provider · Returned model: demo/maple</p><div class='review' data-review='demo/maple|baseline|summary-05'><h4>Your review</h4><p>Faithfulness: 2 = no unsupported or contradicted claims; 1 = minor distortion; 0 = major invention/contradiction. Coverage: 2 = all required points below; 1 = some; 0 = misses the main point. Brevity: 1 = at most 35 whitespace-separated words; 0 = longer. Total / 5. Check facts before rewarding fluent wording.</p><div class='review-grid'><label>Faithfulness (0–2)<select data-score='faithfulness'><option value=''>Unscored</option><option value='0' >0</option><option value='1' >1</option><option value='2' >2</option></select></label><label>Coverage (0–2)<select data-score='coverage'><option value=''>Unscored</option><option value='0' >0</option><option value='1' >1</option><option value='2' >2</option></select></label><label>Brevity (0–1)<select data-score='brevity'><option value=''>Unscored</option><option value='0' >0</option><option value='1' >1</option></select></label></div><label>Reason for your scores<textarea data-notes placeholder='Cite a factual omission, unsupported claim, or a strength.'></textarea></label></div></div></details><details class="result" data-model="demo/willow" data-category="qa" data-mode="baseline" data-status="passed">
+<summary><span class="taskid">qa-01</span><strong>demo/willow</strong><span>baseline</span><span class="badge passed">100% credit</span></summary>
+<div class="detail"><h4>Task</h4><p class="preserve">Read only this passage. Return only the shortest answer. If the passage does not state the answer, return exactly NOT STATED.
+
+Passage: Cedar Library opens at 09:00 on weekdays and 11:00 on Sundays. Saturday hours are 10:00 to 16:00.
+
+Question: What time does the library open on Sunday?</p><h4>Answer</h4><pre>11:00</pre>
+
+<p><b>Grade:</b> Exact accepted answer after case/whitespace/end-punctuation normalization.</p><details><summary>Reference answer / required points</summary><pre>[
+  &quot;11:00&quot;,
+  &quot;11:00 AM&quot;,
+  &quot;11 am&quot;
+]</pre></details>
+<p class="metadata">End-to-end: 0.64 s · Input tokens: 120 · Output tokens: 35 · Cost: $0.000000</p>
+<p class="metadata">Provider: fictional offline provider · Returned model: demo/willow</p></div></details><details class="result" data-model="demo/willow" data-category="qa" data-mode="baseline" data-status="passed">
+<summary><span class="taskid">qa-02</span><strong>demo/willow</strong><span>baseline</span><span class="badge passed">100% credit</span></summary>
+<div class="detail"><h4>Task</h4><p class="preserve">Read only this passage. Return only the shortest answer. If the passage does not state the answer, return exactly NOT STATED.
+
+Passage: A workshop has twelve participants. Eight bring laptops. All four remaining participants use borrowed tablets.
+
+Question: How many participants use borrowed tablets?</p><h4>Answer</h4><pre>4</pre>
+
+<p><b>Grade:</b> Exact accepted answer after case/whitespace/end-punctuation normalization.</p><details><summary>Reference answer / required points</summary><pre>[
+  &quot;4&quot;,
+  &quot;four&quot;
+]</pre></details>
+<p class="metadata">End-to-end: 0.64 s · Input tokens: 120 · Output tokens: 35 · Cost: $0.000000</p>
+<p class="metadata">Provider: fictional offline provider · Returned model: demo/willow</p></div></details><details class="result" data-model="demo/willow" data-category="qa" data-mode="baseline" data-status="passed">
+<summary><span class="taskid">qa-03</span><strong>demo/willow</strong><span>baseline</span><span class="badge passed">100% credit</span></summary>
+<div class="detail"><h4>Task</h4><p class="preserve">Read only this passage. Return only the shortest answer. If the passage does not state the answer, return exactly NOT STATED.
+
+Passage: The first prototype uses local files. The second prototype uses a database. Both versions run on the same computer.
+
+Question: Which prototype uses a database?</p><h4>Answer</h4><pre>the second prototype</pre>
+
+<p><b>Grade:</b> Exact accepted answer after case/whitespace/end-punctuation normalization.</p><details><summary>Reference answer / required points</summary><pre>[
+  &quot;the second prototype&quot;,
+  &quot;second prototype&quot;,
+  &quot;second&quot;,
+  &quot;2&quot;
+]</pre></details>
+<p class="metadata">End-to-end: 0.64 s · Input tokens: 120 · Output tokens: 35 · Cost: $0.000000</p>
+<p class="metadata">Provider: fictional offline provider · Returned model: demo/willow</p></div></details><details class="result" data-model="demo/willow" data-category="qa" data-mode="baseline" data-status="passed">
+<summary><span class="taskid">qa-04</span><strong>demo/willow</strong><span>baseline</span><span class="badge passed">100% credit</span></summary>
+<div class="detail"><h4>Task</h4><p class="preserve">Read only this passage. Return only the shortest answer. If the passage does not state the answer, return exactly NOT STATED.
+
+Passage: Mira manages the garden. Arun repairs the fence. The passage gives no information about who owns the land.
+
+Question: Who owns the land?</p><h4>Answer</h4><pre>NOT STATED</pre>
+
+<p><b>Grade:</b> Exact accepted answer after case/whitespace/end-punctuation normalization.</p><details><summary>Reference answer / required points</summary><pre>[
+  &quot;NOT STATED&quot;
+]</pre></details>
+<p class="metadata">End-to-end: 0.64 s · Input tokens: 120 · Output tokens: 35 · Cost: $0.000000</p>
+<p class="metadata">Provider: fictional offline provider · Returned model: demo/willow</p></div></details><details class="result" data-model="demo/willow" data-category="qa" data-mode="baseline" data-status="failed">
+<summary><span class="taskid">qa-05</span><strong>demo/willow</strong><span>baseline</span><span class="badge failed">Request failed</span></summary>
+<div class="detail"><h4>Task</h4><p class="preserve">Read only this passage. Return only the shortest answer. If the passage does not state the answer, return exactly NOT STATED.
+
+Passage: A test used 20 prompts. The system answered 16 correctly and returned errors on 4. Every prompt was attempted once.
+
+Question: How many prompts returned errors?</p><h4>Answer</h4><pre>(No answer)</pre>
+<p class="failure">Simulated timeout for learning.</p>
+<p><b>Grade:</b> Simulated failure; counted as unsuccessful.</p><details><summary>Reference answer / required points</summary><pre>[
+  &quot;4&quot;,
+  &quot;four&quot;
+]</pre></details>
+<p class="metadata">End-to-end: 0.64 s · Input tokens: Unavailable · Output tokens: Unavailable · Cost: Unavailable</p>
+<p class="metadata">Provider: No completed response · Returned model: Not returned</p></div></details><details class="result" data-model="demo/willow" data-category="extraction" data-mode="baseline" data-status="passed">
+<summary><span class="taskid">extract-01</span><strong>demo/willow</strong><span>baseline</span><span class="badge passed">100% credit</span></summary>
+<div class="detail"><h4>Task</h4><p class="preserve">Extract from the text. Return only a valid JSON object, with exactly the requested fields and types. Do not use Markdown fences.
+
+Text: Order Q17 contains 3 notebooks. Delivery date: 2026-10-04.
+
+Schema/instructions: order_id (string), quantity (integer), delivery_date (ISO date string).</p><h4>Answer</h4><pre>{&quot;order_id&quot;: &quot;Q17&quot;, &quot;quantity&quot;: 3, &quot;delivery_date&quot;: &quot;2026-10-04&quot;}</pre>
+
+<p><b>Grade:</b> Strict JSON: exact fields, values and types; no prose, fences or duplicate keys.</p><details><summary>Reference answer / required points</summary><pre>{
+  &quot;order_id&quot;: &quot;Q17&quot;,
+  &quot;quantity&quot;: 3,
+  &quot;delivery_date&quot;: &quot;2026-10-04&quot;
+}</pre></details>
+<p class="metadata">End-to-end: 0.64 s · Input tokens: 120 · Output tokens: 35 · Cost: $0.000000</p>
+<p class="metadata">Provider: fictional offline provider · Returned model: demo/willow</p></div></details><details class="result" data-model="demo/willow" data-category="extraction" data-mode="baseline" data-status="failed">
+<summary><span class="taskid">extract-02</span><strong>demo/willow</strong><span>baseline</span><span class="badge failed">0% credit</span></summary>
+<div class="detail"><h4>Task</h4><p class="preserve">Extract from the text. Return only a valid JSON object, with exactly the requested fields and types. Do not use Markdown fences.
+
+Text: The plan is called Starter. Its monthly price is 9 dollars. It is not a trial.
+
+Schema/instructions: name (string), monthly_usd (integer), trial (boolean).</p><h4>Answer</h4><pre>```json
+{&quot;name&quot;: &quot;Starter&quot;, &quot;monthly_usd&quot;: 9, &quot;trial&quot;: false}
+```</pre>
+
+<p><b>Grade:</b> Strict JSON: exact fields, values and types; no prose, fences or duplicate keys.</p><details><summary>Reference answer / required points</summary><pre>{
+  &quot;name&quot;: &quot;Starter&quot;,
+  &quot;monthly_usd&quot;: 9,
+  &quot;trial&quot;: false
+}</pre></details>
+<p class="metadata">End-to-end: 0.64 s · Input tokens: 120 · Output tokens: 35 · Cost: $0.000000</p>
+<p class="metadata">Provider: fictional offline provider · Returned model: demo/willow</p></div></details><details class="result" data-model="demo/willow" data-category="extraction" data-mode="baseline" data-status="passed">
+<summary><span class="taskid">extract-03</span><strong>demo/willow</strong><span>baseline</span><span class="badge passed">100% credit</span></summary>
+<div class="detail"><h4>Task</h4><p class="preserve">Extract from the text. Return only a valid JSON object, with exactly the requested fields and types. Do not use Markdown fences.
+
+Text: Speaker: Nila Rao. Venue: Hall B. A start time has not been announced.
+
+Schema/instructions: speaker (string), venue (string), start_time (null if absent).</p><h4>Answer</h4><pre>{&quot;speaker&quot;: &quot;Nila Rao&quot;, &quot;venue&quot;: &quot;Hall B&quot;, &quot;start_time&quot;: null}</pre>
+
+<p><b>Grade:</b> Strict JSON: exact fields, values and types; no prose, fences or duplicate keys.</p><details><summary>Reference answer / required points</summary><pre>{
+  &quot;speaker&quot;: &quot;Nila Rao&quot;,
+  &quot;venue&quot;: &quot;Hall B&quot;,
+  &quot;start_time&quot;: null
+}</pre></details>
+<p class="metadata">End-to-end: 0.64 s · Input tokens: 120 · Output tokens: 35 · Cost: $0.000000</p>
+<p class="metadata">Provider: fictional offline provider · Returned model: demo/willow</p></div></details><details class="result" data-model="demo/willow" data-category="extraction" data-mode="baseline" data-status="passed">
+<summary><span class="taskid">extract-04</span><strong>demo/willow</strong><span>baseline</span><span class="badge passed">100% credit</span></summary>
+<div class="detail"><h4>Task</h4><p class="preserve">Extract from the text. Return only a valid JSON object, with exactly the requested fields and types. Do not use Markdown fences.
+
+Text: Tasks in order: read, test, publish. The owner is Dev.
+
+Schema/instructions: owner (string), tasks (array of strings, in the stated order).</p><h4>Answer</h4><pre>{&quot;owner&quot;: &quot;Dev&quot;, &quot;tasks&quot;: [&quot;read&quot;, &quot;test&quot;, &quot;publish&quot;]}</pre>
+
+<p><b>Grade:</b> Strict JSON: exact fields, values and types; no prose, fences or duplicate keys.</p><details><summary>Reference answer / required points</summary><pre>{
+  &quot;owner&quot;: &quot;Dev&quot;,
+  &quot;tasks&quot;: [
+    &quot;read&quot;,
+    &quot;test&quot;,
+    &quot;publish&quot;
+  ]
+}</pre></details>
+<p class="metadata">End-to-end: 0.64 s · Input tokens: 120 · Output tokens: 35 · Cost: $0.000000</p>
+<p class="metadata">Provider: fictional offline provider · Returned model: demo/willow</p></div></details><details class="result" data-model="demo/willow" data-category="extraction" data-mode="baseline" data-status="passed">
+<summary><span class="taskid">extract-05</span><strong>demo/willow</strong><span>baseline</span><span class="badge passed">100% credit</span></summary>
+<div class="detail"><h4>Task</h4><p class="preserve">Extract from the text. Return only a valid JSON object, with exactly the requested fields and types. Do not use Markdown fences.
+
+Text: Ticket K8 is closed. Ticket K9 is open. This request concerns K9 only.
+
+Schema/instructions: ticket_id (string), open (boolean).</p><h4>Answer</h4><pre>{&quot;ticket_id&quot;: &quot;K9&quot;, &quot;open&quot;: true}</pre>
+
+<p><b>Grade:</b> Strict JSON: exact fields, values and types; no prose, fences or duplicate keys.</p><details><summary>Reference answer / required points</summary><pre>{
+  &quot;ticket_id&quot;: &quot;K9&quot;,
+  &quot;open&quot;: true
+}</pre></details>
+<p class="metadata">End-to-end: 0.64 s · Input tokens: 120 · Output tokens: 35 · Cost: $0.000000</p>
+<p class="metadata">Provider: fictional offline provider · Returned model: demo/willow</p></div></details><details class="result" data-model="demo/willow" data-category="arithmetic" data-mode="baseline" data-status="passed">
+<summary><span class="taskid">math-01</span><strong>demo/willow</strong><span>baseline</span><span class="badge passed">100% credit</span></summary>
+<div class="detail"><h4>Task</h4><p class="preserve">Three items cost 249 each. A 10% discount applies to the total. What is the amount paid? Return only the numeric answer, without units, prose, or separators.</p><h4>Answer</h4><pre>672.3</pre>
+
+<p><b>Grade:</b> Number-only answer within 0.000001 of the reference value.</p><details><summary>Reference answer / required points</summary><pre>&quot;672.3&quot;</pre></details>
+<p class="metadata">End-to-end: 0.64 s · Input tokens: 120 · Output tokens: 35 · Cost: $0.000000</p>
+<p class="metadata">Provider: fictional offline provider · Returned model: demo/willow</p></div></details><details class="result" data-model="demo/willow" data-category="arithmetic" data-mode="calculator" data-status="passed">
+<summary><span class="taskid">math-01</span><strong>demo/willow</strong><span>calculator</span><span class="badge passed">100% credit</span></summary>
+<div class="detail"><h4>Task</h4><p class="preserve">Three items cost 249 each. A 10% discount applies to the total. What is the amount paid? Return only the numeric answer, without units, prose, or separators.</p><h4>Answer</h4><pre>672.3</pre>
+
+<p><b>Grade:</b> Number-only answer within 0.000001 of the reference value.</p><details><summary>Reference answer / required points</summary><pre>&quot;672.3&quot;</pre></details>
+<p class="metadata">End-to-end: 1.14 s · Input tokens: 120 · Output tokens: 35 · Cost: $0.000000</p>
+<p class="metadata">Provider: fictional offline provider · Returned model: demo/willow</p><h4>Calculator actions</h4><pre>[
+  {
+    &quot;tool&quot;: &quot;calculate&quot;,
+    &quot;arguments&quot;: &quot;{\&quot;expression\&quot;: \&quot;3*249*(1-10/100)\&quot;}&quot;,
+    &quot;result&quot;: {
+      &quot;result&quot;: &quot;672.3&quot;
+    }
+  }
+]</pre></div></details><details class="result" data-model="demo/willow" data-category="arithmetic" data-mode="baseline" data-status="passed">
+<summary><span class="taskid">math-02</span><strong>demo/willow</strong><span>baseline</span><span class="badge passed">100% credit</span></summary>
+<div class="detail"><h4>Task</h4><p class="preserve">A count rises from 125 to 160. What is the percentage increase? Return only the numeric answer, without units, prose, or separators.</p><h4>Answer</h4><pre>28</pre>
+
+<p><b>Grade:</b> Number-only answer within 0.000001 of the reference value.</p><details><summary>Reference answer / required points</summary><pre>&quot;28&quot;</pre></details>
+<p class="metadata">End-to-end: 0.64 s · Input tokens: 120 · Output tokens: 35 · Cost: $0.000000</p>
+<p class="metadata">Provider: fictional offline provider · Returned model: demo/willow</p></div></details><details class="result" data-model="demo/willow" data-category="arithmetic" data-mode="calculator" data-status="passed">
+<summary><span class="taskid">math-02</span><strong>demo/willow</strong><span>calculator</span><span class="badge passed">100% credit</span></summary>
+<div class="detail"><h4>Task</h4><p class="preserve">A count rises from 125 to 160. What is the percentage increase? Return only the numeric answer, without units, prose, or separators.</p><h4>Answer</h4><pre>28</pre>
+
+<p><b>Grade:</b> Number-only answer within 0.000001 of the reference value.</p><details><summary>Reference answer / required points</summary><pre>&quot;28&quot;</pre></details>
+<p class="metadata">End-to-end: 1.14 s · Input tokens: 120 · Output tokens: 35 · Cost: $0.000000</p>
+<p class="metadata">Provider: fictional offline provider · Returned model: demo/willow</p><h4>Calculator actions</h4><pre>[
+  {
+    &quot;tool&quot;: &quot;calculate&quot;,
+    &quot;arguments&quot;: &quot;{\&quot;expression\&quot;: \&quot;(160-125)/125*100\&quot;}&quot;,
+    &quot;result&quot;: {
+      &quot;result&quot;: &quot;28&quot;
+    }
+  }
+]</pre></div></details><details class="result" data-model="demo/willow" data-category="arithmetic" data-mode="baseline" data-status="passed">
+<summary><span class="taskid">math-03</span><strong>demo/willow</strong><span>baseline</span><span class="badge passed">100% credit</span></summary>
+<div class="detail"><h4>Task</h4><p class="preserve">Eight batches take 10 minutes each and twelve batches take 20 minutes each. What is the mean time per batch? Return only the numeric answer, without units, prose, or separators.</p><h4>Answer</h4><pre>16</pre>
+
+<p><b>Grade:</b> Number-only answer within 0.000001 of the reference value.</p><details><summary>Reference answer / required points</summary><pre>&quot;16&quot;</pre></details>
+<p class="metadata">End-to-end: 0.64 s · Input tokens: 120 · Output tokens: 35 · Cost: $0.000000</p>
+<p class="metadata">Provider: fictional offline provider · Returned model: demo/willow</p></div></details><details class="result" data-model="demo/willow" data-category="arithmetic" data-mode="calculator" data-status="passed">
+<summary><span class="taskid">math-03</span><strong>demo/willow</strong><span>calculator</span><span class="badge passed">100% credit</span></summary>
+<div class="detail"><h4>Task</h4><p class="preserve">Eight batches take 10 minutes each and twelve batches take 20 minutes each. What is the mean time per batch? Return only the numeric answer, without units, prose, or separators.</p><h4>Answer</h4><pre>16</pre>
+
+<p><b>Grade:</b> Number-only answer within 0.000001 of the reference value.</p><details><summary>Reference answer / required points</summary><pre>&quot;16&quot;</pre></details>
+<p class="metadata">End-to-end: 1.14 s · Input tokens: 120 · Output tokens: 35 · Cost: $0.000000</p>
+<p class="metadata">Provider: fictional offline provider · Returned model: demo/willow</p><h4>Calculator actions</h4><pre>[
+  {
+    &quot;tool&quot;: &quot;calculate&quot;,
+    &quot;arguments&quot;: &quot;{\&quot;expression\&quot;: \&quot;(8*10+12*20)/(8+12)\&quot;}&quot;,
+    &quot;result&quot;: {
+      &quot;result&quot;: &quot;16&quot;
+    }
+  }
+]</pre></div></details><details class="result" data-model="demo/willow" data-category="arithmetic" data-mode="baseline" data-status="passed">
+<summary><span class="taskid">math-04</span><strong>demo/willow</strong><span>baseline</span><span class="badge passed">100% credit</span></summary>
+<div class="detail"><h4>Task</h4><p class="preserve">Hypothetical API prices are $0.20 per million input tokens and $0.80 per million output tokens. What is the dollar cost for 12,000 input and 3,000 output tokens? Return only the numeric answer, without units, prose, or separators.</p><h4>Answer</h4><pre>0.0048</pre>
+
+<p><b>Grade:</b> Number-only answer within 0.000001 of the reference value.</p><details><summary>Reference answer / required points</summary><pre>&quot;0.0048&quot;</pre></details>
+<p class="metadata">End-to-end: 0.64 s · Input tokens: 120 · Output tokens: 35 · Cost: $0.000000</p>
+<p class="metadata">Provider: fictional offline provider · Returned model: demo/willow</p></div></details><details class="result" data-model="demo/willow" data-category="arithmetic" data-mode="calculator" data-status="passed">
+<summary><span class="taskid">math-04</span><strong>demo/willow</strong><span>calculator</span><span class="badge passed">100% credit</span></summary>
+<div class="detail"><h4>Task</h4><p class="preserve">Hypothetical API prices are $0.20 per million input tokens and $0.80 per million output tokens. What is the dollar cost for 12,000 input and 3,000 output tokens? Return only the numeric answer, without units, prose, or separators.</p><h4>Answer</h4><pre>0.0048</pre>
+
+<p><b>Grade:</b> Number-only answer within 0.000001 of the reference value.</p><details><summary>Reference answer / required points</summary><pre>&quot;0.0048&quot;</pre></details>
+<p class="metadata">End-to-end: 1.14 s · Input tokens: 120 · Output tokens: 35 · Cost: $0.000000</p>
+<p class="metadata">Provider: fictional offline provider · Returned model: demo/willow</p><h4>Calculator actions</h4><pre>[
+  {
+    &quot;tool&quot;: &quot;calculate&quot;,
+    &quot;arguments&quot;: &quot;{\&quot;expression\&quot;: \&quot;(12000*0.20+3000*0.80)/1000000\&quot;}&quot;,
+    &quot;result&quot;: {
+      &quot;result&quot;: &quot;0.0048&quot;
+    }
+  }
+]</pre></div></details><details class="result" data-model="demo/willow" data-category="arithmetic" data-mode="baseline" data-status="passed">
+<summary><span class="taskid">math-05</span><strong>demo/willow</strong><span>baseline</span><span class="badge passed">100% credit</span></summary>
+<div class="detail"><h4>Task</h4><p class="preserve">A device has 2048 MB of space. Its system uses 320 MB and its logs use 256 MB. How many 64 MB files fit in the remaining space? Return only the numeric answer, without units, prose, or separators.</p><h4>Answer</h4><pre>23</pre>
+
+<p><b>Grade:</b> Number-only answer within 0.000001 of the reference value.</p><details><summary>Reference answer / required points</summary><pre>&quot;23&quot;</pre></details>
+<p class="metadata">End-to-end: 0.64 s · Input tokens: 120 · Output tokens: 35 · Cost: $0.000000</p>
+<p class="metadata">Provider: fictional offline provider · Returned model: demo/willow</p></div></details><details class="result" data-model="demo/willow" data-category="arithmetic" data-mode="calculator" data-status="passed">
+<summary><span class="taskid">math-05</span><strong>demo/willow</strong><span>calculator</span><span class="badge passed">100% credit</span></summary>
+<div class="detail"><h4>Task</h4><p class="preserve">A device has 2048 MB of space. Its system uses 320 MB and its logs use 256 MB. How many 64 MB files fit in the remaining space? Return only the numeric answer, without units, prose, or separators.</p><h4>Answer</h4><pre>23</pre>
+
+<p><b>Grade:</b> Number-only answer within 0.000001 of the reference value.</p><details><summary>Reference answer / required points</summary><pre>&quot;23&quot;</pre></details>
+<p class="metadata">End-to-end: 1.14 s · Input tokens: 120 · Output tokens: 35 · Cost: $0.000000</p>
+<p class="metadata">Provider: fictional offline provider · Returned model: demo/willow</p><h4>Calculator actions</h4><pre>[
+  {
+    &quot;tool&quot;: &quot;calculate&quot;,
+    &quot;arguments&quot;: &quot;{\&quot;expression\&quot;: \&quot;(2048-320-256)/64\&quot;}&quot;,
+    &quot;result&quot;: {
+      &quot;result&quot;: &quot;23&quot;
+    }
+  }
+]</pre></div></details><details class="result" data-model="demo/willow" data-category="summary" data-mode="baseline" data-status="pending">
+<summary><span class="taskid">summary-01</span><strong>demo/willow</strong><span>baseline</span><span class="badge pending">Awaiting review</span></summary>
+<div class="detail"><h4>Task</h4><p class="preserve">Summarize this passage in no more than 35 words. Preserve the main result and its limitation; use only facts from the passage.
+
+A team tried a search assistant with 15 staff members for one week. Participants found documents faster, but the team did not measure accuracy. The next trial will include an accuracy test.</p><h4>Answer</h4><pre>A one-week trial with 15 staff found faster document retrieval, but did not measure accuracy. The next trial will test accuracy.</pre>
+
+<p><b>Grade:</b> Awaiting human rubric review (faithfulness 0–2, coverage 0–2, brevity 0–1).</p><details><summary>Reference answer / required points</summary><pre>[
+  &quot;15 staff; one week&quot;,
+  &quot;faster document finding&quot;,
+  &quot;accuracy unmeasured; next trial will test it&quot;
+]</pre></details>
+<p class="metadata">End-to-end: 0.64 s · Input tokens: 120 · Output tokens: 35 · Cost: $0.000000</p>
+<p class="metadata">Provider: fictional offline provider · Returned model: demo/willow</p><div class='review' data-review='demo/willow|baseline|summary-01'><h4>Your review</h4><p>Faithfulness: 2 = no unsupported or contradicted claims; 1 = minor distortion; 0 = major invention/contradiction. Coverage: 2 = all required points below; 1 = some; 0 = misses the main point. Brevity: 1 = at most 35 whitespace-separated words; 0 = longer. Total / 5. Check facts before rewarding fluent wording.</p><div class='review-grid'><label>Faithfulness (0–2)<select data-score='faithfulness'><option value=''>Unscored</option><option value='0' >0</option><option value='1' >1</option><option value='2' >2</option></select></label><label>Coverage (0–2)<select data-score='coverage'><option value=''>Unscored</option><option value='0' >0</option><option value='1' >1</option><option value='2' >2</option></select></label><label>Brevity (0–1)<select data-score='brevity'><option value=''>Unscored</option><option value='0' >0</option><option value='1' >1</option></select></label></div><label>Reason for your scores<textarea data-notes placeholder='Cite a factual omission, unsupported claim, or a strength.'></textarea></label></div></div></details><details class="result" data-model="demo/willow" data-category="summary" data-mode="baseline" data-status="pending">
+<summary><span class="taskid">summary-02</span><strong>demo/willow</strong><span>baseline</span><span class="badge pending">Awaiting review</span></summary>
+<div class="detail"><h4>Task</h4><p class="preserve">Summarize this passage in no more than 35 words. Preserve the main result and its limitation; use only facts from the passage.
+
+A library moved its catalogue online. Remote searches increased, while visits to the building stayed unchanged. The report covered only the first month after launch.</p><h4>Answer</h4><pre>After the catalogue moved online, remote searches increased while building visits stayed unchanged. The report covers only the first month.</pre>
+
+<p><b>Grade:</b> Awaiting human rubric review (faithfulness 0–2, coverage 0–2, brevity 0–1).</p><details><summary>Reference answer / required points</summary><pre>[
+  &quot;online catalogue; remote searches increased&quot;,
+  &quot;building visits unchanged&quot;,
+  &quot;first month only&quot;
+]</pre></details>
+<p class="metadata">End-to-end: 0.64 s · Input tokens: 120 · Output tokens: 35 · Cost: $0.000000</p>
+<p class="metadata">Provider: fictional offline provider · Returned model: demo/willow</p><div class='review' data-review='demo/willow|baseline|summary-02'><h4>Your review</h4><p>Faithfulness: 2 = no unsupported or contradicted claims; 1 = minor distortion; 0 = major invention/contradiction. Coverage: 2 = all required points below; 1 = some; 0 = misses the main point. Brevity: 1 = at most 35 whitespace-separated words; 0 = longer. Total / 5. Check facts before rewarding fluent wording.</p><div class='review-grid'><label>Faithfulness (0–2)<select data-score='faithfulness'><option value=''>Unscored</option><option value='0' >0</option><option value='1' >1</option><option value='2' >2</option></select></label><label>Coverage (0–2)<select data-score='coverage'><option value=''>Unscored</option><option value='0' >0</option><option value='1' >1</option><option value='2' >2</option></select></label><label>Brevity (0–1)<select data-score='brevity'><option value=''>Unscored</option><option value='0' >0</option><option value='1' >1</option></select></label></div><label>Reason for your scores<textarea data-notes placeholder='Cite a factual omission, unsupported claim, or a strength.'></textarea></label></div></div></details><details class="result" data-model="demo/willow" data-category="summary" data-mode="baseline" data-status="pending">
+<summary><span class="taskid">summary-03</span><strong>demo/willow</strong><span>baseline</span><span class="badge pending">Awaiting review</span></summary>
+<div class="detail"><h4>Task</h4><p class="preserve">Summarize this passage in no more than 35 words. Preserve the main result and its limitation; use only facts from the passage.
+
+A sensor prototype used half as much energy as the earlier design in a laboratory test. It has not been tested outdoors. Engineers plan to examine performance in rain.</p><h4>Answer</h4><pre>The prototype used half the earlier design’s energy in a laboratory test. Outdoor performance is untested, and engineers plan rain tests.</pre>
+
+<p><b>Grade:</b> Awaiting human rubric review (faithfulness 0–2, coverage 0–2, brevity 0–1).</p><details><summary>Reference answer / required points</summary><pre>[
+  &quot;half the energy of earlier design&quot;,
+  &quot;laboratory result only; outdoors untested&quot;,
+  &quot;rain testing planned&quot;
+]</pre></details>
+<p class="metadata">End-to-end: 0.64 s · Input tokens: 120 · Output tokens: 35 · Cost: $0.000000</p>
+<p class="metadata">Provider: fictional offline provider · Returned model: demo/willow</p><div class='review' data-review='demo/willow|baseline|summary-03'><h4>Your review</h4><p>Faithfulness: 2 = no unsupported or contradicted claims; 1 = minor distortion; 0 = major invention/contradiction. Coverage: 2 = all required points below; 1 = some; 0 = misses the main point. Brevity: 1 = at most 35 whitespace-separated words; 0 = longer. Total / 5. Check facts before rewarding fluent wording.</p><div class='review-grid'><label>Faithfulness (0–2)<select data-score='faithfulness'><option value=''>Unscored</option><option value='0' >0</option><option value='1' >1</option><option value='2' >2</option></select></label><label>Coverage (0–2)<select data-score='coverage'><option value=''>Unscored</option><option value='0' >0</option><option value='1' >1</option><option value='2' >2</option></select></label><label>Brevity (0–1)<select data-score='brevity'><option value=''>Unscored</option><option value='0' >0</option><option value='1' >1</option></select></label></div><label>Reason for your scores<textarea data-notes placeholder='Cite a factual omission, unsupported claim, or a strength.'></textarea></label></div></div></details><details class="result" data-model="demo/willow" data-category="summary" data-mode="baseline" data-status="pending">
+<summary><span class="taskid">summary-04</span><strong>demo/willow</strong><span>baseline</span><span class="badge pending">Awaiting review</span></summary>
+<div class="detail"><h4>Task</h4><p class="preserve">Summarize this passage in no more than 35 words. Preserve the main result and its limitation; use only facts from the passage.
+
+A model answered 18 of 20 arithmetic questions correctly with a calculator and 14 without it. Both conditions used the same questions. Only one attempt was made per question in each condition.</p><h4>Answer</h4><pre>On the same 20 arithmetic questions, calculator access increased correct answers from 14 to 18. Each question had only one attempt per condition.</pre>
+
+<p><b>Grade:</b> Awaiting human rubric review (faithfulness 0–2, coverage 0–2, brevity 0–1).</p><details><summary>Reference answer / required points</summary><pre>[
+  &quot;18/20 with calculator vs 14/20 without&quot;,
+  &quot;same questions&quot;,
+  &quot;one attempt per question per condition&quot;
+]</pre></details>
+<p class="metadata">End-to-end: 0.64 s · Input tokens: 120 · Output tokens: 35 · Cost: $0.000000</p>
+<p class="metadata">Provider: fictional offline provider · Returned model: demo/willow</p><div class='review' data-review='demo/willow|baseline|summary-04'><h4>Your review</h4><p>Faithfulness: 2 = no unsupported or contradicted claims; 1 = minor distortion; 0 = major invention/contradiction. Coverage: 2 = all required points below; 1 = some; 0 = misses the main point. Brevity: 1 = at most 35 whitespace-separated words; 0 = longer. Total / 5. Check facts before rewarding fluent wording.</p><div class='review-grid'><label>Faithfulness (0–2)<select data-score='faithfulness'><option value=''>Unscored</option><option value='0' >0</option><option value='1' >1</option><option value='2' >2</option></select></label><label>Coverage (0–2)<select data-score='coverage'><option value=''>Unscored</option><option value='0' >0</option><option value='1' >1</option><option value='2' >2</option></select></label><label>Brevity (0–1)<select data-score='brevity'><option value=''>Unscored</option><option value='0' >0</option><option value='1' >1</option></select></label></div><label>Reason for your scores<textarea data-notes placeholder='Cite a factual omission, unsupported claim, or a strength.'></textarea></label></div></div></details><details class="result" data-model="demo/willow" data-category="summary" data-mode="baseline" data-status="pending">
+<summary><span class="taskid">summary-05</span><strong>demo/willow</strong><span>baseline</span><span class="badge pending">Awaiting review</span></summary>
+<div class="detail"><h4>Task</h4><p class="preserve">Summarize this passage in no more than 35 words. Preserve the main result and its limitation; use only facts from the passage.
+
+A company shortened onboarding from five sessions to three. New hires reported greater satisfaction, but managers did not test whether they retained the material. The survey received responses from nine hires.</p><h4>Answer</h4><pre>Nine new hires reported greater satisfaction after onboarding fell from five sessions to three. Managers did not test retention of the material.</pre>
+
+<p><b>Grade:</b> Awaiting human rubric review (faithfulness 0–2, coverage 0–2, brevity 0–1).</p><details><summary>Reference answer / required points</summary><pre>[
+  &quot;five sessions reduced to three&quot;,
+  &quot;greater reported satisfaction; nine respondents&quot;,
+  &quot;retention untested&quot;
+]</pre></details>
+<p class="metadata">End-to-end: 0.64 s · Input tokens: 120 · Output tokens: 35 · Cost: $0.000000</p>
+<p class="metadata">Provider: fictional offline provider · Returned model: demo/willow</p><div class='review' data-review='demo/willow|baseline|summary-05'><h4>Your review</h4><p>Faithfulness: 2 = no unsupported or contradicted claims; 1 = minor distortion; 0 = major invention/contradiction. Coverage: 2 = all required points below; 1 = some; 0 = misses the main point. Brevity: 1 = at most 35 whitespace-separated words; 0 = longer. Total / 5. Check facts before rewarding fluent wording.</p><div class='review-grid'><label>Faithfulness (0–2)<select data-score='faithfulness'><option value=''>Unscored</option><option value='0' >0</option><option value='1' >1</option><option value='2' >2</option></select></label><label>Coverage (0–2)<select data-score='coverage'><option value=''>Unscored</option><option value='0' >0</option><option value='1' >1</option><option value='2' >2</option></select></label><label>Brevity (0–1)<select data-score='brevity'><option value=''>Unscored</option><option value='0' >0</option><option value='1' >1</option></select></label></div><label>Reason for your scores<textarea data-notes placeholder='Cite a factual omission, unsupported claim, or a strength.'></textarea></label></div></div></details><h2>Save your summary reviews</h2><p>Use the rubric controls inside summary results. Export completed reviews before closing this page, then apply them to generate an updated report.</p><button id="export">Download review scores</button><p id="review-status" role="status"></p>
+<pre>python3 compare.py review PATH_TO_RESULTS.json PATH_TO_SCORES.json --output runs/reviewed</pre>
+<details><summary>Reproduction metadata</summary><pre>{
+  &quot;settings&quot;: {
+    &quot;temperature&quot;: 0.0,
+    &quot;max_tokens&quot;: 512,
+    &quot;max_tool_rounds&quot;: 3,
+    &quot;timeout&quot;: 45
+  },
+  &quot;models&quot;: [
+    {
+      &quot;id&quot;: &quot;demo/cedar&quot;,
+      &quot;name&quot;: &quot;Cedar (fictional fixture)&quot;
+    },
+    {
+      &quot;id&quot;: &quot;demo/maple&quot;,
+      &quot;name&quot;: &quot;Maple (fictional fixture)&quot;
+    },
+    {
+      &quot;id&quot;: &quot;demo/willow&quot;,
+      &quot;name&quot;: &quot;Willow (fictional fixture)&quot;
+    }
+  ],
+  &quot;task_sha256&quot;: &quot;6e1a029a75f48c79714aecdaebb4d1884ba8bdc93f40d194b6ec97382e924720&quot;,
+  &quot;order_seed&quot;: null,
+  &quot;budget_usd&quot;: null
+}</pre></details>
+</main><script>
+const filters=[...document.querySelectorAll('[data-filter]')];
+function filterRows(){let count=0;document.querySelectorAll('.result').forEach(r=>{r.hidden=!filters.every(f=>!f.value||r.dataset[f.dataset.filter]===f.value);if(!r.hidden)count++;});document.getElementById('visible-count').textContent=count+' matching results';}
+filters.forEach(f=>f.addEventListener('change',filterRows));filterRows();
+document.getElementById('export').addEventListener('click',()=>{const scores={};let error='';document.querySelectorAll('[data-review]').forEach(r=>{const fields=[...r.querySelectorAll('[data-score]')];if(fields.every(f=>f.value===''))return;if(fields.some(f=>f.value==='')||!r.querySelector('textarea').value.trim()){error='Complete all three scores and a note for each review you started.';return;}const s={notes:r.querySelector('textarea').value};fields.forEach(f=>s[f.dataset.score]=Number(f.value));scores[r.dataset.review]=s;});const status=document.getElementById('review-status');if(error||!Object.keys(scores).length){status.textContent=error||'Score at least one summary first.';return;}const a=document.createElement('a');const url=URL.createObjectURL(new Blob([JSON.stringify(scores,null,2)],{type:'application/json'}));a.href=url;a.download='scores.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);status.textContent='Downloaded scores.json. Apply it with the review command in the project guide. Scores are not automatically saved in this page.';});
+</script></html>

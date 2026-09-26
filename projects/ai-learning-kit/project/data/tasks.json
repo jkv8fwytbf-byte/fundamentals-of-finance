@@ -1,0 +1,196 @@
+[
+  {
+    "id": "qa-01",
+    "category": "qa",
+    "prompt": "Read only this passage. Return only the shortest answer. If the passage does not state the answer, return exactly NOT STATED.\n\nPassage: Cedar Library opens at 09:00 on weekdays and 11:00 on Sundays. Saturday hours are 10:00 to 16:00.\n\nQuestion: What time does the library open on Sunday?",
+    "accepted": [
+      "11:00",
+      "11:00 AM",
+      "11 am"
+    ]
+  },
+  {
+    "id": "qa-02",
+    "category": "qa",
+    "prompt": "Read only this passage. Return only the shortest answer. If the passage does not state the answer, return exactly NOT STATED.\n\nPassage: A workshop has twelve participants. Eight bring laptops. All four remaining participants use borrowed tablets.\n\nQuestion: How many participants use borrowed tablets?",
+    "accepted": [
+      "4",
+      "four"
+    ]
+  },
+  {
+    "id": "qa-03",
+    "category": "qa",
+    "prompt": "Read only this passage. Return only the shortest answer. If the passage does not state the answer, return exactly NOT STATED.\n\nPassage: The first prototype uses local files. The second prototype uses a database. Both versions run on the same computer.\n\nQuestion: Which prototype uses a database?",
+    "accepted": [
+      "the second prototype",
+      "second prototype",
+      "second",
+      "2"
+    ]
+  },
+  {
+    "id": "qa-04",
+    "category": "qa",
+    "prompt": "Read only this passage. Return only the shortest answer. If the passage does not state the answer, return exactly NOT STATED.\n\nPassage: Mira manages the garden. Arun repairs the fence. The passage gives no information about who owns the land.\n\nQuestion: Who owns the land?",
+    "accepted": [
+      "NOT STATED"
+    ]
+  },
+  {
+    "id": "qa-05",
+    "category": "qa",
+    "prompt": "Read only this passage. Return only the shortest answer. If the passage does not state the answer, return exactly NOT STATED.\n\nPassage: A test used 20 prompts. The system answered 16 correctly and returned errors on 4. Every prompt was attempted once.\n\nQuestion: How many prompts returned errors?",
+    "accepted": [
+      "4",
+      "four"
+    ]
+  },
+  {
+    "id": "extract-01",
+    "category": "extraction",
+    "prompt": "Extract from the text. Return only a valid JSON object, with exactly the requested fields and types. Do not use Markdown fences.\n\nText: Order Q17 contains 3 notebooks. Delivery date: 2026-10-04.\n\nSchema/instructions: order_id (string), quantity (integer), delivery_date (ISO date string).",
+    "expected": {
+      "order_id": "Q17",
+      "quantity": 3,
+      "delivery_date": "2026-10-04"
+    }
+  },
+  {
+    "id": "extract-02",
+    "category": "extraction",
+    "prompt": "Extract from the text. Return only a valid JSON object, with exactly the requested fields and types. Do not use Markdown fences.\n\nText: The plan is called Starter. Its monthly price is 9 dollars. It is not a trial.\n\nSchema/instructions: name (string), monthly_usd (integer), trial (boolean).",
+    "expected": {
+      "name": "Starter",
+      "monthly_usd": 9,
+      "trial": false
+    }
+  },
+  {
+    "id": "extract-03",
+    "category": "extraction",
+    "prompt": "Extract from the text. Return only a valid JSON object, with exactly the requested fields and types. Do not use Markdown fences.\n\nText: Speaker: Nila Rao. Venue: Hall B. A start time has not been announced.\n\nSchema/instructions: speaker (string), venue (string), start_time (null if absent).",
+    "expected": {
+      "speaker": "Nila Rao",
+      "venue": "Hall B",
+      "start_time": null
+    }
+  },
+  {
+    "id": "extract-04",
+    "category": "extraction",
+    "prompt": "Extract from the text. Return only a valid JSON object, with exactly the requested fields and types. Do not use Markdown fences.\n\nText: Tasks in order: read, test, publish. The owner is Dev.\n\nSchema/instructions: owner (string), tasks (array of strings, in the stated order).",
+    "expected": {
+      "owner": "Dev",
+      "tasks": [
+        "read",
+        "test",
+        "publish"
+      ]
+    }
+  },
+  {
+    "id": "extract-05",
+    "category": "extraction",
+    "prompt": "Extract from the text. Return only a valid JSON object, with exactly the requested fields and types. Do not use Markdown fences.\n\nText: Ticket K8 is closed. Ticket K9 is open. This request concerns K9 only.\n\nSchema/instructions: ticket_id (string), open (boolean).",
+    "expected": {
+      "ticket_id": "K9",
+      "open": true
+    }
+  },
+  {
+    "id": "math-01",
+    "category": "arithmetic",
+    "prompt": "Three items cost 249 each. A 10% discount applies to the total. What is the amount paid? Return only the numeric answer, without units, prose, or separators.",
+    "expected": "672.3",
+    "example_expression": "3*249*(1-10/100)"
+  },
+  {
+    "id": "math-02",
+    "category": "arithmetic",
+    "prompt": "A count rises from 125 to 160. What is the percentage increase? Return only the numeric answer, without units, prose, or separators.",
+    "expected": "28",
+    "example_expression": "(160-125)/125*100"
+  },
+  {
+    "id": "math-03",
+    "category": "arithmetic",
+    "prompt": "Eight batches take 10 minutes each and twelve batches take 20 minutes each. What is the mean time per batch? Return only the numeric answer, without units, prose, or separators.",
+    "expected": "16",
+    "example_expression": "(8*10+12*20)/(8+12)"
+  },
+  {
+    "id": "math-04",
+    "category": "arithmetic",
+    "prompt": "Hypothetical API prices are $0.20 per million input tokens and $0.80 per million output tokens. What is the dollar cost for 12,000 input and 3,000 output tokens? Return only the numeric answer, without units, prose, or separators.",
+    "expected": "0.0048",
+    "example_expression": "(12000*0.20+3000*0.80)/1000000"
+  },
+  {
+    "id": "math-05",
+    "category": "arithmetic",
+    "prompt": "A device has 2048 MB of space. Its system uses 320 MB and its logs use 256 MB. How many 64 MB files fit in the remaining space? Return only the numeric answer, without units, prose, or separators.",
+    "expected": "23",
+    "example_expression": "(2048-320-256)/64"
+  },
+  {
+    "id": "summary-01",
+    "category": "summary",
+    "prompt": "Summarize this passage in no more than 35 words. Preserve the main result and its limitation; use only facts from the passage.\n\nA team tried a search assistant with 15 staff members for one week. Participants found documents faster, but the team did not measure accuracy. The next trial will include an accuracy test.",
+    "key_points": [
+      "15 staff; one week",
+      "faster document finding",
+      "accuracy unmeasured; next trial will test it"
+    ],
+    "example_summary": "A one-week trial with 15 staff found faster document retrieval, but did not measure accuracy. The next trial will test accuracy.",
+    "rubric": "Faithfulness: 2 = no unsupported or contradicted claims; 1 = minor distortion; 0 = major invention/contradiction. Coverage: 2 = all required points below; 1 = some; 0 = misses the main point. Brevity: 1 = at most 35 whitespace-separated words; 0 = longer. Total / 5. Check facts before rewarding fluent wording."
+  },
+  {
+    "id": "summary-02",
+    "category": "summary",
+    "prompt": "Summarize this passage in no more than 35 words. Preserve the main result and its limitation; use only facts from the passage.\n\nA library moved its catalogue online. Remote searches increased, while visits to the building stayed unchanged. The report covered only the first month after launch.",
+    "key_points": [
+      "online catalogue; remote searches increased",
+      "building visits unchanged",
+      "first month only"
+    ],
+    "example_summary": "After the catalogue moved online, remote searches increased while building visits stayed unchanged. The report covers only the first month.",
+    "rubric": "Faithfulness: 2 = no unsupported or contradicted claims; 1 = minor distortion; 0 = major invention/contradiction. Coverage: 2 = all required points below; 1 = some; 0 = misses the main point. Brevity: 1 = at most 35 whitespace-separated words; 0 = longer. Total / 5. Check facts before rewarding fluent wording."
+  },
+  {
+    "id": "summary-03",
+    "category": "summary",
+    "prompt": "Summarize this passage in no more than 35 words. Preserve the main result and its limitation; use only facts from the passage.\n\nA sensor prototype used half as much energy as the earlier design in a laboratory test. It has not been tested outdoors. Engineers plan to examine performance in rain.",
+    "key_points": [
+      "half the energy of earlier design",
+      "laboratory result only; outdoors untested",
+      "rain testing planned"
+    ],
+    "example_summary": "The prototype used half the earlier design’s energy in a laboratory test. Outdoor performance is untested, and engineers plan rain tests.",
+    "rubric": "Faithfulness: 2 = no unsupported or contradicted claims; 1 = minor distortion; 0 = major invention/contradiction. Coverage: 2 = all required points below; 1 = some; 0 = misses the main point. Brevity: 1 = at most 35 whitespace-separated words; 0 = longer. Total / 5. Check facts before rewarding fluent wording."
+  },
+  {
+    "id": "summary-04",
+    "category": "summary",
+    "prompt": "Summarize this passage in no more than 35 words. Preserve the main result and its limitation; use only facts from the passage.\n\nA model answered 18 of 20 arithmetic questions correctly with a calculator and 14 without it. Both conditions used the same questions. Only one attempt was made per question in each condition.",
+    "key_points": [
+      "18/20 with calculator vs 14/20 without",
+      "same questions",
+      "one attempt per question per condition"
+    ],
+    "example_summary": "On the same 20 arithmetic questions, calculator access increased correct answers from 14 to 18. Each question had only one attempt per condition.",
+    "rubric": "Faithfulness: 2 = no unsupported or contradicted claims; 1 = minor distortion; 0 = major invention/contradiction. Coverage: 2 = all required points below; 1 = some; 0 = misses the main point. Brevity: 1 = at most 35 whitespace-separated words; 0 = longer. Total / 5. Check facts before rewarding fluent wording."
+  },
+  {
+    "id": "summary-05",
+    "category": "summary",
+    "prompt": "Summarize this passage in no more than 35 words. Preserve the main result and its limitation; use only facts from the passage.\n\nA company shortened onboarding from five sessions to three. New hires reported greater satisfaction, but managers did not test whether they retained the material. The survey received responses from nine hires.",
+    "key_points": [
+      "five sessions reduced to three",
+      "greater reported satisfaction; nine respondents",
+      "retention untested"
+    ],
+    "example_summary": "Nine new hires reported greater satisfaction after onboarding fell from five sessions to three. Managers did not test retention of the material.",
+    "rubric": "Faithfulness: 2 = no unsupported or contradicted claims; 1 = minor distortion; 0 = major invention/contradiction. Coverage: 2 = all required points below; 1 = some; 0 = misses the main point. Brevity: 1 = at most 35 whitespace-separated words; 0 = longer. Total / 5. Check facts before rewarding fluent wording."
+  }
+]

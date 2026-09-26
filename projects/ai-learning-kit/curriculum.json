@@ -1,0 +1,390 @@
+[
+  {
+    "n": 1,
+    "title": "Make the map",
+    "idea": "A model is one component inside an application. During training its numerical weights are adjusted; during inference it uses those weights to process your input. A token is a model-specific chunk of text, not necessarily a word. The context window limits the material processed in a request; it is not the same as durable memory.",
+    "resources": [
+      "intro",
+      "visual"
+    ],
+    "sessions": [
+      {
+        "title": "Orient yourself",
+        "minutes": 75,
+        "steps": [
+          "Watch the one-hour Karpathy introduction, pausing when you encounter an unfamiliar word.",
+          "Write definitions for model, token, weights, training, inference and context. Give a concrete example for each."
+        ]
+      },
+      {
+        "title": "Follow the computation",
+        "minutes": 75,
+        "steps": [
+          "Read the 3Blue1Brown transformer explanation. Sketch text → tokens → vectors → model computation → next-token probabilities → generated text.",
+          "Explain embeddings as numerical representations. Distinguish stored model weights from the temporary representations computed for one input."
+        ]
+      },
+      {
+        "title": "Explain it back",
+        "minutes": 120,
+        "steps": [
+          "Complete worksheets/week-01.md without copying the glossary. Draw where an app, OpenRouter and a provider would sit.",
+          "Open the sample comparison report. Find one failure and explain why a fluent response can still fail a task.",
+          "Take the checkpoint, then revise one unclear definition."
+        ]
+      }
+    ],
+    "checkpoint": [
+      "Does changing the prompt normally retrain the model?",
+      "Can the same model be used in different apps?",
+      "Is a context window the same as permanent memory?"
+    ],
+    "answers": [
+      "No. A prompt changes the input used for inference; it does not normally update weights.",
+      "Yes. Apps can connect to the same model through different integrations. Their prompts and tools can still produce different behaviour.",
+      "No. It bounds the current input/output context. An app may store and retrieve information separately."
+    ],
+    "deliverable": "A one-page explanation of a prompt’s journey, with six definitions and one diagram.",
+    "change": "Change the example prompt in your explanation and trace what stays the same."
+  },
+  {
+    "n": 2,
+    "title": "Make one model request",
+    "idea": "An API is a defined way for programs to exchange requests and responses. The model creator, API router and inference provider can be different organisations. JSON is a text format for structured data; the API key authenticates the request. A model identifier selects a model rather than naming a library.",
+    "resources": [
+      "router",
+      "glm",
+      "hub",
+      "pi"
+    ],
+    "sessions": [
+      {
+        "title": "Inspect a model listing",
+        "minutes": 60,
+        "steps": [
+          "Open the GLM listing. Record the identifier, supported inputs, context length, provider names and dated prices.",
+          "Find the units in a price label: input and output often have different prices per million tokens. Use the worksheet’s hypothetical numbers to calculate one request."
+        ]
+      },
+      {
+        "title": "Inspect the interface",
+        "minutes": 90,
+        "steps": [
+          "Read the OpenRouter quickstart and examples/first_request.py. Identify URL, authorisation header, model field, messages and response choices.",
+          "Run the offline demo using the project guide. Follow a saved answer into results.json and report.html."
+        ]
+      },
+      {
+        "title": "Make a small live request",
+        "minutes": 120,
+        "steps": [
+          "Use your own key in an environment variable. List current compatible free models and select one. Run one task, following the README.",
+          "If account access is not ready, trace the request example and sample data; mark the live-call milestone pending.",
+          "Record any returned provider and usage fields. Explain why unavailable cost must not be recorded as zero."
+        ]
+      }
+    ],
+    "checkpoint": [
+      "What does served via OpenRouter mean?",
+      "Does a model page on Hugging Face mean the model is running on your computer?",
+      "What is an API key for?"
+    ],
+    "answers": [
+      "Your program uses OpenRouter’s API to reach a provider operating the selected model.",
+      "No. A model repository supplies files and documentation; inference requires a separate runtime or hosted service.",
+      "It authenticates API access. It is not a model identifier and should not be included in shared code or notes."
+    ],
+    "deliverable": "One saved response plus a labelled request/response explanation; or a pending live milestone if no account is available.",
+    "change": "Change the prompt yourself, predict the response shape, and inspect the saved result."
+  },
+  {
+    "n": 3,
+    "title": "Navigate Hugging Face",
+    "idea": "The Hub stores model and dataset repositories. Transformers is a software library for working with models. A Space is a hosted application or demonstration. A model card documents the intended use and limitations. Downloadable weights do not by themselves establish unrestricted licensing or complete training transparency.",
+    "resources": [
+      "hf",
+      "cards",
+      "spaces",
+      "sentiment"
+    ],
+    "sessions": [
+      {
+        "title": "Read selected foundations",
+        "minutes": 90,
+        "steps": [
+          "Study the introduction and pipeline/tokenizer/model sections of LLM Course chapters 1–2. Do not attempt to complete every fine-tuning exercise this week.",
+          "Make a table distinguishing Hub, Transformers, Datasets and Spaces."
+        ]
+      },
+      {
+        "title": "Read three model cards",
+        "minutes": 75,
+        "steps": [
+          "Use the model-card worksheet for three different models. Include the supplied sentiment classifier.",
+          "Record task, inputs/outputs, licence, limitations, evaluation data and what the card does not disclose. Label absent facts unknown."
+        ]
+      },
+      {
+        "title": "Run and question a small model",
+        "minutes": 105,
+        "steps": [
+          "Follow examples/hf_demo.py and its setup instructions. This downloads a pretrained sentiment model and runs it on CPU; no GPU is required.",
+          "Compare a clearly positive sentence, a negative sentence and a sarcastic sentence. Predict before running.",
+          "Explain tokenization, inference and the output labels; do not interpret the score as a calibrated probability of truth."
+        ]
+      }
+    ],
+    "checkpoint": [
+      "How is a model card different from a leaderboard?",
+      "What does a tokenizer do?",
+      "Does access to weights imply any licence terms you want?"
+    ],
+    "answers": [
+      "A card documents one model’s context and limits; a leaderboard compares systems using chosen tests. Both need scrutiny.",
+      "It converts input text into the tokens/IDs expected by a particular model.",
+      "No. Read the specific licence and restrictions."
+    ],
+    "deliverable": "Three model-card reviews and a short observation log from a pretrained-model experiment.",
+    "change": "Add one sentence that you expect to confuse the sentiment model and explain the outcome."
+  },
+  {
+    "n": 4,
+    "title": "Read a leaderboard carefully",
+    "idea": "A benchmark is a task collection with an evaluation procedure. Its score depends on those tasks, prompts, tools and scoring choices. Human preference, arithmetic accuracy, cost and speed measure different things. Latency can include network and queueing delays; tokens per second measures a different part of delivery.",
+    "resources": [
+      "aa",
+      "arc",
+      "arena"
+    ],
+    "sessions": [
+      {
+        "title": "Inspect three evaluation styles",
+        "minutes": 75,
+        "steps": [
+          "Read Artificial Analysis’s index methodology through its site. Record what the index includes and its version.",
+          "Inspect ARC example tasks and the relevant benchmark version. Try three tasks yourself. Read how Arena collects comparisons."
+        ]
+      },
+      {
+        "title": "Choose candidates",
+        "minutes": 75,
+        "steps": [
+          "Complete the candidate worksheet for three models. Record why each might suit your tasks, plus dated availability and price information.",
+          "Use project discovery to identify runnable IDs. Keep the same IDs for the paired experiment. A comparison need not include the currently highest-ranked model."
+        ]
+      },
+      {
+        "title": "Define the decision",
+        "minutes": 120,
+        "steps": [
+          "Write the use case: answering short passage questions, extracting fields, arithmetic and summaries. State which errors matter.",
+          "Inspect data/tasks.json. Before running models, explain the success rule for each category and identify an ambiguous task you would rewrite."
+        ]
+      }
+    ],
+    "checkpoint": [
+      "Can a higher overall index score guarantee better results for your app?",
+      "Why record model version and provider?",
+      "Can preference and factual accuracy disagree?"
+    ],
+    "answers": [
+      "No. The task distribution and setup can differ; evaluate the intended use case.",
+      "Both affect interpretation and reproducibility. An alias can change and providers can serve different configurations.",
+      "Yes. A polished answer can be preferred even when some facts are wrong."
+    ],
+    "deliverable": "A dated three-model selection sheet and a written definition of success.",
+    "change": "Replace one task with a task you care about and specify its answer/rubric before viewing model output."
+  },
+  {
+    "n": 5,
+    "title": "Create an evaluation you can inspect",
+    "idea": "Write the grader before seeing the answer. Exact output rules are useful for extraction and arithmetic, while summaries need judgement. A missing value means unknown; zero is a measured value. A failed request is a reliability failure and must remain visible. This small set is a learning sample, not a statistically strong leaderboard.",
+    "resources": [
+      "evals"
+    ],
+    "sessions": [
+      {
+        "title": "Understand the task set",
+        "minutes": 60,
+        "steps": [
+          "Read the opening evaluation concepts in the Anthropic article. Identify task, attempt, grader and recorded outcome.",
+          "Read all 20 supplied tasks and inspect their prewritten grading rules. Check the exact-answer format and summary rubric."
+        ]
+      },
+      {
+        "title": "Run the comparison",
+        "minutes": 90,
+        "steps": [
+          "Run the offline demo first. For live work, start with one task, then run the baseline task set for three chosen models.",
+          "Inspect failed tasks before aggregates. Keep task content and model settings fixed for the comparison."
+        ]
+      },
+      {
+        "title": "Grade and explain",
+        "minutes": 120,
+        "steps": [
+          "Use the report’s summary controls to assign faithfulness, coverage and brevity scores, each with a written note. Export and apply the reviews.",
+          "Write a result paragraph that states the sample size, what worked, one failure and what further evidence you need.",
+          "Make no broad model recommendation from fixture data."
+        ]
+      }
+    ],
+    "checkpoint": [
+      "Why keep human summary review separate from exact-match scores?",
+      "If the service omits cost, is that a free request?",
+      "What should happen to a timeout in the report?"
+    ],
+    "answers": [
+      "They measure different dimensions using different grading methods. Showing coverage and rubric scores prevents a misleading single number.",
+      "No. The charge is unknown until verified; the tool displays it as unavailable.",
+      "It remains a failed attempt. It should not quietly disappear from the denominator or look like a valid answer."
+    ],
+    "deliverable": "A saved comparison report with manual summary reviews and a limitations paragraph.",
+    "change": "Add one format-failure case to the tests, then explain why the grader should accept or reject it."
+  },
+  {
+    "n": 6,
+    "title": "Add a calculator and inspect the loop",
+    "idea": "In tool calling, the model requests an action. Your program validates the request, runs the function and sends the result back. The model then generates another response. That surrounding code is part of the agent harness. The calculator experiment tests one narrow intervention; it does not demonstrate general autonomy.",
+    "resources": [
+      "agents",
+      "agentcourse"
+    ],
+    "sessions": [
+      {
+        "title": "Draw the tool loop",
+        "minutes": 60,
+        "steps": [
+          "Read Building effective agents and Agents Course Unit 1 fundamentals.",
+          "Draw user task → model tool request → validation → calculator → tool result → model answer. Mark which steps are ordinary code."
+        ]
+      },
+      {
+        "title": "Run the paired experiment",
+        "minutes": 90,
+        "steps": [
+          "Run the five arithmetic tasks with --calculator for the same selected models. This records baseline and calculator-available conditions.",
+          "Inspect the trace: the model is allowed to use a tool, but may choose not to. Compare only matched tasks."
+        ]
+      },
+      {
+        "title": "Test limits and explain a failure",
+        "minutes": 120,
+        "steps": [
+          "Inspect calculate() and its tests. Try division by zero and an unsupported expression. Explain why no arbitrary Python is executed.",
+          "Inspect multi-turn usage: each follow-up request can add tokens and time.",
+          "Write whether the tool changed accuracy, tool usage and elapsed time in your small sample."
+        ]
+      }
+    ],
+    "checkpoint": [
+      "Does the language model itself execute the Python calculator?",
+      "Does tool availability prove tool use?",
+      "Why cap the number of tool turns?"
+    ],
+    "answers": [
+      "No. The application executes the validated tool request and returns an observation.",
+      "No. Read the trace to see whether a tool was actually called.",
+      "To bound loops, time and requests, and make a failure visible."
+    ],
+    "deliverable": "A paired arithmetic report and one annotated calculator trace.",
+    "change": "Change one arithmetic prompt and predict whether a calculator call will help before running it."
+  },
+  {
+    "n": 7,
+    "title": "Read a research claim critically",
+    "idea": "Alignment asks how to make systems act in accordance with intended objectives and constraints. Interpretability studies internal computations. An observed association differs from an intervention that changes an outcome. A research article’s experiment, interpretation and wider speculation should be kept distinct.",
+    "resources": [
+      "alignment",
+      "miri",
+      "workspace"
+    ],
+    "sessions": [
+      {
+        "title": "Build the vocabulary",
+        "minutes": 60,
+        "steps": [
+          "Read the introductory alignment and mechanistic-interpretability units in BlueDot’s public curriculum.",
+          "Write definitions for alignment, evaluation, interpretability, correlation and intervention."
+        ]
+      },
+      {
+        "title": "Compare two kinds of writing",
+        "minutes": 90,
+        "steps": [
+          "Read MIRI’s The Problem and list its premises, predictions and proposed actions. Attribute claims to MIRI.",
+          "Read the Anthropic global-workspace article. Identify one intervention, an observed result and a limitation."
+        ]
+      },
+      {
+        "title": "Write a research note",
+        "minutes": 120,
+        "steps": [
+          "Complete one research-note worksheet for each article. Include what was tested, evidence, assumptions, alternative explanations and what remains uncertain.",
+          "Explain why an experiment about functional information access does not establish subjective experience.",
+          "Prepare two questions you would ask the authors."
+        ]
+      }
+    ],
+    "checkpoint": [
+      "What is stronger evidence of a causal role: association or a controlled intervention?",
+      "Does the global-workspace article establish feelings in a model?",
+      "How should you present MIRI’s predictions?"
+    ],
+    "answers": [
+      "A well-controlled intervention provides stronger evidence, though its scope and alternative explanations still matter.",
+      "No. Its claims about functional organisation do not establish subjective experience.",
+      "As attributed predictions/arguments with stated premises and uncertainty, not as a settled measurement."
+    ],
+    "deliverable": "Two one-page research notes distinguishing observation, inference and uncertainty.",
+    "change": "Rewrite a dramatic headline into a precise sentence that fits the study’s evidence."
+  },
+  {
+    "n": 8,
+    "title": "Finish, reproduce and explain",
+    "idea": "A finished learning project has a clear input, a working output, reproducible instructions and known limitations. The most useful demonstration shows one successful case, one failure and the reasoning behind a design choice. You can use coding assistance while still checking behaviour and understanding the pieces.",
+    "resources": [
+      "fullstack"
+    ],
+    "sessions": [
+      {
+        "title": "Make it reproducible",
+        "minutes": 75,
+        "steps": [
+          "Follow the README from a fresh project copy. Run tests and the offline demo.",
+          "Record your Python version, task hash, model identifiers and settings for any real report."
+        ]
+      },
+      {
+        "title": "Explain the result",
+        "minutes": 75,
+        "steps": [
+          "Write your recommendation for the tasks you tested, with sample size and unresolved limitations.",
+          "If only fixture data is available, state that the project is demonstrated offline and live model evaluation remains pending.",
+          "Package your chosen report and instructions; add Docker only if it helps the recipient run it."
+        ]
+      },
+      {
+        "title": "Demonstrate and reflect",
+        "minutes": 120,
+        "steps": [
+          "Use the five-minute demonstration script in the worksheet. Show a request, a saved result, a failure and a calculator trace.",
+          "Explain one design decision without reading generated code verbatim.",
+          "Choose one deeper branch: model internals, statistical learning, application engineering or finance."
+        ]
+      }
+    ],
+    "checkpoint": [
+      "Can another person reproduce your sample without your API key?",
+      "What do you claim if all results are fixtures?",
+      "What should your final recommendation be limited to?"
+    ],
+    "answers": [
+      "Yes. The offline sample and tests use no credentials. Live work uses the other person’s own key.",
+      "That the software and workflow are demonstrated, not that any real model has been measured.",
+      "The tested tasks, settings and evaluation conditions, with the sample’s uncertainty made clear."
+    ],
+    "deliverable": "A runnable project, a report, a concise README and a five-minute explanation.",
+    "change": "Choose one feature to simplify or remove and explain how that makes the project easier to understand."
+  }
+]

@@ -1,0 +1,172 @@
+[
+  {
+    "term": "Model",
+    "meaning": "A trained system that maps inputs to outputs using learned numerical parameters.",
+    "example": "The part of a RAG application that generates a response."
+  },
+  {
+    "term": "Weights / parameters",
+    "meaning": "Numbers learned during training that determine much of the model’s computation.",
+    "example": "Changing a chat prompt normally does not change these numbers."
+  },
+  {
+    "term": "Training",
+    "meaning": "Adjusting parameters using data and an objective.",
+    "example": "A training run updates weights; a normal API request runs inference."
+  },
+  {
+    "term": "Pretraining",
+    "meaning": "An initial training stage that learns broad patterns from a large dataset.",
+    "example": "For language models, predicting text is a common training objective."
+  },
+  {
+    "term": "Post-training",
+    "meaning": "Additional training that adapts behaviour, for example instruction following.",
+    "example": "This can change how a pretrained model responds as an assistant."
+  },
+  {
+    "term": "Inference",
+    "meaning": "Using a trained model to compute an output for an input.",
+    "example": "Sending a prompt to a hosted model invokes inference."
+  },
+  {
+    "term": "Token",
+    "meaning": "A unit produced by a tokenizer, often a word fragment or punctuation.",
+    "example": "One word can occupy multiple tokens, with differences across languages and tokenizers."
+  },
+  {
+    "term": "Tokenizer",
+    "meaning": "The component converting content to the token IDs a model expects.",
+    "example": "Use a tokenizer compatible with the selected model."
+  },
+  {
+    "term": "Context window",
+    "meaning": "The token capacity available for a request’s context and generation, under model/provider limits.",
+    "example": "Chat history, retrieved text and tool messages consume context."
+  },
+  {
+    "term": "Embedding",
+    "meaning": "A learned numerical representation used to encode information about an item.",
+    "example": "RAG can compare text embeddings to retrieve related passages."
+  },
+  {
+    "term": "Transformer",
+    "meaning": "A neural-network architecture that uses attention to combine information across positions.",
+    "example": "Many modern language models use transformer-based architectures."
+  },
+  {
+    "term": "Attention",
+    "meaning": "A mechanism for combining information from different positions according to learned relationships.",
+    "example": "A token representation can incorporate relevant earlier context."
+  },
+  {
+    "term": "API",
+    "meaning": "A specified interface through which software requests services or exchanges data.",
+    "example": "Your Python program sends a request and receives a structured response."
+  },
+  {
+    "term": "Endpoint",
+    "meaning": "The address for a particular API operation.",
+    "example": "The chat-completions endpoint accepts a model and messages."
+  },
+  {
+    "term": "Provider",
+    "meaning": "An organisation or service operating model inference.",
+    "example": "Several providers may offer access to the same model."
+  },
+  {
+    "term": "Router",
+    "meaning": "A service or component that directs requests to model/provider endpoints.",
+    "example": "OpenRouter exposes a common interface for accessing supported models."
+  },
+  {
+    "term": "Model ID",
+    "meaning": "The identifier used to select a model in an API.",
+    "example": "z-ai/glm-5.3-flash is a listed identifier; availability can change."
+  },
+  {
+    "term": "Open weights",
+    "meaning": "Model parameters are available under specified licence terms.",
+    "example": "Read the licence; downloadable weights alone do not establish full openness."
+  },
+  {
+    "term": "Model card",
+    "meaning": "Documentation describing a model’s purpose, development, evaluations and limitations where provided.",
+    "example": "Treat a missing disclosure as unknown."
+  },
+  {
+    "term": "Framework",
+    "meaning": "Software providing reusable abstractions for building applications.",
+    "example": "LangChain helps organise application components; it is not itself a language model."
+  },
+  {
+    "term": "RAG",
+    "meaning": "Retrieval-augmented generation: retrieve relevant information and provide it to generation.",
+    "example": "A retrieved passage can support an answer, but retrieval alone does not ensure correctness."
+  },
+  {
+    "term": "Fine-tuning",
+    "meaning": "Further training a pretrained model for a dataset or objective.",
+    "example": "It updates weights; adding a retrieved passage to a prompt normally does not."
+  },
+  {
+    "term": "Tool calling",
+    "meaning": "A model requests a structured action that application code can execute.",
+    "example": "The model requests calculate; Python computes and returns the result."
+  },
+  {
+    "term": "Agent",
+    "meaning": "A system where a model can choose actions and continue based on observations toward a task.",
+    "example": "A calculator loop is a small example; different tools create different capabilities."
+  },
+  {
+    "term": "Harness",
+    "meaning": "The surrounding code, tools, context management and execution rules that run an agent.",
+    "example": "Turn limits and tool validation belong to the harness."
+  },
+  {
+    "term": "Workflow",
+    "meaning": "An arrangement of processing steps, often with predefined control flow.",
+    "example": "A fixed retrieve → summarize → save pipeline is a workflow."
+  },
+  {
+    "term": "Evaluation / eval",
+    "meaning": "A defined test and a method for judging the result.",
+    "example": "A task, an attempted response and a grading rule form a simple eval."
+  },
+  {
+    "term": "Benchmark",
+    "meaning": "A task collection and procedure intended to compare systems.",
+    "example": "Know the task distribution and conditions before interpreting a score."
+  },
+  {
+    "term": "Latency",
+    "meaning": "The delay measured between specified events.",
+    "example": "This lab measures elapsed time for the whole task, not tokens per second."
+  },
+  {
+    "term": "Throughput",
+    "meaning": "The rate at which work or output is delivered.",
+    "example": "Output tokens per second differs from time until the first token."
+  },
+  {
+    "term": "Temperature",
+    "meaning": "A sampling setting that affects how tokens are selected.",
+    "example": "Lower temperature does not guarantee correctness or perfect repeatability."
+  },
+  {
+    "term": "Hallucination",
+    "meaning": "Generated content that is false or unsupported in the relevant context.",
+    "example": "A plausible invented fact can still fail a passage-grounded task."
+  },
+  {
+    "term": "Alignment",
+    "meaning": "The problem of making system behaviour accord with intended goals and constraints.",
+    "example": "A specification can be incomplete or learned behaviour can differ from the intent."
+  },
+  {
+    "term": "Interpretability",
+    "meaning": "Methods for investigating how internal computations relate to behaviour.",
+    "example": "Changing an internal representation and observing an effect is one experimental approach."
+  }
+]
