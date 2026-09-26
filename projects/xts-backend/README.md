@@ -1,3 +1,14 @@
+> **About this copy (added 26 September 2026).**
+> This folder is a file snapshot of `backend-xts-latest` from the `siddhartxts` GitHub account, taken on 26 September 2026. That repository has a single commit, b6b392c "orignal"; the typo is in the original.
+> Its git history was not imported. Git is the tool that records every saved version of a folder, and a commit is one such version. Sibling copies of this project on the Mac had recorded a real `.env` with local database credentials, so only the files came across.
+> Only `.env.example` is here. It lists the setting names (ports, Postgres user, password, database and URL) with placeholder values; a `.env` is the same file filled in, and it is never committed.
+> How it relates to the plan: this is the ancestor of the watchlist idea in plan section 5 (`docs/plan.md`), a stock watchlist with notes, filtering and bulk ingest. It is not the M2 code. That will live in a separate private repository named `valuation`.
+> To run it: copy `.env.example` to `.env`, set a password of your own, then run `docker compose up --build`. Section 4 of the guide below walks through this step by step, including the health check at http://localhost:8000/health.
+> The original stays on GitHub under `siddhartxts`. The copy in this repository is the one that counts from now on.
+> The rest of this README is the project's own teaching guide, unchanged.
+
+---
+
 # Finance Watchlist & Notes Backend — A Learning Guide
 
 > This README is written as a **teaching guide**, not a typical short GitHub readme.
