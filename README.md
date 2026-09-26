@@ -1,5 +1,7 @@
 # Fundamentals of finance
 
+Owner: Siddharth (GitHub `jkv8fwytbf-byte`). The project began on 13 September 2026 and moved to this repository on 26 September 2026.
+
 This repository holds the documents of a Damodaran valuation system, the plan and every draft of it, three side projects and two reports. It is also the place where Siddharth learns GitHub, so its branches and pull requests are practice as much as record. On the Mac the folder is still called Valuation, at `/Users/siddharth/Desktop/Valuation`; git does not care what a folder is called.
 
 Git is a program that keeps a history of every change to the files in a folder. GitHub is a website that stores a copy of that folder and its history, and adds pull requests, issues and releases on top. The words below are the ones you will meet on this page and on GitHub.
