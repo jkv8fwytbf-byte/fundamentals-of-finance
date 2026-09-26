@@ -7,7 +7,7 @@ class Settings(BaseSettings):
     single, documented place for configuration."""
 
     # Maps to the SQLALCHEMY_DATABASE_URL env var (matching is case-insensitive).
-    sqlalchemy_database_url: str = "postgresql://postgres:test1234!@localhost/fastapi"
+    sqlalchemy_database_url: str = "postgresql://postgres:change-me@localhost/fastapi"
 
     model_config = SettingsConfigDict(
         env_file=".env",
