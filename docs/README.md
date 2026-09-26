@@ -6,7 +6,7 @@ The markdown files (plain text with simple marks for headings and links) in this
 
 To rebuild PDFs 1 to 5, run `docs/_build/build.sh` for the plain PDFs (into `docs/`) or `docs/_build/build.sh reading` for the reading editions (into `output/pdf/`). Both need the pandoc and tectonic programs; the reading build also needs node, Playwright and Chrome. How the reading markup works is in `_build/READING-EDITION.md`.
 
-`build.sh` does not cover PDF 6 (`6-where-we-are.pdf`). It is rebuilt by hand with the pandoc line recorded in `CLAUDE.md`, dated 2026-09-26; `build.sh` would stamp the wrong date.
+`build.sh` does not cover PDF 6 (`6-where-we-are.pdf`). It is rebuilt by hand from `docs/`: take the pandoc line from the `build()` function in `_build/build.sh`, set the input to `6-where-we-are.md` and the output to `6-where-we-are.pdf`, and change the date to 2026-09-26 (the recipe is in `CLAUDE.md`). Running `build.sh` itself would stamp the wrong date.
 
 `plan.md` is the full plan (v4, 2026-09-14). `plan-explained/` restates it in shorter sentences. When they differ, `plan.md` wins.
 
