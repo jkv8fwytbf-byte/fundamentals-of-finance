@@ -1,0 +1,7 @@
+{
+  "models": [],
+  "temperature": 0.0,
+  "max_tokens": 512,
+  "max_tool_rounds": 3,
+  "timeout": 45
+}

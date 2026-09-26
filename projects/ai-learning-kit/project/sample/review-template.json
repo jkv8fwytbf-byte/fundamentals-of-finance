@@ -1,0 +1,92 @@
+{
+  "demo/cedar|baseline|summary-01": {
+    "faithfulness": null,
+    "coverage": null,
+    "brevity": null,
+    "notes": ""
+  },
+  "demo/cedar|baseline|summary-02": {
+    "faithfulness": null,
+    "coverage": null,
+    "brevity": null,
+    "notes": ""
+  },
+  "demo/cedar|baseline|summary-03": {
+    "faithfulness": null,
+    "coverage": null,
+    "brevity": null,
+    "notes": ""
+  },
+  "demo/cedar|baseline|summary-04": {
+    "faithfulness": null,
+    "coverage": null,
+    "brevity": null,
+    "notes": ""
+  },
+  "demo/cedar|baseline|summary-05": {
+    "faithfulness": null,
+    "coverage": null,
+    "brevity": null,
+    "notes": ""
+  },
+  "demo/maple|baseline|summary-01": {
+    "faithfulness": null,
+    "coverage": null,
+    "brevity": null,
+    "notes": ""
+  },
+  "demo/maple|baseline|summary-02": {
+    "faithfulness": null,
+    "coverage": null,
+    "brevity": null,
+    "notes": ""
+  },
+  "demo/maple|baseline|summary-03": {
+    "faithfulness": null,
+    "coverage": null,
+    "brevity": null,
+    "notes": ""
+  },
+  "demo/maple|baseline|summary-04": {
+    "faithfulness": null,
+    "coverage": null,
+    "brevity": null,
+    "notes": ""
+  },
+  "demo/maple|baseline|summary-05": {
+    "faithfulness": null,
+    "coverage": null,
+    "brevity": null,
+    "notes": ""
+  },
+  "demo/willow|baseline|summary-01": {
+    "faithfulness": null,
+    "coverage": null,
+    "brevity": null,
+    "notes": ""
+  },
+  "demo/willow|baseline|summary-02": {
+    "faithfulness": null,
+    "coverage": null,
+    "brevity": null,
+    "notes": ""
+  },
+  "demo/willow|baseline|summary-03": {
+    "faithfulness": null,
+    "coverage": null,
+    "brevity": null,
+    "notes": ""
+  },
+  "demo/willow|baseline|summary-04": {
+    "faithfulness": null,
+    "coverage": null,
+    "brevity": null,
+    "notes": ""
+  },
+  "demo/willow|baseline|summary-05": {
+    "faithfulness": null,
+    "coverage": null,
+    "brevity": null,
+    "notes": ""
+  }
+}

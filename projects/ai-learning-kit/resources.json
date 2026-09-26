@@ -1,0 +1,250 @@
+[
+  {
+    "id": "intro",
+    "title": "Karpathy · Intro to Large Language Models",
+    "url": "https://www.youtube.com/watch?v=zjkBMFhNj_g",
+    "kind": "Video",
+    "stage": "Start here",
+    "why": "A one-hour overview. Pause to explain tokens, weights, training and inference in your own words."
+  },
+  {
+    "id": "visual",
+    "title": "3Blue1Brown · Transformers, visually",
+    "url": "https://www.3blue1brown.com/lessons/gpt/",
+    "kind": "Visual article",
+    "stage": "Week 1",
+    "why": "Connect vectors, embeddings and next-token generation to a picture of the computation."
+  },
+  {
+    "id": "attention",
+    "title": "3Blue1Brown · Attention, step by step",
+    "url": "https://www.3blue1brown.com/lessons/attention/",
+    "kind": "Visual article",
+    "stage": "Go deeper",
+    "why": "Follow how one token representation uses information from other tokens."
+  },
+  {
+    "id": "router",
+    "title": "OpenRouter · Quickstart",
+    "url": "https://openrouter.ai/docs/quickstart",
+    "kind": "Documentation",
+    "stage": "Week 2",
+    "why": "Follow one request from your program to a model and back. The kit uses plain HTTP so the pieces stay visible."
+  },
+  {
+    "id": "glm",
+    "title": "Z.ai GLM 5.3 Flash · Model listing",
+    "url": "https://openrouter.ai/z-ai/glm-5.3-flash",
+    "kind": "Model page",
+    "stage": "Week 2",
+    "why": "Separate the model name from provider, context length and pricing. This is a discovery exercise; it is not selected for paid runs."
+  },
+  {
+    "id": "hub",
+    "title": "Hugging Face · Hub overview",
+    "url": "https://huggingface.co/docs/hub/en/index",
+    "kind": "Documentation",
+    "stage": "Week 2",
+    "why": "Find models, datasets and Spaces. The hub is one part of a larger ecosystem of tools."
+  },
+  {
+    "id": "pi",
+    "title": "Pi · Coding agent",
+    "url": "https://pi.dev/",
+    "kind": "Tool overview",
+    "stage": "Week 2",
+    "why": "Read how a coding agent combines model access with tools and a configurable workflow."
+  },
+  {
+    "id": "cards",
+    "title": "Hugging Face · Model cards",
+    "url": "https://huggingface.co/docs/hub/en/model-cards",
+    "kind": "Documentation",
+    "stage": "Week 3",
+    "why": "Inspect intended use, limitations, licence and evaluation information before using a model."
+  },
+  {
+    "id": "hf",
+    "title": "Hugging Face · LLM Course",
+    "url": "https://huggingface.co/learn/llm-course/chapter1/1",
+    "kind": "Course",
+    "stage": "Week 3",
+    "why": "Start with selected parts of chapters 1–2. Python and introductory deep learning help; full-course completion is a later goal."
+  },
+  {
+    "id": "spaces",
+    "title": "Hugging Face · Spaces overview",
+    "url": "https://huggingface.co/docs/hub/en/spaces-overview",
+    "kind": "Documentation",
+    "stage": "Week 3",
+    "why": "A Space hosts an application or demonstration. Try one and identify what it does and does not demonstrate."
+  },
+  {
+    "id": "sentiment",
+    "title": "DistilBERT · Sentiment model card",
+    "url": "https://huggingface.co/distilbert/distilbert-base-uncased-finetuned-sst-2-english",
+    "kind": "Model page",
+    "stage": "Week 3",
+    "why": "The optional CPU example uses this sentiment classifier. A high classification score is not proof of general understanding."
+  },
+  {
+    "id": "aa",
+    "title": "Artificial Analysis",
+    "url": "https://artificialanalysis.ai/",
+    "kind": "Evaluation site",
+    "stage": "Week 4",
+    "why": "Read methodology alongside scores. Compare capabilities, response speed and cost for your intended tasks."
+  },
+  {
+    "id": "arc",
+    "title": "ARC Prize · Leaderboard",
+    "url": "https://arcprize.org/leaderboard",
+    "kind": "Evaluation site",
+    "stage": "Week 4",
+    "why": "Inspect example tasks, benchmark version and evaluation conditions. A leaderboard score alone cannot establish general intelligence."
+  },
+  {
+    "id": "arena",
+    "title": "Arena · How it works",
+    "url": "https://arena.ai/how-it-works",
+    "kind": "Evaluation site",
+    "stage": "Week 4",
+    "why": "Compare human preference with task-based evaluation. Preference and factual correctness can diverge."
+  },
+  {
+    "id": "evals",
+    "title": "Anthropic · Demystifying evals for AI agents",
+    "url": "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+    "kind": "Article",
+    "stage": "Week 5",
+    "why": "Start with task, trial, grader and outcome. Define success before looking at answers."
+  },
+  {
+    "id": "agents",
+    "title": "Anthropic · Building effective agents",
+    "url": "https://www.anthropic.com/engineering/building-effective-agents",
+    "kind": "Article",
+    "stage": "Week 6",
+    "why": "Distinguish a predefined workflow from a model choosing its next action; understand the surrounding tools and code."
+  },
+  {
+    "id": "agentcourse",
+    "title": "Hugging Face · Agents Course",
+    "url": "https://huggingface.co/learn/agents-course/en/unit0/introduction",
+    "kind": "Course",
+    "stage": "Week 6",
+    "why": "Read Unit 1 fundamentals; trace the model → tool request → tool execution → observation cycle."
+  },
+  {
+    "id": "alignment",
+    "title": "BlueDot · AI alignment curriculum",
+    "url": "https://bluedot.org/courses/alignment",
+    "kind": "Course",
+    "stage": "Week 7",
+    "why": "Start with alignment and interpretability units. Public curriculum is available; organised participation may have separate requirements."
+  },
+  {
+    "id": "miri",
+    "title": "MIRI · The Problem",
+    "url": "https://intelligence.org/the-problem/",
+    "kind": "Argument",
+    "stage": "Week 7",
+    "why": "Read as MIRI’s position on advanced-AI risk. Separate premises, evidence, predictions and proposed policy."
+  },
+  {
+    "id": "workspace",
+    "title": "Anthropic · A global workspace in language models",
+    "url": "https://www.anthropic.com/research/global-workspace",
+    "kind": "Research article",
+    "stage": "Week 7",
+    "why": "Study experimental interventions and limits. The article does not establish subjective experience in AI."
+  },
+  {
+    "id": "deep",
+    "title": "Karpathy · Deep Dive into LLMs",
+    "url": "https://www.youtube.com/watch?v=7xTGNNLPyMI",
+    "kind": "Video",
+    "stage": "Go deeper",
+    "why": "A longer conceptual treatment after the introductory talk."
+  },
+  {
+    "id": "zero",
+    "title": "Karpathy · Neural Networks: Zero to Hero",
+    "url": "https://karpathy.ai/zero-to-hero.html",
+    "kind": "Course",
+    "stage": "Go deeper",
+    "why": "Build neural-network components in code when you want deeper implementation knowledge."
+  },
+  {
+    "id": "fullstack",
+    "title": "Full Stack Deep Learning · LLM Bootcamp",
+    "url": "https://fullstackdeeplearning.com/llm-bootcamp/spring-2023/",
+    "kind": "Course",
+    "stage": "Go deeper",
+    "why": "Application-building perspective. Recorded in 2023; use current documentation for APIs and packages."
+  },
+  {
+    "id": "index",
+    "title": "Stanford · AI Index",
+    "url": "https://hai.stanford.edu/ai-index",
+    "kind": "Report",
+    "stage": "Go deeper",
+    "why": "Research, adoption, investment and societal trends. This is different from Artificial Analysis’s model-performance index."
+  },
+  {
+    "id": "islp",
+    "title": "ISLP · Book and downloads",
+    "url": "https://www.statlearning.com/",
+    "kind": "Book",
+    "stage": "Go deeper",
+    "why": "Statistical learning with Python. Begin with chapters on statistical learning, regression, classification and resampling."
+  },
+  {
+    "id": "islpcourse",
+    "title": "ISLP · Companion courses",
+    "url": "https://www.statlearning.com/online-courses",
+    "kind": "Course",
+    "stage": "Go deeper",
+    "why": "Pair selected chapters with Python exercises; the authors link the companion courses here."
+  },
+  {
+    "id": "aima",
+    "title": "Russell & Norvig · Artificial Intelligence: A Modern Approach",
+    "url": "https://aima.cs.berkeley.edu/",
+    "kind": "Book",
+    "stage": "Go deeper",
+    "why": "Broad AI: agents, search, planning, uncertainty and learning. Start with Introduction and Intelligent Agents."
+  },
+  {
+    "id": "yale",
+    "title": "Yale · Financial Markets",
+    "url": "https://oyc.yale.edu/economics/econ-252",
+    "kind": "Course",
+    "stage": "Finance later",
+    "why": "Archived Robert Shiller lectures. Start with risk, diversification and financial institutions; historical examples need context."
+  },
+  {
+    "id": "buffett",
+    "title": "Investopedia · Buffett’s hedge-fund bet",
+    "url": "https://www.investopedia.com/articles/investing/030916/buffetts-bet-hedge-funds-year-eight-brka-brkb.asp",
+    "kind": "Article",
+    "stage": "Finance later",
+    "why": "Study benchmark selection, costs and active versus passive management. One historical comparison is not a universal theorem."
+  },
+  {
+    "id": "wallstreet",
+    "title": "Veritasium · The Equation That Beat Wall Street",
+    "url": "https://www.youtube.com/watch?v=A5w-dEgIU1M",
+    "kind": "Video",
+    "stage": "Finance later",
+    "why": "An introduction to the history around Black–Scholes/Merton and quantitative finance."
+  },
+  {
+    "id": "hull",
+    "title": "Hull · Options, Futures, and Other Derivatives",
+    "url": "https://www.pearson.com/en-gb/subject-catalog/p/options-futures-and-other-derivatives-global-edition/P200000004519/9781292410654",
+    "kind": "Book",
+    "stage": "Finance later",
+    "why": "Start with contracts and payoff diagrams, then pricing. Commercial textbook; purchase is optional and not needed for this AI kit."
+  }
+]
