@@ -6,7 +6,7 @@ Live state for Claude Code. Chat history is not kept between sessions; only file
 
 Nothing in flight. Milestone M0, reading stage. Waiting for Siddharth. (Re-confirmed 2026-09-26.)
 
-- PRs in flight: none. (List open pull requests here by number and branch; empty when nothing is open.)
+- PRs in flight: #19 `your-first-merge`, left open on purpose for Siddharth to merge himself (his first pull request; guide chapter 1, "Done when"). Do not merge it for him unless he asks.
 
 - He was away from 2026-09-19 for about a week and came back without the context. The recap written for him is `docs/6-where-we-are.md` (PDF 6, `docs/6-where-we-are.pdf`). If he arrives lost, point him there, then to the status block at the top of `docs/0-START-HERE.txt`.
 
@@ -15,6 +15,13 @@ Nothing in flight. Milestone M0, reading stage. Waiting for Siddharth. (Re-confi
 - If he arrives saying "haywire" or "resume": there is nothing to resume. PDF 6 says so in full. Point him at the status block at the top of `docs/0-START-HERE.txt`. Do not restart the Sep-14 document workflow (`wf_7ed9a348-8ce`); its journal records 14 writers started, 11 failed and none completed, so a resume would rerun all of them and overwrite finished chapters.
 
 ## Done recently
+
+- One public repository for everything (2026-09-26 afternoon, Claude Code): at his request ("jam everything into github repo called fundamentals of finance with branches and iterations and readmes and everything"; answers: public, everything in different branches, rename, keep the private copy).
+  - The empty `fundamentas_of_finance` was renamed `fundamentals-of-finance` and made the remote `origin` of this folder. Before the first push the unpushed recap commit was amended once (health wording softened, email line removed, PDF 6 rebuilt) and tagged `before-github`; no other history was rewritten. The three dead-end lines from 14 and 15 September were rescued from the reflog as `archive/dev-2026-09-15` (25fb538), `archive/first-attempt-plan-v5` (d2b2279) and `archive/cursor-cloud-agent` (0f165a2), and protected.
+  - `main` is protected (pull request required with 0 approvals, admins included, no force push, no deletion). Eight import pull requests were merged with merge commits and their branches kept: #11 `github-rules`, #12 `front-page`, #13 `plan-history`, #14 `reports`, #15 `diversify` (via `git subtree`, after committing his uncommitted pages in `~/Desktop/diversify` as 7053ec2), #16 `ai-learning-kit` (without `.env` or the zip), #17 `xts-backend` (snapshot of `siddhartxts/backend-xts-latest`, no history, placeholder DB password), #18 `record-the-move`.
+  - Tags `m0`, `plan-v1` to `plan-v4`, `plan-v5-draft`; the Release `m0` carries the five colorful PDFs and PDF 6. Milestones M0 (closed) to M5; labels `decision`, `docs`, `repo`, `project`, `later`; issues #1 to #10 hold every open decision.
+  - The plan drafts (v1, v2, v3, five v4 submissions, withdrawn v5) were recovered word for word from the 13 to 14 September chat with his review comments, into `history/plan/`.
+  - Local git config of this folder uses the GitHub noreply email. The six older commits keep the Gmail address (already public elsewhere).
 
 - Recap and repair (2026-09-26, Claude Code): Siddharth came back after a week away, without the context, and asked for everything in one go.
   - Eleven read-only helper agents read all 29 chat transcripts from 12 to 26 September, the plan and the documents; the recap was then checked claim by claim (55 corrections). The recap is `docs/6-where-we-are.md` and `docs/6-where-we-are.pdf` (plain PDF only; built by hand with the same pandoc line as `build()` in `build.sh` but dated 2026-09-26; see `CLAUDE.md` for the rebuild rule). An earlier draft, written before the repository was made private, is the "Status 2026-09-26" block at the top of `~/.claude/plans/help-me-out-here-abstract-wilkinson.md`; where they differ, PDF 6 is right. `docs/_build/header.tex` gained `HyphenChar=None` on the mono font (paths in code spans no longer hyphenate); PDFs 1 to 5 not rebuilt.
@@ -61,9 +68,9 @@ Nothing in flight. Milestone M0, reading stage. Waiting for Siddharth. (Re-confi
 
 ## Blocked / wait-for-Siddharth
 
-- "Go" (after he has read PDF 1 and PDF 2; PDF 6 first if he is lost).
-- The private `Valuation` copy on GitHub is kept for now (his choice, 2026-09-26). Whether the old private copy on Cursor's git host (`origin.cursor.com/idotnkonw/valuation.git`, the folder as of 2026-09-14) still exists is unknown. Both are tracked as GitHub issues (label `repo`).
-- The OpenRouter key in `~/Desktop/remaining/.env`: set a spend limit or rotate it, and make the file owner-only. Outside this repo; his call.
+- "Go" (after he has read PDF 1 and PDF 2; PDF 6 first if he is lost). Issue #1. The other open decisions are issues #2 to #8.
+- The private `Valuation` copy on GitHub is kept for now (his choice, 2026-09-26). Whether the old private copy on Cursor's git host (`origin.cursor.com/idotnkonw/valuation.git`, the folder as of 2026-09-14) still exists is unknown. Issue #10.
+- The OpenRouter key in `~/Desktop/remaining/.env`: set a spend limit or rotate it, and make the file owner-only. Outside this repo; his call. Issue #9.
 - Before M1: the Damodaran corpus has to be mirrored again (it is gone from the Mac, see `CLAUDE.md`). M1's day-one exercise opens the workbook; M2 needs all of it. His call whether it goes back to `~/Downloads/financeMD/` (keeps the citations valid) or somewhere else.
 - Watchlist names and free-account yes/no are later (M2 and M1). Not now. On names, the plan says three beyond Apple and Costco for M2 and 20 with approved memos by the end of M3 (watchlist 20 to 50); PDF 5's "10 to 20" is too low.
 

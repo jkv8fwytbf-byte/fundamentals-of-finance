@@ -140,14 +140,14 @@ In short: the project began on 13 September at 20:18, and plan v1 followed at 21
 
 The pull requests of 26 September, in merge order:
 
-1. `github-rules` (PR number filled in after the merge)
-2. `front-page` (PR number filled in after the merge)
-3. `plan-history` (PR number filled in after the merge)
-4. `reports` (PR number filled in after the merge)
-5. `diversify` (PR number filled in after the merge)
-6. `ai-learning-kit` (PR number filled in after the merge)
-7. `xts-backend` (PR number filled in after the merge)
-8. `record-the-move` (PR number filled in after the merge)
+1. `github-rules` ([PR #11](https://github.com/jkv8fwytbf-byte/fundamentals-of-finance/pull/11))
+2. `front-page` ([PR #12](https://github.com/jkv8fwytbf-byte/fundamentals-of-finance/pull/12))
+3. `plan-history` ([PR #13](https://github.com/jkv8fwytbf-byte/fundamentals-of-finance/pull/13))
+4. `reports` ([PR #14](https://github.com/jkv8fwytbf-byte/fundamentals-of-finance/pull/14))
+5. `diversify` ([PR #15](https://github.com/jkv8fwytbf-byte/fundamentals-of-finance/pull/15))
+6. `ai-learning-kit` ([PR #16](https://github.com/jkv8fwytbf-byte/fundamentals-of-finance/pull/16))
+7. `xts-backend` ([PR #17](https://github.com/jkv8fwytbf-byte/fundamentals-of-finance/pull/17))
+8. `record-the-move` ([PR #18](https://github.com/jkv8fwytbf-byte/fundamentals-of-finance/pull/18))
 9. `your-first-merge`, open, for you
 
 The release "M0: the documents, 14 September 2026", on the tag `m0`, attaches six PDFs: the five colorful editions from `output/pdf/` and `docs/6-where-we-are.pdf`.
