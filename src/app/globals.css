@@ -1,26 +1,74 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --paper: #12110d;
+  --raised: #1b1913;
+  --sunken: #0d0c0a;
+  --line: #2c281f;
+  --line-strong: #3d372b;
+  --ink: #e8e1d3;
+  --muted: #9a9184;
+  --faint: #6e675c;
+  --brass: #c4a574;
+  --brass-dim: #8d7348;
+  --fox: #d4784a;
+  --hedge: #7a9e7e;
+  --danger: #b85c38;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-paper: var(--paper);
+  --color-raised: var(--raised);
+  --color-sunken: var(--sunken);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-faint: var(--faint);
+  --color-brass: var(--brass);
+  --color-brass-dim: var(--brass-dim);
+  --color-fox: var(--fox);
+  --color-hedge: var(--hedge);
+  --color-danger: var(--danger);
   --font-sans: var(--font-geist-sans);
+  --font-serif: var(--font-newsreader);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  background: var(--paper);
+  color: var(--ink);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  min-height: 100%;
+  background:
+    radial-gradient(1200px 600px at 12% -10%, rgba(196, 165, 116, 0.08), transparent 55%),
+    radial-gradient(900px 500px at 100% 0%, rgba(122, 158, 126, 0.05), transparent 50%),
+    var(--paper);
+  color: var(--ink);
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
+::selection {
+  background: rgba(196, 165, 116, 0.35);
+  color: var(--ink);
+}
+
+.serif {
+  font-family: var(--font-serif), "Times New Roman", serif;
+  font-optical-sizing: auto;
+}
+
+.hairline {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--line-strong), transparent);
+}
+
+.kicker {
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--brass);
+  font-weight: 500;
 }
