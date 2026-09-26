@@ -1,21 +1,42 @@
-STATUS, 23 SEPTEMBER 2026 (read this first if you feel lost)
+STATUS, 26 SEPTEMBER 2026 (read this first if you feel lost)
 
-Done: all five PDFs below are finished. No computer job is running or waiting.
-This folder is /Users/siddharth/Desktop/Valuation. It moved here from ~/Valuation
-on 15 September, at your request. Only Claude Code works here now.
+You were away from this project for about a week from 19 September and came back
+without the thread.
+Read 6-where-we-are.pdf in this docs folder first (about 30 minutes). It says
+what happened day by day from 12 to 26 September, what exists, the rules you
+set, and what comes next. The rest of this file is still correct.
 
-Your next step, and the only one: read output/pdf/1-read-this-first.pdf (about
-40 minutes). Then output/pdf/2-damodaran-essentials.pdf, one chapter an evening. When you have read both,
-say "go" or "page X confused me". Until then nothing else starts: no accounts,
-no code, no money.
+Done: all five reading PDFs are finished. No computer job is running or waiting.
+The project folder is /Users/siddharth/Desktop/Valuation. This file and PDF 6
+are in its docs folder; the colorful reading PDFs are in its output/pdf folder.
+Only Claude Code (the Claude app that works with the files on this Mac) works
+in the project folder.
 
-Safe to ignore for this project: Docker and Open WebUI, the "diversify" folder
-on the Desktop, the "remaining" learning kit on the Desktop. They are separate.
+What happened on the morning of 26 September: a separate Claude chat uploaded
+the project folder to GitHub, a website that keeps copies of project folders
+online (each copy is called a repository). The copy was public, and your rule
+for this folder is that it stays only on this Mac. With your approval the copy
+was made private and the folder's link to it was removed. The private copy on
+GitHub is yours to keep or delete. Do not type the command "git push" in the
+project folder (it uploads the folder); it is no longer linked to GitHub, so it
+has nowhere to push to.
+
+After PDF 6, your one next step for this project: open the output/pdf folder
+(next to this docs folder) and read 1-read-this-first.pdf there (about 40
+minutes). Then 2-damodaran-essentials.pdf from the same folder, one chapter an
+evening. When you have read both, say "go" or "page X confused me". Until then
+nothing else starts: no accounts, no code, no money.
+
+Safe to ignore for this project: Docker and Open WebUI (a chat app you tried),
+the "diversify" folder and the "remaining" learning kit on the Desktop, and the
+Codex folders in Documents (Codex is another AI coding app). One of those Codex
+folders, 2026-09-14/or/outputs, holds short versions of read-this-first and the
+plan that Codex made on 14 September. They are not the official copies.
 
 One thing to know: the folder of Damodaran's own writing and data (financeMD,
 once in Downloads) is no longer on this Mac. The PDFs do not need it. It is
-needed only later, when the accounts and the code start, and it was all free
-public downloads, so it can be fetched again then.
+needed only later, when the accounts and the code start. The originals were
+free public downloads; the markdown copies will have to be made again.
 
 ----------------------------------------------------------------------
 
@@ -35,6 +56,8 @@ READ IN THIS ORDER. Nothing to install, nothing to buy, no accounts yet.
 3-the-other-side.pdf        later. the people who disagree with Damodaran.
 4-the-guide.pdf             later, while building. the tools manual. chapter 13 = Figma.
 5-the-plan-explained.pdf    after PDF 1. the plan, section by section, with my comment on each.
+6-where-we-are.pdf          if you feel lost. in docs/ only, no colorful copy.
+                            what happened 12 to 26 September, what exists, what comes next.
 
 Figma: a website for drawing diagrams. I drew 5 pictures of the system there so you
 can learn it later. The same pictures are already printed inside PDF 1. You do not
