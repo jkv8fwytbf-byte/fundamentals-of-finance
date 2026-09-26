@@ -1,12 +1,12 @@
 # Claude Code briefing
 
-This folder is Siddharth's local, private copy of the Valuation project. Claude Code is the only AI tool that works here now (Cursor and Codex were dropped on 2026-09-15). This folder is not linked to GitHub. Do not add a remote. Do not push. (On 2026-09-26 a separate chat pushed it to GitHub as a public repository, `jkv8fwytbf-byte/Valuation`, by mistake; it was switched to private and the link removed the same morning. That private copy is his to keep or delete; it is not connected to this folder.) Chat history does not survive a session; files on disk are the memory.
+This folder is the working copy of Siddharth's public GitHub repository `jkv8fwytbf-byte/fundamentals-of-finance` (remote `origin`; the folder keeps its old name, Valuation, and git does not mind). Claude Code is the only AI tool that works here (Cursor and Codex were dropped on 2026-09-15). The repository is public: nothing secret and nothing personal may ever be committed (see "What not to do"). How the move to GitHub happened on 2026-09-26 is recorded in `history/README.md` and `docs/decisions/001-one-public-repo-for-everything.md`. Chat history does not survive a session; files on disk are the memory.
 
 This file is the briefing. `HANDOFF.md` is the live state. Do not add a third instruction file (`AGENTS.md`, `CODEX.md`, `CONTINUE.md`, or the like).
 
 ## What this is
 
-A private Damodaran valuation system, still in the reading stage (milestone M0). The product in this folder is the documents. There is no calculator, database, or application code yet. Work after M0 is parked until Siddharth says "go".
+A Damodaran valuation system, still in the reading stage (milestone M0). The product in this folder is the documents, plus the plan's history (`history/`), three side projects (`projects/`) and two one-off reports (`reports/`), all brought in on 2026-09-26. There is no calculator, database, or application code for the system yet. Work after M0 is parked until Siddharth says "go".
 
 Siddharth was away from the project for about a week from 2026-09-19 and came back without the context. `docs/6-where-we-are.md` (PDF 6) is the recap written for him on 2026-09-26: what happened day by day, what exists, the rules, what comes next. If he arrives lost, point him there first, then to `docs/0-START-HERE.txt`.
 
@@ -43,6 +43,12 @@ Usage limits often cut a session with no goodbye. A "update the handoff when you
 | Tools manual | `docs/guide/` | `docs/4-the-guide.pdf` | `output/pdf/4-the-guide.pdf` |
 | The plan, section by section | `docs/plan-explained/` | `docs/5-the-plan-explained.pdf` | `output/pdf/5-the-plan-explained.pdf` |
 | Where we are (recap of 2026-09-26) | `docs/6-where-we-are.md` | `docs/6-where-we-are.pdf` | — |
+| Front page of the repository | `README.md` | — | — |
+| Decisions log (guide chapter 0, rule 6) | `docs/decisions/` | — | — |
+| Changelog and the archive branches | `history/README.md` | — | — |
+| Every draft of the plan, with his comments | `history/plan/` | — | — |
+| Side projects (diversify, ai-learning-kit, xts-backend) | `projects/` (see its README) | — | — |
+| One-off reports | `reports/` (see its README) | — | — |
 | The full plan (v4) | `docs/plan.md` | — | — |
 | Research reports the documents cite | `docs/sources/` (see its `README.md`) | — | — |
 
@@ -57,18 +63,18 @@ Rebuild from `docs/` with `docs/_build/build.sh` (plain PDFs into `docs/`) or `d
 
 ## How to work
 
-- One folder, one branch: this folder, `main`. There are no other branches. Do not create worktrees or side branches unless asked.
+- One folder; `main` is the trunk. Every change goes on a branch named for the change, then a pull request, then a merge (the loop in `docs/guide/01-git-github-and-pull-requests.md`). Daily changes merge with squash. The import branches of 2026-09-26 were merged with merge commits and are kept on purpose, so the branch list stays a map. `main` is protected on GitHub: a direct push is refused. Never commit to or merge an `archive/*` branch; they are frozen history, and the first one would bring back `AGENTS.md`.
 - Match the writing: plain, calm, terms defined on first use. See `docs/read-this-first.md`.
 - Prefer editing existing docs over duplicating them.
-- Commit on `main` when a chunk of work is done, with a plain message. Never push; this folder has no remote.
+- Commit on the branch when a chunk of work is done, with a plain message. Then `git push -u origin <branch>` and `gh pr create` with the three headings (What changed, Why, For the reviewer). Siddharth merges, or asks Claude to. Then `git switch main && git pull`. Update `HANDOFF.md` "PRs in flight" when opening or merging. The commit email is the GitHub noreply address, set in this folder's git config; do not change it.
 - Do not paste API keys or secrets. There should be no `.env` here yet.
 - Estimates, not advice: do not print buy, sell, hold, or a target price.
 - When you write about the future system, keep the six rules in `docs/read-this-first.md` section 3: golden test, vintage, source and licence class, India rules, ranges not points, no advice.
-- The planned private GitHub code repo (`valuation`, inside his GitHub organisation) is after "go". This folder is not that repo.
+- The planned code repo (`valuation`, private, on his account; there is no organisation) is after "go". This repository is not that repo and never holds keys or licensed data.
 
 ## What not to do
 
-- Do not invent a GitHub remote, a public repo, or a sharing service.
+- Do not commit anything from the never-committed list: `.env` files or keys, the resume, certificates, photos, personal notes, the Damodaran corpus, chat transcripts, memory folders, files over 50 MB. Do not push to `main` directly. Do not force-push anywhere. Do not add a second remote.
 - Do not start M1 (accounts) or M2 (code) until Siddharth says "go".
 - Do not convert PDFs to markdown as a workaround.
 - Do not copy chat transcripts into the repo.
