@@ -1,3 +1,15 @@
+> **About this copy (added 26 September 2026).**
+> This folder is a snapshot of `~/Desktop/remaining` taken on 26 September 2026. `~` is your home folder, `/Users/siddharth`.
+> Codex generated the kit on 16 September 2026. `VALIDATION.md` records the checks made that day.
+> The `.env` file that held an OpenRouter key is not here. A `.env` is a small settings file for keys; git, the tool that records versions, must never be given it.
+> To run the live exercises, copy `.env.example` to `.env` and put your own key in it under the name `OPENROUTER_API_KEY`.
+> The zip file that duplicated the whole folder was dropped.
+> Nothing in the kit is finance. It is the eight-week AI curriculum: the notebook, the worksheets, the glossary and the Python lab.
+> The old folder on the Desktop can stay until you decide. The copy in this repository is the one that counts.
+> The rest of this README is the kit's own text, unchanged.
+
+---
+
 # Start here
 
 Open **START.html** in your browser. It is your eight-week learning notebook,
