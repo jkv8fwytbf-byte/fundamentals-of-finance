@@ -1,0 +1,7 @@
+# Dev/test tools. Install with:  pip install -r requirements-dev.txt
+# (these are intentionally NOT in the runtime Docker image)
+-r requirements.txt
+
+black==26.5.1
+pytest==9.0.3
+pytest-asyncio==1.4.0

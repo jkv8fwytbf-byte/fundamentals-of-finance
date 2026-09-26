@@ -1,0 +1,25 @@
+# Don't ship the host virtualenv (wrong-arch binaries) or build cruft
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Don't bake secrets or local config into the image
+.env
+.env.*
+!.env.example
+
+# Git / OS / editor
+.git/
+.gitignore
+.DS_Store
+.idea/
+.vscode/
+
+# Docs not needed at runtime
+README.md
+CLAUDE.md
