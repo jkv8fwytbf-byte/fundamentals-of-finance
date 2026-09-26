@@ -10,6 +10,8 @@ This is document 6. It was written on 26 September 2026, after you said you had 
 wrote that day after looking through this Mac as far as it could reach (it cannot open the Trash) and every chat from 12 to 26 September.
 Because it began as a status note, it speaks of you as "Siddharth" or "he". Read "he" as "you".
 
+**A note added the same afternoon.** This document was written at midday on 26 September. That afternoon you chose one public GitHub repository for everything, `fundamentals-of-finance`, and this folder became its working copy (the decision is `docs/decisions/001-one-public-repo-for-everything.md`). So the lines below that say "do not run git push", "local-only again", "Private always" or "one branch" no longer apply; the front page of the repository, `README.md`, has the current rules. Everything else here still holds.
+
 Read it once, in order. Then go to `0-START-HERE.txt` in this folder for the reading order of the
 other five PDFs. Nothing here asks you to install, buy or decide anything today. The decisions
 that are yours are listed in section 6, and none of them is urgent now that the GitHub copy is
@@ -104,7 +106,7 @@ The detail:
   finance and their markdown copies. The 70 zips and duplicate PDFs were deleted. A quality audit
   found conversion flaws, the converter was rewritten, and everything was redone. He stopped the
   second audit ("just stop"). That evening, before 20:18, he moved `books` (with `booksMD`
-  inside) out of Downloads into his TheOdessy notes folder himself.
+  inside) out of Downloads into his personal notes folder himself.
 - **13 Sep, 20:18.** The valuation project began. He described the goal and asked about many
   tools: pi.dev (a bare-bones AI coding assistant in the terminal), OpenRouter (one account and
   one key that reach many AI models), open-weight models (AI models whose makers publish the
@@ -140,9 +142,7 @@ The detail:
   rebuilt and sent at 18:22. Between 17:40 and 17:45 he had the AI assistant inside Cursor turn
   the folder into a git repository (git keeps a saved history of every change to a folder). It
   made two branches, which are parallel versions of the folder: an empty `main`, and `dev`
-  holding all the files. It also uploaded a private copy to Cursor's own servers
-  (origin.cursor.com/idotnkonw/valuation.git). That online copy was never deleted and may still
-  exist.
+  holding all the files. It also uploaded a private copy to Cursor's own servers. That online copy was never deleted and may still exist.
 - **15 Sep.** 13:52: "no need for PR right now, I have to work and you've gotta chill". In
   the afternoon he, Cursor and Codex (another AI coding tool, from OpenAI) made colorful reading
   editions of the five PDFs, moved the folder from `~/Valuation` to `~/Desktop/Valuation`, and
@@ -152,13 +152,11 @@ The detail:
   then deleted the other branches. It removed the Cursor and Codex setup files and wrote
   `CLAUDE.md` and `HANDOFF.md`. It copied the plan and the nine research reports into the folder
   and fixed old paths in 31 files. Last, it rebuilt all ten PDFs and saved everything as commits. The rule written that day for this folder: local and private, no
-  GitHub, never push. That evening he had Claude file 26 course certificates into
-  `~/Music/Certificates` (unrelated).
+  GitHub, never push. 
 - **16 Sep.** Side projects, none part of the plan. An eight-week AI learning kit appeared at
   `~/Desktop/remaining`; Codex built it that afternoon (the original is in
   `~/Documents/Codex/2026-09-16/i-x20/outputs/`). From 15:35 he learned OpenRouter with Claude in `~/Desktop/openrouter`, added $10 of
-  credits himself ("don't fuck with it"), got a readable guide (LEARN_OPENROUTER.html, also saved
-  as a private Claude artifact at https://claude.ai/artifact/HxxYkhvYUadnME3tCgozZf) and a local
+  credits himself ("don't fuck with it"), got a readable guide (LEARN_OPENROUTER.html; a copy is now in `reports/learn-openrouter.html`) and a local
   playground; that session spent about $0.12 of the credits. At 16:55 he used Cursor to save his OpenRouter key into the
   learning kit's `.env` file (a plain text file that holds secret keys for the programs in that
   folder; its name starts with a dot, so Finder hides it). From 17:10 he set up Open WebUI (a ChatGPT-style page) in Docker on
@@ -178,10 +176,8 @@ The detail:
   not running now, but its data (about 8 GB, mostly that Open WebUI image) is still on the Mac;
   the folder is named in section 3. Around this day the corpus folders
   vanished from Downloads (`financeMD`, `finance-and-valuation`, the workbook, the archives). Claude could not find them anywhere it was able to look on the Mac (it cannot open the
-  Trash). No Claude session deleted or moved them, and nobody knows where they went. The four books are safe: they had left Downloads on 13 Sep, and at 12:50 on 17 Sep the
-  whole TheOdessy folder moved from the Desktop to `~/Documents`, so they are now at
-  `~/Documents/TheOdessy/09 What I Read/books/`.
-- **18 to Tue 22 Sep.** No Claude conversations at all. This matches the week away.
+  Trash). No Claude session deleted or moved them, and nobody knows where they went. The four books are safe: they had left Downloads on 13 Sep, and on 17 Sep they moved with his notes folder to `~/Documents`, where they are safe.
+- **18 to 22 Sep.** No Claude conversations at all. This matches the week away.
 - **23 Sep, 18:35 to 18:54.** He came back saying "haywire, I don't know what to do,
   resume". Claude found M0 finished, nothing running, the folder on the Desktop, the corpus
   missing, and wrote a dated status block at the top of `docs/0-START-HERE.txt`, updated
@@ -286,15 +282,14 @@ user on this Mac.
   server, about 2.3 GB each.
 - The "md files" folder in `~/Documents`: 18,860 copied markdown files; its 12 September manifest
   lists 18,935.
-- `~/Music/Certificates`: 26 course certificates.
+
 - Codex (OpenAI's coding app) has also been used on its own for small jobs on 12 to 17 and on 26
-  September: the classroom server, his resume, the learning kit, a photo backup at 10:26 on 26
-  September and a few more that morning. On 14 September it also made its own short PDF versions
+  September: the classroom server, the learning kit and a few small jobs on the morning of 26 September. On 14 September it also made its own short PDF versions
   of the plan and of Read This First, kept in `~/Documents/Codex/2026-09-14/or/outputs/`; they
   are not the official PDFs. Its folders are under `~/Documents/Codex/`, and none of them touch
   the Valuation folder.
 
-# The rules he set (still in force)
+# The rules he set (as of the morning of 26 September; see the note at the top)
 
 The numbers (PDF 1 section 3):
 
