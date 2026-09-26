@@ -6,6 +6,8 @@ Live state for Claude Code. Chat history is not kept between sessions; only file
 
 Nothing in flight. Milestone M0, reading stage. Waiting for Siddharth. (Re-confirmed 2026-09-26.)
 
+- PRs in flight: none. (List open pull requests here by number and branch; empty when nothing is open.)
+
 - He was away from 2026-09-19 for about a week and came back without the context. The recap written for him is `docs/6-where-we-are.md` (PDF 6, `docs/6-where-we-are.pdf`). If he arrives lost, point him there, then to the status block at the top of `docs/0-START-HERE.txt`.
 
 - He reads the colorful editions in `output/pdf/`, in the order given by `docs/0-START-HERE.txt`: PDF 1 tonight, then PDF 2 one chapter an evening.
@@ -38,7 +40,7 @@ Nothing in flight. Milestone M0, reading stage. Waiting for Siddharth. (Re-confi
   - Both PDF pipelines were run from the new location and succeeded: `docs/_build/build.sh` (five plain PDFs, 16 s) and `docs/_build/build.sh reading` (five colorful editions, 21 s, diagrams rendered via Chrome). The test builds were then discarded and the committed PDFs kept, since no PDF source changed and `output/validation/verification.json` records their hashes.
 - Colorful reading editions (2026-09-15, Codex, commit `3e6af79`): reading markup in the markdown, a `./docs/_build/build.sh reading` target, five colorful PDFs in `output/pdf/`. The plain PDFs under `docs/` stay as the standard copies. How to rebuild and how the markup works: `docs/_build/READING-EDITION.md`.
 - Document 5 (`docs/plan-explained/`, chapters 00–12) and its PDF exist. `docs/_build/build.sh` builds all five plain PDFs, numbered as on disk.
-- Milestone M0. Documents only. No calculator, database, or application code. No GitHub remote.
+- Milestone M0. Documents only. No calculator, database, or application code. Remote `origin` is the public repository `fundamentals-of-finance` since 2026-09-26.
 
 ## Next
 
@@ -49,8 +51,8 @@ Nothing in flight. Milestone M0, reading stage. Waiting for Siddharth. (Re-confi
 
 ## Decisions
 
-- This project is local and private. This folder is not linked to GitHub. Do not add a remote. Do not push. (A private GitHub copy `jkv8fwytbf-byte/Valuation` exists since 2026-09-26, pushed by mistake as public and made private the same morning; re-link only if he asks. His planned code repo is a separate, private one, created at M1.)
-- One tool: Claude Code. One folder: `/Users/siddharth/Desktop/Valuation`. One branch: `main`. No worktrees or side branches unless he asks.
+- This folder is the working copy of the public repository `jkv8fwytbf-byte/fundamentals-of-finance` (decided 2026-09-26; see `docs/decisions/001-one-public-repo-for-everything.md`). Every change: branch, pull request, merge. `main` is protected. The three `archive/*` branches are frozen. The eight import branches of 2026-09-26 are kept. The private GitHub copy `jkv8fwytbf-byte/Valuation` from that morning is kept by his choice and is not linked to this folder. The future code repo `valuation` is separate and private (M2).
+- One tool: Claude Code. One folder: `/Users/siddharth/Desktop/Valuation` (the working copy). `main` is the trunk; work happens on branches named for the change.
 - `CLAUDE.md` is the briefing. This file is the live state. Do not add a third instruction file (`AGENTS.md`, `CODEX.md`, `CONTINUE.md`, or the like).
 - Commit on `main` when a chunk is done. Do not leave finished work uncommitted for days.
 - `docs/plan.md` is the full plan (v4). Document 5 restates it; when they differ, `docs/plan.md` wins. Change it only when he changes the plan. `docs/sources/` are frozen inputs.
@@ -60,7 +62,8 @@ Nothing in flight. Milestone M0, reading stage. Waiting for Siddharth. (Re-confi
 ## Blocked / wait-for-Siddharth
 
 - "Go" (after he has read PDF 1 and PDF 2; PDF 6 first if he is lost).
-- The GitHub copies: keep or delete the private `Valuation` copy; keep, make private or delete the public `fundamentas_of_finance` (his, not Claude's); whether to re-link this folder to GitHub at all. Also whether the old private copy on Cursor's git host (`origin.cursor.com/idotnkonw/valuation.git`, the folder as of 2026-09-14) still exists and should be deleted.
+- The private `Valuation` copy on GitHub is kept for now (his choice, 2026-09-26). Whether the old private copy on Cursor's git host (`origin.cursor.com/idotnkonw/valuation.git`, the folder as of 2026-09-14) still exists is unknown. Both are tracked as GitHub issues (label `repo`).
 - The OpenRouter key in `~/Desktop/remaining/.env`: set a spend limit or rotate it, and make the file owner-only. Outside this repo; his call.
 - Before M1: the Damodaran corpus has to be mirrored again (it is gone from the Mac, see `CLAUDE.md`). M1's day-one exercise opens the workbook; M2 needs all of it. His call whether it goes back to `~/Downloads/financeMD/` (keeps the citations valid) or somewhere else.
 - Watchlist names and free-account yes/no are later (M2 and M1). Not now. On names, the plan says three beyond Apple and Costco for M2 and 20 with approved memos by the end of M3 (watchlist 20 to 50); PDF 5's "10 to 20" is too low.
+

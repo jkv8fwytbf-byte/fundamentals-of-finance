@@ -5,3 +5,19 @@ docs/_build/t.md
 
 # Reading-edition build intermediates and visual QA
 tmp/pdfs/
+
+# Added 2026-09-26 for the combined repository
+node_modules/
+.next/
+.venv/
+__pycache__/
+*.pyc
+.env
+.env.*
+!.env.example
+*.zip
+*.tgz
+*.tar.gz
+*.aux
+*.log
+*.toc
