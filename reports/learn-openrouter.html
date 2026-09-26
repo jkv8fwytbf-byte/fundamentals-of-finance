@@ -1,0 +1,1770 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<meta charset="utf-8">
+<title>Learn OpenRouter</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#F4F6FA; --surface:#FFFFFF; --surface-2:#EBEFF6; --ink:#161B26; --muted:#5A6478; --line:#D6DCE8;
+  --accent:#2452C9; --accent-ink:#FFFFFF; --accent-soft:#E3EAFB;
+  --money:#1B7F55; --money-soft:#E1F3EA; --warn:#9A6A0B; --warn-soft:#FBF1D9; --bad:#B23A3A; --bad-soft:#F9E3E3;
+  --code-bg:#0F1420; --code-ink:#E6EBF5; --code-muted:#8B95AB; --code-key:#9CC5FF; --code-str:#B9E58F; --code-cmt:#7F8AA3; --code-num:#FFC98A;
+  --shadow:0 1px 2px rgba(22,27,38,.06),0 6px 20px rgba(22,27,38,.06);
+  --display:"Bricolage Grotesque","Avenir Next","Helvetica Neue",Arial,sans-serif;
+  --body:"IBM Plex Sans","Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --mono:"IBM Plex Mono",SFMono-Regular,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#0E1219; --surface:#161B25; --surface-2:#1E2432; --ink:#E7ECF5; --muted:#9AA5BA; --line:#2B3446;
+  --accent:#8AABFF; --accent-ink:#0E1219; --accent-soft:#1D2A4A;
+  --money:#5CCB95; --money-soft:#173226; --warn:#E3B45A; --warn-soft:#3A2E12; --bad:#F08A8A; --bad-soft:#3E1D1D;
+  --code-bg:#0A0E16; --code-ink:#E6EBF5; --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35);
+}}
+:root[data-theme="dark"]{
+  --bg:#0E1219; --surface:#161B25; --surface-2:#1E2432; --ink:#E7ECF5; --muted:#9AA5BA; --line:#2B3446;
+  --accent:#8AABFF; --accent-ink:#0E1219; --accent-soft:#1D2A4A;
+  --money:#5CCB95; --money-soft:#173226; --warn:#E3B45A; --warn-soft:#3A2E12; --bad:#F08A8A; --bad-soft:#3E1D1D;
+  --code-bg:#0A0E16; --code-ink:#E6EBF5; --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth; scroll-padding-top:5rem}
+@media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto} }
+body{margin:0; background:var(--bg); color:var(--ink); font-family:var(--body); font-size:17px; line-height:1.6; -webkit-font-smoothing:antialiased}
+a{color:var(--accent); text-decoration-thickness:1px; text-underline-offset:.15em}
+a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+.wrap{max-width:1180px; margin:0 auto; padding-inline:20px; padding-block:0 4rem}
+.layout{display:grid; grid-template-columns:240px minmax(0,1fr); gap:48px; align-items:start}
+@media (max-width:900px){ .layout{grid-template-columns:minmax(0,1fr)} }
+
+/* header */
+.masthead{padding-block:2.5rem 1.5rem; border-bottom:1px solid var(--line); margin-bottom:2rem}
+.eyebrow{font-family:var(--mono); font-size:.78rem; letter-spacing:.08em; text-transform:uppercase; color:var(--muted)}
+h1{font-family:var(--display); font-size:clamp(2.2rem,5vw,3.4rem); line-height:1.05; margin:.35rem 0 .6rem; font-weight:700; letter-spacing:-.01em; text-wrap:balance}
+.lede{font-size:1.15rem; max-width:62ch; color:var(--muted); margin:0}
+.facts{display:flex; flex-wrap:wrap; gap:.6rem 1.6rem; margin-top:1.2rem; font-family:var(--mono); font-size:.82rem; color:var(--muted)}
+.facts b{color:var(--ink); font-weight:500}
+
+/* nav */
+.toc{position:sticky; top:calc(env(safe-area-inset-top,0px) + 1rem); font-size:.92rem}
+.toc-title{font-family:var(--mono); font-size:.75rem; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); margin:0 0 .6rem}
+.toc ol{list-style:none; margin:0; padding:0; border-left:2px solid var(--line)}
+.toc li a{display:block; padding:.3rem .8rem; color:var(--muted); text-decoration:none; border-left:2px solid transparent; margin-left:-2px; line-height:1.3}
+.toc li a:hover{color:var(--ink)}
+.toc li a.active{color:var(--accent); border-left-color:var(--accent); font-weight:500}
+.toc .part{margin-top:.7rem; padding:.2rem .8rem 0; font-family:var(--mono); font-size:.7rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted)}
+@media (max-width:900px){
+  .toc{position:static; margin-bottom:1.5rem}
+  .toc ol{display:flex; flex-wrap:wrap; gap:.25rem; border:0}
+  .toc li a{border:1px solid var(--line); border-radius:999px; padding:.25rem .7rem; margin:0; background:var(--surface)}
+  .toc li a.active{border-color:var(--accent); background:var(--accent-soft)}
+  .toc .part{display:none}
+}
+
+/* content */
+main{min-width:0; max-width:76ch}
+section{padding-block:1rem 2.5rem; border-bottom:1px solid var(--line)}
+section:last-of-type{border-bottom:0}
+h2{font-family:var(--display); font-size:clamp(1.6rem,3.2vw,2.15rem); line-height:1.12; margin:1.2rem 0 .4rem; font-weight:700; letter-spacing:-.01em; text-wrap:balance}
+h2 .num{display:inline-block; font-family:var(--mono); font-size:.8rem; font-weight:500; color:var(--accent); letter-spacing:.06em; margin-bottom:.35rem}
+h3{font-family:var(--display); font-size:1.25rem; margin:2rem 0 .4rem; font-weight:700; text-wrap:balance}
+h4{font-size:1rem; margin:1.4rem 0 .3rem; font-weight:600}
+p{margin:.55rem 0 .9rem}
+ul,ol{padding-left:1.3rem}
+li{margin:.25rem 0}
+strong{font-weight:600}
+code{font-family:var(--mono); font-size:.88em; background:var(--surface-2); padding:.1em .35em; border-radius:4px; color:var(--ink)}
+.money{color:var(--money); font-weight:600; font-variant-numeric:tabular-nums}
+.term{border-bottom:1px dotted var(--muted); cursor:help}
+hr{border:0; border-top:1px solid var(--line); margin:2rem 0}
+
+/* code + output blocks */
+.file{margin:1.1rem 0; border-radius:10px; overflow:hidden; box-shadow:var(--shadow); background:var(--code-bg)}
+.file-bar{display:flex; align-items:center; justify-content:space-between; gap:.6rem; padding:.45rem .8rem; font-family:var(--mono); font-size:.76rem; color:var(--code-muted); border-bottom:1px solid rgba(255,255,255,.08)}
+.file-bar .name{color:var(--code-ink)}
+.file-bar .tag{font-size:.7rem; letter-spacing:.06em; text-transform:uppercase}
+.copy{font:inherit; color:var(--code-ink); background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.12); border-radius:6px; padding:.2rem .55rem; cursor:pointer}
+.copy:hover{background:rgba(255,255,255,.16)}
+pre{margin:0; padding:.9rem 1rem; overflow-x:auto; font-family:var(--mono); font-size:.82rem; line-height:1.55; color:var(--code-ink); tab-size:4}
+pre.out{background:var(--code-bg)}
+.out .k{color:var(--code-key)} .s{color:var(--code-str)} .c{color:var(--code-cmt); font-style:italic} .n{color:var(--code-num)}
+details.came-back{margin:.9rem 0; border:1px solid var(--line); border-radius:10px; background:var(--surface)}
+details.came-back>summary{cursor:pointer; padding:.6rem .9rem; font-weight:600; font-size:.95rem; list-style:none; display:flex; align-items:center; gap:.6rem}
+details.came-back>summary::-webkit-details-marker{display:none}
+details.came-back>summary::before{content:"▸"; color:var(--accent); font-size:.9rem; transition:transform .15s}
+details.came-back[open]>summary::before{transform:rotate(90deg)}
+details.came-back .file{margin:0; border-radius:0 0 10px 10px; box-shadow:none}
+.cost-pill{margin-left:auto; font-family:var(--mono); font-size:.74rem; font-weight:500; color:var(--money); background:var(--money-soft); padding:.15rem .5rem; border-radius:999px}
+.cmd{display:flex; flex-wrap:wrap; align-items:center; gap:.5rem .8rem; margin:.9rem 0; padding:.7rem .9rem; background:var(--surface); border:1px dashed var(--line); border-radius:10px; font-size:.92rem}
+.cmd code{background:var(--surface-2); padding:.25em .5em}
+.cmd .lbl{font-family:var(--mono); font-size:.72rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted)}
+
+/* callouts */
+.call{margin:1.1rem 0; padding:.8rem 1rem .8rem 1rem; border-radius:10px; border:1px solid var(--line); background:var(--surface); font-size:.96rem}
+.call .t{font-family:var(--mono); font-size:.72rem; letter-spacing:.08em; text-transform:uppercase; margin:0 0 .3rem; font-weight:500}
+.call p:last-child{margin-bottom:0}
+.call.gotcha{background:var(--warn-soft); border-color:transparent} .call.gotcha .t{color:var(--warn)}
+.call.why{background:var(--accent-soft); border-color:transparent} .call.why .t{color:var(--accent)}
+.call.money-note{background:var(--money-soft); border-color:transparent} .call.money-note .t{color:var(--money)}
+
+/* tables */
+.tbl{overflow-x:auto; margin:1rem 0; border:1px solid var(--line); border-radius:10px; background:var(--surface)}
+table{border-collapse:collapse; width:100%; font-size:.9rem}
+th,td{text-align:left; padding:.55rem .8rem; border-bottom:1px solid var(--line); vertical-align:top}
+th{font-family:var(--mono); font-size:.72rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-weight:500; background:var(--surface-2)}
+tr:last-child td{border-bottom:0}
+td.num{font-variant-numeric:tabular-nums; font-family:var(--mono); font-size:.85rem; white-space:nowrap}
+
+/* diagrams */
+figure{margin:1.2rem 0}
+figure svg{width:100%; height:auto; display:block}
+figcaption{font-size:.85rem; color:var(--muted); margin-top:.4rem}
+.dg-box{fill:var(--surface); stroke:var(--line)} .dg-box-accent{fill:var(--accent-soft); stroke:var(--accent)}
+.dg-txt{font-family:var(--body); font-size:13px; fill:var(--ink)} .dg-sub{font-family:var(--mono); font-size:10.5px; fill:var(--muted)}
+.dg-line{stroke:var(--muted); stroke-width:1.5; fill:none} .dg-line-accent{stroke:var(--accent); stroke-width:2; fill:none}
+.dg-money{font-family:var(--mono); font-size:11px; fill:var(--money); font-weight:600}
+
+/* glossary / quiz */
+dl.gloss{display:grid; grid-template-columns:max-content minmax(0,1fr); gap:.4rem 1.2rem; margin:1rem 0}
+dl.gloss dt{font-weight:600} dl.gloss dd{margin:0; color:var(--ink)}
+@media (max-width:600px){ dl.gloss{grid-template-columns:minmax(0,1fr)} dl.gloss dd{margin-bottom:.5rem; color:var(--muted)} }
+details.q{border:1px solid var(--line); border-radius:10px; background:var(--surface); margin:.6rem 0}
+details.q summary{cursor:pointer; padding:.6rem .9rem; font-weight:500}
+details.q div{padding:0 .9rem .8rem; color:var(--muted); font-size:.95rem}
+.steps{counter-reset:s; list-style:none; padding:0}
+.steps li{counter-increment:s; position:relative; padding-left:2.4rem; margin:.7rem 0}
+.steps li::before{content:counter(s); position:absolute; left:0; top:.05rem; width:1.7rem; height:1.7rem; border-radius:50%; background:var(--accent); color:var(--accent-ink); font-family:var(--mono); font-size:.8rem; font-weight:500; display:grid; place-items:center}
+.kbd-note{font-size:.9rem; color:var(--muted)}
+footer{margin-top:3rem; padding-top:1.5rem; border-top:1px solid var(--line); font-size:.85rem; color:var(--muted)}
+</style>
+
+<div class="wrap">
+<header class="masthead">
+  <div class="eyebrow">A beginner's course · Python · built on your own account</div>
+  <h1>Learn OpenRouter</h1>
+  <p class="lede">One service that lets a program you write talk to hundreds of AI models through a single door. This guide teaches it by building a small research tool called <code>brief</code>, one piece at a time, and shows what every step actually returned when it ran.</p>
+  <div class="facts">
+    <span>Catalog on the day this ran: <b>443 models</b></span>
+    <span>Total spent building everything here: <b class="money">$0.11</b></span>
+    <span>Project folder: <b>~/Desktop/openrouter</b></span>
+    <span>Date: <b>16 Sep 2026</b></span>
+  </div>
+</header>
+
+<div class="layout">
+<nav class="toc" aria-label="Chapters">
+  <p class="toc-title">Chapters</p>
+  <ol>
+    <li><a href="#start">Start here</a></li>
+    <li><a href="#picture">The big picture</a></li>
+    <li><a href="#setup">Setup</a></li>
+    <li class="part">Core concepts</li>
+    <li><a href="#c1">1 · Your first call</a></li>
+    <li><a href="#c2">2 · Catalog &amp; API</a></li>
+    <li><a href="#c3">3 · SDKs</a></li>
+    <li><a href="#c4">4 · Streaming &amp; structure</a></li>
+    <li><a href="#c5">5 · Tools</a></li>
+    <li><a href="#c6">6 · Cost</a></li>
+    <li class="part">Wrap up</li>
+    <li><a href="#final">The finished tool</a></li>
+    <li><a href="#glossary">Glossary</a></li>
+    <li><a href="#cheatsheet">Cheat sheet</a></li>
+    <li><a href="#quiz">Check yourself</a></li>
+  </ol>
+</nav>
+
+<main>
+<section id="start">
+  <h2><span class="num">START HERE</span><br>What this is, and how to read it</h2>
+  <p><strong>OpenRouter in one sentence:</strong> it is a service that lets a program you write send a question to an AI model — ChatGPT-style, Claude-style, Gemini, Llama, Mistral, hundreds of others — and get the answer back, paying a fraction of a cent per question from credits you load once.</p>
+  <p><strong>What you will be able to do after reading:</strong> explain what an API call is and read one; pick a model by price and ability; make an answer stream in live; get back data in a fixed shape your code can trust; let a model use tools, including live web search; and, most importantly, know exactly what each call costs and how to make it cheaper.</p>
+  <p><strong>How the guide works.</strong> Every chapter follows the same rhythm: <em>why</em> this idea exists → the real code (a file that is sitting in your project folder right now) → <em>what actually came back</em> when it ran on your account → the trap beginners fall into → the command to run it yourself. Nothing here is hypothetical; every output was captured live.</p>
+  <div class="call money-note">
+    <p class="t">Your budget</p>
+    <p>You loaded <span class="money">$10.00</span>. Building and running everything in this guide — 15 scripts, a 15-answer benchmark, six web searches — cost <span class="money">$0.11</span>. Each "what came back" panel shows its own price. Cheap models cost about <span class="money">$0.000002</span> per short answer; the most expensive model used here cost <span class="money">$0.0064</span> for one answer.</p>
+  </div>
+  <div class="cmd"><span class="lbl">Run anything</span> <code>cd ~/Desktop/openrouter</code> <span>then</span> <code>uv run brief/&lt;file&gt;.py</code> <span class="kbd-note">— or just tell Claude "run lesson 3".</span></div>
+</section>
+
+<section id="picture">
+  <h2><span class="num">THE BIG PICTURE</span><br>One door in front of every model</h2>
+  <p>An AI model is a program running on some company's servers. You do not download it; you <em>talk to it over the internet</em>. You send text, you get text back. The door you send it through is called an <span class="term" title="Application Programming Interface — a URL that accepts requests in an agreed format">API</span>: a web address that accepts a request written in an agreed format and returns a response in an agreed format.</p>
+  <p><strong>The problem.</strong> Every company has its own door. OpenAI, Anthropic, Google, Meta, Mistral, DeepSeek — each has its own account, its own billing, its own API key, its own request format and its own quirks. Want to try a different model? New account, new key, new code. And the same model is often hosted by several different companies (called <em>providers</em>) at different prices and speeds.</p>
+  <p><strong>What OpenRouter does.</strong> It puts one door in front of all of them. One account, one key, one web address, one request format. You switch models by changing a single word in your request. Behind the door, OpenRouter picks which provider serves your request (it prefers the cheap, reliable ones), falls back to another if one is down, and sends you one bill.</p>
+  <figure>
+    <svg viewBox="0 0 760 300" role="img" aria-label="Your code sends one request to OpenRouter, which routes it to one of many models hosted by many providers">
+      <rect x="12" y="110" width="150" height="80" rx="10" class="dg-box"/>
+      <text x="87" y="145" text-anchor="middle" class="dg-txt" font-weight="600">Your program</text>
+      <text x="87" y="165" text-anchor="middle" class="dg-sub">brief/ask.py</text>
+      <path d="M162 150 H250" class="dg-line-accent" marker-end="url(#arr)"/>
+      <text x="206" y="138" text-anchor="middle" class="dg-sub">1 request</text>
+      <rect x="252" y="80" width="190" height="140" rx="12" class="dg-box-accent"/>
+      <text x="347" y="118" text-anchor="middle" class="dg-txt" font-weight="600">OpenRouter</text>
+      <text x="347" y="140" text-anchor="middle" class="dg-sub">one key · one URL · one bill</text>
+      <text x="347" y="162" text-anchor="middle" class="dg-sub">picks provider, falls back,</text>
+      <text x="347" y="178" text-anchor="middle" class="dg-sub">counts tokens, reports cost</text>
+      <g class="dg-line">
+        <path d="M442 150 C500 150 500 40 550 40"/>
+        <path d="M442 150 C500 150 500 95 550 95"/>
+        <path d="M442 150 H550"/>
+        <path d="M442 150 C500 150 500 205 550 205"/>
+        <path d="M442 150 C500 150 500 260 550 260"/>
+      </g>
+      <g class="dg-txt">
+        <rect x="552" y="24" width="196" height="32" rx="8" class="dg-box"/><text x="562" y="45">OpenAI · gpt-5-mini</text>
+        <rect x="552" y="79" width="196" height="32" rx="8" class="dg-box"/><text x="562" y="100">Anthropic · claude-haiku-4.5</text>
+        <rect x="552" y="134" width="196" height="32" rx="8" class="dg-box"/><text x="562" y="155">Mistral · mistral-nemo</text>
+        <rect x="552" y="189" width="196" height="32" rx="8" class="dg-box"/><text x="562" y="210">Google · gemini-2.5-flash</text>
+        <rect x="552" y="244" width="196" height="32" rx="8" class="dg-box"/><text x="562" y="265">… 439 more</text>
+      </g>
+      <defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="var(--accent)"/></marker></defs>
+    </svg>
+    <figcaption>The same request shape reaches any of 443 models. The response tells you which model — and which provider — actually answered.</figcaption>
+  </figure>
+  <p><strong>Why people use it</strong> (from OpenRouter's own <a href="https://openrouter.ai/docs/guides/overview/principles">principles page</a>): the future is multi-model and multi-provider; one standard format means switching models needs no code change; one bill; higher availability through fallbacks; and they scout prices and speeds across providers so you don't have to.</p>
+  <div class="call why">
+    <p class="t">Why this matters for the tool we build</p>
+    <p>We write the calling code once, today. From then on, <em>which model</em> answers is a decision, not a rewrite. That single fact is what makes the cost chapter possible: cheap model for easy steps, expensive model only where it earns its price.</p>
+  </div>
+</section>
+
+<section id="setup">
+  <h2><span class="num">SETUP</span><br>What is in the folder and why</h2>
+  <p>Everything lives in <code>~/Desktop/openrouter</code>. Here is what each piece is for — all of it is already done.</p>
+  <div class="tbl"><table>
+    <tr><th>Thing</th><th>What it is</th><th>Why it exists</th></tr>
+    <tr><td><code>.env</code></td><td>A one-line text file: <code>OPENROUTER_API_KEY=sk-or-v1-…</code></td><td>Your API key is the password your program shows OpenRouter so it knows who is paying. It lives in a file, never in code, never in chat. <code>.gitignore</code> makes sure it can never be uploaded by accident.</td></tr>
+    <tr><td>Credits</td><td>$10 loaded at openrouter.ai/settings/credits</td><td>Pay-as-you-go. Each call deducts its exact cost. No subscription.</td></tr>
+    <tr><td><code>uv</code> + <code>pyproject.toml</code></td><td>The Python project manager and its config file</td><td><code>uv run some_file.py</code> runs a script with the right libraries installed automatically. Libraries used: <code>requests</code> (talk HTTP), <code>python-dotenv</code> (read <code>.env</code>), <code>openai</code> and <code>openrouter</code> (chapter 3).</td></tr>
+    <tr><td><code>brief/</code></td><td>The code, one file per idea</td><td>Each chapter below shows one of these files, exactly as it is on disk.</td></tr>
+    <tr><td><code>briefings/</code></td><td>Output folder</td><td>The finished tool saves its research here as markdown files.</td></tr>
+    <tr><td><code>.openrouter-learn/</code></td><td>Course notes and captured outputs</td><td>Lets Claude resume the course in a later session; <code>outputs/</code> holds every raw result shown in this guide.</td></tr>
+  </table></div>
+  <div class="call gotcha">
+    <p class="t">Two things to know about the key</p>
+    <p>It is shown in full only once when created; if you lose it, make a new one at <a href="https://openrouter.ai/keys">openrouter.ai/keys</a>. And a copy of it is still sitting in <code>~/Desktop/remaining/.env</code> from when it was saved to the wrong folder — delete that file when convenient.</p>
+  </div>
+</section>
+<section id="c1">
+  <h2><span class="num">CONCEPT 1</span><br>Your first call, field by field</h2>
+  <p>Every call to OpenRouter has three parts. <strong>Where</strong>: the web address, always <code>https://openrouter.ai/api/v1/chat/completions</code>, no matter which model. <strong>Who</strong>: a header line <code>Authorization: Bearer &lt;your key&gt;</code> — "Bearer" just means "the holder of this key". <strong>What</strong>: a small JSON document saying which model, the conversation so far, and any limits.</p>
+  <p>"The conversation so far" is a list of <em>messages</em>, each with a <em>role</em>. <code>system</code> is standing instructions ("you are a concise research assistant"); <code>user</code> is you; <code>assistant</code> is the model's earlier replies, if any. The model reads the whole list every time — it has no memory between calls except what you send.</p>
+  <h3>The code</h3>
+  <div class="file"><div class="file-bar"><span class="name">brief/ask.py</span><span class="tag">python</span><button class="copy" type="button">Copy</button></div><pre><span class="s">&quot;&quot;</span>&quot;Lesson 1 - one raw HTTP call to OpenRouter. No SDK, every field visible.
+
+Usage:
+    uv run brief/ask.py                      <span class="c"># cheap default model</span>
+    uv run brief/ask.py anthropic/claude-haiku-4.5   <span class="c"># same code, different brain</span>
+    uv run brief/ask.py --raw                <span class="c"># also dump the full JSON that came back</span>
+<span class="s">&quot;&quot;</span>&quot;
+
+import json
+import os
+import sys
+
+import requests
+from dotenv import load_dotenv
+
+load_dotenv()  <span class="c"># reads .env in this folder so OPENROUTER_API_KEY becomes available</span>
+API_KEY = os.environ[<span class="s">&quot;OPENROUTER_API_KEY&quot;</span>]
+
+<span class="c"># Picked from the live catalog today: $0.019 in / $0.03 out per million tokens.</span>
+DEFAULT_MODEL = <span class="s">&quot;mistralai/mistral-nemo&quot;</span>
+
+args = [a for a in sys.argv[1:] if not a.startswith(<span class="s">&quot;--&quot;</span>)]
+model = args[0] if args else DEFAULT_MODEL
+show_raw = <span class="s">&quot;--raw&quot;</span> in sys.argv
+
+response = requests.post(
+    <span class="s">&quot;https://openrouter.ai/api/v1/chat/completions&quot;</span>,  <span class="c"># the ONE endpoint for every model</span>
+    headers={
+        <span class="s">&quot;Authorization&quot;</span>: f<span class="s">&quot;Bearer {API_KEY}&quot;</span>,          <span class="c"># who is paying</span>
+        <span class="s">&quot;Content-Type&quot;</span>: <span class="s">&quot;application/json&quot;</span>,
+    },
+    json={
+        <span class="s">&quot;model&quot;</span>: model,                                 <span class="c"># which brain to use</span>
+        <span class="s">&quot;messages&quot;</span>: [                                   <span class="c"># the conversation so far</span>
+            {<span class="s">&quot;role&quot;</span>: <span class="s">&quot;system&quot;</span>, <span class="s">&quot;content&quot;</span>: <span class="s">&quot;You are a concise research assistant.&quot;</span>},
+            {<span class="s">&quot;role&quot;</span>: <span class="s">&quot;user&quot;</span>, <span class="s">&quot;content&quot;</span>: <span class="s">&quot;Explain what an API is in two sentences, for a complete beginner.&quot;</span>},
+        ],
+        <span class="s">&quot;max_tokens&quot;</span>: 200,                              <span class="c"># cap on how long the answer may be</span>
+    },
+    timeout=60,
+)
+
+data = response.json()
+if <span class="s">&quot;error&quot;</span> in data:                                     <span class="c"># an HTTP 200 can still carry an error body</span>
+    raise SystemExit(f<span class="s">&quot;OpenRouter error: {data[&#x27;error&#x27;]}&quot;</span>)
+
+print(data[<span class="s">&quot;choices&quot;</span>][0][<span class="s">&quot;message&quot;</span>][<span class="s">&quot;content&quot;</span>])
+print(<span class="s">&quot;---&quot;</span>)
+print(<span class="s">&quot;served by:&quot;</span>, data[<span class="s">&quot;model&quot;</span>])                      <span class="c"># the model that actually answered (and was billed)</span>
+usage = data[<span class="s">&quot;usage&quot;</span>]
+print(f<span class="s">&quot;tokens:    {usage[&#x27;prompt_tokens&#x27;]} in / {usage[&#x27;completion_tokens&#x27;]} out&quot;</span>)
+print(f<span class="s">&quot;cost:      ${usage[&#x27;cost&#x27;]:.6f}&quot;</span>)
+
+if show_raw:
+    print(<span class="s">&quot;\n=== full response JSON ===&quot;</span>)
+    print(json.dumps(data, indent=2))</pre></div>
+  <p>Read the response from the bottom of the file: <code>choices[0].message.content</code> is the answer text; <code>model</code> is the model that <em>actually</em> answered (and was billed); <code>usage</code> counts tokens and gives the exact cost. A <span class="term" title="A chunk of text roughly ¾ of a word long; models read and write in tokens, and you pay per token">token</span> is roughly three-quarters of a word.</p>
+  <h3>What actually came back</h3>
+  <details class="came-back" open>
+    <summary>Cheap model, with the full raw JSON <span class="cost-pill">$0.000002</span></summary>
+    <div class="file"><div class="file-bar"><span class="name">01-ask-raw.txt</span><span class="tag">output · captured 2026-09-16</span></div><pre class="out">An API (Application Programming Interface) is like a waiter in a restaurant: it takes requests from customers (programmers) and delivers responses from the kitchen (the software&#x27;s functionality). In simpler terms, an API is a way for different software programs to talk to each other.
+---
+served by: mistralai/mistral-nemo
+tokens:    27 in / 56 out
+cost:      $0.000002
+
+=== full response JSON ===
+{
+  &quot;id&quot;: &quot;gen-1789558333-NdwUxzJcdBYjdYLIeufy&quot;,
+  &quot;object&quot;: &quot;chat.completion&quot;,
+  &quot;created&quot;: 1789558333,
+  &quot;model&quot;: &quot;mistralai/mistral-nemo&quot;,
+  &quot;provider&quot;: &quot;DekaLLM&quot;,
+  &quot;system_fingerprint&quot;: null,
+  &quot;service_tier&quot;: null,
+  &quot;choices&quot;: [
+    {
+      &quot;index&quot;: 0,
+      &quot;logprobs&quot;: null,
+      &quot;finish_reason&quot;: &quot;stop&quot;,
+      &quot;native_finish_reason&quot;: &quot;stop&quot;,
+      &quot;message&quot;: {
+        &quot;role&quot;: &quot;assistant&quot;,
+        &quot;content&quot;: &quot;An API (Application Programming Interface) is like a waiter in a restaurant: it takes requests from customers (programmers) and delivers responses from the kitchen (the software&#x27;s functionality). In simpler terms, an API is a way for different software programs to talk to each other.&quot;,
+        &quot;refusal&quot;: null,
+        &quot;reasoning&quot;: null
+      }
+    }
+  ],
+  &quot;usage&quot;: {
+    &quot;prompt_tokens&quot;: 27,
+    &quot;completion_tokens&quot;: 56,
+    &quot;total_tokens&quot;: 83,
+    &quot;cost&quot;: 2.166e-06,
+    &quot;is_byok&quot;: false,
+    &quot;prompt_tokens_details&quot;: {
+      &quot;cached_tokens&quot;: 0,
+      &quot;cache_write_tokens&quot;: 0,
+      &quot;audio_tokens&quot;: 0,
+      &quot;video_tokens&quot;: 0
+    },
+    &quot;cost_details&quot;: {
+      &quot;upstream_inference_cost&quot;: 2.166e-06,
+      &quot;upstream_inference_prompt_cost&quot;: 4.86e-07,
+      &quot;upstream_inference_completions_cost&quot;: 1.68e-06
+    },
+    &quot;completion_tokens_details&quot;: {
+      &quot;reasoning_tokens&quot;: 0,
+      &quot;image_tokens&quot;: 0,
+      &quot;audio_tokens&quot;: 0
+    }
+  }
+}</pre></div>
+  </details>
+  <p>Things worth noticing in that JSON: <code>"provider": "DekaLLM"</code> — the company that hosted the model for this request (chapter 6 shows how to influence that); <code>finish_reason: "stop"</code> — the model finished on its own rather than hitting the length cap; <code>usage.cost: 2.166e-06</code> — scientific notation for $0.000002; and <code>prompt_tokens_details.cached_tokens: 0</code> — the caching counter we will make non-zero later.</p>
+  <h3>Change one word, change the brain</h3>
+  <p>The same file accepts a model name as an argument. Nothing else changes.</p>
+  <div class="cmd"><span class="lbl">Try it</span> <code>uv run brief/ask.py anthropic/claude-haiku-4.5</code></div>
+  <details class="came-back" open>
+    <summary>Same question, Claude Haiku 4.5 <span class="cost-pill">$0.000331</span></summary>
+    <div class="file"><div class="file-bar"><span class="name">01-ask-haiku.txt</span><span class="tag">output · captured 2026-09-16</span></div><pre class="out">An API is a set of rules that allows different software programs to communicate with each other and share information. Think of it like a menu at a restaurant—you don&#x27;t need to know how the kitchen works; you just order what you want, and the kitchen delivers it to you.
+---
+served by: anthropic/claude-haiku-4.5
+tokens:    31 in / 60 out
+cost:      $0.000331</pre></div>
+  </details>
+  <p>That is the whole value proposition in two runs: identical code, a different model, <span class="money">$0.000002</span> versus <span class="money">$0.000331</span>. The second is 150× more expensive and still a third of a cent. When a cheaper or better model launches next month, trying it is a one-word edit.</p>
+
+  <h3>Fallback lists and "latest" aliases</h3>
+  <p>Two routing features you get for free. A <strong>fallback list</strong>: instead of <code>"model"</code>, send <code>"models": [first, second, …]</code> and OpenRouter tries the next one if the first fails (rate-limited, down, rejected, too long). An <strong>alias</strong> like <code>~anthropic/claude-haiku-latest</code> always points at the newest model in that family, so your code never goes stale — the response's <code>model</code> field tells you what it resolved to.</p>
+  <div class="file"><div class="file-bar"><span class="name">brief/fallback.py</span><span class="tag">python</span><button class="copy" type="button">Copy</button></div><pre><span class="s">&quot;&quot;</span>&quot;Lesson 1b - fallbacks and aliases: let OpenRouter pick when your first choice fails.
+
+Usage:
+    uv run brief/fallback.py
+<span class="s">&quot;&quot;</span>&quot;
+
+import os
+
+import requests
+from dotenv import load_dotenv
+
+load_dotenv()
+API_KEY = os.environ[<span class="s">&quot;OPENROUTER_API_KEY&quot;</span>]
+URL = <span class="s">&quot;https://openrouter.ai/api/v1/chat/completions&quot;</span>
+HEADERS = {<span class="s">&quot;Authorization&quot;</span>: f<span class="s">&quot;Bearer {API_KEY}&quot;</span>, <span class="s">&quot;Content-Type&quot;</span>: <span class="s">&quot;application/json&quot;</span>}
+QUESTION = [{<span class="s">&quot;role&quot;</span>: <span class="s">&quot;user&quot;</span>, <span class="s">&quot;content&quot;</span>: <span class="s">&quot;Name one thing to check before trusting an AI&#x27;s answer. One sentence.&quot;</span>}]
+
+
+def call(body: dict) -&gt; None:
+    data = requests.post(URL, headers=HEADERS, json=body | {<span class="s">&quot;messages&quot;</span>: QUESTION, <span class="s">&quot;max_tokens&quot;</span>: 80}, timeout=60).json()
+    if <span class="s">&quot;error&quot;</span> in data:
+        print(<span class="s">&quot;  ERROR:&quot;</span>, data[<span class="s">&quot;error&quot;</span>][<span class="s">&quot;message&quot;</span>])
+        return
+    print(<span class="s">&quot;  answer:   &quot;</span>, data[<span class="s">&quot;choices&quot;</span>][0][<span class="s">&quot;message&quot;</span>][<span class="s">&quot;content&quot;</span>].strip())
+    print(<span class="s">&quot;  served by:&quot;</span>, data[<span class="s">&quot;model&quot;</span>], <span class="s">&quot;| cost: $%.6f&quot;</span> % data[<span class="s">&quot;usage&quot;</span>][<span class="s">&quot;cost&quot;</span>])
+
+
+print(<span class="s">&quot;1) A fallback list: the first model here does not exist, so OpenRouter should move on to the second.&quot;</span>)
+call({<span class="s">&quot;models&quot;</span>: [<span class="s">&quot;mistralai/mistral-nemo:free&quot;</span>, <span class="s">&quot;mistralai/mistral-nemo&quot;</span>]})
+
+print(<span class="s">&quot;\n2) An alias: ~anthropic/claude-haiku-latest always points at the newest Haiku.&quot;</span>)
+call({<span class="s">&quot;model&quot;</span>: <span class="s">&quot;~anthropic/claude-haiku-latest&quot;</span>})</pre></div>
+  <details class="came-back" open>
+    <summary>What came back <span class="cost-pill">$0.000154</span></summary>
+    <div class="file"><div class="file-bar"><span class="name">01-fallback.txt</span><span class="tag">output · captured 2026-09-16</span></div><pre class="out">1) A fallback list: the first model here does not exist, so OpenRouter should move on to the second.
+  answer:    Always verify the source of the AI&#x27;s information.
+  served by: mistralai/mistral-nemo | cost: $0.000001
+
+2) An alias: ~anthropic/claude-haiku-latest always points at the newest Haiku.
+  answer:    Check whether the AI cites specific sources or acknowledges uncertainty rather than presenting information with unwarranted confidence.
+  served by: anthropic/claude-haiku-4.5 | cost: $0.000153</pre></div>
+  </details>
+  <p>In run 1 the first entry, <code>mistralai/mistral-nemo:free</code>, does not exist as a free variant, so OpenRouter moved on to the second — and the answer says <code>served by: mistralai/mistral-nemo</code>. In run 2 the alias resolved to <code>anthropic/claude-haiku-4.5</code>.</p>
+  <div class="call gotcha">
+    <p class="t">Gotcha · the response's <code>model</code> is the source of truth</p>
+    <p>With fallbacks, aliases, or the auto-router, the model that answers may not be the one you named. You are billed for the one in the response. Log it. And <code>~latest</code> aliases can silently jump to a new version — for anything you need to reproduce exactly, pin a concrete name like <code>anthropic/claude-haiku-4.5</code>.</p>
+  </div>
+  <p>How routing works at a high level (details in chapter 6): among providers that have not had an outage in the last 30 seconds, OpenRouter picks one weighted by the <em>inverse square</em> of its price — a provider charging $1 per million is 9× more likely to be tried first than one charging $3 — and keeps the rest as fallbacks. Suffixes change that: <code>:floor</code> sorts providers by price and <code>:nitro</code> by throughput (tokens per second). <code>:free</code> is different in kind: it selects the model's separate free-tier entry, with its own price, context window and rate limits — and if the model has no free entry the request <em>errors</em> rather than quietly using the paid one, which is exactly why run 1 above needed the fallback list.</p>
+</section>
+<section id="c2">
+  <h2><span class="num">CONCEPT 2</span><br>The catalog, the parameters, and the errors</h2>
+  <p>Before you can pick a model you need to see the menu. <code>GET https://openrouter.ai/api/v1/models</code> returns every text-producing model with its price, context size and abilities (add <code>?output_modalities=all</code> to also see image, audio and embedding models). It is public — no key, no cost — so it is also a nice way to see what an API response looks like before spending anything.</p>
+  <div class="call gotcha">
+    <p class="t">Gotcha · prices are per <em>token</em>, as strings</p>
+    <p>The catalog says <code>"prompt": "0.000000019"</code>. That is dollars per single token. Everyone talks in dollars per <em>million</em> tokens, so multiply by 1,000,000: $0.019. The script below does this in <code>per_million()</code>. Two prices always matter: <em>prompt</em> (what you send in) and <em>completion</em> (what comes back), and completion is usually 2–5× dearer.</p>
+  </div>
+  <h3>A model-discovery utility</h3>
+  <div class="file"><div class="file-bar"><span class="name">brief/models.py</span><span class="tag">python</span><button class="copy" type="button">Copy</button></div><pre><span class="s">&quot;&quot;</span>&quot;Lesson 2 - the model catalog. GET /api/v1/models is public: no key, no cost.
+
+Usage:
+    uv run brief/models.py                 <span class="c"># cheapest tool-capable models + a few flagships</span>
+    uv run brief/models.py openai/gpt-5-mini   <span class="c"># show one model&#x27;s full record</span>
+<span class="s">&quot;&quot;</span>&quot;
+
+import json
+import sys
+
+import requests
+
+CATALOG_URL = <span class="s">&quot;https://openrouter.ai/api/v1/models&quot;</span>
+
+
+def per_million(price_per_token: str) -&gt; float:
+    <span class="s">&quot;&quot;</span><span class="s">&quot;OpenRouter prices are strings in USD *per token*. Humans think per million.&quot;</span><span class="s">&quot;&quot;</span>
+    return float(price_per_token) * 1_000_000
+
+
+def load_catalog() -&gt; list[dict]:
+    return requests.get(CATALOG_URL, timeout=30).json()[<span class="s">&quot;data&quot;</span>]
+
+
+def is_plain_paid_chat_model(m: dict) -&gt; bool:
+    <span class="s">&quot;&quot;</span><span class="s">&quot;Skip :free / :batch variants and ~latest aliases; keep text models that support tools.&quot;</span><span class="s">&quot;&quot;</span>
+    return (
+        not m[<span class="s">&quot;id&quot;</span>].endswith((<span class="s">&quot;:free&quot;</span>, <span class="s">&quot;:batch&quot;</span>))
+        and not m[<span class="s">&quot;id&quot;</span>].startswith(<span class="s">&quot;~&quot;</span>)
+        and <span class="s">&quot;text&quot;</span> in m[<span class="s">&quot;architecture&quot;</span>][<span class="s">&quot;output_modalities&quot;</span>]
+        and <span class="s">&quot;tools&quot;</span> in m[<span class="s">&quot;supported_parameters&quot;</span>]
+        and float(m[<span class="s">&quot;pricing&quot;</span>][<span class="s">&quot;prompt&quot;</span>]) &gt; 0
+    )
+
+
+def row(m: dict) -&gt; str:
+    caps = <span class="s">&quot;tools&quot;</span> + (<span class="s">&quot;, json-schema&quot;</span> if <span class="s">&quot;structured_outputs&quot;</span> in m[<span class="s">&quot;supported_parameters&quot;</span>] else <span class="s">&quot;&quot;</span>)
+    return (f<span class="s">&quot;{m[&#x27;id&#x27;]:&lt;42} in ${per_million(m[&#x27;pricing&#x27;][&#x27;prompt&#x27;]):&gt;7.3f}  &quot;</span>
+            f<span class="s">&quot;out ${per_million(m[&#x27;pricing&#x27;][&#x27;completion&#x27;]):&gt;8.3f}  &quot;</span>
+            f<span class="s">&quot;ctx {m[&#x27;context_length&#x27;]:&gt;9,}  {caps}&quot;</span>)
+
+
+if __name__ == <span class="s">&quot;__main__&quot;</span>:
+    catalog = load_catalog()
+
+    if len(sys.argv) &gt; 1:                       <span class="c"># one model, full record</span>
+        wanted = sys.argv[1]
+        match = next((m for m in catalog if m[<span class="s">&quot;id&quot;</span>] == wanted), None)
+        print(json.dumps(match, indent=2) if match else f<span class="s">&quot;{wanted} not found&quot;</span>)
+        sys.exit()
+
+    print(f<span class="s">&quot;{len(catalog)} models in the catalog right now\n&quot;</span>)
+    usable = [m for m in catalog if is_plain_paid_chat_model(m)]
+    usable.sort(key=lambda m: per_million(m[<span class="s">&quot;pricing&quot;</span>][<span class="s">&quot;prompt&quot;</span>]) + per_million(m[<span class="s">&quot;pricing&quot;</span>][<span class="s">&quot;completion&quot;</span>]))
+
+    print(<span class="s">&quot;10 cheapest models that support tool calling (price per MILLION tokens):&quot;</span>)
+    for m in usable[:10]:
+        print(<span class="s">&quot;  &quot;</span> + row(m))
+
+    flagships = [<span class="s">&quot;openai/gpt-5-mini&quot;</span>, <span class="s">&quot;anthropic/claude-haiku-4.5&quot;</span>, <span class="s">&quot;google/gemini-2.5-flash&quot;</span>,
+                 <span class="s">&quot;anthropic/claude-sonnet-5&quot;</span>, <span class="s">&quot;anthropic/claude-fable-5.1&quot;</span>, <span class="s">&quot;openai/gpt-5.5&quot;</span>]
+    print(<span class="s">&quot;\nA few well-known ones for scale:&quot;</span>)
+    for m in catalog:
+        if m[<span class="s">&quot;id&quot;</span>] in flagships:
+            print(<span class="s">&quot;  &quot;</span> + row(m))
+
+    free = [m[<span class="s">&quot;id&quot;</span>] for m in catalog if m[<span class="s">&quot;id&quot;</span>].endswith(<span class="s">&quot;:free&quot;</span>)]
+    print(f<span class="s">&quot;\n{len(free)} free variants exist (rate-limited), e.g. {&#x27;, &#x27;.join(free[:3])}&quot;</span>)</pre></div>
+  <details class="came-back" open>
+    <summary>What came back (no cost — public endpoint) <span class="cost-pill">$0</span></summary>
+    <div class="file"><div class="file-bar"><span class="name">02-models.txt</span><span class="tag">output · captured 2026-09-16</span></div><pre class="out">443 models in the catalog right now
+
+10 cheapest models that support tool calling (price per MILLION tokens):
+  mistralai/mistral-nemo                     in $  0.019  out $   0.030  ctx   131,072  tools, json-schema
+  inclusionai/ling-3.0-flash                 in $  0.021  out $   0.063  ctx   262,144  tools
+  meta-llama/llama-3.1-8b-instruct           in $  0.050  out $   0.080  ctx   131,072  tools, json-schema
+  qwen/qwen3.7-flash                         in $  0.030  out $   0.130  ctx 1,000,000  tools
+  openai/gpt-oss-20b                         in $  0.030  out $   0.130  ctx   131,072  tools, json-schema
+  amazon/nova-micro-v1                       in $  0.035  out $   0.140  ctx   128,000  tools
+  deepseek/deepseek-v4-flash-0731            in $  0.060  out $   0.120  ctx 1,310,720  tools, json-schema
+  poolside/laguna-xs-2.1                     in $  0.060  out $   0.120  ctx   262,144  tools
+  inception/mercury-2.5                      in $  0.040  out $   0.150  ctx   260,000  tools, json-schema
+  rekaai/reka-edge                           in $  0.100  out $   0.100  ctx    16,384  tools, json-schema
+
+A few well-known ones for scale:
+  anthropic/claude-fable-5.1                 in $ 10.000  out $  50.000  ctx 1,000,000  tools, json-schema
+  anthropic/claude-sonnet-5                  in $  2.000  out $  10.000  ctx 1,000,000  tools, json-schema
+  openai/gpt-5.5                             in $  5.000  out $  30.000  ctx 1,050,000  tools, json-schema
+  anthropic/claude-haiku-4.5                 in $  1.000  out $   5.000  ctx   200,000  tools, json-schema
+  openai/gpt-5-mini                          in $  0.250  out $   2.000  ctx   400,000  tools, json-schema
+  google/gemini-2.5-flash                    in $  0.300  out $   2.500  ctx 1,048,576  tools, json-schema
+
+20 free variants exist (rate-limited), e.g. inclusionai/ling-3.0-flash-vl:free, nex-agi/nex-n2.5-mini:free, nex-agi/nex-n2.5-pro:free</pre></div>
+  </details>
+  <p>Read that table as three tiers. <strong>Cheap</strong> (≈ $0.02–0.15 per million): fine for simple, well-specified jobs. <strong>Mid</strong> ($0.25–5): the workhorses. <strong>Frontier</strong> ($5–50): the smartest, for the steps that need it. Chapter 6 measures whether the price buys anything.</p>
+  <p>One model's record, trimmed to the fields you will actually use:</p>
+  <div class="cmd"><span class="lbl">Try it</span> <code>uv run brief/models.py mistralai/mistral-nemo</code></div>
+  <details class="came-back">
+    <summary>One catalog record (trimmed)</summary>
+    <div class="file"><div class="file-bar"><span class="name">02-model-record.txt</span><span class="tag">output · captured 2026-09-16</span></div><pre class="out">{
+  &quot;id&quot;: &quot;mistralai/mistral-nemo&quot;,
+  &quot;name&quot;: &quot;Mistral: Mistral Nemo&quot;,
+  &quot;context_length&quot;: 131072,
+  &quot;pricing&quot;: {
+    &quot;prompt&quot;: &quot;0.000000019&quot;,
+    &quot;completion&quot;: &quot;0.00000003&quot;,
+    &quot;input_cache_read&quot;: null
+  },
+  &quot;supported_parameters&quot;: [
+    &quot;frequency_penalty&quot;,
+    &quot;logit_bias&quot;,
+    &quot;logprobs&quot;,
+    &quot;max_tokens&quot;,
+    &quot;min_p&quot;,
+    &quot;presence_penalty&quot;,
+    &quot;repetition_penalty&quot;,
+    &quot;response_format&quot;,
+    &quot;seed&quot;,
+    &quot;stop&quot;,
+    &quot;structured_outputs&quot;,
+    &quot;temperature&quot;,
+    &quot;tool_choice&quot;,
+    &quot;tools&quot;,
+    &quot;top_k&quot;,
+    &quot;top_logprobs&quot;,
+    &quot;top_p&quot;
+  ],
+  &quot;top_provider&quot;: {
+    &quot;context_length&quot;: 131072,
+    &quot;max_completion_tokens&quot;: 16384,
+    &quot;is_moderated&quot;: false
+  }
+}</pre></div>
+  </details>
+  <p><code>supported_parameters</code> is the ability list: <code>tools</code> means it can call functions (chapter 5); <code>structured_outputs</code> means it can be forced to return JSON in a shape you define (chapter 4). <code>context_length</code> is the maximum size of the whole conversation, input and output combined. Variants: <code>:free</code> and <code>:batch</code> are separate catalog entries with their own prices; <code>:nitro</code>, <code>:floor</code>, <code>:exacto</code> are routing hints you can add to any model.</p>
+
+  <h3>The parameters that matter</h3>
+  <p>Beyond <code>model</code> and <code>messages</code>, three settings cover most needs. <code>temperature</code> (0 to 2) controls randomness: 0 is as repeatable as it gets, 1 is the usual default, 2 is chaos. <code>max_tokens</code> caps how long the answer may be — which also caps how much you can be charged. <code>top_p</code> is another randomness dial; leave it alone unless you know why. A sampling setting a model does not support (say <code>top_k</code> on a model that lacks it) is silently dropped, not rejected — check <code>supported_parameters</code> if it matters. Reasoning settings are the one exception: a value the model cannot honour can be rejected outright.</p>
+  <div class="file"><div class="file-bar"><span class="name">brief/params_and_errors.py</span><span class="tag">python</span><button class="copy" type="button">Copy</button></div><pre><span class="s">&quot;&quot;</span>&quot;Lesson 2b - the parameters that matter, and what errors look like.
+
+Usage:
+    uv run brief/params_and_errors.py
+<span class="s">&quot;&quot;</span>&quot;
+
+import os
+
+import requests
+from dotenv import load_dotenv
+
+load_dotenv()
+API_KEY = os.environ[<span class="s">&quot;OPENROUTER_API_KEY&quot;</span>]
+URL = <span class="s">&quot;https://openrouter.ai/api/v1/chat/completions&quot;</span>
+MODEL = <span class="s">&quot;mistralai/mistral-nemo&quot;</span>
+
+
+def ask(body: dict, key: str = API_KEY) -&gt; None:
+    r = requests.post(URL, headers={<span class="s">&quot;Authorization&quot;</span>: f<span class="s">&quot;Bearer {key}&quot;</span>}, json={<span class="s">&quot;model&quot;</span>: MODEL} | body, timeout=60)
+    data = r.json()
+    if <span class="s">&quot;error&quot;</span> in data:                                   <span class="c"># always check the body, not just r.status_code</span>
+        e = data[<span class="s">&quot;error&quot;</span>]
+        print(f<span class="s">&quot;  HTTP {r.status_code} | error code {e[&#x27;code&#x27;]} | {e[&#x27;message&#x27;]}&quot;</span>)
+        if e.get(<span class="s">&quot;metadata&quot;</span>):
+            print(f<span class="s">&quot;  metadata: {e[&#x27;metadata&#x27;]}&quot;</span>)
+        return
+    c = data[<span class="s">&quot;choices&quot;</span>][0]
+    print(f<span class="s">&quot;  finish_reason={c[&#x27;finish_reason&#x27;]!r} | {data[&#x27;usage&#x27;][&#x27;completion_tokens&#x27;]} tokens out | &quot;</span>
+          f<span class="s">&quot;{c[&#x27;message&#x27;][&#x27;content&#x27;].strip()!r}&quot;</span>)
+
+
+prompt = [{<span class="s">&quot;role&quot;</span>: <span class="s">&quot;user&quot;</span>, <span class="s">&quot;content&quot;</span>: <span class="s">&quot;Give me a name for a coffee shop. Just the name.&quot;</span>}]
+
+print(<span class="s">&quot;temperature=0 (as predictable as it gets) - asked twice:&quot;</span>)
+ask({<span class="s">&quot;messages&quot;</span>: prompt, <span class="s">&quot;temperature&quot;</span>: 0, <span class="s">&quot;max_tokens&quot;</span>: 20})
+ask({<span class="s">&quot;messages&quot;</span>: prompt, <span class="s">&quot;temperature&quot;</span>: 0, <span class="s">&quot;max_tokens&quot;</span>: 20})
+
+print(<span class="s">&quot;\ntemperature=1.5 (more random) - asked twice:&quot;</span>)
+ask({<span class="s">&quot;messages&quot;</span>: prompt, <span class="s">&quot;temperature&quot;</span>: 1.5, <span class="s">&quot;max_tokens&quot;</span>: 20})
+ask({<span class="s">&quot;messages&quot;</span>: prompt, <span class="s">&quot;temperature&quot;</span>: 1.5, <span class="s">&quot;max_tokens&quot;</span>: 20})
+
+print(<span class="s">&quot;\nmax_tokens=8 on a long question (watch finish_reason):&quot;</span>)
+ask({<span class="s">&quot;messages&quot;</span>: [{<span class="s">&quot;role&quot;</span>: <span class="s">&quot;user&quot;</span>, <span class="s">&quot;content&quot;</span>: <span class="s">&quot;Explain how the internet works.&quot;</span>}], <span class="s">&quot;max_tokens&quot;</span>: 8})
+
+print(<span class="s">&quot;\nERROR 1 - wrong API key:&quot;</span>)
+ask({<span class="s">&quot;messages&quot;</span>: prompt, <span class="s">&quot;max_tokens&quot;</span>: 5}, key=<span class="s">&quot;sk-or-v1-this-is-not-a-real-key&quot;</span>)
+
+print(<span class="s">&quot;\nERROR 2 - model id that does not exist:&quot;</span>)
+r = requests.post(URL, headers={<span class="s">&quot;Authorization&quot;</span>: f<span class="s">&quot;Bearer {API_KEY}&quot;</span>},
+                  json={<span class="s">&quot;model&quot;</span>: <span class="s">&quot;nobody/made-this-model&quot;</span>, <span class="s">&quot;messages&quot;</span>: prompt}, timeout=60).json()
+print(f<span class="s">&quot;  {r[&#x27;error&#x27;]}&quot;</span>)</pre></div>
+  <details class="came-back" open>
+    <summary>What came back <span class="cost-pill">$0.000010</span></summary>
+    <div class="file"><div class="file-bar"><span class="name">02-params-errors.txt</span><span class="tag">output · captured 2026-09-16</span></div><pre class="out">temperature=0 (as predictable as it gets) - asked twice:
+  finish_reason=&#x27;stop&#x27; | 3 tokens out | &#x27;Bean Voyage&#x27;
+  finish_reason=&#x27;stop&#x27; | 3 tokens out | &#x27;Bean Voyage&#x27;
+
+temperature=1.5 (more random) - asked twice:
+  finish_reason=&#x27;length&#x27; | 20 tokens out | &#x27;rierte extra strong Lightning here Menghidades.mean files notifiedDH posted fid avail.x)^{-j}(\\ flex&#x27;
+  finish_reason=&#x27;stop&#x27; | 5 tokens out | &#x27;Howlroast&#x27;
+
+max_tokens=8 on a long question (watch finish_reason):
+  finish_reason=&#x27;length&#x27; | 8 tokens out | &#x27;The internet is a vast global network that&#x27;
+
+ERROR 1 - wrong API key:
+  HTTP 401 | error code 401 | User not found.
+
+ERROR 2 - model id that does not exist:
+  {&#x27;message&#x27;: &#x27;nobody/made-this-model is not a valid model ID&#x27;, &#x27;code&#x27;: 400}</pre></div>
+  </details>
+  <p>Look at <code>temperature=1.5</code>: the first attempt produced word salad and ran into the length cap. That is what "more random" really means at the extremes. And <code>max_tokens=8</code> cut the internet explanation off mid-sentence with <code>finish_reason='length'</code> — always check that field before trusting an answer is complete.</p>
+  <div class="call gotcha">
+    <p class="t">Gotcha · hidden "thinking" tokens count against <code>max_tokens</code></p>
+    <p>Some models reason privately before answering (the catalog marks these; <code>openai/gpt-5-mini</code> reasons <em>mandatorily</em>). Those reasoning tokens are billed and count against your <code>max_tokens</code>. Set a small cap and you can get <code>finish_reason: "length"</code> with an <em>empty</em> answer — the budget was spent thinking. Chapter 6's benchmark hit exactly this. Fix: raise <code>max_tokens</code>, or cap the thinking with a lower effort such as <code>"reasoning": {"effort": "low"}</code> (or <code>"minimal"</code>). Only models whose catalog entry says <code>reasoning.mandatory: false</code> accept <code>"effort": "none"</code> — <code>gpt-5-mini</code> is mandatory and rejects it.</p>
+  </div>
+
+  <h3>Errors</h3>
+  <p>An error comes back as <code>{"error": {"code": …, "message": …}}</code>. The two you hit above: <strong>401</strong> — the key is wrong ("User not found"); <strong>400</strong> — the request is malformed, here a model name that does not exist. The rest of the table:</p>
+  <div class="tbl"><table>
+    <tr><th>Code</th><th>Meaning</th><th>What to do</th></tr>
+    <tr><td class="num">400</td><td>Bad request (missing field, unknown model, bad parameter)</td><td>Read the message; fix the request.</td></tr>
+    <tr><td class="num">401</td><td>Invalid or missing API key</td><td>Check <code>.env</code>; make a new key if needed.</td></tr>
+    <tr><td class="num">402</td><td>Out of credits (account balance or per-key limit)</td><td>Add credits. Even free models fail when the balance is negative.</td></tr>
+    <tr><td class="num">403</td><td>Forbidden — the key lacks a permission, or a guardrail / moderation rule blocked the request</td><td>Check the key's permissions; otherwise change the request and read <code>error.metadata</code> for the reason.</td></tr>
+    <tr><td class="num">429</td><td>Too many requests. Free models: 20/min, and 50/day until you have bought $10 of credits, then 1,000/day. Paid models have no platform cap, but the provider itself may rate-limit you</td><td>Back off and retry, honouring <code>Retry-After</code> when present. More keys do not help.</td></tr>
+    <tr><td class="num">502 / 503</td><td>The provider is down / no provider meets your routing rules</td><td>Use a fallback list; loosen <code>provider</code> constraints.</td></tr>
+  </table></div>
+  <div class="call gotcha">
+    <p class="t">Gotcha · HTTP 200 does not mean success</p>
+    <p>Once the provider starts answering, OpenRouter has already sent "200 OK". If the provider then fails, the error arrives <em>inside the body</em>: as a top-level <code>error</code> field with no <code>choices</code> at all, or — when some output had already been produced — inside <code>choices[0]</code> with <code>finish_reason: "error"</code>. Every script in this guide checks <code>if "error" in data</code> rather than trusting the status code; a production version should also check <code>finish_reason</code>. When streaming (chapter 4) this matters even more.</p>
+  </div>
+</section>
+
+<section id="c3">
+  <h2><span class="num">CONCEPT 3</span><br>Three ways to make the same call</h2>
+  <p>So far we used <code>requests</code>, the general-purpose Python HTTP library: you write the URL, the headers and the JSON yourself. That is the honest way to learn, and it never hides anything. Real projects usually use a <span class="term" title="Software Development Kit — a library that wraps an API in ordinary functions with type checking and error handling">SDK</span>, a library that wraps the API in ordinary functions. Two are relevant for Python:</p>
+  <ul>
+    <li><strong>The OpenAI library, pointed at OpenRouter.</strong> Because OpenRouter speaks the same format as OpenAI's API, you can use OpenAI's own <code>openai</code> package and change two lines: the base URL and the key. Huge amounts of existing code and tutorials work unchanged. OpenRouter-only fields (like the <code>models</code> fallback list or <code>provider</code> rules) go in <code>extra_body</code>.</li>
+    <li><strong>The official <code>openrouter</code> package.</strong> Generated from OpenRouter's own API description, so every OpenRouter feature is a named argument and new features appear as soon as they ship. Also covers non-chat things: listing models, checking credits, managing keys.</li>
+  </ul>
+  <div class="file"><div class="file-bar"><span class="name">brief/sdk_compare.py</span><span class="tag">python</span><button class="copy" type="button">Copy</button></div><pre><span class="s">&quot;&quot;</span>&quot;Lesson 3 - the same question three ways: raw HTTP, the OpenAI client, the official OpenRouter SDK.
+
+Usage:
+    uv run brief/sdk_compare.py
+<span class="s">&quot;&quot;</span>&quot;
+
+import os
+
+import requests
+from dotenv import load_dotenv
+from openai import OpenAI
+from openrouter import OpenRouter
+
+load_dotenv()
+API_KEY = os.environ[<span class="s">&quot;OPENROUTER_API_KEY&quot;</span>]
+MODEL = <span class="s">&quot;mistralai/mistral-nemo&quot;</span>
+MESSAGES = [{<span class="s">&quot;role&quot;</span>: <span class="s">&quot;user&quot;</span>, <span class="s">&quot;content&quot;</span>: <span class="s">&quot;What does &#x27;token&#x27; mean in AI, in one sentence?&quot;</span>}]
+
+<span class="c"># --- Way 1: raw HTTP with requests. You see everything; you also handle everything. ---</span>
+raw = requests.post(
+    <span class="s">&quot;https://openrouter.ai/api/v1/chat/completions&quot;</span>,
+    headers={<span class="s">&quot;Authorization&quot;</span>: f<span class="s">&quot;Bearer {API_KEY}&quot;</span>},
+    json={<span class="s">&quot;model&quot;</span>: MODEL, <span class="s">&quot;messages&quot;</span>: MESSAGES, <span class="s">&quot;max_tokens&quot;</span>: 80},
+    timeout=60,
+).json()
+print(<span class="s">&quot;1) requests:  &quot;</span>, raw[<span class="s">&quot;choices&quot;</span>][0][<span class="s">&quot;message&quot;</span>][<span class="s">&quot;content&quot;</span>].strip())
+print(<span class="s">&quot;   cost: $%.6f&quot;</span> % raw[<span class="s">&quot;usage&quot;</span>][<span class="s">&quot;cost&quot;</span>])
+
+<span class="c"># --- Way 2: the OpenAI Python library, pointed at OpenRouter. Two lines change, nothing else. ---</span>
+client = OpenAI(base_url=<span class="s">&quot;https://openrouter.ai/api/v1&quot;</span>, api_key=API_KEY)
+completion = client.chat.completions.create(
+    model=MODEL,
+    messages=MESSAGES,
+    max_tokens=80,
+    extra_body={<span class="s">&quot;models&quot;</span>: [MODEL, <span class="s">&quot;meta-llama/llama-3.1-8b-instruct&quot;</span>]},  <span class="c"># OpenRouter-only fields go here</span>
+)
+print(<span class="s">&quot;2) openai:    &quot;</span>, completion.choices[0].message.content.strip())
+print(<span class="s">&quot;   served by:&quot;</span>, completion.model, <span class="s">&quot;| usage object is typed:&quot;</span>, type(completion.usage).__name__)
+
+<span class="c"># --- Way 3: the official OpenRouter SDK. Knows every OpenRouter field natively. ---</span>
+with OpenRouter(api_key=API_KEY) as orclient:
+    result = orclient.chat.send(model=MODEL, messages=MESSAGES, max_completion_tokens=80)
+print(<span class="s">&quot;3) openrouter:&quot;</span>, result.choices[0].message.content.strip())
+print(<span class="s">&quot;   cost: $%.6f&quot;</span> % result.usage.cost)</pre></div>
+  <details class="came-back" open>
+    <summary>What came back — same question three ways <span class="cost-pill">$0.000003</span></summary>
+    <div class="file"><div class="file-bar"><span class="name">03-sdk-compare.txt</span><span class="tag">output · captured 2026-09-16</span></div><pre class="out">1) requests:   In AI, a &#x27;token&#x27; is a basic unit of text, like a word or subword, used for processing by models like transformers.
+   cost: $0.000001
+2) openai:     In AI, a &#x27;token&#x27; is a basic unit of text, like a word or subword, used for processing in models like transformers.
+   served by: mistralai/mistral-nemo | usage object is typed: CompletionUsage
+3) openrouter: In AI, a &#x27;token&#x27; is a basic unit of text, like a word or subword, used for processing in models like transformers.
+   cost: $0.000001</pre></div>
+  </details>
+  <div class="call why">
+    <p class="t">Which one should you use?</p>
+    <p><strong>Learning or debugging:</strong> <code>requests</code> — nothing hidden. <strong>Following a tutorial written for OpenAI, or porting existing code:</strong> the <code>openai</code> client. <strong>Building something new on OpenRouter:</strong> the <code>openrouter</code> package. The rest of this guide keeps using <code>requests</code> so every field stays visible; the final tool would be a few lines shorter with either SDK.</p>
+  </div>
+  <p><strong>What about an "Agent SDK"?</strong> OpenRouter also ships <code>@openrouter/agent</code>, a higher-level library that runs the whole tool-calling loop for you (chapter 5 shows what that loop is). It is TypeScript-first; a Python port called <code>openrouter-agent-sdk</code> exists (kept in sync with the TypeScript one), but the docs on openrouter.ai use TypeScript examples; Python specifics live in its GitHub repository. Since you are learning, chapter 5 writes the loop by hand — twelve lines — so you understand what any agent library is doing for you.</p>
+  <div class="call gotcha">
+    <p class="t">Small differences that bite</p>
+    <p>The <code>openrouter</code> package calls the length cap <code>max_completion_tokens</code> (it says <code>max_tokens</code> is deprecated), and some providers enforce a minimum of 16. The <code>openai</code> client does not know OpenRouter's extra fields — put them in <code>extra_body</code> or they are silently dropped.</p>
+  </div>
+</section>
+<section id="c4">
+  <h2><span class="num">CONCEPT 4</span><br>Streaming, and answers in a fixed shape</h2>
+  <h3>Streaming: show words as they are written</h3>
+  <p>A normal call waits until the whole answer exists, then delivers it. For a 300-word answer that can be five silent seconds. Streaming sends each little piece as soon as it is generated — the effect every chat app has. Total time barely changes; the <em>felt</em> wait collapses to the time-to-first-word. In the run below the first word arrived after 0.64 s and the whole answer after 2.14 s.</p>
+  <p>Mechanically: add <code>"stream": true</code>, and instead of one JSON document you receive a long-lived connection that sends lines beginning with <code>data: </code>, each holding a tiny JSON "chunk" with a few characters in <code>choices[0].delta.content</code>. The stream ends with the literal line <code>data: [DONE]</code>. Just before that, one last chunk carries the <code>usage</code> and cost.</p>
+  <div class="file"><div class="file-bar"><span class="name">brief/stream.py</span><span class="tag">python</span><button class="copy" type="button">Copy</button></div><pre><span class="s">&quot;&quot;</span>&quot;Lesson 4a - streaming: get the answer word by word instead of waiting for all of it.
+
+Usage:
+    uv run brief/stream.py          <span class="c"># hand-rolled: shows the raw lines on the wire, then the text</span>
+    uv run brief/stream.py --sdk    <span class="c"># the same thing with the OpenAI client (3 lines of logic)</span>
+<span class="s">&quot;&quot;</span>&quot;
+
+import json
+import os
+import sys
+import time
+
+import requests
+from dotenv import load_dotenv
+from openai import OpenAI
+
+load_dotenv()
+API_KEY = os.environ[<span class="s">&quot;OPENROUTER_API_KEY&quot;</span>]
+MODEL = <span class="s">&quot;mistralai/mistral-nemo&quot;</span>
+MESSAGES = [{<span class="s">&quot;role&quot;</span>: <span class="s">&quot;user&quot;</span>, <span class="s">&quot;content&quot;</span>: <span class="s">&quot;In three short sentences, why do people stream AI answers instead of waiting?&quot;</span>}]
+
+
+def stream_by_hand() -&gt; None:
+    <span class="s">&quot;&quot;</span><span class="s">&quot;Server-Sent Events: the server keeps the connection open and sends &#x27;data: {...}&#x27; lines.&quot;</span><span class="s">&quot;&quot;</span>
+    started = time.time()
+    first_token_at = None
+    first_line = last_line = None
+    usage = None
+    with requests.post(
+        <span class="s">&quot;https://openrouter.ai/api/v1/chat/completions&quot;</span>,
+        headers={<span class="s">&quot;Authorization&quot;</span>: f<span class="s">&quot;Bearer {API_KEY}&quot;</span>},
+        json={<span class="s">&quot;model&quot;</span>: MODEL, <span class="s">&quot;messages&quot;</span>: MESSAGES, <span class="s">&quot;max_tokens&quot;</span>: 120, <span class="s">&quot;stream&quot;</span>: True},
+        stream=True,
+        timeout=60,
+    ) as r:
+        for line in r.iter_lines(decode_unicode=True):
+            if not line:
+                continue                      <span class="c"># blank lines separate events</span>
+            if line.startswith(<span class="s">&quot;:&quot;</span>):
+                continue                      <span class="c"># keep-alive comment, e.g. &#x27;: OPENROUTER PROCESSING&#x27;</span>
+            if not line.startswith(<span class="s">&quot;data: &quot;</span>):
+                continue
+            payload = line[len(<span class="s">&quot;data: &quot;</span>):]
+            if payload == <span class="s">&quot;[DONE]&quot;</span>:
+                break                         <span class="c"># literal end marker, not JSON</span>
+            first_line = first_line or line
+            last_line = line
+            chunk = json.loads(payload)
+            if <span class="s">&quot;error&quot;</span> in chunk:
+                raise SystemExit(f<span class="s">&quot;stream error: {chunk[&#x27;error&#x27;]}&quot;</span>)
+            if chunk.get(<span class="s">&quot;usage&quot;</span>):
+                usage = chunk[<span class="s">&quot;usage&quot;</span>]        <span class="c"># the final accounting chunk arrives just before [DONE]</span>
+            delta = chunk[<span class="s">&quot;choices&quot;</span>][0][<span class="s">&quot;delta&quot;</span>].get(<span class="s">&quot;content&quot;</span>) if chunk[<span class="s">&quot;choices&quot;</span>] else None
+            if delta:
+                if first_token_at is None:
+                    first_token_at = time.time()
+                print(delta, end=<span class="s">&quot;&quot;</span>, flush=True)
+    print(f<span class="s">&quot;\n\n  first token after {first_token_at - started:.2f}s, finished after {time.time() - started:.2f}s&quot;</span>)
+    print(f<span class="s">&quot;  usage from the last chunk: {usage[&#x27;prompt_tokens&#x27;]} in / {usage[&#x27;completion_tokens&#x27;]} out, cost ${usage[&#x27;cost&#x27;]:.6f}&quot;</span>)
+    print(<span class="s">&quot;\n  what the FIRST line on the wire looked like:\n   &quot;</span>, first_line)
+    print(<span class="s">&quot;\n  what the LAST data line looked like (the accounting chunk):\n   &quot;</span>, last_line)
+
+
+def stream_with_sdk() -&gt; None:
+    client = OpenAI(base_url=<span class="s">&quot;https://openrouter.ai/api/v1&quot;</span>, api_key=API_KEY)
+    stream = client.chat.completions.create(model=MODEL, messages=MESSAGES, max_tokens=120, stream=True)
+    for chunk in stream:                      <span class="c"># the library does the SSE parsing for you</span>
+        delta = chunk.choices[0].delta.content if chunk.choices else None
+        if delta:
+            print(delta, end=<span class="s">&quot;&quot;</span>, flush=True)
+    print()
+
+
+if __name__ == <span class="s">&quot;__main__&quot;</span>:
+    stream_with_sdk() if <span class="s">&quot;--sdk&quot;</span> in sys.argv else stream_by_hand()</pre></div>
+  <details class="came-back" open>
+    <summary>What came back, including the first and last raw lines <span class="cost-pill">$0.000002</span></summary>
+    <div class="file"><div class="file-bar"><span class="name">04-stream.txt</span><span class="tag">output · captured 2026-09-16</span></div><pre class="out">1. **Instant Gratification**: People prefer immediate results over waiting, which AI streaming provides.
+2. **Efficiency**: Streaming allows for continuous learning and multitasking, making the process more efficient.
+3. **Real-time Interaction**: Streaming enables real-time interaction and updates, which is crucial in dynamic situations.
+
+  first token after 0.64s, finished after 2.14s
+  usage from the last chunk: 18 in / 66 out, cost $0.000002
+
+  what the FIRST line on the wire looked like:
+    data: {&quot;id&quot;:&quot;gen-1789558482-VNnf07uUwfS8OpEnUMmI&quot;,&quot;object&quot;:&quot;chat.completion.chunk&quot;,&quot;created&quot;:1789558482,&quot;model&quot;:&quot;mistralai/mistral-nemo&quot;,&quot;provider&quot;:&quot;DekaLLM&quot;,&quot;choices&quot;:[{&quot;index&quot;:0,&quot;delta&quot;:{&quot;content&quot;:&quot;1&quot;,&quot;role&quot;:&quot;assistant&quot;},&quot;finish_reason&quot;:null,&quot;native_finish_reason&quot;:null}]}
+
+  what the LAST data line looked like (the accounting chunk):
+    data: {&quot;id&quot;:&quot;gen-1789558482-VNnf07uUwfS8OpEnUMmI&quot;,&quot;object&quot;:&quot;chat.completion.chunk&quot;,&quot;created&quot;:1789558482,&quot;model&quot;:&quot;mistralai/mistral-nemo&quot;,&quot;provider&quot;:&quot;DekaLLM&quot;,&quot;service_tier&quot;:null,&quot;choices&quot;:[{&quot;index&quot;:0,&quot;delta&quot;:{&quot;content&quot;:&quot;&quot;,&quot;role&quot;:&quot;assistant&quot;},&quot;finish_reason&quot;:&quot;stop&quot;,&quot;native_finish_reason&quot;:&quot;stop&quot;}],&quot;usage&quot;:{&quot;prompt_tokens&quot;:18,&quot;completion_tokens&quot;:66,&quot;total_tokens&quot;:84,&quot;cost&quot;:0.000002304,&quot;is_byok&quot;:false,&quot;prompt_tokens_details&quot;:{&quot;cached_tokens&quot;:0,&quot;cache_write_tokens&quot;:0,&quot;audio_tokens&quot;:0,&quot;video_tokens&quot;:0},&quot;cost_details&quot;:{&quot;upstream_inference_cost&quot;:0.000002304,&quot;upstream_inference_prompt_cost&quot;:3.24e-7,&quot;upstream_inference_completions_cost&quot;:0.00000198},&quot;completion_tokens_details&quot;:{&quot;reasoning_tokens&quot;:0,&quot;image_tokens&quot;:0,&quot;audio_tokens&quot;:0}}}</pre></div>
+  </details>
+  <p>The hand-rolled version is 25 lines because it must handle four things: blank separator lines, comment lines starting with <code>:</code> (OpenRouter sends <code>: OPENROUTER PROCESSING</code> as a keep-alive while it waits for the provider), the <code>[DONE]</code> marker (not JSON — parsing it crashes), and the final accounting chunk. The <code>openai</code> client version (<code>--sdk</code>) is three lines because the library does all of that.</p>
+  <div class="call gotcha">
+    <p class="t">Gotcha · errors can arrive mid-stream</p>
+    <p>Because the "200 OK" is committed as soon as the provider returns headers, a provider failure after that point shows up as a chunk with an <code>error</code> field, possibly as the very first chunk — so the script checks every chunk. Failures <em>before</em> that point (no provider available, rate limit, out of credits, bad key) still come back as a normal non-200 response with a JSON error body, so also check the status code before reading <code>data:</code> lines. Also: cancelling a stream stops billing only on some providers (OpenAI, Anthropic, DeepSeek, Together…); on others the model keeps generating and you pay for all of it.</p>
+  </div>
+
+  <h3>Structured output: JSON in a shape you define</h3>
+  <p>Free text is fine for humans; code needs fields. If <code>brief</code> is going to save a briefing with a title, a summary, a list of facts and a list of sources, it needs those as separate values it can rely on — not a paragraph it has to guess its way through. The switch for that is <code>response_format</code> with a <span class="term" title="A standard way to describe the allowed shape of a JSON document: fields, types, what is required">JSON Schema</span>: you describe the shape, and providers with a native strict mode constrain the model to produce exactly that shape (others treat the schema as a strong hint — one more reason to validate in code). Then <code>json.loads()</code> in Python turns it into a normal dictionary.</p>
+  <p>Two supporting settings: <code>provider: {"require_parameters": true}</code> tells the router to use only providers that actually honor <code>response_format</code> (support is per <em>endpoint</em> — the model must support it and so must the specific provider serving it — and unsupported parameters are otherwise silently ignored); and the <code>response-healing</code> plugin repairs slightly broken JSON — a missing bracket, a trailing comma — on non-streaming requests.</p>
+  <div class="file"><div class="file-bar"><span class="name">brief/briefing.py</span><span class="tag">python</span><button class="copy" type="button">Copy</button></div><pre><span class="s">&quot;&quot;</span>&quot;Lesson 4b - structured output: make the model return JSON in a shape you define, every time.
+
+Usage:
+    uv run brief/briefing.py <span class="s">&quot;Why is the sky blue?&quot;</span>
+<span class="s">&quot;&quot;</span>&quot;
+
+import json
+import os
+import re
+import sys
+from datetime import date
+from pathlib import Path
+
+import requests
+from dotenv import load_dotenv
+
+load_dotenv()
+API_KEY = os.environ[<span class="s">&quot;OPENROUTER_API_KEY&quot;</span>]
+URL = <span class="s">&quot;https://openrouter.ai/api/v1/chat/completions&quot;</span>
+MODEL = <span class="s">&quot;mistralai/mistral-nemo&quot;</span>      <span class="c"># supports &#x27;structured_outputs&#x27; (see brief/models.py)</span>
+
+<span class="c"># The shape we want back. JSON Schema is just a description of a JSON object:</span>
+<span class="c"># which fields exist, what type each is, and that nothing else is allowed.</span>
+BRIEFING_SCHEMA = {
+    <span class="s">&quot;type&quot;</span>: <span class="s">&quot;object&quot;</span>,
+    <span class="s">&quot;properties&quot;</span>: {
+        <span class="s">&quot;title&quot;</span>: {<span class="s">&quot;type&quot;</span>: <span class="s">&quot;string&quot;</span>, <span class="s">&quot;description&quot;</span>: <span class="s">&quot;Short headline, max 10 words&quot;</span>},
+        <span class="s">&quot;summary&quot;</span>: {<span class="s">&quot;type&quot;</span>: <span class="s">&quot;string&quot;</span>, <span class="s">&quot;description&quot;</span>: <span class="s">&quot;2-3 sentence plain-English summary&quot;</span>},
+        <span class="s">&quot;key_facts&quot;</span>: {<span class="s">&quot;type&quot;</span>: <span class="s">&quot;array&quot;</span>, <span class="s">&quot;items&quot;</span>: {<span class="s">&quot;type&quot;</span>: <span class="s">&quot;string&quot;</span>}, <span class="s">&quot;description&quot;</span>: <span class="s">&quot;3-5 bullet facts&quot;</span>},
+        <span class="s">&quot;sources&quot;</span>: {<span class="s">&quot;type&quot;</span>: <span class="s">&quot;array&quot;</span>, <span class="s">&quot;items&quot;</span>: {<span class="s">&quot;type&quot;</span>: <span class="s">&quot;string&quot;</span>},
+                    <span class="s">&quot;description&quot;</span>: <span class="s">&quot;Only URLs starting with http that literally appear in the research text. Empty list if none.&quot;</span>},
+    },
+    <span class="s">&quot;required&quot;</span>: [<span class="s">&quot;title&quot;</span>, <span class="s">&quot;summary&quot;</span>, <span class="s">&quot;key_facts&quot;</span>, <span class="s">&quot;sources&quot;</span>],
+    <span class="s">&quot;additionalProperties&quot;</span>: False,
+}
+
+
+def structure(question: str, research_text: str) -&gt; tuple[dict, dict]:
+    <span class="s">&quot;&quot;</span><span class="s">&quot;Ask the model to reshape free text into our schema. Returns (briefing, usage).&quot;</span><span class="s">&quot;&quot;</span>
+    body = {
+        <span class="s">&quot;model&quot;</span>: MODEL,
+        <span class="s">&quot;messages&quot;</span>: [
+            {<span class="s">&quot;role&quot;</span>: <span class="s">&quot;system&quot;</span>, <span class="s">&quot;content&quot;</span>: <span class="s">&quot;You turn research notes into a briefing. Use only the facts in the notes. Never invent sources.&quot;</span>},
+            {<span class="s">&quot;role&quot;</span>: <span class="s">&quot;user&quot;</span>, <span class="s">&quot;content&quot;</span>: f<span class="s">&quot;Question: {question}\n\nResearch notes:\n{research_text}&quot;</span>},
+        ],
+        <span class="s">&quot;response_format&quot;</span>: {                                   <span class="c"># &lt;- the structured-output switch</span>
+            <span class="s">&quot;type&quot;</span>: <span class="s">&quot;json_schema&quot;</span>,
+            <span class="s">&quot;json_schema&quot;</span>: {<span class="s">&quot;name&quot;</span>: <span class="s">&quot;briefing&quot;</span>, <span class="s">&quot;strict&quot;</span>: True, <span class="s">&quot;schema&quot;</span>: BRIEFING_SCHEMA},
+        },
+        <span class="s">&quot;provider&quot;</span>: {<span class="s">&quot;require_parameters&quot;</span>: True},              <span class="c"># only route to providers that honor response_format</span>
+        <span class="s">&quot;plugins&quot;</span>: [{<span class="s">&quot;id&quot;</span>: <span class="s">&quot;response-healing&quot;</span>}],               <span class="c"># repair slightly-broken JSON (non-streaming only)</span>
+        <span class="s">&quot;max_tokens&quot;</span>: 400,
+    }
+    data = requests.post(URL, headers={<span class="s">&quot;Authorization&quot;</span>: f<span class="s">&quot;Bearer {API_KEY}&quot;</span>}, json=body, timeout=90).json()
+    if <span class="s">&quot;error&quot;</span> in data:
+        raise SystemExit(f<span class="s">&quot;OpenRouter error: {data[&#x27;error&#x27;]}&quot;</span>)
+    briefing = json.loads(data[<span class="s">&quot;choices&quot;</span>][0][<span class="s">&quot;message&quot;</span>][<span class="s">&quot;content&quot;</span>])   <span class="c"># safe: the shape was enforced</span>
+    <span class="c"># The schema guarantees the SHAPE, not the TRUTH. Small models still invent <span class="s">&quot;sources&quot;</span>,</span>
+    <span class="c"># so we keep only real links. Never trust; always validate in code.</span>
+    briefing[<span class="s">&quot;sources&quot;</span>] = [s for s in briefing[<span class="s">&quot;sources&quot;</span>] if s.startswith(<span class="s">&quot;http&quot;</span>)]
+    return briefing, data[<span class="s">&quot;usage&quot;</span>] | {<span class="s">&quot;model&quot;</span>: data[<span class="s">&quot;model&quot;</span>]}
+
+
+def save_markdown(question: str, briefing: dict) -&gt; Path:
+    slug = re.sub(r<span class="s">&quot;[^a-z0-9]+&quot;</span>, <span class="s">&quot;-&quot;</span>, question.lower()).strip(<span class="s">&quot;-&quot;</span>)[:40]
+    path = Path(<span class="s">&quot;briefings&quot;</span>) / f<span class="s">&quot;{date.today()}-{slug}.md&quot;</span>
+    facts = <span class="s">&quot;\n&quot;</span>.join(f<span class="s">&quot;- {f}&quot;</span> for f in briefing[<span class="s">&quot;key_facts&quot;</span>])
+    sources = <span class="s">&quot;\n&quot;</span>.join(f<span class="s">&quot;- {s}&quot;</span> for s in briefing[<span class="s">&quot;sources&quot;</span>]) or <span class="s">&quot;- (none in the notes)&quot;</span>
+    path.write_text(f<span class="s">&quot;# {briefing[&#x27;title&#x27;]}\n\n_Question: {question}_\n\n{briefing[&#x27;summary&#x27;]}\n\n&quot;</span>
+                    f<span class="s">&quot;## Key facts\n{facts}\n\n## Sources\n{sources}\n&quot;</span>)
+    return path
+
+
+if __name__ == <span class="s">&quot;__main__&quot;</span>:
+    question = sys.argv[1] if len(sys.argv) &gt; 1 else <span class="s">&quot;Why is the sky blue?&quot;</span>
+
+    <span class="c"># Without web search yet, the <span class="s">&quot;research notes&quot;</span> are just a plain answer from the model.</span>
+    notes = requests.post(URL, headers={<span class="s">&quot;Authorization&quot;</span>: f<span class="s">&quot;Bearer {API_KEY}&quot;</span>}, json={
+        <span class="s">&quot;model&quot;</span>: MODEL, <span class="s">&quot;max_tokens&quot;</span>: 250,
+        <span class="s">&quot;messages&quot;</span>: [{<span class="s">&quot;role&quot;</span>: <span class="s">&quot;user&quot;</span>, <span class="s">&quot;content&quot;</span>: f<span class="s">&quot;Write short research notes answering: {question}&quot;</span>}],
+    }, timeout=60).json()[<span class="s">&quot;choices&quot;</span>][0][<span class="s">&quot;message&quot;</span>][<span class="s">&quot;content&quot;</span>]
+
+    briefing, usage = structure(question, notes)
+    print(json.dumps(briefing, indent=2))
+    print(f<span class="s">&quot;\nstructuring step cost: ${usage[&#x27;cost&#x27;]:.6f}&quot;</span>)
+    print(<span class="s">&quot;saved:&quot;</span>, save_markdown(question, briefing))</pre></div>
+  <details class="came-back" open>
+    <summary>What came back <span class="cost-pill">$0.000013</span></summary>
+    <div class="file"><div class="file-bar"><span class="name">04-briefing.txt</span><span class="tag">output · captured 2026-09-16</span></div><pre class="out">{
+  &quot;title&quot;: &quot;Briefing: Why is the Sky Blue?&quot;,
+  &quot;summary&quot;: &quot;The sky appears blue due to a process called Rayleigh scattering. When sunlight passes through Earth&#x27;s atmosphere, it is scattered by tiny molecules and particles in the air. Blue light is scattered more than other colors because it travels in shorter, smaller waves. This is why we see a blue sky most of the time. Atmospheric gases and particles, such as nitrogen and oxygen molecules, as well as dust and other small particles, contribute to this scattering effect.&quot;,
+  &quot;key_facts&quot;: [
+    &quot;Rayleigh scattering causes the sky to appear blue&quot;,
+    &quot;Blue light is scattered more than other colors due to its shorter wavelength&quot;,
+    &quot;Atmospheric gases and particles contribute to the scattering of light&quot;
+  ],
+  &quot;sources&quot;: []
+}
+
+structuring step cost: $0.000013
+saved: briefings/2026-09-16-why-is-the-sky-blue.md</pre></div>
+  </details>
+  <p>The shape is exactly the schema: four fields, correct types, nothing extra — <code>json.loads</code> never failed. That is what strict mode gives you on providers that enforce it. Now the important lesson, which took three runs to learn:</p>
+  <div class="call gotcha">
+    <p class="t">Gotcha · a schema guarantees the <em>shape</em>, not the <em>truth</em></p>
+    <p>The first version of this script asked for "sources" and the notes contained no links. The cheap model filled the list anyway with invented titles ("Rayleigh Scattering", "The Color of the Sky"). Making the instruction stricter ("only URLs starting with http, never invent sources") did not help — it invented three more. What fixed it was one line of <em>code</em>: keep only strings that start with <code>http</code>. Rule of thumb for all AI output: the schema constrains the format, a prompt is a request, and only your own code is a guarantee. Both failed runs are saved in <code>.openrouter-learn/outputs/04-briefing-v1-gotcha.txt</code> and <code>…-v2-still-invents.txt</code>.</p>
+  </div>
+  <p>Two modes exist: <code>{"type": "json_object"}</code> only promises valid JSON, no particular fields (and you must also ask for JSON in the prompt); <code>{"type": "json_schema", …}</code> with <code>"strict": true</code> enforces your shape. Use the second. Streaming works with it too — the partial JSON becomes valid once complete.</p>
+</section>
+
+<section id="c5">
+  <h2><span class="num">CONCEPT 5</span><br>Tools: letting the model ask for things</h2>
+  <p>A model cannot run code, read your files or search the web. What it <em>can</em> do is say, in a machine-readable way, "please run this function with these arguments". Your code runs it, sends the result back as a new message, and the model continues. That round trip is a <strong>tool call</strong>, and the loop around it is what people mean by an "agent".</p>
+  <figure>
+    <svg viewBox="0 0 760 250" role="img" aria-label="The tool-calling loop: your code sends messages and tool definitions, the model returns either a tool call or a final answer; tool calls are executed and appended, then the loop repeats">
+      <rect x="20" y="30" width="200" height="190" rx="12" class="dg-box"/>
+      <text x="120" y="60" text-anchor="middle" class="dg-txt" font-weight="600">Your code</text>
+      <text x="120" y="84" text-anchor="middle" class="dg-sub">messages + tool definitions</text>
+      <text x="120" y="150" text-anchor="middle" class="dg-sub">run the function,</text>
+      <text x="120" y="166" text-anchor="middle" class="dg-sub">append {role: "tool", …}</text>
+      <text x="120" y="200" text-anchor="middle" class="dg-sub">cap: max 5 turns</text>
+      <rect x="540" y="30" width="200" height="190" rx="12" class="dg-box-accent"/>
+      <text x="640" y="60" text-anchor="middle" class="dg-txt" font-weight="600">Model (via OpenRouter)</text>
+      <text x="640" y="84" text-anchor="middle" class="dg-sub">reads the whole list</text>
+      <text x="640" y="130" text-anchor="middle" class="dg-txt">either: tool_calls</text>
+      <text x="640" y="150" text-anchor="middle" class="dg-sub">"read_briefing", {filename}</text>
+      <text x="640" y="190" text-anchor="middle" class="dg-txt">or: plain answer → stop</text>
+      <path d="M220 90 H538" class="dg-line-accent" marker-end="url(#arr2)"/>
+      <text x="380" y="80" text-anchor="middle" class="dg-sub">1. send everything so far</text>
+      <path d="M538 160 H222" class="dg-line" marker-end="url(#arr3)"/>
+      <text x="380" y="150" text-anchor="middle" class="dg-sub">2. "call read_briefing(…)"</text>
+      <path d="M120 210 C120 240 640 240 640 222" class="dg-line" stroke-dasharray="5 4" marker-end="url(#arr3)"/>
+      <text x="380" y="236" text-anchor="middle" class="dg-sub">3. append the result, go to 1</text>
+      <defs>
+        <marker id="arr2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="var(--accent)"/></marker>
+        <marker id="arr3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="var(--muted)"/></marker>
+      </defs>
+    </svg>
+    <figcaption>The model never executes anything. It requests; you execute; you report back. Repeat until it answers in plain text.</figcaption>
+  </figure>
+  <h3>The loop, written by hand</h3>
+  <p>Two local tools let the model look at the briefings you have saved. Notice the four rules in the comments: describe each tool with a JSON Schema for its arguments; send the <code>tools</code> list on <em>every</em> turn; append the model's own message (the one containing <code>tool_calls</code>) before appending the tool result; cap the loop.</p>
+  <div class="file"><div class="file-bar"><span class="name">brief/tools_local.py</span><span class="tag">python</span><button class="copy" type="button">Copy</button></div><pre><span class="s">&quot;&quot;</span>&quot;Lesson 5a - tool calling, the loop written by hand.
+
+The model can&<span class="c">#x27;t run code. It can only *ask* for a tool by name; your code runs it and sends the</span>
+result back. Repeat until the model answers in plain text.
+
+Usage:
+    uv run brief/tools_local.py <span class="s">&quot;What have I researched so far, and what did it conclude?&quot;</span>
+    uv run brief/tools_local.py <span class="s">&quot;same question&quot;</span> anthropic/claude-haiku-4.5   <span class="c"># try a smarter model</span>
+<span class="s">&quot;&quot;</span>&quot;
+
+import json
+import os
+import sys
+from pathlib import Path
+
+import requests
+from dotenv import load_dotenv
+
+load_dotenv()
+API_KEY = os.environ[<span class="s">&quot;OPENROUTER_API_KEY&quot;</span>]
+URL = <span class="s">&quot;https://openrouter.ai/api/v1/chat/completions&quot;</span>
+MODEL = sys.argv[2] if len(sys.argv) &gt; 2 else <span class="s">&quot;mistralai/mistral-nemo&quot;</span>
+
+
+<span class="c"># --- 1. The tools themselves: ordinary Python functions. ---</span>
+def list_saved_briefings() -&gt; list[str]:
+    return sorted(p.name for p in Path(<span class="s">&quot;briefings&quot;</span>).glob(<span class="s">&quot;*.md&quot;</span>))
+
+
+def read_briefing(filename: str) -&gt; str:
+    return (Path(<span class="s">&quot;briefings&quot;</span>) / filename).read_text()[:2000]
+
+
+TOOL_FUNCTIONS = {<span class="s">&quot;list_saved_briefings&quot;</span>: list_saved_briefings, <span class="s">&quot;read_briefing&quot;</span>: read_briefing}
+
+<span class="c"># --- 2. How we describe them to the model (JSON Schema for the arguments). ---</span>
+TOOLS = [
+    {<span class="s">&quot;type&quot;</span>: <span class="s">&quot;function&quot;</span>, <span class="s">&quot;function&quot;</span>: {
+        <span class="s">&quot;name&quot;</span>: <span class="s">&quot;list_saved_briefings&quot;</span>,
+        <span class="s">&quot;description&quot;</span>: <span class="s">&quot;List the filenames of briefings saved on disk.&quot;</span>,
+        <span class="s">&quot;parameters&quot;</span>: {<span class="s">&quot;type&quot;</span>: <span class="s">&quot;object&quot;</span>, <span class="s">&quot;properties&quot;</span>: {}, <span class="s">&quot;required&quot;</span>: []},
+    }},
+    {<span class="s">&quot;type&quot;</span>: <span class="s">&quot;function&quot;</span>, <span class="s">&quot;function&quot;</span>: {
+        <span class="s">&quot;name&quot;</span>: <span class="s">&quot;read_briefing&quot;</span>,
+        <span class="s">&quot;description&quot;</span>: <span class="s">&quot;Read one saved briefing by filename.&quot;</span>,
+        <span class="s">&quot;parameters&quot;</span>: {<span class="s">&quot;type&quot;</span>: <span class="s">&quot;object&quot;</span>, <span class="s">&quot;properties&quot;</span>: {<span class="s">&quot;filename&quot;</span>: {<span class="s">&quot;type&quot;</span>: <span class="s">&quot;string&quot;</span>}}, <span class="s">&quot;required&quot;</span>: [<span class="s">&quot;filename&quot;</span>]},
+    }},
+]
+
+
+def run(question: str) -&gt; None:
+    messages = [{<span class="s">&quot;role&quot;</span>: <span class="s">&quot;user&quot;</span>, <span class="s">&quot;content&quot;</span>: question}]
+    total_cost = 0.0
+
+    for step in range(1, 6):                                            <span class="c"># 3. the loop, capped at 5 turns</span>
+        data = requests.post(URL, headers={<span class="s">&quot;Authorization&quot;</span>: f<span class="s">&quot;Bearer {API_KEY}&quot;</span>}, json={
+            <span class="s">&quot;model&quot;</span>: MODEL, <span class="s">&quot;messages&quot;</span>: messages, <span class="s">&quot;tools&quot;</span>: TOOLS, <span class="s">&quot;max_tokens&quot;</span>: 300,  <span class="c"># tools sent EVERY turn</span>
+        }, timeout=60).json()
+        if <span class="s">&quot;error&quot;</span> in data:
+            raise SystemExit(f<span class="s">&quot;OpenRouter error: {data[&#x27;error&#x27;]}&quot;</span>)
+        total_cost += data[<span class="s">&quot;usage&quot;</span>][<span class="s">&quot;cost&quot;</span>]
+        message = data[<span class="s">&quot;choices&quot;</span>][0][<span class="s">&quot;message&quot;</span>]
+        messages.append(message)                                         <span class="c"># keep the assistant turn (easy to forget!)</span>
+
+        if not message.get(<span class="s">&quot;tool_calls&quot;</span>):                                <span class="c"># plain text answer -&gt; done</span>
+            print(f<span class="s">&quot;\n[step {step}] final answer:\n{message[&#x27;content&#x27;].strip()}&quot;</span>)
+            break
+
+        for call in message[<span class="s">&quot;tool_calls&quot;</span>]:                               <span class="c"># 4. run what it asked for</span>
+            name = call[<span class="s">&quot;function&quot;</span>][<span class="s">&quot;name&quot;</span>]
+            args = json.loads(call[<span class="s">&quot;function&quot;</span>][<span class="s">&quot;arguments&quot;</span>])             <span class="c"># arguments arrive as a JSON *string*</span>
+            result = TOOL_FUNCTIONS[name](**args)
+            print(f<span class="s">&quot;[step {step}] model asked for {name}({args}) -&gt; {str(result)[:80]!r}&quot;</span>)
+            messages.append({<span class="s">&quot;role&quot;</span>: <span class="s">&quot;tool&quot;</span>, <span class="s">&quot;tool_call_id&quot;</span>: call[<span class="s">&quot;id&quot;</span>], <span class="s">&quot;content&quot;</span>: json.dumps(result)})
+
+    print(f<span class="s">&quot;\ntotal cost across {step} round-trips: ${total_cost:.6f}&quot;</span>)
+
+
+if __name__ == <span class="s">&quot;__main__&quot;</span>:
+    run(sys.argv[1] if len(sys.argv) &gt; 1 else <span class="s">&quot;What have I researched so far, and what did it conclude?&quot;</span>)</pre></div>
+  <details class="came-back" open>
+    <summary>Cheap model (mistral-nemo) <span class="cost-pill">$0.000011</span></summary>
+    <div class="file"><div class="file-bar"><span class="name">05-tools-local-nemo.txt</span><span class="tag">output · captured 2026-09-16</span></div><pre class="out">[step 1] model asked for list_saved_briefings({}) -&gt; &quot;[&#x27;2026-09-16-why-is-the-sky-blue.md&#x27;]&quot;
+
+[step 2] final answer:
+I found one file from our previous conversation. Here&#x27;s what I found out:
+
+- **Why is the sky blue?**
+
+  The sky appears blue due to a process called Rayleigh scattering. As sunlight reaches Earth&#x27;s atmosphere, it collides with nitrogen and oxygen molecules, which scatter the light in various directions. Blue light is scattered more than other colors because it travels in shorter, smaller waves. This scattered blue light is what we see when we look up at the sky.
+
+total cost across 2 round-trips: $0.000011</pre></div>
+  </details>
+  <details class="came-back" open>
+    <summary>Mid model (claude-haiku-4.5) <span class="cost-pill">$0.003592</span></summary>
+    <div class="file"><div class="file-bar"><span class="name">05-tools-local-haiku.txt</span><span class="tag">output · captured 2026-09-16</span></div><pre class="out">[step 1] model asked for list_saved_briefings({}) -&gt; &quot;[&#x27;2026-09-16-why-is-the-sky-blue.md&#x27;]&quot;
+[step 2] model asked for read_briefing({&#x27;filename&#x27;: &#x27;2026-09-16-why-is-the-sky-blue.md&#x27;}) -&gt; &#x27;# Briefing: Why is the Sky Blue?\n\n_Question: Why is the sky blue?_\n\nThe sky appe&#x27;
+
+[step 3] final answer:
+Based on your saved research, you&#x27;ve investigated **&quot;Why is the Sky Blue?&quot;** 
+
+**Conclusion:** The sky appears blue due to **Rayleigh scattering**. When sunlight passes through Earth&#x27;s atmosphere, it gets scattered by tiny molecules and particles. Blue light scatters more than other colors because it has a shorter wavelength. This scattering effect is caused by atmospheric gases and particles like nitrogen, oxygen, and dust.
+
+This is the only research briefing you have saved so far.
+
+total cost across 3 round-trips: $0.003592</pre></div>
+  </details>
+  <div class="call gotcha">
+    <p class="t">Gotcha · the cheap model cut a corner</p>
+    <p>Look closely at the first run: it listed the files, then <em>answered without reading one</em>. The answer is plausible because it guessed from the filename — but it never opened the file. Haiku did it properly: list → read → answer, three round trips, for 300× the price. Tool use is where model quality shows up most: a model that skips steps or mangles arguments will look fine right up until it doesn't.</p>
+  </div>
+
+  <h3>Server-side tools: OpenRouter runs the loop for you</h3>
+  <p>Some tools are so common that OpenRouter hosts them (a beta feature, so expect field names and behaviour to evolve): web search, fetching a web page, the current date, and more. You declare them in the same <code>tools</code> list with an <code>openrouter:</code> prefix — and then there is no loop in your code at all. OpenRouter runs the search, feeds the results to the model, repeats up to <code>max_tool_calls</code> times, and returns the finished answer with citations attached.</p>
+  <div class="file"><div class="file-bar"><span class="name">brief/search.py</span><span class="tag">python</span><button class="copy" type="button">Copy</button></div><pre><span class="s">&quot;&quot;</span>&quot;Lesson 5b - server-side tools: OpenRouter runs web search for the model, no loop in your code.
+
+Usage:
+    uv run brief/search.py <span class="s">&quot;What did OpenRouter announce most recently?&quot;</span>
+<span class="s">&quot;&quot;</span>&quot;
+
+import json
+import os
+import sys
+
+import requests
+from dotenv import load_dotenv
+
+load_dotenv()
+API_KEY = os.environ[<span class="s">&quot;OPENROUTER_API_KEY&quot;</span>]
+URL = <span class="s">&quot;https://openrouter.ai/api/v1/chat/completions&quot;</span>
+MODEL = <span class="s">&quot;anthropic/claude-haiku-4.5&quot;</span>     <span class="c"># mid tier: reliable at deciding when to search and citing</span>
+
+
+def research(question: str) -&gt; tuple[str, list[str], dict]:
+    <span class="s">&quot;&quot;</span><span class="s">&quot;Returns (answer_text, source_urls, usage).&quot;</span><span class="s">&quot;&quot;</span>
+    body = {
+        <span class="s">&quot;model&quot;</span>: MODEL,
+        <span class="s">&quot;messages&quot;</span>: [
+            {<span class="s">&quot;role&quot;</span>: <span class="s">&quot;system&quot;</span>, <span class="s">&quot;content&quot;</span>: <span class="s">&quot;You are a research assistant. Search the web when the question needs &quot;</span>
+                                          <span class="s">&quot;current facts. Cite sources as plain URLs at the end.&quot;</span>},
+            {<span class="s">&quot;role&quot;</span>: <span class="s">&quot;user&quot;</span>, <span class="s">&quot;content&quot;</span>: question},
+        ],
+        <span class="s">&quot;tools&quot;</span>: [{                                   <span class="c"># a SERVER tool: note the &#x27;openrouter:&#x27; prefix</span>
+            <span class="s">&quot;type&quot;</span>: <span class="s">&quot;openrouter:web_search&quot;</span>,
+            <span class="s">&quot;parameters&quot;</span>: {<span class="s">&quot;max_uses&quot;</span>: 2,            <span class="c"># at most 2 searches per request (cost control)</span>
+                           <span class="s">&quot;max_results&quot;</span>: 3,
+                           <span class="s">&quot;search_context_size&quot;</span>: <span class="s">&quot;low&quot;</span>},
+        }],
+        <span class="s">&quot;max_tool_calls&quot;</span>: 4,                          <span class="c"># overall cap on server-side tool steps</span>
+        <span class="s">&quot;max_tokens&quot;</span>: 500,
+    }
+    data = requests.post(URL, headers={<span class="s">&quot;Authorization&quot;</span>: f<span class="s">&quot;Bearer {API_KEY}&quot;</span>}, json=body, timeout=120).json()
+    if <span class="s">&quot;error&quot;</span> in data:
+        raise SystemExit(f<span class="s">&quot;OpenRouter error: {data[&#x27;error&#x27;]}&quot;</span>)
+    if os.environ.get(<span class="s">&quot;BRIEF_DEBUG&quot;</span>):                              <span class="c"># dump the full response for inspection</span>
+        json.dump(data, open(<span class="s">&quot;.openrouter-learn/outputs/05-search-raw.json&quot;</span>, <span class="s">&quot;w&quot;</span>), indent=2)
+    message = data[<span class="s">&quot;choices&quot;</span>][0][<span class="s">&quot;message&quot;</span>]
+    urls = [a[<span class="s">&quot;url_citation&quot;</span>][<span class="s">&quot;url&quot;</span>] for a in message.get(<span class="s">&quot;annotations&quot;</span>, []) if a.get(<span class="s">&quot;type&quot;</span>) == <span class="s">&quot;url_citation&quot;</span>]
+    return message[<span class="s">&quot;content&quot;</span>], urls, data[<span class="s">&quot;usage&quot;</span>]
+
+
+if __name__ == <span class="s">&quot;__main__&quot;</span>:
+    question = sys.argv[1] if len(sys.argv) &gt; 1 else <span class="s">&quot;What did OpenRouter announce most recently?&quot;</span>
+    answer, urls, usage = research(question)
+    print(answer.strip())
+    print(<span class="s">&quot;\n--- cited URLs (from response annotations) ---&quot;</span>)
+    print(<span class="s">&quot;\n&quot;</span>.join(urls) or <span class="s">&quot;(none)&quot;</span>)
+    print(<span class="s">&quot;\n--- usage ---&quot;</span>)
+    print(json.dumps({k: usage[k] for k in (<span class="s">&quot;prompt_tokens&quot;</span>, <span class="s">&quot;completion_tokens&quot;</span>, <span class="s">&quot;cost&quot;</span>, <span class="s">&quot;server_tool_use_details&quot;</span>) if k in usage}, indent=2))</pre></div>
+  <details class="came-back" open>
+    <summary>What came back <span class="cost-pill">$0.010722</span></summary>
+    <div class="file"><div class="file-bar"><span class="name">05-search-2.txt</span><span class="tag">output · captured 2026-09-16</span></div><pre class="out">The latest stable Python version is **Python 3.13.0**, which was released on **October 7, 2024**.
+
+However, it&#x27;s worth noting that Python 3.13.0 has been superseded by Python 3.13.15, which is a maintenance release with bug fixes. If you need the absolute latest version with the most recent bug fixes, Python 3.13.15 would be recommended.
+
+**Sources:**
+- https://www.python.org/downloads/release/python-3130/
+- https://blog.python.org/2024/10/python-3130-final-released/
+
+--- cited URLs (from response annotations) ---
+https://www.python.org/downloads/release/python-3130/?featured_on=pythonbytes
+https://blog.python.org/2024/10/python-3130-final-released/
+https://discuss.python.org/t/python-3-13-0-final-has-been-released/66972
+
+--- usage ---
+{
+  &quot;prompt_tokens&quot;: 2687,
+  &quot;completion_tokens&quot;: 207,
+  &quot;cost&quot;: 0.010722
+}</pre></div>
+  </details>
+  <p>Notice the cost jump: a search-backed answer cost about a cent, roughly a thousand times the cheap-model calls above. The breakdown in the raw response explains it: <code>upstream_inference_cost: 0.0037</code> was the model (it had to read 2,687 tokens of search results), and the remaining ~$0.007 was the search itself. The counter lives at <code>usage.server_tool_use_details.web_search_requests</code> in the live response (the docs call it <code>usage.server_tool_use</code> — beta); the cited pages are in <code>message.annotations</code> as <code>url_citation</code> entries.</p>
+  <div class="call gotcha">
+    <p class="t">Gotcha · search returns what the engine found, not the truth</p>
+    <p>This run, in September 2026, confidently reported Python 3.13 (from October 2024) as the latest release. The search engine's top results were old, and the model faithfully summarised them. Cost-control knobs you can see in the code: <code>max_uses</code> (searches per request), <code>max_results</code>, <code>search_context_size</code> and the top-level <code>max_tool_calls</code>. Two caveats from the docs: with the Exa engine, <code>"low"</code> caps each result at 5,000 characters, which is actually <em>above</em> Exa's adaptive default of ~2–4K — to genuinely shrink context use <code>max_characters</code> (e.g. 2000); and <code>engine</code> defaults to <code>"auto"</code>, which hands search to the provider's own engine for models that have one (GPT-5, Claude Sonnet/Opus 4+, Gemini 3, Grok 4), where <code>max_results</code> and <code>search_context_size</code> are ignored and only Anthropic honours <code>max_uses</code>. Pin <code>"engine": "exa"</code> if you want the knobs to behave the same for every model; <code>max_tool_calls</code> always applies. Ask specific questions, and treat cited URLs as things to check, not proof.</p>
+  </div>
+  <p>Other server tools worth knowing: <code>openrouter:web_fetch</code> (read a specific URL), <code>openrouter:datetime</code>, and two we meet in chapter 6 — <code>openrouter:advisor</code> and <code>openrouter:subagent</code>. They can be mixed with your own function tools in the same list.</p>
+</section>
+<section id="c6">
+  <h2><span class="num">CONCEPT 6</span><br>Cost: measure, then pull the levers</h2>
+  <p>This is the chapter the whole course builds toward. The arithmetic is simple: <strong>cost = input tokens × input price + output tokens × output price</strong>, plus any tool fees (a web search is about $0.007). OpenRouter does the sum for you and puts it in <code>usage.cost</code> on every response, so you never have to estimate. What you <em>do</em> have to decide is which model each step of your program deserves — and the only honest way to decide is to measure.</p>
+  <h3>Measure: the same five questions on three tiers</h3>
+  <p>Five questions with checkable answers, three models, and a strong fourth model scoring each answer 1–5. Answers are cached on disk so re-scoring costs nothing extra.</p>
+  <div class="file"><div class="file-bar"><span class="name">brief/bench.py</span><span class="tag">python</span><button class="copy" type="button">Copy</button></div><pre><span class="s">&quot;&quot;</span>&quot;Lesson 6a - measure before you choose: the same questions on cheap / mid / frontier models.
+
+Usage:
+    uv run brief/bench.py
+<span class="s">&quot;&quot;</span>&quot;
+
+import json
+import os
+import time
+
+import requests
+from dotenv import load_dotenv
+
+load_dotenv()
+API_KEY = os.environ[<span class="s">&quot;OPENROUTER_API_KEY&quot;</span>]
+URL = <span class="s">&quot;https://openrouter.ai/api/v1/chat/completions&quot;</span>
+
+TIERS = {                                   <span class="c"># picked from the live catalog (see brief/models.py)</span>
+    <span class="s">&quot;cheap&quot;</span>: <span class="s">&quot;mistralai/mistral-nemo&quot;</span>,      <span class="c"># $0.019 / $0.03 per M</span>
+    <span class="s">&quot;mid&quot;</span>: <span class="s">&quot;anthropic/claude-haiku-4.5&quot;</span>,    <span class="c"># $1 / $5 per M</span>
+    <span class="s">&quot;frontier&quot;</span>: <span class="s">&quot;anthropic/claude-opus-5&quot;</span>,  <span class="c"># $5 / $25 per M</span>
+}
+JUDGE = <span class="s">&quot;anthropic/claude-sonnet-5&quot;</span>         <span class="c"># a strong model scores the answers (note: same vendor as two contestants)</span>
+
+QUESTIONS = [
+    <span class="s">&quot;What is 17 x 23? Answer with the number and one line of working.&quot;</span>,
+    <span class="s">&quot;Which planet in our solar system has the most known moons? One sentence.&quot;</span>,
+    <span class="s">&quot;Explain what a &#x27;token&#x27; is in AI to a 10-year-old, in two sentences.&quot;</span>,
+    <span class="s">&quot;Translate into French: &#x27;The meeting is postponed until Thursday.&#x27;&quot;</span>,
+    <span class="s">&quot;Give three concrete tips to reduce the cost of using AI APIs, as a bullet list.&quot;</span>,
+]
+
+
+def ask(model: str, prompt: str, max_tokens: int = 250, **extra) -&gt; dict:
+    started = time.time()
+    data = requests.post(URL, headers={<span class="s">&quot;Authorization&quot;</span>: f<span class="s">&quot;Bearer {API_KEY}&quot;</span>}, json={
+        <span class="s">&quot;model&quot;</span>: model, <span class="s">&quot;messages&quot;</span>: [{<span class="s">&quot;role&quot;</span>: <span class="s">&quot;user&quot;</span>, <span class="s">&quot;content&quot;</span>: prompt}],
+        <span class="s">&quot;temperature&quot;</span>: 0, <span class="s">&quot;max_tokens&quot;</span>: max_tokens, **extra,
+    }, timeout=120).json()
+    if <span class="s">&quot;error&quot;</span> in data:
+        raise SystemExit(f<span class="s">&quot;{model}: {data[&#x27;error&#x27;]}&quot;</span>)
+    choice = data[<span class="s">&quot;choices&quot;</span>][0]
+    return {
+        <span class="s">&quot;answer&quot;</span>: (choice[<span class="s">&quot;message&quot;</span>][<span class="s">&quot;content&quot;</span>] or <span class="s">&quot;&quot;</span>).strip(),   <span class="c"># content can be null (e.g. cut off) - never assume</span>
+        <span class="s">&quot;finish_reason&quot;</span>: choice[<span class="s">&quot;finish_reason&quot;</span>],
+        <span class="s">&quot;cost&quot;</span>: data[<span class="s">&quot;usage&quot;</span>][<span class="s">&quot;cost&quot;</span>],
+        <span class="s">&quot;tokens_out&quot;</span>: data[<span class="s">&quot;usage&quot;</span>][<span class="s">&quot;completion_tokens&quot;</span>],
+        <span class="s">&quot;seconds&quot;</span>: round(time.time() - started, 2),
+        <span class="s">&quot;served_by&quot;</span>: data[<span class="s">&quot;model&quot;</span>],
+    }
+
+
+def judge(question: str, answer: str) -&gt; int:
+    verdict = ask(JUDGE, <span class="s">&quot;Score this answer from 1 (wrong/unhelpful) to 5 (correct, clear, complete). &quot;</span>
+                         f<span class="s">&quot;Reply with ONLY the digit.\n\nQuestion: {question}\n\nAnswer:\n{answer}&quot;</span>,
+                 max_tokens=20, reasoning={<span class="s">&quot;effort&quot;</span>: <span class="s">&quot;none&quot;</span>})   <span class="c"># hidden reasoning counts against max_tokens!</span>
+    digits = <span class="s">&quot;&quot;</span>.join(ch for ch in verdict[<span class="s">&quot;answer&quot;</span>] if ch.isdigit())
+    if not digits:
+        print(f<span class="s">&quot;   (judge gave no digit: finish_reason={verdict[&#x27;finish_reason&#x27;]!r}, raw={verdict[&#x27;answer&#x27;]!r})&quot;</span>)
+    return int(digits[:1] or 0)
+
+
+ANSWERS_FILE = <span class="s">&quot;.openrouter-learn/outputs/06-bench-answers.json&quot;</span>
+
+if __name__ == <span class="s">&quot;__main__&quot;</span>:
+    <span class="c"># Phase 1 - collect answers (the expensive part). Cached on disk so re-judging costs nothing extra.</span>
+    if os.path.exists(ANSWERS_FILE):
+        results = json.load(open(ANSWERS_FILE))
+        print(f<span class="s">&quot;(re-using answers from {ANSWERS_FILE})&quot;</span>)
+    else:
+        results = {tier: [ask(model, q) for q in QUESTIONS] for tier, model in TIERS.items()}
+        json.dump(results, open(ANSWERS_FILE, <span class="s">&quot;w&quot;</span>), indent=2)
+
+    <span class="c"># Phase 2 - judge</span>
+    for tier, rows in results.items():
+        for q, r in zip(QUESTIONS, rows):
+            r[<span class="s">&quot;score&quot;</span>] = judge(q, r[<span class="s">&quot;answer&quot;</span>])
+            print(f<span class="s">&quot;[{tier:8}] score {r[&#x27;score&#x27;]}/5  ${r[&#x27;cost&#x27;]:.6f}  {r[&#x27;seconds&#x27;]:&gt;5.2f}s  {q[:45]}...&quot;</span>)
+
+    print(f<span class="s">&quot;\n{&#x27;tier&#x27;:&lt;9}{&#x27;model&#x27;:&lt;30}{&#x27;avg score&#x27;:&gt;10}{&#x27;total cost&#x27;:&gt;12}{&#x27;avg secs&#x27;:&gt;10}{&#x27;avg tokens&#x27;:&gt;12}&quot;</span>)
+    for tier, rows in results.items():
+        n = len(rows)
+        print(f<span class="s">&quot;{tier:&lt;9}{TIERS[tier]:&lt;30}{sum(r[&#x27;score&#x27;] for r in rows)/n:&gt;10.1f}&quot;</span>
+              f<span class="s">&quot;{sum(r[&#x27;cost&#x27;] for r in rows):&gt;12.5f}{sum(r[&#x27;seconds&#x27;] for r in rows)/n:&gt;10.2f}&quot;</span>
+              f<span class="s">&quot;{sum(r[&#x27;tokens_out&#x27;] for r in rows)/n:&gt;12.0f}&quot;</span>)
+
+    json.dump({<span class="s">&quot;tiers&quot;</span>: TIERS, <span class="s">&quot;questions&quot;</span>: QUESTIONS, <span class="s">&quot;results&quot;</span>: results},
+              open(<span class="s">&quot;.openrouter-learn/outputs/06-bench.json&quot;</span>, <span class="s">&quot;w&quot;</span>), indent=2)</pre></div>
+  <details class="came-back" open>
+    <summary>What came back <span class="cost-pill">$0.0252 for 15 answers + 15 judgements</span></summary>
+    <div class="file"><div class="file-bar"><span class="name">06-bench.txt</span><span class="tag">output · captured 2026-09-16</span></div><pre class="out">[cheap   ] score 5/5  $0.000001   1.34s  What is 17 x 23? Answer with the number and o...
+[cheap   ] score 3/5  $0.000001   1.19s  Which planet in our solar system has the most...
+[cheap   ] score 3/5  $0.000002   2.16s  Explain what a &#x27;token&#x27; is in AI to a 10-year-...
+[cheap   ] score 3/5  $0.000002   3.81s  Translate into French: &#x27;The meeting is postpo...
+[cheap   ] score 5/5  $0.000007   9.79s  Give three concrete tips to reduce the cost o...
+[mid     ] score 5/5  $0.000261   1.52s  What is 17 x 23? Answer with the number and o...
+[mid     ] score 3/5  $0.000178   1.54s  Which planet in our solar system has the most...
+[mid     ] score 4/5  $0.000366   2.06s  Explain what a &#x27;token&#x27; is in AI to a 10-year-...
+[mid     ] score 3/5  $0.000402   1.93s  Translate into French: &#x27;The meeting is postpo...
+[mid     ] score 5/5  $0.000930   2.93s  Give three concrete tips to reduce the cost o...
+[frontier] score 5/5  $0.002060   5.59s  What is 17 x 23? Answer with the number and o...
+[frontier] score 5/5  $0.004710   5.62s  Which planet in our solar system has the most...
+[frontier] score 5/5  $0.004345   4.30s  Explain what a &#x27;token&#x27; is in AI to a 10-year-...
+[frontier] score 5/5  $0.005470   6.16s  Translate into French: &#x27;The meeting is postpo...
+[frontier] score 5/5  $0.006430   9.00s  Give three concrete tips to reduce the cost o...
+
+tier     model                          avg score  total cost  avg secs  avg tokens
+cheap    mistralai/mistral-nemo               3.8     0.00001      3.66          79
+mid      anthropic/claude-haiku-4.5           4.0     0.00214      2.00          80
+frontier anthropic/claude-opus-5              5.0     0.02302      6.13         178</pre></div>
+  </details>
+  <div class="tbl"><table>
+    <tr><th>Tier</th><th>Model</th><th>Avg score /5</th><th>Cost for 5 answers</th><th>Avg time</th></tr>
+    <tr><td>cheap</td><td><code>mistralai/mistral-nemo</code></td><td class="num">3.8</td><td class="num money">$0.00001</td><td class="num">3.7 s</td></tr>
+    <tr><td>mid</td><td><code>anthropic/claude-haiku-4.5</code></td><td class="num">4.0</td><td class="num money">$0.00214</td><td class="num">2.0 s</td></tr>
+    <tr><td>frontier</td><td><code>anthropic/claude-opus-5</code></td><td class="num">5.0</td><td class="num money">$0.02302</td><td class="num">6.1 s</td></tr>
+  </table></div>
+  <p>What the scores hide is more interesting than the averages. On "which planet has the most moons", both the cheap and mid models said <em>Jupiter</em> — true a few years ago — while only the frontier model knew Saturn had overtaken it (274 vs 95). On arithmetic and the cost-tips question, the cheap model scored a perfect 5 for a thousandth of the price. Conclusion for <code>brief</code>: use a cheap model for mechanical steps (reshaping text into JSON), a mid model where judgement matters (deciding what to search, summarising sources), and reserve the frontier tier for questions where being current or subtle is the whole point.</p>
+  <div class="call gotcha">
+    <p class="t">Gotcha · the benchmark's own bug</p>
+    <p>The first run of this script crashed, then scored several answers 0. The judge had <code>max_tokens=20</code>, and on some questions it spent those 20 tokens on hidden reasoning and returned an empty answer with <code>finish_reason: "length"</code>. The fix was <code>"reasoning": {"effort": "none"}</code> for the judge (allowed because Sonnet's reasoning is optional; on a mandatory-reasoning model you would use <code>"low"</code>) — the exact trap described in chapter 2, met in the wild. Saved as <code>06-bench-v1-judge-gotcha.txt</code>.</p>
+  </div>
+
+  <h3>Lever 1 · Routing: where the request goes</h3>
+  <p>The same model is often served by several providers at different prices and speeds. By default OpenRouter load-balances toward cheap, healthy ones. You can override it: <code>provider.sort: "price"</code> or <code>"throughput"</code> (strict order, no more balancing), the <code>:floor</code> suffix (cheapest, and it also admits discounted "flex" capacity), and <code>provider.max_price</code> — a hard ceiling that makes the request <em>fail</em> rather than pay more.</p>
+  <h3>Lever 2 · Prompt caching: stop paying for the same prefix</h3>
+  <p>If every request starts with the same long instructions, the provider can remember the processed prefix and charge you a fraction for it next time. OpenAI does this automatically once the prefix exceeds ~1,024 tokens; Anthropic needs a <code>cache_control</code> field (a single top-level one that OpenRouter places for you, or explicit markers on individual content blocks) and a minimum of 1,024–4,096 tokens depending on the model (cache writes cost 1.25×, reads 0.1×); Gemini and DeepSeek have their own rules. You see it working in <code>usage.prompt_tokens_details.cached_tokens</code>.</p>
+  <h3>Lever 3 · Response caching: the same request, answered for free</h3>
+  <p>Different layer, simpler idea: send the header <code>X-OpenRouter-Cache: true</code> and if the exact same request arrives again within the TTL (5 minutes by default, configurable), OpenRouter returns the stored answer at zero cost and no provider is called. Near-exact: whitespace is ignored, but a different key order in the JSON, <code>temperature</code> written out versus omitted, streaming versus not, or a different API key is a miss.</p>
+  <div class="file"><div class="file-bar"><span class="name">brief/routing_and_caching.py</span><span class="tag">python</span><button class="copy" type="button">Copy</button></div><pre><span class="s">&quot;&quot;</span>&quot;Lesson 6b - the cost levers: provider routing, prompt caching, response caching.
+
+Usage:
+    uv run brief/routing_and_caching.py
+<span class="s">&quot;&quot;</span>&quot;
+
+import os
+import time
+
+import requests
+from dotenv import load_dotenv
+
+load_dotenv()
+API_KEY = os.environ[<span class="s">&quot;OPENROUTER_API_KEY&quot;</span>]
+URL = <span class="s">&quot;https://openrouter.ai/api/v1/chat/completions&quot;</span>
+CHEAP = <span class="s">&quot;mistralai/mistral-nemo&quot;</span>
+
+
+def call(body: dict, headers: dict | None = None) -&gt; tuple[dict, requests.Response]:
+    started = time.time()
+    r = requests.post(URL, headers={<span class="s">&quot;Authorization&quot;</span>: f<span class="s">&quot;Bearer {API_KEY}&quot;</span>, **(headers or {})}, json=body, timeout=90)
+    data = r.json()
+    data[<span class="s">&quot;_seconds&quot;</span>] = round(time.time() - started, 2)
+    return data, r
+
+
+def show(label: str, data: dict) -&gt; None:
+    if <span class="s">&quot;error&quot;</span> in data:
+        print(f<span class="s">&quot;  {label:&lt;28} ERROR {data[&#x27;error&#x27;][&#x27;code&#x27;]}: {data[&#x27;error&#x27;][&#x27;message&#x27;]}&quot;</span>)
+        return
+    u = data[<span class="s">&quot;usage&quot;</span>]
+    print(f<span class="s">&quot;  {label:&lt;28} provider={data.get(&#x27;provider&#x27;,&#x27;?&#x27;):&lt;14} cost=${u[&#x27;cost&#x27;]:.6f}  &quot;</span>
+          f<span class="s">&quot;cached_in={u[&#x27;prompt_tokens_details&#x27;][&#x27;cached_tokens&#x27;]:&lt;5} {data[&#x27;_seconds&#x27;]}s&quot;</span>)
+
+
+q = [{<span class="s">&quot;role&quot;</span>: <span class="s">&quot;user&quot;</span>, <span class="s">&quot;content&quot;</span>: <span class="s">&quot;One sentence: what is a provider in the context of AI models?&quot;</span>}]
+
+print(<span class="s">&quot;1) PROVIDER ROUTING - same model, different routing rules&quot;</span>)
+show(<span class="s">&quot;default (price-weighted)&quot;</span>, call({<span class="s">&quot;model&quot;</span>: CHEAP, <span class="s">&quot;messages&quot;</span>: q, <span class="s">&quot;max_tokens&quot;</span>: 60})[0])
+show(<span class="s">&quot;provider.sort = price&quot;</span>, call({<span class="s">&quot;model&quot;</span>: CHEAP, <span class="s">&quot;messages&quot;</span>: q, <span class="s">&quot;max_tokens&quot;</span>: 60, <span class="s">&quot;provider&quot;</span>: {<span class="s">&quot;sort&quot;</span>: <span class="s">&quot;price&quot;</span>}})[0])
+show(<span class="s">&quot;provider.sort = throughput&quot;</span>, call({<span class="s">&quot;model&quot;</span>: CHEAP, <span class="s">&quot;messages&quot;</span>: q, <span class="s">&quot;max_tokens&quot;</span>: 60, <span class="s">&quot;provider&quot;</span>: {<span class="s">&quot;sort&quot;</span>: <span class="s">&quot;throughput&quot;</span>}})[0])
+show(<span class="s">&quot;:floor suffix&quot;</span>, call({<span class="s">&quot;model&quot;</span>: CHEAP + <span class="s">&quot;:floor&quot;</span>, <span class="s">&quot;messages&quot;</span>: q, <span class="s">&quot;max_tokens&quot;</span>: 60})[0])
+show(<span class="s">&quot;max_price too low&quot;</span>, call({<span class="s">&quot;model&quot;</span>: CHEAP, <span class="s">&quot;messages&quot;</span>: q, <span class="s">&quot;max_tokens&quot;</span>: 60,
+                                <span class="s">&quot;provider&quot;</span>: {<span class="s">&quot;max_price&quot;</span>: {<span class="s">&quot;prompt&quot;</span>: 0.001, <span class="s">&quot;completion&quot;</span>: 0.001}}})[0])
+
+print(<span class="s">&quot;\n2) PROMPT CACHING - a long, identical prefix sent twice (OpenAI caches automatically above ~1024 tokens)&quot;</span>)
+long_rules = <span class="s">&quot;You are a research assistant. Follow these style rules strictly.\n&quot;</span> + \
+             <span class="s">&quot;\n&quot;</span>.join(f<span class="s">&quot;Rule {i}: Prefer plain words over jargon; define any technical term the first time it appears; &quot;</span>
+                       f<span class="s">&quot;keep sentences short; cite a source when stating a number.&quot;</span> for i in range(1, 60))
+msgs = [{<span class="s">&quot;role&quot;</span>: <span class="s">&quot;system&quot;</span>, <span class="s">&quot;content&quot;</span>: long_rules}, {<span class="s">&quot;role&quot;</span>: <span class="s">&quot;user&quot;</span>, <span class="s">&quot;content&quot;</span>: <span class="s">&quot;In one sentence, what is caching?&quot;</span>}]
+for label in (<span class="s">&quot;first call (cache write)&quot;</span>, <span class="s">&quot;second call (cache read)&quot;</span>):
+    show(label, call({<span class="s">&quot;model&quot;</span>: <span class="s">&quot;openai/gpt-5-mini&quot;</span>, <span class="s">&quot;messages&quot;</span>: msgs, <span class="s">&quot;max_tokens&quot;</span>: 300})[0])
+    time.sleep(1)
+
+print(<span class="s">&quot;\n3) RESPONSE CACHING - OpenRouter returns the identical answer for the identical request, for free&quot;</span>)
+for label in (<span class="s">&quot;first call&quot;</span>, <span class="s">&quot;second call&quot;</span>):
+    data, r = call({<span class="s">&quot;model&quot;</span>: CHEAP, <span class="s">&quot;messages&quot;</span>: q, <span class="s">&quot;max_tokens&quot;</span>: 60}, headers={<span class="s">&quot;X-OpenRouter-Cache&quot;</span>: <span class="s">&quot;true&quot;</span>})
+    show(label, data)
+    print(f<span class="s">&quot;      X-OpenRouter-Cache-Status: {r.headers.get(&#x27;X-OpenRouter-Cache-Status&#x27;)}&quot;</span>)</pre></div>
+  <details class="came-back" open>
+    <summary>What came back <span class="cost-pill">$0.00165</span></summary>
+    <div class="file"><div class="file-bar"><span class="name">06-routing-caching.txt</span><span class="tag">output · captured 2026-09-16</span></div><pre class="out">1) PROVIDER ROUTING - same model, different routing rules
+  default (price-weighted)     provider=DeepInfra      cost=$0.000001  cached_in=0     0.99s
+  provider.sort = price        provider=DeepInfra      cost=$0.000001  cached_in=0     1.92s
+  provider.sort = throughput   provider=Parasail       cost=$0.000001  cached_in=0     0.78s
+  :floor suffix                provider=DeepInfra      cost=$0.000001  cached_in=0     2.8s
+  max_price too low            ERROR 404: No endpoints found that satisfy the max price for this request
+
+2) PROMPT CACHING - a long, identical prefix sent twice (OpenAI caches automatically above ~1024 tokens)
+  first call (cache write)     provider=OpenAI         cost=$0.001022  cached_in=0     4.68s
+  second call (cache read)     provider=OpenAI         cost=$0.000614  cached_in=1792  5.27s
+
+3) RESPONSE CACHING - OpenRouter returns the identical answer for the identical request, for free
+  first call                   provider=DekaLLM        cost=$0.000001  cached_in=0     1.45s
+      X-OpenRouter-Cache-Status: MISS
+  second call                  provider=DekaLLM        cost=$0.000000  cached_in=0     0.19s
+      X-OpenRouter-Cache-Status: HIT</pre></div>
+  </details>
+  <p>Three real results in one screen: the same model was served by <em>DeepInfra</em>, <em>Parasail</em> and <em>DekaLLM</em> depending on the rule; <code>max_price</code> set impossibly low failed loudly ("No endpoints found that satisfy the max price") instead of overspending; the second call with the long prefix was 40% cheaper with <code>cached_in=1792</code>; and the response-cache hit cost <span class="money">$0.000000</span> and returned in 0.19 s instead of 1.45 s.</p>
+
+  <h3>Lever 4 · The advisor: cheap by default, smart on demand</h3>
+  <p>Instead of choosing one tier for a step, let a cheap model do the work and give it a server tool it can call when unsure: <code>openrouter:advisor</code>, pointed at an expensive model. The cheap model decides when to ask; you pay for the expensive one only on those turns. Zero orchestration code on your side.</p>
+  <div class="file"><div class="file-bar"><span class="name">brief/advisor.py</span><span class="tag">python</span><button class="copy" type="button">Copy</button></div><pre><span class="s">&quot;&quot;</span>&quot;Lesson 6c - the advisor pattern: a cheap model does the work, and may consult an expensive one.
+
+Usage:
+    uv run brief/advisor.py
+<span class="s">&quot;&quot;</span>&quot;
+
+import json
+import os
+
+import requests
+from dotenv import load_dotenv
+
+load_dotenv()
+API_KEY = os.environ[<span class="s">&quot;OPENROUTER_API_KEY&quot;</span>]
+URL = <span class="s">&quot;https://openrouter.ai/api/v1/chat/completions&quot;</span>
+
+QUESTION = <span class="s">&quot;Which planet in our solar system has the most known moons, and roughly how many? One sentence.&quot;</span>
+
+
+def run(label: str, tool_choice: str) -&gt; None:
+    data = requests.post(URL, headers={<span class="s">&quot;Authorization&quot;</span>: f<span class="s">&quot;Bearer {API_KEY}&quot;</span>}, json={
+        <span class="s">&quot;model&quot;</span>: <span class="s">&quot;mistralai/mistral-nemo&quot;</span>,                         <span class="c"># the cheap executor</span>
+        <span class="s">&quot;messages&quot;</span>: [
+            {<span class="s">&quot;role&quot;</span>: <span class="s">&quot;system&quot;</span>, <span class="s">&quot;content&quot;</span>: <span class="s">&quot;If you are not certain of a fact, ask the advisor before answering.&quot;</span>},
+            {<span class="s">&quot;role&quot;</span>: <span class="s">&quot;user&quot;</span>, <span class="s">&quot;content&quot;</span>: QUESTION},
+        ],
+        <span class="s">&quot;tools&quot;</span>: [{
+            <span class="s">&quot;type&quot;</span>: <span class="s">&quot;openrouter:advisor&quot;</span>,                            <span class="c"># a SERVER tool, run by OpenRouter</span>
+            <span class="s">&quot;parameters&quot;</span>: {<span class="s">&quot;model&quot;</span>: <span class="s">&quot;anthropic/claude-sonnet-5&quot;</span>,   <span class="c"># the expensive brain it may consult</span>
+                           <span class="s">&quot;max_completion_tokens&quot;</span>: 150},
+        }],
+        <span class="s">&quot;tool_choice&quot;</span>: tool_choice,                                  <span class="c"># <span class="s">&quot;auto&quot;</span> = model decides, <span class="s">&quot;required&quot;</span> = must consult</span>
+        <span class="s">&quot;max_tokens&quot;</span>: 200,
+    }, timeout=120).json()
+    if <span class="s">&quot;error&quot;</span> in data:
+        print(f<span class="s">&quot;{label}: ERROR {data[&#x27;error&#x27;]}&quot;</span>)
+        return
+    u = data[<span class="s">&quot;usage&quot;</span>]
+    consulted = (u.get(<span class="s">&quot;server_tool_use_details&quot;</span>) or {}).get(<span class="s">&quot;tool_calls_executed&quot;</span>, 0)
+    print(f<span class="s">&quot;{label}\n  answer: {data[&#x27;choices&#x27;][0][&#x27;message&#x27;][&#x27;content&#x27;].strip()}&quot;</span>)
+    print(f<span class="s">&quot;  advisor consulted: {consulted} time(s) | total cost ${u[&#x27;cost&#x27;]:.6f}&quot;</span>)
+
+
+run(<span class="s">&quot;A) tool_choice=auto - cheap model decides whether to ask&quot;</span>, <span class="s">&quot;auto&quot;</span>)
+run(<span class="s">&quot;\nB) tool_choice=required - forced to consult&quot;</span>, <span class="s">&quot;required&quot;</span>)</pre></div>
+  <details class="came-back" open>
+    <summary>What came back <span class="cost-pill">$0.001</span></summary>
+    <div class="file"><div class="file-bar"><span class="name">06-advisor.txt</span><span class="tag">output · captured 2026-09-16</span></div><pre class="out">A) tool_choice=auto - cheap model decides whether to ask
+  answer: Saturn currently has the most known moons, with around 146 confirmed as of recent counts.
+  advisor consulted: 1 time(s) | total cost $0.000553
+
+B) tool_choice=required - forced to consult
+  answer: Saturn currently holds the record for the most known moons, with around 146 confirmed natural satellites.
+  advisor consulted: 1 time(s) | total cost $0.000445</pre></div>
+  </details>
+  <p>The cheap model alone said <em>Jupiter</em> in the benchmark. With an advisor it consulted Sonnet and answered <em>Saturn</em>, for <span class="money">$0.0005</span> — a tenth of what the frontier model charged for the same question directly. (The moon count differs between Sonnet's 146 and Opus's 274 because different models have different cut-offs; the honest lesson is that "recent" facts need web search.)</p>
+
+  <h3>The rest of the toolkit, in one paragraph each</h3>
+  <ul>
+    <li><strong>Broadcast</strong> — a switch in the dashboard (Settings → Observability) that sends a record of every request to a tracing tool such as Langfuse or Braintrust. Zero code. Once your tool is used by other people, this is how you see which steps cost what.</li>
+    <li><strong>Batch API</strong> — for work that does not need an answer now (nightly summaries, bulk classification): submit many requests, get results within 24 hours, at about half price. It is a separate endpoint (<code>POST /api/beta/batches</code>) that takes the normal model name plus a list of requests; the <code>:batch</code> entries in the catalog show which models support it and the batch price.</li>
+    <li><strong>Subagent tool</strong> — the mirror image of the advisor: an expensive model delegates well-defined chores to a cheaper one.</li>
+    <li><strong>Free variants</strong> — 20 models have a <code>:free</code> version. Rate-limited (20 requests per minute; 50 per day until you have bought $10 of credits, then 1,000 per day) and sometimes unavailable, but genuinely free for experiments.</li>
+    <li><strong>Re-measure when models change.</strong> The cheap tier gets better every few months. Re-run <code>bench.py</code> when a new model lands; if a cheaper one scores the same, switch — it is a one-word edit.</li>
+  </ul>
+</section>
+
+<section id="final">
+  <h2><span class="num">THE FINISHED TOOL</span><br><code>brief</code>: search → answer → structured file → cost line</h2>
+  <p>Everything above, assembled. Two calls per question — that is chapter 6's "decomposition" idea in practice: the mid-tier model does the judgement-heavy research with web search and streams its answer; the cheap model then does the mechanical reshaping into the fixed briefing schema. Two files it reuses: <code>structure()</code> and <code>save_markdown()</code> from chapter 4.</p>
+  <div class="file"><div class="file-bar"><span class="name">brief/__main__.py</span><span class="tag">python</span><button class="copy" type="button">Copy</button></div><pre><span class="s">&quot;&quot;</span>&quot;brief - research any question from the command line.
+
+    uv run -m brief <span class="s">&quot;What changed in the EU AI Act in 2026?&quot;</span>
+
+Step 1: a mid-tier model searches the web (OpenRouter server tool) and streams an answer.
+Step 2: a cheap model reshapes that answer into a fixed-schema briefing (title / summary / facts / sources).
+Step 3: save it as markdown and print exactly what it cost.
+<span class="s">&quot;&quot;</span>&quot;
+
+import json
+import os
+import re
+import sys
+
+import requests
+from dotenv import load_dotenv
+
+from brief.briefing import save_markdown, structure
+
+load_dotenv()
+API_KEY = os.environ[<span class="s">&quot;OPENROUTER_API_KEY&quot;</span>]
+URL = <span class="s">&quot;https://openrouter.ai/api/v1/chat/completions&quot;</span>
+RESEARCH_MODEL = <span class="s">&quot;anthropic/claude-haiku-4.5&quot;</span>
+
+
+def research_streaming(question: str) -&gt; tuple[str, list[str], dict]:
+    <span class="s">&quot;&quot;</span><span class="s">&quot;Web-search-backed answer, streamed to the terminal as it is written.&quot;</span><span class="s">&quot;&quot;</span>
+    body = {
+        <span class="s">&quot;model&quot;</span>: RESEARCH_MODEL,
+        <span class="s">&quot;messages&quot;</span>: [
+            {<span class="s">&quot;role&quot;</span>: <span class="s">&quot;system&quot;</span>, <span class="s">&quot;content&quot;</span>: <span class="s">&quot;You are a research assistant. Search the web when the question needs &quot;</span>
+                                          <span class="s">&quot;current facts. Be concise. End with the URLs you used, one per line.&quot;</span>},
+            {<span class="s">&quot;role&quot;</span>: <span class="s">&quot;user&quot;</span>, <span class="s">&quot;content&quot;</span>: question},
+        ],
+        <span class="s">&quot;tools&quot;</span>: [{<span class="s">&quot;type&quot;</span>: <span class="s">&quot;openrouter:web_search&quot;</span>,
+                   <span class="s">&quot;parameters&quot;</span>: {<span class="s">&quot;max_uses&quot;</span>: 2, <span class="s">&quot;max_results&quot;</span>: 3, <span class="s">&quot;search_context_size&quot;</span>: <span class="s">&quot;low&quot;</span>}}],
+        <span class="s">&quot;max_tool_calls&quot;</span>: 4,
+        <span class="s">&quot;max_tokens&quot;</span>: 600,
+        <span class="s">&quot;stream&quot;</span>: True,
+    }
+    text, urls, usage, served_by = [], [], {}, RESEARCH_MODEL
+    with requests.post(URL, headers={<span class="s">&quot;Authorization&quot;</span>: f<span class="s">&quot;Bearer {API_KEY}&quot;</span>}, json=body, stream=True, timeout=180) as r:
+        for line in r.iter_lines(decode_unicode=True):
+            if not line or line.startswith(<span class="s">&quot;:&quot;</span>) or not line.startswith(<span class="s">&quot;data: &quot;</span>):
+                continue
+            payload = line[6:]
+            if payload == <span class="s">&quot;[DONE]&quot;</span>:
+                break
+            chunk = json.loads(payload)
+            if <span class="s">&quot;error&quot;</span> in chunk:
+                raise SystemExit(f<span class="s">&quot;OpenRouter error: {chunk[&#x27;error&#x27;]}&quot;</span>)
+            served_by = chunk.get(<span class="s">&quot;model&quot;</span>, served_by)
+            if chunk.get(<span class="s">&quot;usage&quot;</span>):
+                usage = chunk[<span class="s">&quot;usage&quot;</span>]
+            for choice in chunk.get(<span class="s">&quot;choices&quot;</span>, []):
+                delta = choice.get(<span class="s">&quot;delta&quot;</span>, {})
+                if delta.get(<span class="s">&quot;content&quot;</span>):
+                    text.append(delta[<span class="s">&quot;content&quot;</span>])
+                    print(delta[<span class="s">&quot;content&quot;</span>], end=<span class="s">&quot;&quot;</span>, flush=True)
+                for a in delta.get(<span class="s">&quot;annotations&quot;</span>) or []:
+                    if a.get(<span class="s">&quot;type&quot;</span>) == <span class="s">&quot;url_citation&quot;</span>:
+                        urls.append(a[<span class="s">&quot;url_citation&quot;</span>][<span class="s">&quot;url&quot;</span>])
+    print()
+    answer = <span class="s">&quot;&quot;</span>.join(text)
+    urls = list(dict.fromkeys(urls or re.findall(r<span class="s">&quot;https?://\S+&quot;</span>, answer)))   <span class="c"># de-duplicate, keep order</span>
+    return answer, urls, usage | {<span class="s">&quot;served_by&quot;</span>: served_by}
+
+
+def main() -&gt; None:
+    if len(sys.argv) &lt; 2:
+        raise SystemExit(&<span class="c">#x27;usage: uv run -m brief <span class="s">&quot;your question&quot;</span>&#x27;)</span>
+    question = <span class="s">&quot; &quot;</span>.join(sys.argv[1:])
+
+    print(f<span class="s">&quot;▸ researching with {RESEARCH_MODEL} (web search on)…\n&quot;</span>)
+    answer, urls, research_usage = research_streaming(question)
+
+    print(<span class="s">&quot;\n▸ structuring the briefing…&quot;</span>)
+    notes = answer + <span class="s">&quot;\n\nSources:\n&quot;</span> + <span class="s">&quot;\n&quot;</span>.join(urls)
+    briefing, structure_usage = structure(question, notes)
+    path = save_markdown(question, briefing)
+    print(f<span class="s">&quot;▸ saved {path}&quot;</span>)
+
+    searches = (research_usage.get(<span class="s">&quot;server_tool_use_details&quot;</span>) or {}).get(<span class="s">&quot;web_search_requests&quot;</span>, 0)
+    total = research_usage.get(<span class="s">&quot;cost&quot;</span>, 0) + structure_usage[<span class="s">&quot;cost&quot;</span>]
+    print(f<span class="s">&quot;▸ cost: ${total:.4f} · {research_usage.get(&#x27;prompt_tokens&#x27;, 0):,} in / &quot;</span>
+          f<span class="s">&quot;{research_usage.get(&#x27;completion_tokens&#x27;, 0):,} out · {searches} web search(es) · &quot;</span>
+          f<span class="s">&quot;answered by {research_usage[&#x27;served_by&#x27;]}, structured by {structure_usage.get(&#x27;model&#x27;, &#x27;cheap model&#x27;)}&quot;</span>)
+
+
+if __name__ == <span class="s">&quot;__main__&quot;</span>:
+    main()</pre></div>
+  <div class="cmd"><span class="lbl">Run it</span> <code>uv run -m brief "What is OpenRouter and what does it cost to use?"</code></div>
+  <details class="came-back" open>
+    <summary>What came back <span class="cost-pill">$0.0133</span></summary>
+    <div class="file"><div class="file-bar"><span class="name">07-brief-final.txt</span><span class="tag">output · captured 2026-09-16</span></div><pre class="out">▸ researching with anthropic/claude-haiku-4.5 (web search on)…
+
+## What is OpenRouter?
+
+**OpenRouter** is a unified API platform that provides access to multiple large language models (LLMs) from different providers through a single interface. Key features include:
+
+- **Multi-model access**: Access to 500+ models from 80+ providers
+- **Unified billing**: Aggregate all your LLM usage in one place with consolidated analytics
+- **Pass-through pricing**: You pay the same rates as you would directly from providers, with no markup on inference pricing
+- **Improved uptime**: Pools uptime across providers with fallback capabilities
+- **No subscriptions**: Pay-as-you-go model
+
+## Cost Structure
+
+OpenRouter offers several pricing tiers:
+
+1. **Free Plan**
+   - 25+ free models with 50 requests/day limit
+   - 4 free providers
+   - Limited workspace (5)
+   - No platform fees, but limited to free models
+
+2. **Pay-as-You-Go**
+   - 5.5% platform fee on credit purchases ($0.80 minimum)
+   - Access to 500+ models and 80+ providers
+   - Credit-based system (no subscriptions)
+   - Pass-through pricing from providers
+   - $25,000/month free allowance for Bring Your Own Keys (BYOK)
+
+3. **Business Plan**
+   - 8% platform fee
+   - 500+ models and 80+ providers
+   - Enhanced features (auto-routing, budgets, caching, admin controls)
+   - $25,000/month free BYOK allowance
+
+4. **Enterprise Plan**
+   - Custom fee discounts
+   - 500+ models and 80+ providers
+   - Full feature set including SSO/SAML
+   - $200,000/month free BYOK allowance
+
+**Payment**: Users add credits to their account and pay per token used. New users receive a small free allowance to get started.
+
+https://openrouter.ai/
+https://openrouter.ai/pricing
+https://openrouter.ai/docs/faq
+
+▸ structuring the briefing…
+▸ saved briefings/2026-09-16-what-is-openrouter-and-what-does-it-cost.md
+▸ cost: $0.0133 · 3,568 in / 536 out · 1 web search(es) · answered by anthropic/claude-haiku-4.5, structured by cheap model</pre></div>
+  </details>
+  <p>And the file it saved, <code>briefings/2026-09-16-what-is-openrouter-and-what-does-it-cost.md</code>:</p>
+  <details class="came-back" open>
+    <summary>The saved briefing</summary>
+    <div class="file"><div class="file-bar"><span class="name">briefing-final.md</span><span class="tag">output · captured 2026-09-16</span></div><pre class="out"># OpenRouter Briefing
+
+_Question: What is OpenRouter and what does it cost to use?_
+
+OpenRouter is a unified API platform that provides access to multiple large language models (LLMs) from different providers through a single interface.
+
+## Key facts
+- Access to 500+ models from 80+ providers
+- Unified billing with consolidated analytics
+- Pass-through pricing with no markup on inference
+- Improved uptime with fallback capabilities
+- No subscriptions; pay-as-you-go model
+
+## Sources
+- https://openrouter.ai/
+- https://openrouter.ai/pricing
+- https://openrouter.ai/docs/faq</pre></div>
+  </details>
+  <div class="call why">
+    <p class="t">Where to take it next</p>
+    <p>Ideas, in rough order of effort: keep the conversation going (append the answer and ask a follow-up — chapter 1's message list); add <code>openrouter:web_fetch</code> so it can read one specific page you give it; add a <code>--model</code> flag and re-run the benchmark on your own questions; read PDFs (OpenRouter's multimodal docs); turn on Broadcast and watch the traces. Ask Claude for any of these.</p>
+  </div>
+</section>
+
+<section id="glossary">
+  <h2><span class="num">GLOSSARY</span><br>Every term used above, one line each</h2>
+  <dl class="gloss">
+    <dt>API</dt><dd>A web address that accepts requests in an agreed format and returns responses in an agreed format. Programs talk to services through APIs.</dd>
+    <dt>API key</dt><dd>A long secret string that identifies (and bills) your account. Lives in <code>.env</code>, never in code or chat.</dd>
+    <dt>Model</dt><dd>One specific AI, e.g. <code>anthropic/claude-haiku-4.5</code>. The part before the slash is who made it.</dd>
+    <dt>Provider</dt><dd>The company hosting a model for you — often several per model, at different prices.</dd>
+    <dt>Endpoint</dt><dd>One model at one provider (OpenRouter's term). Also used loosely for the API address itself.</dd>
+    <dt>Token</dt><dd>The unit models read and write in; roughly ¾ of an English word. Prices are per token; humans quote per million.</dd>
+    <dt>Prompt / completion</dt><dd>What you send in / what comes back. Also "input / output". Output is usually 2–5× more expensive.</dd>
+    <dt>Context length</dt><dd>The maximum total size of one conversation (input and output together), in tokens.</dd>
+    <dt>Messages, roles</dt><dd>The conversation as a list. <code>system</code> = standing instructions, <code>user</code> = you, <code>assistant</code> = the model, <code>tool</code> = a tool's result.</dd>
+    <dt>Temperature</dt><dd>Randomness dial, 0–2. 0 repeats itself; 1 is normal; 1.5+ produces word salad.</dd>
+    <dt>max_tokens</dt><dd>Cap on answer length — and therefore on spend. Hidden reasoning tokens count against it.</dd>
+    <dt>finish_reason</dt><dd>Why the model stopped: <code>stop</code> (done), <code>length</code> (hit the cap), <code>tool_calls</code> (wants a tool), <code>error</code>.</dd>
+    <dt>JSON</dt><dd>The text format requests and responses are written in: <code>{"key": "value"}</code>. Python's <code>dict</code> after <code>json.loads</code>.</dd>
+    <dt>JSON Schema</dt><dd>A description of an allowed JSON shape — which fields, which types, which are required. Used for structured output and tool arguments.</dd>
+    <dt>Structured output</dt><dd>Forcing the model to answer in a JSON shape you defined (<code>response_format</code>).</dd>
+    <dt>Streaming / SSE</dt><dd>Receiving the answer in small chunks as it is written, over a kept-open connection ("Server-Sent Events").</dd>
+    <dt>Tool / function calling</dt><dd>The model asks your code to run a named function with arguments; you return the result; it continues.</dd>
+    <dt>Server tool</dt><dd>A tool OpenRouter runs for you (web search, fetch, advisor…), declared with an <code>openrouter:</code> prefix.</dd>
+    <dt>Agent</dt><dd>A program that loops: ask the model → run the tools it asks for → repeat until it answers.</dd>
+    <dt>Fallback</dt><dd>A list of models or providers to try in order if the first fails.</dd>
+    <dt>Alias (<code>~…-latest</code>)</dt><dd>A name that always resolves to the newest model in a family.</dd>
+    <dt>Variant suffix</dt><dd><code>:free</code>, <code>:batch</code> (separate catalog entries) and <code>:nitro</code>, <code>:floor</code>, <code>:exacto</code> (routing hints).</dd>
+    <dt>Prompt caching</dt><dd>The provider remembers a long identical prefix and charges a fraction for it next time.</dd>
+    <dt>Response caching</dt><dd>OpenRouter returns the stored answer to an identical request, free.</dd>
+    <dt>Reasoning tokens</dt><dd>Hidden "thinking" some models do before answering. Billed as output; counted against <code>max_tokens</code>.</dd>
+    <dt>SDK</dt><dd>A library that wraps an API in ordinary functions (<code>openai</code>, <code>openrouter</code>).</dd>
+    <dt>uv</dt><dd>The Python project tool used here; <code>uv run file.py</code> runs a script with its libraries ready.</dd>
+  </dl>
+</section>
+
+<section id="cheatsheet">
+  <h2><span class="num">CHEAT SHEET</span><br>The request, the fields, the links</h2>
+  <h3>Request template</h3>
+  <pre class="file" style="padding:.9rem 1rem"><span class="c"># POST https://openrouter.ai/api/v1/chat/completions</span>
+<span class="c"># Header: Authorization: Bearer $OPENROUTER_API_KEY</span>
+{
+  <span class="k">"model"</span>: <span class="s">"mistralai/mistral-nemo"</span>,           <span class="c"># or "models": [...] for fallbacks</span>
+  <span class="k">"messages"</span>: [
+    {<span class="k">"role"</span>: <span class="s">"system"</span>, <span class="k">"content"</span>: <span class="s">"You are ..."</span>},
+    {<span class="k">"role"</span>: <span class="s">"user"</span>,   <span class="k">"content"</span>: <span class="s">"..."</span>}
+  ],
+  <span class="k">"max_tokens"</span>: <span class="n">300</span>,                          <span class="c"># cap length = cap spend</span>
+  <span class="k">"temperature"</span>: <span class="n">0.7</span>,                         <span class="c"># 0 repeatable ... 1 normal</span>
+  <span class="k">"stream"</span>: <span class="n">false</span>,                            <span class="c"># true = chunks as they are written</span>
+  <span class="k">"response_format"</span>: {<span class="k">"type"</span>: <span class="s">"json_schema"</span>, <span class="k">"json_schema"</span>: {<span class="k">"name"</span>: <span class="s">"x"</span>, <span class="k">"strict"</span>: <span class="n">true</span>, <span class="k">"schema"</span>: {...}}},
+  <span class="k">"tools"</span>: [{<span class="k">"type"</span>: <span class="s">"function"</span>, <span class="k">"function"</span>: {...}}, {<span class="k">"type"</span>: <span class="s">"openrouter:web_search"</span>}],
+  <span class="k">"provider"</span>: {<span class="k">"sort"</span>: <span class="s">"price"</span>, <span class="k">"require_parameters"</span>: <span class="n">true</span>, <span class="k">"max_price"</span>: {<span class="k">"prompt"</span>: <span class="n">1</span>, <span class="k">"completion"</span>: <span class="n">5</span>}},
+  <span class="k">"reasoning"</span>: {<span class="k">"effort"</span>: <span class="s">"none"</span>}               <span class="c"># or "low"; "none" only where reasoning is optional</span>
+}</pre>
+  <h3>Response fields you will actually read</h3>
+  <div class="tbl"><table>
+    <tr><th>Field</th><th>Meaning</th></tr>
+    <tr><td><code>choices[0].message.content</code></td><td>The answer text (or JSON text when using structured output)</td></tr>
+    <tr><td><code>choices[0].message.tool_calls</code></td><td>Present when the model wants a tool run; arguments arrive as a JSON <em>string</em></td></tr>
+    <tr><td><code>choices[0].message.annotations</code></td><td>Citations from web search (<code>url_citation</code>)</td></tr>
+    <tr><td><code>choices[0].finish_reason</code></td><td><code>stop</code> / <code>length</code> / <code>tool_calls</code> / <code>error</code></td></tr>
+    <tr><td><code>model</code>, <code>provider</code></td><td>Who actually answered and who hosted it — what you were billed for</td></tr>
+    <tr><td><code>usage.cost</code></td><td>Exact dollars for this call</td></tr>
+    <tr><td><code>usage.prompt_tokens</code>, <code>usage.completion_tokens</code></td><td>Tokens in / out</td></tr>
+    <tr><td><code>usage.prompt_tokens_details.cached_tokens</code></td><td>How much of the input was served from cache</td></tr>
+    <tr><td><code>usage.completion_tokens_details.reasoning_tokens</code></td><td>Hidden thinking tokens you paid for</td></tr>
+    <tr><td><code>usage.server_tool_use_details</code></td><td>Server tool counters, e.g. <code>web_search_requests</code></td></tr>
+    <tr><td><code>error.code</code>, <code>error.message</code></td><td>Present on failure — even with HTTP 200</td></tr>
+  </table></div>
+  <h3>Commands</h3>
+  <div class="tbl"><table>
+    <tr><th>Do</th><th>Command</th></tr>
+    <tr><td>List the catalog</td><td><code>curl -s https://openrouter.ai/api/v1/models | jq '.data[] | {id, pricing}'</code></td></tr>
+    <tr><td>Check your key and spend</td><td><code>curl -s https://openrouter.ai/api/v1/key -H "Authorization: Bearer $OPENROUTER_API_KEY"</code></td></tr>
+    <tr><td>Run any chapter</td><td><code>uv run brief/&lt;file&gt;.py</code></td></tr>
+    <tr><td>Run the tool</td><td><code>uv run -m brief "your question"</code></td></tr>
+  </table></div>
+  <h3>Docs that matter</h3>
+  <ul>
+    <li><a href="https://openrouter.ai/docs/quickstart">Quickstart</a> · <a href="https://openrouter.ai/docs/guides/overview/models">Models &amp; catalog</a> · <a href="https://openrouter.ai/docs/api_reference/parameters">Parameters</a> · <a href="https://openrouter.ai/docs/api_reference/errors-and-debugging">Errors</a></li>
+    <li><a href="https://openrouter.ai/docs/guides/routing/provider-selection">Provider routing</a> · <a href="https://openrouter.ai/docs/guides/routing/model-fallbacks">Fallbacks</a> · <a href="https://openrouter.ai/docs/guides/routing/model-variants/overview">Variants</a></li>
+    <li><a href="https://openrouter.ai/docs/api_reference/streaming">Streaming</a> · <a href="https://openrouter.ai/docs/guides/features/structured-outputs">Structured outputs</a> · <a href="https://openrouter.ai/docs/guides/best-practices/reasoning-tokens">Reasoning tokens</a></li>
+    <li><a href="https://openrouter.ai/docs/guides/features/tool-calling">Tool calling</a> · <a href="https://openrouter.ai/docs/guides/features/server-tools">Server tools</a> · <a href="https://openrouter.ai/docs/guides/features/server-tools/web-search">Web search</a> · <a href="https://openrouter.ai/docs/guides/features/server-tools/advisor">Advisor</a></li>
+    <li><a href="https://openrouter.ai/docs/guides/best-practices/prompt-caching">Prompt caching</a> · <a href="https://openrouter.ai/docs/guides/features/response-caching">Response caching</a> · <a href="https://openrouter.ai/docs/guides/features/broadcast">Broadcast</a> · <a href="https://openrouter.ai/docs/batch-quickstart">Batch API</a></li>
+    <li><a href="https://openrouter.ai/docs/client-sdks/python/overview">Python SDK</a> · <a href="https://openrouter.ai/docs/guides/community/openai-sdk">OpenAI SDK compatibility</a> · <a href="https://openrouter.ai/docs/agent-sdk/overview">Agent SDK</a> · <a href="https://openrouter.ai/docs/llms.txt">Index of every doc page</a></li>
+  </ul>
+</section>
+
+<section id="quiz">
+  <h2><span class="num">CHECK YOURSELF</span><br>If you can answer these, you have it</h2>
+  <details class="q"><summary>1. A response says <code>"model": "mistralai/mistral-nemo"</code> but you asked for <code>~openai/gpt-mini-latest</code> with a fallback list. What happened, and what were you billed for?</summary><div>The first choice failed (or the alias resolved elsewhere) and OpenRouter used the next model in your list. You are always billed for the model named in the response — that field is the source of truth.</div></details>
+  <details class="q"><summary>2. The catalog says <code>"completion": "0.00001"</code>. What does a 500-token answer cost?</summary><div>$0.00001 is per token, so × 1,000,000 = $10 per million. 500 tokens × $0.00001 = $0.005, half a cent.</div></details>
+  <details class="q"><summary>3. You get HTTP 200 but the answer is empty. Name two things to check.</summary><div>The body may contain an <code>error</code> field (200 is sent before the provider finishes); and <code>finish_reason</code> may be <code>length</code> with <code>reasoning_tokens</code> having eaten <code>max_tokens</code>.</div></details>
+  <details class="q"><summary>4. Why does <code>brief</code> filter <code>sources</code> to strings starting with <code>http</code> even though the schema already defines a sources list?</summary><div>The schema guarantees the shape (a list of strings), not the truth. A small model filled it with invented titles. Only code can enforce "must be a real link".</div></details>
+  <details class="q"><summary>5. In the hand-written tool loop, why is <code>tools</code> sent on every turn, and what must be appended before the tool result?</summary><div>The router validates tools on each call, so they must be present every time. The assistant message containing <code>tool_calls</code> must be appended first, so the <code>tool_call_id</code> in your result has something to pair with.</div></details>
+  <details class="q"><summary>6. A step in your pipeline reshapes text into JSON. Which tier, and why?</summary><div>Cheap. Mechanical, well-specified tasks scored a perfect 5 on the cheap model for a thousandth of the price. Spend on judgement, not on reformatting.</div></details>
+  <details class="q"><summary>7. What is the difference between prompt caching and response caching?</summary><div>Prompt caching happens at the provider: an identical long <em>prefix</em> is remembered and charged at a fraction. Response caching happens at OpenRouter: an identical <em>whole request</em> gets the stored answer back, free. They stack.</div></details>
+  <details class="q"><summary>8. When would you set <code>provider.max_price</code>, and what is the risk?</summary><div>To guarantee you never pay above a ceiling per million tokens. The risk: it is a hard filter — if no provider is cheap enough the request fails (404 "No endpoints found…") rather than running.</div></details>
+</section>
+
+<footer>
+  Built on 16 Sep 2026 from OpenRouter's <a href="https://openrouter.ai/learn.md">learn.md</a> course and live docs, on a catalog of 443 models. Every output shown was captured from real runs on this account; raw copies live in <code>.openrouter-learn/outputs/</code>. Prices and model names change — re-run <code>brief/models.py</code> for today's numbers.
+</footer>
+</main>
+</div>
+</div>
+
+<script>
+(function(){
+  // copy buttons
+  document.querySelectorAll('.copy').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var pre = btn.closest('.file').querySelector('pre');
+      var text = pre.innerText;
+      var done = function(){ btn.textContent = 'Copied'; setTimeout(function(){ btn.textContent = 'Copy'; }, 1400); };
+      try { navigator.clipboard.writeText(text).then(done, done); } catch (e) { done(); }
+    });
+  });
+  // active chapter in nav
+  var links = Array.prototype.slice.call(document.querySelectorAll('.toc a'));
+  var sections = links.map(function(a){ return document.querySelector(a.getAttribute('href')); });
+  function update(){
+    var y = window.scrollY + 120, current = 0;
+    sections.forEach(function(s, i){ if (s && s.offsetTop <= y) current = i; });
+    links.forEach(function(a, i){ a.classList.toggle('active', i === current); });
+  }
+  window.addEventListener('scroll', update, {passive:true}); update();
+})();
+</script>
+
+</body></html>
